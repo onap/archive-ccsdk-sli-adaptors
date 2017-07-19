@@ -1,0 +1,13 @@
+# order-number = 1234
+# zero = 0
+# item[0].clli = MTJNJA14
+# item[0].service = NoD
+# item[0].price = 1000000
+# item[1].clli = MTJNJA14
+# item[1].service = Pizza
+# item[1].price = 10
+CREATE TABLE IF NOT EXISTS SQLRESOURCE_ORDER (order_number VARCHAR(40), placed_on TIMESTAMP);
+CREATE TABLE IF NOT EXISTS SQLRESOURCE_ORDER_ITEM (order_number VARCHAR(40), clli VARCHAR(40), service VARCHAR(40), price INTEGER(4));
+INSERT INTO SQLRESOURCE_ORDER VALUES ( $order-number , now());
+INSERT INTO SQLRESOURCE_ORDER_ITEM VALUES( $order-number ,  $item[$zero].clli ,  $item[0].service , $item[0].price );
+INSERT INTO SQLRESOURCE_ORDER_ITEM VALUES( $order-number ,  $item[1].clli ,  $item[1].service , $item[1].price );

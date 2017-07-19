@@ -1,0 +1,44 @@
+isAvailable:
+	Input in ctx:
+		tmp.resource-allocator.aic-site-id
+		tmp.resource-allocator.speed
+		tmp.resource-allocator.speed-unit
+	Output in ctx:
+		tmp.resource-allocator.max-available-speed
+		tmp.resource-allocator.speed-unit
+	Return:
+		SUCCESS – capacity available
+		NOT_FOUND – capacity not available
+			Error message in: error-message, error-code
+		FAILURE – the check has failed (data error, code defect, etc)
+			Error message in: error-message, error-code
+
+Reserve:
+	Input in ctx:
+		tmp.resource-allocator.aic-site-id
+		tmp.resource-allocator.speed
+		tmp.resource-allocator.speed-unit
+		tmp.resource-allocator.service-instance-id
+		tmp.resource-allocator.request-type { New, Change }
+	Output in ctx:
+		tmp.resource-allocator-output.max-available-speed
+		tmp.resource-allocator-output.speed-unit
+	Return:
+		SUCCESS – capacity available
+		NOT_FOUND – capacity not available
+			Error message in: error-message, error-code
+		FAILURE – the check has failed (data error, code defect, etc)
+			Error message in: error-message, error-code
+
+Release:
+	Input in ctx:
+		tmp.resource-allocator.service-instance-id
+		tmp.resource-allocator.request-type { Activate, Cancel, Disconnect }
+	Return:
+		SUCCESS – capacity available
+		FAILURE – the check has failed (data error, code defect, etc)
+			Error message in: error-message, error-code
+
+
+Plugin name: org.openecomp.sdnc.ra.ResourceAllocator
+Resource: NetworkCapacity
