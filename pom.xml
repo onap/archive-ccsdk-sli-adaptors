@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.onap.ccsdk.parent</groupId>
+		<artifactId>odlparent-boron-sr3</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<packaging>pom</packaging>
+	<groupId>org.openecomp.sdnc.adaptors</groupId>
+	<artifactId>sdnc-adaptors</artifactId>
+
+	<name>SDN-C Adaptors</name>
+	<url>https://wiki.openecomp.org</url>
+	<description>The SDN-C core components contains the SLI, dblib and root pom</description>
+
+
+	<issueManagement>
+		<system>JIRA</system>
+		<url>https://jira.openecomp.org/</url>
+	</issueManagement>
+
+
+	<scm>
+		<connection>scm:git:ssh://git@${openecomp.git.host}/sdnc-adaptors.git</connection>
+		<developerConnection>scm:git:ssh://${openecomp.git.host}:${openecomp.git.port}/${openecomp.git.project}/sdnc-adaptors.git</developerConnection>
+		<url>${openecomp.git.protocol}://${openecomp.git.host}/projects/${openecomp.git.project}/repos/sdnc-adaptors/browse</url>
+	</scm>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://jenkins.openecomp.org/</url>
+	</ciManagement>
+
+	<distributionManagement>
+		<site>
+			<id>sdnc-javadoc</id>
+			<url>dav:https://${openecomp.nexus.host}/content/sites/site/org/onap/sdnc/adaptors/${project.artifactId}/${project.version}</url>
+		</site>
+	</distributionManagement>
+
+	<profiles>
+		<profile>
+			<id>blackduck</id>
+			<activation>
+				<property>
+					<name>blackduck-scan</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.blackducksoftware.integration</groupId>
+						<artifactId>hub-maven-plugin</artifactId>
+						<version>1.4.0</version>
+						<inherited>false</inherited>
+						<configuration>
+							<hubProjectName>${project.name}</hubProjectName>
+							<outputDirectory>${project.basedir}</outputDirectory>
+						</configuration>
+						<executions>
+							<execution>
+								<id>create-bdio-file</id>
+								<phase>package</phase>
+								<goals>
+									<goal>createHubOutput</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+
+
+			</build>
+
+		</profile>
+
+	</profiles>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<nexusUrl>https://${openecomp.nexus.host}</nexusUrl>
+					<stagingProfileId>${openecomp.nexus.staging.profile-id}</stagingProfileId>
+					<serverId>${openecomp.nexus.staging.server-id}</serverId>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+	<modules>
+		<module>aai-service</module>
+		<module>mdsal-resource</module>
+		<module>resource-assignment</module>
+		<module>sql-resource</module>
+	</modules>
+	<organization>
+		<name>OpenECOMP</name>
+	</organization>
+	<version>0.0.1-SNAPSHOT</version>
+
+
+</project>
