@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>resource-assignment</artifactId>
-		<groupId>org.openecomp.sdnc.adaptors</groupId>
+		<groupId>org.onap.ccsdk.sli.adaptors</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>resource-assignment-features</artifactId>
@@ -15,7 +15,7 @@
 
 
 		<dependency>
-			<groupId>org.openecomp.sdnc.adaptors</groupId>
+			<groupId>org.onap.ccsdk.sli.adaptors</groupId>
 			<artifactId>resource-assignment-provider</artifactId>
 			<version>${project.version}</version>
 		</dependency>

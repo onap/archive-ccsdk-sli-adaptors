@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>aai-service</artifactId>
-		<groupId>org.openecomp.sdnc.adaptors</groupId>
+		<groupId>org.onap.ccsdk.sli.adaptors</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>aai-service-installer</artifactId>
@@ -13,14 +13,14 @@
 	<properties>
 		<application.name>sdnc-aai-service</application.name>
 		<features.boot>sdnc-aai-service</features.boot>
-		<features.repositories>mvn:org.openecomp.sdnc.adaptors/aai-service-features/${project.version}/xml/features</features.repositories>
+		<features.repositories>mvn:org.onap.ccsdk.sli.adaptors/aai-service-features/${project.version}/xml/features</features.repositories>
 		<include.transitive.dependencies>false</include.transitive.dependencies>
 	</properties>
 
 	<dependencies>
 
 		<dependency>
-			<groupId>org.openecomp.sdnc.adaptors</groupId>
+			<groupId>org.onap.ccsdk.sli.adaptors</groupId>
 			<artifactId>aai-service-features</artifactId>
 			<version>${project.version}</version>
 			<classifier>features</classifier>
@@ -34,7 +34,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.openecomp.sdnc.adaptors</groupId>
+			<groupId>org.onap.ccsdk.sli.adaptors</groupId>
 			<artifactId>aai-service-provider</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -104,7 +104,7 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<addParentPoms>false</addParentPoms>
 							<copyPom>false</copyPom>
-							<includeGroupIds>org.openecomp.sdnc,org.jvnet.jaxb2_commons</includeGroupIds>
+							<includeGroupIds>org.onap.ccsdk,org.jvnet.jaxb2_commons</includeGroupIds>
 							<excludeArtifactIds>sli-common,sli-provider,dblib-provider,dblib-common</excludeArtifactIds>
 							<scope>provided</scope>
 						</configuration>

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>resource-assignment</artifactId>
-		<groupId>org.openecomp.sdnc.adaptors</groupId>
+		<groupId>org.onap.ccsdk.sli.adaptors</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>resource-assignment-installer</artifactId>
@@ -13,14 +13,14 @@
 	<properties>
 		<application.name>sdnc-resource-assignment</application.name>
 		<features.boot>sdnc-resource-assignment</features.boot>
-		<features.repositories>mvn:org.openecomp.sdnc.adaptors/resource-assignment-features/${project.version}/xml/features</features.repositories>
+		<features.repositories>mvn:org.onap.ccsdk.sli.adaptors/resource-assignment-features/${project.version}/xml/features</features.repositories>
 		<include.transitive.dependencies>false</include.transitive.dependencies>
 	</properties>
 
 	<dependencies>
 
 		<dependency>
-			<groupId>org.openecomp.sdnc.adaptors</groupId>
+			<groupId>org.onap.ccsdk.sli.adaptors</groupId>
 			<artifactId>resource-assignment-features</artifactId>
 			<version>${project.version}</version>
 			<classifier>features</classifier>
@@ -34,7 +34,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.openecomp.sdnc.adaptors</groupId>
+			<groupId>org.onap.ccsdk.sli.adaptors</groupId>
 			<artifactId>resource-assignment-provider</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -98,7 +98,7 @@
 							<useRepositoryLayout>true</useRepositoryLayout>
 							<addParentPoms>false</addParentPoms>
 							<copyPom>false</copyPom>
-							<includeGroupIds>org.openecomp.sdnc</includeGroupIds>
+							<includeGroupIds>org.onap.ccsdk</includeGroupIds>
 							<excludeArtifactIds>sli-common,sli-provider,dblib-provider</excludeArtifactIds>
 							<scope>provided</scope>
 						</configuration>
