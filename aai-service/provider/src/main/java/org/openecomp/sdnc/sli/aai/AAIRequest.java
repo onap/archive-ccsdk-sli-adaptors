@@ -43,18 +43,19 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.openecomp.aai.inventory.v10.GenericVnf;
-import org.openecomp.sdnc.sli.aai.data.AAIDatum;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.openecomp.sdnc.sli.aai.data.AAIDatum;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.openecomp.aai.inventory.v11.*;
 
 public abstract class AAIRequest {
 	protected static final Logger LOG = LoggerFactory.getLogger(AAIRequest.class);
@@ -113,6 +114,7 @@ public abstract class AAIRequest {
 		case "nodes-query":
 			return new NodesQueryRequest();
 		case "custom-query":
+		case "formatted-query":
 			return new CustomQueryRequest();
 		case "linterface":
 			return new LInterfaceRequest(LInterfaceRequest.TYPE.L2_BRIDGE_SBG);
@@ -144,6 +146,11 @@ public abstract class AAIRequest {
 	 * Map containing bitset value of the path to its path mapping
 	 */
 	private static Map<BitSet, String> bitsetPaths = new LinkedHashMap<BitSet, String>();
+	
+	
+	public static Set<String> getResourceNames() {
+		return tagValues.keySet();
+	}
 
 
 	public static void setProperties(Properties props, AAIService aaiService) {
@@ -230,17 +237,23 @@ public abstract class AAIRequest {
 		aaiService.getLogger().warn("Could not deserialize object of type " + lInterfaceRequest.getClass().getSimpleName(), exc) ;
 	}
 
-//	public abstract URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException;
-
 	public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
 
 		String request_url = null;
 
-		request_url = target_uri + getRequestPath();
+		request_url = target_uri + updatePathDataValues(resourceVersion);
 
+		URL http_req_url =	new URL(request_url);
+
+		aaiService.LOGwriteFirstTrace(method, http_req_url.toString());
+
+		return http_req_url;
+	}
+	
+	public String updatePathDataValues(Object resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
+		String request_url = getRequestPath();
+		
 		Set<String> uniqueResources = extractUniqueResourceSetFromKeys(requestProperties.stringPropertyNames());
-
-//		request_url = processPathData(request_url, requestProperties);
 
 		for(String resoourceName:uniqueResources) {
 			AAIRequest locRequest = AAIRequest.createRequest(resoourceName, new HashMap<String, String>());
@@ -253,19 +266,14 @@ public abstract class AAIRequest {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-//				request_url = locRequest.processPathData(request_url, requestProperties);
 			}
 		}
 
 		if(resourceVersion != null) {
 			request_url = request_url +"?resource-version="+resourceVersion;
 		}
-		URL http_req_url =	new URL(request_url);
 
-		aaiService.LOGwriteFirstTrace(method, http_req_url.toString());
-
-
-		return http_req_url;
+		return request_url;
 	}
 
 
@@ -365,7 +373,7 @@ public abstract class AAIRequest {
         return AAIService.getObjectMapper();
 	}
 
-	protected static Class<? extends AAIDatum> getClassFromResource(String resoourceName) throws ClassNotFoundException {
+	public	static Class<? extends AAIDatum> getClassFromResource(String resoourceName) throws ClassNotFoundException {
 		String className = GenericVnf.class.getName();
 		String[] split = resoourceName.split("-");
 		for(int i = 0; i < split.length; i++) {
@@ -414,6 +422,19 @@ public abstract class AAIRequest {
 	    return query_pairs;
 	}
 
+	public static Map<String, String> splitPath(String path) throws UnsupportedEncodingException {
+	    Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+
+	    if(path != null && !path.isEmpty()) {
+	    	String[] pairs = path.split("/");
+	    	for (String pair : pairs) {
+	    		int idx = pair.indexOf("=");
+	    		query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+	    	}
+	    }
+	    return query_pairs;
+	}
+	
 	protected boolean expectsDataFromPUTRequest() {
 		return false;
 	}

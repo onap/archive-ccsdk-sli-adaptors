@@ -23,6 +23,7 @@ package org.openecomp.sdnc.sli.aai;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 import org.openecomp.sdnc.sli.aai.data.AAIDatum;
@@ -48,7 +49,14 @@ public class SelfLinkRequest extends AAIRequest {
 		String request_url = null;
 		
 		request_url = requestProperties.getProperty(SELFLINK);
-		
+		try {
+			URI uri = new URI(request_url);
+			if(uri.getHost() == null) {
+				request_url = target_uri + request_url;
+			}
+		} catch(Exception exc) {
+			LOG.error("SelfLinkRequest.getRequestUrl", exc);
+		}
 		String query = null;
 		
 		if(request_url.contains("?")) {

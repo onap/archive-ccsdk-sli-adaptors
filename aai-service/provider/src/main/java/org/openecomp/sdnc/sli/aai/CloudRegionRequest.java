@@ -28,12 +28,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.openecomp.aai.inventory.v10.CloudRegion;
 import org.openecomp.sdnc.sli.aai.data.AAIDatum;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
+
+import org.openecomp.aai.inventory.v11.CloudRegion;
 
 public class CloudRegionRequest extends AAIRequest {
 

@@ -22,7 +22,9 @@
 package org.openecomp.sdnc.sli.aai;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -31,13 +33,13 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 
-import org.openecomp.aai.inventory.v10.L3Network;
-import org.openecomp.aai.inventory.v10.L3Networks;
 import org.openecomp.sdnc.sli.aai.data.AAIDatum;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
+
+import org.openecomp.aai.inventory.v11.L3Network;
+import org.openecomp.aai.inventory.v11.L3Networks;
 
 public class GenericRequest extends AAIRequest {
 
@@ -49,30 +51,31 @@ public class GenericRequest extends AAIRequest {
 	}
 
 	@Override
-	public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
+	public String updatePathDataValues(Object resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
 
-		String request_url = null;
 		String originalPath = null;
 		String pathSubstitute = null;
-
-		request_url = target_uri + getRequestPath();
-
+		
+		String request_url = getRequestPath();
+		
 		Map<String, String> queryParams = new HashMap<String, String> ();
 		if(resourceVersion != null) {
-			queryParams.put("resource-version",resourceVersion);
+			queryParams.put("resource-version", resourceVersion.toString());
 		}
 
 		Set<String> uniqueResources = extractUniqueResourceSetFromKeys(requestProperties.stringPropertyNames());
 
 		String[] keys = requestProperties.keySet().toArray(new String[0]);
 		for(String key : keys) {
-			if("cloud-region.cloud-region-id".equals(key))
+			switch(key) {
+			case "cloud-region.cloud-region-id":
+			case "entitlement.resource-uuid":
+			case "license.resource-uuid":
+			case "route-target.route-target-role":
+			case "service-capability.vnf-type":
+			case "ctag-pool.availability-zone-name":
 				continue;
-			if("entitlement.resource-uuid".equals(key))
-				continue;
-			if("license.resource-uuid".equals(key))
-				continue;
-
+			}
 
 			String value = requestProperties.getProperty(key);
 			if(key.contains(".")) {
@@ -95,6 +98,27 @@ public class GenericRequest extends AAIRequest {
 					String cloudRegionId =  requestProperties.getProperty("license.resource-uuid");
 					aaiService.LOGwriteDateTrace("resource-uuid", cloudRegionId);
 					String token = String.format("%s/{%s}/{resource-uuid}", splitKey[0], splitKey[1] );
+					String encoded_owner = encodeQuery(value);
+					String encoded_region = encodeQuery(cloudRegionId);
+					request_url = request_url.replace(token, String.format("%s/%s/%s", splitKey[0], encoded_owner, encoded_region));
+				} else 	if("route-target".equals(splitKey[0])){
+					String cloudRegionId =  requestProperties.getProperty("route-target.route-target-role");
+					aaiService.LOGwriteDateTrace("route-target-role", cloudRegionId);
+					String token = String.format("%s/{%s}/{route-target-role}", splitKey[0], splitKey[1] );
+					String encoded_owner = encodeQuery(value);
+					String encoded_region = encodeQuery(cloudRegionId);
+					request_url = request_url.replace(token, String.format("%s/%s/%s", splitKey[0], encoded_owner, encoded_region));
+				} else 	if("service-capability".equals(splitKey[0])){
+					String cloudRegionId =  requestProperties.getProperty("service-capability.vnf-type");
+					aaiService.LOGwriteDateTrace("vnf-type", cloudRegionId);
+					String token = String.format("%s/{%s}/{vnf-type}", splitKey[0], splitKey[1] );
+					String encoded_owner = encodeQuery(value);
+					String encoded_region = encodeQuery(cloudRegionId);
+					request_url = request_url.replace(token, String.format("%s/%s/%s", splitKey[0], encoded_owner, encoded_region));
+				} else 	if("ctag-pool".equals(splitKey[0])){
+					String cloudRegionId =  requestProperties.getProperty("ctag-pool.availability-zone-name");
+					aaiService.LOGwriteDateTrace("availability-zone-name", cloudRegionId);
+					String token = String.format("%s/{%s}/{availability-zone-name}", splitKey[0], splitKey[1] );
 					String encoded_owner = encodeQuery(value);
 					String encoded_region = encodeQuery(cloudRegionId);
 					request_url = request_url.replace(token, String.format("%s/%s/%s", splitKey[0], encoded_owner, encoded_region));
@@ -163,111 +187,8 @@ public class GenericRequest extends AAIRequest {
 			String queryString = mapJoiner.join(queryParams);
 			request_url = String.format("%s?%s", request_url, queryString);
 		}
-
-		URL http_req_url =	new URL(request_url);
-
-		aaiService.LOGwriteFirstTrace(method, http_req_url.toString());
-
-
-		return http_req_url;
-	}
-
-
-	public URL OriginalgetRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
-
-		String request_url = null;
-
-		request_url = target_uri + getRequestPath();
-
-		Map<String, String> keyValuepairs = new HashMap<String, String> ();
-		Set<String> uniqueResources = extractUniqueResourceSetFromKeys(requestProperties.stringPropertyNames());
-
-		String[] keys = requestProperties.keySet().toArray(new String[0]);
-		for(String key : keys) {
-			if("cloud-region.cloud-region-id".equals(key))
-				continue;
-			if("entitlement.resource-uuid".equals(key))
-				continue;
-			if("license.resource-uuid".equals(key))
-				continue;
-
-
-			String value = requestProperties.getProperty(key);
-			if(key.contains(".")) {
-				String[] splitKey = key.split("\\.");
-				if("cloud-region".equals(splitKey[0])){
-					String cloudRegionId =  requestProperties.getProperty("cloud-region.cloud-region-id");
-					aaiService.LOGwriteDateTrace("cloud-region-id", cloudRegionId);
-					String token = String.format("%s/{%s}/{cloud-region-id}", splitKey[0], splitKey[1] );
-					String encoded_owner = encodeQuery(value);
-					String encoded_region = encodeQuery(cloudRegionId);
-					request_url = request_url.replace(token, String.format("%s/%s/%s", splitKey[0], encoded_owner, encoded_region));
-				} else 	if("entitlement".equals(splitKey[0])){
-					String cloudRegionId =  requestProperties.getProperty("entitlement.resource-uuid");
-					aaiService.LOGwriteDateTrace("resource-uuid", cloudRegionId);
-					String token = String.format("%s/{%s}/{resource-uuid}", splitKey[0], splitKey[1] );
-					String encoded_owner = encodeQuery(value);
-					String encoded_region = encodeQuery(cloudRegionId);
-					request_url = request_url.replace(token, String.format("%s/%s/%s", splitKey[0], encoded_owner, encoded_region));
-				} else 	if("license".equals(splitKey[0])){
-					String cloudRegionId =  requestProperties.getProperty("license.resource-uuid");
-					aaiService.LOGwriteDateTrace("resource-uuid", cloudRegionId);
-					String token = String.format("%s/{%s}/{resource-uuid}", splitKey[0], splitKey[1] );
-					String encoded_owner = encodeQuery(value);
-					String encoded_region = encodeQuery(cloudRegionId);
-					request_url = request_url.replace(token, String.format("%s/%s/%s", splitKey[0], encoded_owner, encoded_region));
-				} else {
-					Class<? extends AAIDatum> clazz = null;
-					try {
-						clazz = getClassFromResource(splitKey[0]);
-					} catch (ClassNotFoundException exc) {
-						LOG.warn("AAIRequest does not support class: " + exc.getMessage());
-						return null;
-					}
-
-					if(clazz != null) {
-						if(clazz == this.model) {
-							Field[] fields = this.model.getDeclaredFields();
-							Field field = fields[0];
-							String fieldName = field.getName();
-							XmlElement annotation = field.getAnnotation(XmlElement.class);
-							String primaryId = annotation.name();
-							if("##default".equals(primaryId)) {
-								primaryId = fieldName;
-							}
-
-							String token = String.format("%s/{%s}", splitKey[0], primaryId);
-
-							if(splitKey[1].equals(primaryId)) {
-								String encoded_vnf = encodeQuery(value);
-								request_url = request_url.replace(token, String.format("%s/%s", splitKey[0], encoded_vnf));
-							} else {
-								String replacement = String.format("%s?%s=%s", splitKey[0], splitKey[1], encodeQuery(value));
-								if(request_url.contains(token))
-									request_url = request_url.replace(token, replacement);
-							}
-						} else {
-							String token = String.format("%s/{%s}", splitKey[0], splitKey[1]);
-							String encoded_vnf = encodeQuery(value);
-							request_url = request_url.replace(token, String.format("%s/%s", splitKey[0], encoded_vnf));
-						}
-					}
-
-				}
-				aaiService.LOGwriteDateTrace(splitKey[1], value);
-			}
-		}
-
-
-		if(resourceVersion != null) {
-			request_url = request_url +"?resource-version="+resourceVersion;
-		}
-		URL http_req_url =	new URL(request_url);
-
-		aaiService.LOGwriteFirstTrace(method, http_req_url.toString());
-
-
-		return http_req_url;
+		
+		return request_url;
 	}
 
 	@Override

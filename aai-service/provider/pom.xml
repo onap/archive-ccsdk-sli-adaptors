@@ -131,7 +131,7 @@
 					<instructions>
 						<Bundle-SymbolicName>org.openecomp.sdnc.sli.aai</Bundle-SymbolicName>
 						<Bundle-Activator>org.openecomp.sdnc.sli.aai.AAIServiceActivator</Bundle-Activator>
-						<Export-Package>org.openecomp.sdnc.sli.aai.*,org.openecomp.aai.inventory.v10.*</Export-Package>
+						<Export-Package>org.openecomp.sdnc.sli.aai.*,org.openecomp.aai.inventory.v11.*</Export-Package>
                         <Import-Package>org.openecomp.sdnc.sli.*,org.osgi.framework.*,org.slf4j.*,org.apache.commons.lang3.*,javax.xml.bind.annotation.*,javax.ws.rs.*,javax.ws.rs.core.*,com.fasterxml.jackson.module.jaxb.*,com.sun.jersey.client.urlconnection.*,com.sun.jersey.api.client.config.*,com.fasterxml.jackson.databind.type.*,com.fasterxml.jackson.module.jaxb.*,com.fasterxml.jackson.databind.introspect.*,com.fasterxml.jackson.annotation.*,com.fasterxml.jackson.databind.*</Import-Package>
 						<Import-Package>*</Import-Package>
 						<Embed-Transitive>true</Embed-Transitive>
@@ -155,13 +155,13 @@
 				<configuration>
 				<schemaDirectory>${project.basedir}/src/main/resources</schemaDirectory>
 					<schemaIncludes>
-						<value>aai_schema_v10.xsd</value>
+						<value>aai_schema_v11.xsd</value>
 					</schemaIncludes>
 					<bindingIncludes>
 						<include>aai-schema-bindings.xjb</include>
 					</bindingIncludes>
 					<generateDirectory>${project.build.directory}/generated-sources/main/java</generateDirectory>
-                                        <generatePackage>org.openecomp.aai.inventory.v10</generatePackage>
+                                        <generatePackage>org.openecomp.aai.inventory.v11</generatePackage>
 					<extension>true</extension>
 				<args>
 					<arg>-Xannotate</arg>

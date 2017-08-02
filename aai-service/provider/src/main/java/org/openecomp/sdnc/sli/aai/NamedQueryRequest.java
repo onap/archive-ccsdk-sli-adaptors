@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import org.openecomp.aai.inventory.v10.InventoryResponseItems;
 import org.openecomp.sdnc.sli.aai.data.AAIDatum;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -42,6 +41,8 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+
+import org.openecomp.aai.inventory.v11.InventoryResponseItems;
 
 public class NamedQueryRequest extends AAIRequest {
 

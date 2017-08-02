@@ -31,8 +31,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import org.openecomp.aai.inventory.v10.RelationshipList;
-import org.openecomp.aai.inventory.v10.Vlans;
+import org.openecomp.aai.inventory.v11.RelationshipList;
+import org.openecomp.aai.inventory.v11.Vlans;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")

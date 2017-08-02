@@ -36,6 +36,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -66,38 +67,19 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.UriBuilder;
 import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
 import org.onap.ccsdk.sli.core.sli.MetricLogger;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
-import org.openecomp.aai.inventory.v10.AvailabilityZone;
-import org.openecomp.aai.inventory.v10.Complex;
-import org.openecomp.aai.inventory.v10.CtagPool;
-import org.openecomp.aai.inventory.v10.DvsSwitch;
-import org.openecomp.aai.inventory.v10.GenericVnf;
-import org.openecomp.aai.inventory.v10.L3Network;
-import org.openecomp.aai.inventory.v10.OamNetwork;
-import org.openecomp.aai.inventory.v10.PInterface;
-import org.openecomp.aai.inventory.v10.PhysicalLink;
-import org.openecomp.aai.inventory.v10.Pserver;
-import org.openecomp.aai.inventory.v10.ResultData;
-import org.openecomp.aai.inventory.v10.SearchResults;
-import org.openecomp.aai.inventory.v10.Service;
-import org.openecomp.aai.inventory.v10.ServiceInstance;
-import org.openecomp.aai.inventory.v10.SitePairSet;
-import org.openecomp.aai.inventory.v10.Tenant;
-import org.openecomp.aai.inventory.v10.Vce;
-import org.openecomp.aai.inventory.v10.VnfImage;
-import org.openecomp.aai.inventory.v10.VnfImages;
-import org.openecomp.aai.inventory.v10.Vpe;
-import org.openecomp.aai.inventory.v10.VplsPe;
-import org.openecomp.aai.inventory.v10.VpnBinding;
-import org.openecomp.aai.inventory.v10.Vserver;
 import org.openecomp.sdnc.sli.aai.data.AAIDatum;
 import org.openecomp.sdnc.sli.aai.data.ErrorResponse;
 import org.openecomp.sdnc.sli.aai.data.RequestError;
@@ -105,9 +87,6 @@ import org.openecomp.sdnc.sli.aai.data.ResourceVersion;
 import org.openecomp.sdnc.sli.aai.data.ServiceException;
 import org.openecomp.sdnc.sli.aai.data.notify.NotifyEvent;
 import org.openecomp.sdnc.sli.aai.data.v1507.VServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -117,6 +96,8 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
+
+import org.openecomp.aai.inventory.v11.*;
 
 
 public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicResource {
@@ -383,7 +364,13 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     	con.setRequestProperty( "Content-Type",  "PATCH".equalsIgnoreCase(method) ? "application/merge-patch+json" : "application/json" );
         con.setRequestProperty("X-FromAppId", application_id);
         con.setRequestProperty("X-TransactionId",TransactionIdTracker.getNextTransactionId());
-        con.setRequestProperty(MetricLogger.REQUEST_ID, ml.getRequestID());
+        String mlId = ml.getRequestID();
+        if(mlId != null && !mlId.isEmpty()) {
+        	LOG.debug(String.format("MetricLogger requestId = %s", mlId));
+        	con.setRequestProperty(MetricLogger.REQUEST_ID, mlId);
+        } else {
+        	LOG.debug("MetricLogger requestId is null");
+        }
 
         if(user_name != null && !user_name.isEmpty() && user_password != null && !user_password.isEmpty()) {
         	String basicAuth = "Basic " + new String(Base64.encodeBase64((user_name + ":" + user_password).getBytes()));
@@ -1773,8 +1760,12 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         SvcLogicContext ctx = new SvcLogicContext();
         if(!key.contains(" = ") && isValidURL(key)) {
         	key = String.format("selflink = '%s'", key);
+        } else
+        if(!key.contains(" = ") && isValidURI(key)) {
+        	key = String.format("resource-path = '%s'", key);
         }
-        HashMap<String, String> nameValues = keyToHashMap(key, ctx);
+
+        HashMap<String, String> nameValues = AAIServiceUtils.keyToHashMap(key, ctx);
 
         SelfLinkRequest request = new SelfLinkRequest(type);
         request.processRequestPathValues(nameValues);
@@ -1974,12 +1965,12 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
 
 	@Override
-	public VnfImage requestVnfImageData(String att_uuid) throws AAIServiceException {
+	public VnfImage requestVnfImageData(String vnf_image_uuid) throws AAIServiceException {
 		VnfImage response = null;
 
 		try {
 			AAIRequest request = AAIRequest.getRequestFromResource("vnf-image");
-			request.addRequestProperty("vnf-image.att-uuid", att_uuid);
+			request.addRequestProperty("vnf-image.vnf-image-uuid", vnf_image_uuid);
 
 			String rv = executor.get(request);
 			if(rv != null) {
@@ -2350,7 +2341,11 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		try {
 			for (ResultData datum : resultDataList) {
 				String data_type = datum.getResourceType();
-				entity = new URL(datum.getResourceLink());
+				String resourceLink = datum.getResourceLink();
+				if(!resourceLink.isEmpty() && !resourceLink.toLowerCase().startsWith("http")) {
+					resourceLink = (new EchoRequest()).target_uri + resourceLink;
+				}
+				entity = new URL(resourceLink);
 			}
 		} catch (Exception e) {
 			throw new AAIServiceException(e);
@@ -2368,6 +2363,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 			URL requestUrl = null;
 
 			String requestId = UUID.randomUUID().toString();
+			StringBuilder errorStringBuilder = new StringBuilder();
 
 			try {
 
@@ -2449,16 +2445,14 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 	            	errorresponse.setRequestError(requestError);
 	            	throw new AAIServiceException(responseCode, errorresponse);
 	            } else {
-//
-//					StringBuilder stringBuilder = new StringBuilder("\n");
-//					String line = null;
-//					while( ( line = reader.readLine() ) != null ) {
-//						stringBuilder.append("\n").append( line );
-//					}
-//					LOG.info(stringBuilder.toString());
-//
-//	            	ErrorResponse errorresponse = mapper.readValue(stringBuilder.toString(), ErrorResponse.class);
-	            	ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
+//					StringBuilder errorStringBuilder = new StringBuilder();
+					String line = null;
+					while( ( line = reader.readLine() ) != null ) {
+						errorStringBuilder.append("\n").append( line );
+					}
+
+	            	ErrorResponse errorresponse = mapper.readValue(errorStringBuilder.toString(), ErrorResponse.class);
+//	            	ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
 	            	LOGwriteEndingTrace(responseCode, responseMessage, mapper.writeValueAsString(errorresponse));
 	            	throw new AAIServiceException(responseCode, errorresponse);
 	            }
@@ -2466,7 +2460,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 			} catch(AAIServiceException aaiexc) {
 				throw aaiexc;
 			} catch (Exception exc) {
-				LOG.warn("GET", exc);
+				LOG.warn(errorStringBuilder.toString(), exc);
 				throw new AAIServiceException(exc);
 			} finally {
 				if(inputStream != null){
@@ -2983,12 +2977,14 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 	        if(!key.contains(" = ")) {
 	        	if(isValidURL(key)) {
 	        		key = String.format("selflink = '%s'", key);
+	        	} else if(isValidURI(key)) {
+	        		key = String.format("resource-path = '%s'", key);
 	        	} else {
 	        		return response;
 	        	}
 	        }
 
-	        HashMap<String, String> nameValues = keyToHashMap(key, ctx);
+	        HashMap<String, String> nameValues = AAIServiceUtils.keyToHashMap(key, ctx);
 
 	        AAIRequest request = new SelfLinkRequest(type);
 	        if(nameValues.containsKey(PathRequest.RESOURCE_PATH.replaceAll("-", "_"))) {
@@ -3002,25 +2998,40 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 	        return response != null ? type.cast(response) : response;
 	 }
 
-	 public boolean isValidURL(String url) {
+	public boolean isValidURL(String url) {
 
-		    URL u = null;
+		URL u = null;
 
-		    try {
-		        u = new URL(url);
-		    } catch (MalformedURLException e) {
-		        return false;
-		    }
-
-		    try {
-		        u.toURI();
-		    } catch (URISyntaxException e) {
-		        return false;
-		    }
-
-		    return true;
+		try {
+			u = new URL(url);
+		} catch (MalformedURLException e) {
+			return false;
 		}
 
+		try {
+			u.toURI();
+		} catch (URISyntaxException e) {
+			return false;
+		}
+
+		return true;
+	}
+
+	
+	public boolean isValidURI(String url) {
+
+		URI u = null;
+
+		try {
+			u = new URI(url);
+		} catch (URISyntaxException e) {
+			return false;
+		}
+
+		return true;
+	}
+
+	
 	@Override
 	protected boolean deleteRelationshipList(URL httpReqUrl, String json_text) throws AAIServiceException {
 		if(httpReqUrl ==  null) {
@@ -3146,6 +3157,9 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 			break;
 
 		default:
+			if(key.contains("selflink =")) {
+				break;
+			}
 			if(!key.contains(String.format("%s.", normResource))) {
 				key = rewriteKey(resource, key, ctx);
 			}
@@ -3171,6 +3185,9 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 			break;
 
 		default:
+			if(key.contains("selflink =")) {
+				break;
+			}
 			if(!key.contains(String.format("%s.", normResource))) {
 				key = rewriteKey(resource, key, ctx);
 			}
@@ -3196,6 +3213,9 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 			break;
 
 		default:
+			if(key.contains("selflink =")) {
+				break;
+			}
 			if(!key.contains(String.format("%s.", normResource))) {
 				key = rewriteKey(resource, key, ctx);
 			}
@@ -3221,6 +3241,9 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 			break;
 
 		default:
+			if(key.contains("selflink =")) {
+				break;
+			}
 			if(!key.contains(String.format("%s.", normResource))) {
 				key = rewriteKey(resource, key, ctx);
 			}
@@ -3258,15 +3281,16 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 			fieldAnnotatedNames.add(primaryId);
 		}
 
-		HashMap<String, String> nameValues = keyToHashMap(key, ctx);
+		HashMap<String, String> nameValues = AAIServiceUtils.keyToHashMap(key, ctx);
 		Set<String> keyset = nameValues.keySet();
 		for(String keyName : keyset) {
 			if(keyName.contains("."))
 				continue;
 			else {
 				String tmpKeyName = keyName.replaceAll("_", "-");
-				if(fieldAnnotatedNames.contains(tmpKeyName)) {
-					key = key.replace(tmpKeyName, String.format("%s.%s", normResource, tmpKeyName));
+				String valueToSubstitute = String.format("%s =", tmpKeyName);
+				if(fieldAnnotatedNames.contains(tmpKeyName) && key.contains(valueToSubstitute)) {
+					key = key.replace(valueToSubstitute, String.format("%s.%s =", normResource, tmpKeyName));
 				}
 			}
 		}
@@ -3275,4 +3299,13 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		return key;
 	}
 
+	@Override
+	public String getPathTemplateForResource(String resoourceName, String keys, SvcLogicContext ctx) throws MalformedURLException {
+		return AAIServiceUtils.getPathForResource(resoourceName, StringUtils.join(keys, " AND "), ctx);
+	}
+	
+	@Override
+	public boolean isDeprecatedFormat(String resource, HashMap<String, String> nameValues) {
+		return !AAIServiceUtils.isValidFormat(resource, nameValues);
+	}
 }

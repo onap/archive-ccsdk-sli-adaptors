@@ -26,12 +26,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
-import org.openecomp.aai.inventory.v10.LagInterface;
+import org.apache.commons.lang.ArrayUtils;
 import org.openecomp.sdnc.sli.aai.data.AAIDatum;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.openecomp.aai.inventory.v11.LagInterface;
 
 public class LagInterfacePnfRequest extends AAIRequest {
 

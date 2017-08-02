@@ -25,11 +25,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.openecomp.aai.inventory.v10.PhysicalLink;
 import org.openecomp.sdnc.sli.aai.data.AAIDatum;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.openecomp.aai.inventory.v11.PhysicalLink;
 
 public class PhysicalLinkRequest extends AAIRequest {
 

@@ -22,36 +22,16 @@
 package org.openecomp.sdnc.sli.aai;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openecomp.aai.inventory.v11.*;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
-import org.openecomp.aai.inventory.v10.AvailabilityZone;
-import org.openecomp.aai.inventory.v10.Complex;
-import org.openecomp.aai.inventory.v10.CtagPool;
-import org.openecomp.aai.inventory.v10.DvsSwitch;
-import org.openecomp.aai.inventory.v10.GenericVnf;
-import org.openecomp.aai.inventory.v10.L3Network;
-import org.openecomp.aai.inventory.v10.OamNetwork;
-import org.openecomp.aai.inventory.v10.PInterface;
-import org.openecomp.aai.inventory.v10.PhysicalLink;
-import org.openecomp.aai.inventory.v10.Pserver;
-import org.openecomp.aai.inventory.v10.SearchResults;
-import org.openecomp.aai.inventory.v10.Service;
-import org.openecomp.aai.inventory.v10.ServiceInstance;
-import org.openecomp.aai.inventory.v10.SitePairSet;
-import org.openecomp.aai.inventory.v10.Tenant;
-import org.openecomp.aai.inventory.v10.Vce;
-import org.openecomp.aai.inventory.v10.VnfImage;
-import org.openecomp.aai.inventory.v10.Vpe;
-import org.openecomp.aai.inventory.v10.VplsPe;
-import org.openecomp.aai.inventory.v10.VpnBinding;
-import org.openecomp.aai.inventory.v10.Vserver;
 import org.openecomp.sdnc.sli.aai.data.notify.NotifyEvent;
 import org.openecomp.sdnc.sli.aai.data.v1507.VServer;
 
@@ -216,5 +196,7 @@ public interface AAIClient extends SvcLogicResource, SvcLogicJavaPlugin {
 	public void logKeyError(String keys);
 
 	public QueryStatus processResponseData(String rv, String resource, AAIRequest request, String prefix,  SvcLogicContext ctx, HashMap<String, String> nameValues, String modifier) throws JsonParseException, JsonMappingException, IOException, AAIServiceException ;
+	public String getPathTemplateForResource(String resoourceName, String join, SvcLogicContext ctx) throws MalformedURLException;
+	public boolean isDeprecatedFormat(String resource, HashMap<String, String> nameValues);
 
 }

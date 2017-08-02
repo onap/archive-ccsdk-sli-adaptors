@@ -33,10 +33,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import org.openecomp.aai.inventory.v10.L3Network;
-import org.openecomp.aai.inventory.v10.Pnf;
-import org.openecomp.aai.inventory.v10.LogicalLink;
-import org.openecomp.aai.inventory.v10.ServiceInstance;
+import org.openecomp.aai.inventory.v11.L3Network;
+import org.openecomp.aai.inventory.v11.Pnf;
+import org.openecomp.aai.inventory.v11.LogicalLink;
+import org.openecomp.aai.inventory.v11.ServiceInstance;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")

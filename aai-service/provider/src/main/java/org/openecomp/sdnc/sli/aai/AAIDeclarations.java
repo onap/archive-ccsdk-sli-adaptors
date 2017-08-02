@@ -45,26 +45,11 @@ import java.util.regex.Pattern;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
-import org.openecomp.aai.inventory.v10.GenericVnf;
-import org.openecomp.aai.inventory.v10.InventoryResponseItem;
-import org.openecomp.aai.inventory.v10.InventoryResponseItems;
-import org.openecomp.aai.inventory.v10.L3Network;
-import org.openecomp.aai.inventory.v10.LogicalLink;
-import org.openecomp.aai.inventory.v10.Metadata;
-import org.openecomp.aai.inventory.v10.Metadatum;
-import org.openecomp.aai.inventory.v10.Pnf;
-import org.openecomp.aai.inventory.v10.Relationship;
-import org.openecomp.aai.inventory.v10.RelationshipData;
-import org.openecomp.aai.inventory.v10.RelationshipList;
-import org.openecomp.aai.inventory.v10.ResultData;
-import org.openecomp.aai.inventory.v10.SearchResults;
-import org.openecomp.aai.inventory.v10.ServiceInstance;
-import org.openecomp.aai.inventory.v10.Vlan;
-import org.openecomp.aai.inventory.v10.Vlans;
-import org.openecomp.aai.inventory.v10.Vserver;
 import org.openecomp.sdnc.sli.aai.AAIService.AAIRequestExecutor;
 import org.openecomp.sdnc.sli.aai.data.AAIDatum;
 import org.openecomp.sdnc.sli.aai.query.FormattedQueryResultList;
@@ -74,12 +59,12 @@ import org.openecomp.sdnc.sli.aai.query.NamedQuery;
 import org.openecomp.sdnc.sli.aai.query.NamedQueryData;
 import org.openecomp.sdnc.sli.aai.query.QueryParameters;
 import org.openecomp.sdnc.sli.aai.query.Results;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.openecomp.aai.inventory.v11.*;
 
 
 public abstract class AAIDeclarations implements AAIClient {
@@ -148,10 +133,10 @@ public abstract class AAIDeclarations implements AAIClient {
 
 		String vnfId = null;
 		String vnfName = null;
-		HashMap<String, String> nameValues = keyToHashMap(key, ctx);
+		HashMap<String, String> nameValues = AAIServiceUtils.keyToHashMap(key, ctx);
 		getLogger().debug("key = "+ nameValues.toString());
 
-		if(!checkOldFormat(resource, nameValues)) {
+		if(!AAIServiceUtils.isValidFormat(resource, nameValues)) {
 			ctx.setAttribute(String.format("%s.error.message", prefix), String.format("Resource %s is not supported. Key string contains invaid identifiers", resource));
 			return QueryStatus.FAILURE;
 		}
@@ -392,37 +377,6 @@ public abstract class AAIDeclarations implements AAIClient {
 //		return QueryStatus.SUCCESS;
 	}
 
-	private boolean checkOldFormat(String resource, HashMap<String, String> nameValues) {
-
-		switch(resource){
-		case "formatted-query":
-		case "generic-query":
-		case "named-query":
-		case "nodes-query":
-		case "linterface":
-		case "l2-bridge-sbg":
-		case "l2-bridge-bgf":
-		case "echo":
-		case "test":
-			return true;
-		}
-		if(resource.contains(":")) {
-			resource = resource.substring(0, resource.indexOf(":"));
-		}
-
-		Set<String> keys = nameValues.keySet();
-		for(String key : keys) {
-			if(!key.contains(".")) {
-				if("depth".equals(key) || "related-to".equals(key) || "related_to".equals(key))
-					continue;
-				else {
-					getLogger().warn(String.format("key %s is incompatible with resource type '%s'", key, resource));
-					return false;
-				}
-			}
-		}
-		return true;
-	}
 
 	public void writeMap(Map<String, Object> properties, String prefix, SvcLogicContext ctx) {
 		Set<String> mapKeys = properties.keySet();
@@ -468,9 +422,9 @@ public abstract class AAIDeclarations implements AAIClient {
 			throws SvcLogicException {
 
 		getLogger().debug("AAIService.save\tresource="+resource);
-		HashMap<String, String> nameValues = keyToHashMap(key, ctx);
+		HashMap<String, String> nameValues = AAIServiceUtils.keyToHashMap(key, ctx);
 
-		if(!checkOldFormat(resource, nameValues)) {
+		if(!AAIServiceUtils.isValidFormat(resource, nameValues)) {
 			ctx.setAttribute(String.format("%s.error.message", prefix), String.format("Resource %s is not supported. Key string contains invaid identifiers", resource));
 			return QueryStatus.FAILURE;
 		}
@@ -543,8 +497,11 @@ public abstract class AAIDeclarations implements AAIClient {
 					request.processRequestPathValues(nameValues);
 
 					getExecutor().post(request);
-						getLogger().debug("Save relationship list - returning SUCCESS");
-						return QueryStatus.SUCCESS;
+					getLogger().debug("Save relationship list - returning SUCCESS");
+					return QueryStatus.SUCCESS;
+//					} else {
+//						getLogger().debug("Save relationship list - returning FAILURE");
+//						return QueryStatus.FAILURE;
 				}
 			} catch (Exception exc) {
 				ctx.setAttribute(prefix + ".error.message", exc.getMessage());
@@ -607,9 +564,9 @@ public abstract class AAIDeclarations implements AAIClient {
 	public QueryStatus update(String resource, String key, Map<String, String> params, String prefix, SvcLogicContext ctx) throws SvcLogicException {
 
 		resource = resource.toLowerCase();
-		HashMap<String, String> nameValues = keyToHashMap(key, ctx);
+		HashMap<String, String> nameValues = AAIServiceUtils.keyToHashMap(key, ctx);
 		getLogger().debug("key = "+ Arrays.toString(nameValues.entrySet().toArray()));
-		if(!checkOldFormat(resource, nameValues)) {
+		if(!AAIServiceUtils.isValidFormat(resource, nameValues)) {
 			ctx.setAttribute(String.format("%s.error.message", prefix), String.format("Resource %s is not supported. Key string contains invaid identifiers", resource));
 			return QueryStatus.FAILURE;
 		}
@@ -668,10 +625,10 @@ public abstract class AAIDeclarations implements AAIClient {
 	@Override
 	public QueryStatus delete(String resource, String key, SvcLogicContext ctx) throws SvcLogicException {
 		getLogger().debug("AAIService.delete\tresource="+resource);
-		HashMap<String, String> nameValues = keyToHashMap(key, ctx);
+		HashMap<String, String> nameValues = AAIServiceUtils.keyToHashMap(key, ctx);
 		getLogger().debug("key = "+ Arrays.toString(nameValues.entrySet().toArray()));
 
-		if(!checkOldFormat(resource, nameValues)) {
+		if(!AAIServiceUtils.isValidFormat(resource, nameValues)) {
 			ctx.setAttribute(String.format("%s.error.message", "aaiData"), String.format("Resource %s is not supported. Key string contains invaid identifiers", resource));
 			return QueryStatus.FAILURE;
 		}
@@ -824,7 +781,7 @@ public abstract class AAIDeclarations implements AAIClient {
 		QueryStatus retval = QueryStatus.SUCCESS;
 		String modifier = null;
 
-		HashMap<String, String> nameValues = keyToHashMap(key, ctx);
+		HashMap<String, String> nameValues = AAIServiceUtils.keyToHashMap(key, ctx);
 		if(resource.contains(":")) {
 			modifier = resource.split(":")[1];
 		}
@@ -920,101 +877,115 @@ public abstract class AAIDeclarations implements AAIClient {
 				}
 				ResultData rDatum = rdList.get(0);
 				response = rDatum;
+//				writeList((ArrayList)rdList, prefix, ctx);
 			}
 
-		if("formatted-query".equals(resource)) {
+		if("formatted-query".equals(resource) || "custom-query".equals(resource)) {
 			FormattedQueryResultList rd = FormattedQueryResultList.class.cast(response);
 			List<Results> iRIlist = rd.getResults();
 			if(iRIlist == null || iRIlist.isEmpty()) {
 				return QueryStatus.NOT_FOUND;
 			}
 		}
-
-			String preFix = null;
-			if(prefix == null || prefix.isEmpty()) {
-				preFix = "";
-			} else {
-				preFix = prefix + ".";
+		
+		// process relationship list
+		// this is a temporary soluton to address the realationship handling changes added in Release 17.07
+		try {
+			Class<?> clazz = response.getClass();
+			Method getter = clazz.getMethod("getRelationshipList");
+			Object obj = getter.invoke(response);
+			if(obj != null && obj instanceof RelationshipList) {
+				RelationshipList list = RelationshipList.class.cast(obj);
+				AAIServiceUtils.populateRelationshipDataFromPath(list);
 			}
+		} catch(Exception exc) {
+			getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
+		}
 
-		    Map<String,Object> props = objectToProperties(response);
-		    Set<String> keys = props.keySet();
-		    for(String theKey: keys) {
-		    	if(getLogger().isTraceEnabled())
-		    		getLogger().trace(theKey);
+		String preFix = null;
+		if(prefix == null || prefix.isEmpty()) {
+			preFix = "";
+		} else {
+			preFix = prefix + ".";
+		}
 
-		    	Object value = props.get(theKey);
-		    	if(value == null)
-		    		continue;
-		    	Object type = value.getClass();
-		    	if(value instanceof String) {
-		    		ctx.setAttribute(preFix + theKey, value.toString());
-		    		continue;
-		    	}
-		    	if(value instanceof Boolean) {
-		    		ctx.setAttribute(preFix + theKey, value.toString());
-		    		continue;
-		    	}
-		    	if(value instanceof Integer) {
-		    		ctx.setAttribute(preFix + theKey, value.toString());
-		    		continue;
-		    	}
-		    	if(value instanceof Long) {
-		    		ctx.setAttribute(preFix + theKey, value.toString());
-		    		continue;
-		    	}
+	    Map<String,Object> props = objectToProperties(response);
+	    Set<String> keys = props.keySet();
+	    for(String theKey: keys) {
+	    	if(getLogger().isTraceEnabled())
+	    		getLogger().trace(theKey);
 
-		    	if(value instanceof ArrayList) {
-		    		ArrayList<?> array = ArrayList.class.cast(value);
-		    		for(int i = 0; i < array.size(); i++) {
-//		    			ctx.setAttribute(String.format("%s%s[%d]", preFix, theKey, i), array.get(i).toString());
-		    			writeList(array, String.format("%s.%s", prefix, theKey), ctx);
-		    		}
-		    		continue;
-		    	}
+	    	Object value = props.get(theKey);
+	    	if(value == null)
+	    		continue;
+	    	Object type = value.getClass();
+	    	if(value instanceof String) {
+	    		ctx.setAttribute(preFix + theKey, value.toString());
+	    		continue;
+	    	}
+	    	if(value instanceof Boolean) {
+	    		ctx.setAttribute(preFix + theKey, value.toString());
+	    		continue;
+	    	}
+	    	if(value instanceof Integer) {
+	    		ctx.setAttribute(preFix + theKey, value.toString());
+	    		continue;
+	    	}
+	    	if(value instanceof Long) {
+	    		ctx.setAttribute(preFix + theKey, value.toString());
+	    		continue;
+	    	}
 
-		    	if("relationship-list".equals(theKey)){
-		    		Map<String, Object> relationshipList = (Map<String, Object>)value;
-		    		// we are interested in seeing just the selected relationship
-		    		if(theKey.equals(modifier)) {
-		    			List<?> relationships = (List<?>)relationshipList.get("relationship");
-		    			if(relationships != null && !relationships.isEmpty()) {
-
-		    				List newRelationships = new LinkedList();
-		    				newRelationships.addAll(relationships);
-
-		    				for(Object obj : newRelationships){
-		    					if(obj instanceof Map<?, ?>) {
-		    						Map<?, ?> relProperties = (Map<?, ?>)obj;
-		    						if(relProperties.containsKey("related-to")) {
-		    							Object relPropsRelatedTo = relProperties.get("related-to");
-
-		    							String relatedTo = nameValues.get("related_to");
-		    							if(relatedTo != null) {
-		    								relatedTo = relatedTo.trim().replace("'", "").replace("$", "").replace("'", "");
-		    								if(!relatedTo.equals(relPropsRelatedTo)) {
-		    									relationships.remove(relProperties);
-		    								}
-		    								continue;
-		    							} else {
-		    								continue;
-		    							}
-		    						}
-		    					}
-		    				}
-		    			}
-		    		}
-		    		writeMap(relationshipList, String.format("%s.%s", prefix, theKey), ctx);
-		    		continue;
-		    	}
-
-	    		if(value instanceof Map) {
-	    			Map<String, Object> subnetsList = (Map<String, Object>)value;
-	    			writeMap(subnetsList, String.format("%s.%s", prefix, theKey), ctx);
-	    			continue;
+	    	if(value instanceof ArrayList) {
+	    		ArrayList<?> array = ArrayList.class.cast(value);
+	    		for(int i = 0; i < array.size(); i++) {
+	    			writeList(array, String.format("%s.%s", prefix, theKey), ctx);
 	    		}
+	    		continue;
+	    	}
 
-		    }
+	    	if("relationship-list".equals(theKey)){
+	    		Map<String, Object> relationshipList = (Map<String, Object>)value;
+	    		// we are interested in seeing just the selected relationship
+	    		if(theKey.equals(modifier)) {
+	    			List<?> relationships = (List<?>)relationshipList.get("relationship");
+	    			if(relationships != null && !relationships.isEmpty()) {
+
+	    				List newRelationships = new LinkedList();
+	    				newRelationships.addAll(relationships);
+
+	    				for(Object obj : newRelationships){
+	    					if(obj instanceof Map<?, ?>) {
+	    						Map<?, ?> relProperties = (Map<?, ?>)obj;
+	    						if(relProperties.containsKey("related-to")) {
+	    							Object relPropsRelatedTo = relProperties.get("related-to");
+
+	    							String relatedTo = nameValues.get("related_to");
+	    							if(relatedTo != null) {
+	    								relatedTo = relatedTo.trim().replace("'", "").replace("$", "").replace("'", "");
+	    								if(!relatedTo.equals(relPropsRelatedTo)) {
+	    									relationships.remove(relProperties);
+	    								}
+	    								continue;
+	    							} else {
+	    								continue;
+	    							}
+	    						}
+	    					}
+	    				}
+	    			}
+	    		}
+	    		writeMap(relationshipList, String.format("%s.%s", prefix, theKey), ctx);
+	    		continue;
+	    	}
+
+    		if(value instanceof Map) {
+    			Map<String, Object> subnetsList = (Map<String, Object>)value;
+    			writeMap(subnetsList, String.format("%s.%s", prefix, theKey), ctx);
+    			continue;
+    		}
+
+	    }
 	    return QueryStatus.SUCCESS;
 	}
 
@@ -1099,13 +1070,13 @@ public abstract class AAIDeclarations implements AAIClient {
 		throw new SvcLogicException("Method AAIService.reserve() has not been implemented yet");
 	}
 
-	private QueryStatus newModelSave(String resource, boolean force, String key, Map<String, String> parms, String prefix, SvcLogicContext ctx) {
+	private QueryStatus newModelSave(String resource, boolean force, String key, Map<String, String> params, String prefix, SvcLogicContext ctx) {
 		getLogger().debug("Executing newModelSave for resource : " + resource);
-		HashMap<String, String> nameValues = keyToHashMap(key, ctx);
+		HashMap<String, String> nameValues = AAIServiceUtils.keyToHashMap(key, ctx);
 
 		try {
 			ArrayList<String> subResources = new ArrayList<String>();
-			Set<String> set = parms.keySet();
+			Set<String> set = params.keySet();
 			Map<String, Method> setters = new HashMap<String, Method>();
 			Map<String, Method> getters = new HashMap<String, Method>();
 
@@ -1120,14 +1091,13 @@ public abstract class AAIDeclarations implements AAIClient {
 				for(Annotation annotation : annotations) {
 					Class<? extends Annotation> anotationType = annotation.annotationType();
 					String annotationName = anotationType.getName();
-//					if("com.fasterxml.jackson.annotation.JsonPropertyOrder".equals(annotationName)){
 
 					// 2. find string property setters and getters for the lists
 					if("javax.xml.bind.annotation.XmlType".equals(annotationName)){
 						XmlType order = (XmlType)annotation;
 						String[]  values = order.propOrder();
 						for(String value : values) {
-							String id = camelCaseToDashedString(value);
+							String id = AAIServiceUtils.camelCaseToDashedString(value);
 							Field field = resourceClass.getDeclaredField(value);
 							Class<?> type = field.getType();
 							Method setter = null;
@@ -1137,17 +1107,17 @@ public abstract class AAIDeclarations implements AAIClient {
 									try {
 										setter.setAccessible(true);
 										Object arglist[] = new Object[1];
-										arglist[0] = parms.get(id);
+										arglist[0] = params.get(id);
 
 										if(arglist[0] != null) {
 											if(!type.getName().equals("java.lang.String")) {
 //											getLogger().debug(String.format("Processing %s with parameter %s", types[0].getName(), value));
 												if("boolean".equals(type.getName())) {
-													arglist[0] = valueOf(Boolean.class, parms.get(id));
+													arglist[0] = valueOf(Boolean.class, params.get(id));
 												} else if("long".equals(type.getName())) {
-														arglist[0] = valueOf(Long.class, parms.get(id));
+														arglist[0] = valueOf(Long.class, params.get(id));
 												} else {
-													arglist[0] = valueOf(type, parms.get(id));
+													arglist[0] = valueOf(type, params.get(id));
 												}
 											}
 											Object o = setter.invoke(instance, arglist);
@@ -1161,11 +1131,11 @@ public abstract class AAIDeclarations implements AAIClient {
 								} else if(type.getName().equals("java.util.List")) {
 									List<String> newValues = new ArrayList<String>();
 									String length = id+"_length";
-									if(!parms.isEmpty() && parms.containsKey(length)) {
-										String tmp = parms.get(length).toString();
+									if(!params.isEmpty() && params.containsKey(length)) {
+										String tmp = params.get(length).toString();
 										int count = Integer.valueOf(tmp);
 										for(int i=0; i<count; i++) {
-											String tmpValue = parms.get(String.format("%s[%d]", id, i));
+											String tmpValue = params.get(String.format("%s[%d]", id, i));
 											newValues.add(tmpValue);
 										}
 										if(!newValues.isEmpty()) {
@@ -1208,7 +1178,7 @@ public abstract class AAIDeclarations implements AAIClient {
 			Set<String> metadataKeys = new TreeSet<String>();
 
 			for(String attribute : set) {
-				String value = parms.get(attribute);
+				String value = params.get(attribute);
 				if(attribute.startsWith("relationship-list")) {
 					relationshipKeys.add(attribute);
 				} else if(attribute.startsWith("vlans")) {
@@ -1219,7 +1189,7 @@ public abstract class AAIDeclarations implements AAIClient {
 			}
 			// 3. find list property getters
 			for(String attribute : set) {
-				String value = parms.get(attribute);
+				String value = params.get(attribute);
 				Method method = getters.get(attribute);
 				if(method != null) {
 					try {
@@ -1250,7 +1220,13 @@ public abstract class AAIDeclarations implements AAIClient {
 			if( (subResources.contains("relationship-list") || subResources.contains("relationshipList")) &&  !relationshipKeys.isEmpty()) {
 				RelationshipList relationshipList = null;
 				Object obj = null;
-				Method getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
+				Method getRelationshipListMethod = null;
+				try {
+					 getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
+				} catch(Exception exc) {
+					getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
+				}
+
 				if(getRelationshipListMethod != null){
 					try {
 						getRelationshipListMethod.setAccessible(true);
@@ -1281,35 +1257,46 @@ public abstract class AAIDeclarations implements AAIClient {
 
 				int i = 0;
 				while(true){
-					int j = 0;
 					String searchKey = "relationship-list.relationship[" + i + "].related-to";
-					if(!parms.containsKey(searchKey))
+					if(!params.containsKey(searchKey))
 						break;
+					int j = 0;
+					String relatedTo = params.get(searchKey);
+					String relatedLinkKey = "relationship-list.relationship[" + i + "].related-link";
+					String relatedLink = null;
+					if(params.containsKey(relatedLinkKey)) {
+						relatedLink = params.get(relatedLinkKey);
+					}
 					Relationship relationship = new Relationship();
 					relationships.add(relationship);
-
-					String relatedTo = parms.get(searchKey);
 					relationship.setRelatedTo(relatedTo);
-
-					List<RelationshipData> relData = relationship.getRelationshipData();
-//					if(relData == null) {
-//						relData = new LinkedList<RelationshipData>();
-//						relationship.setRelationshipData(relData);
-//					}
-
-					while(true) {
-						String searchRelationshipKey = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-key";
-						String searchRelationshipValue = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-value";
-						if(!parms.containsKey(searchRelationshipKey))
-							break;
-
-						RelationshipData relDatum = new RelationshipData();
-						relDatum.setRelationshipKey(parms.get(searchRelationshipKey));
-						relDatum.setRelationshipValue(parms.get(searchRelationshipValue));
-						relData.add(relDatum);
-						j++;
+					if(relatedLink != null) {
+						relationship.setRelatedLink(relatedLink);
+					} else {
+//						List<RelationshipData> relData = relationship.getRelationshipData();
+						Map<String, String> relParams = new HashMap<String, String>();
+						
+						while(true) {
+							String searchRelationshipKey = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-key";
+							String searchRelationshipValue = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-value";
+							if(!params.containsKey(searchRelationshipKey))
+								break;
+							
+//							RelationshipData relDatum = new RelationshipData();
+//							relDatum.setRelationshipKey(params.get(searchRelationshipKey));
+//							relDatum.setRelationshipValue(params.get(searchRelationshipValue));
+//							relData.add(relDatum);
+							
+							relParams.put(params.get(searchRelationshipKey), params.get(searchRelationshipValue));
+							j++;
+						}
+						AAIRequest rlRequest = AAIRequest.createRequest(relatedTo, relParams);
+						for(String key1 : relParams.keySet()) {
+							rlRequest.addRequestProperty(key1, relParams.get(key1));
+						}
+						String path = rlRequest.updatePathDataValues(null);
+						relationship.setRelatedLink(path);
 					}
-
 					i++;
 				}
 			}
@@ -1348,14 +1335,14 @@ public abstract class AAIDeclarations implements AAIClient {
 				int i = 0;
 				while(true){
 					String searchKey = "vlans.vlan[" + i + "].vlan-interface";
-					if(!parms.containsKey(searchKey))
+					if(!params.containsKey(searchKey))
 						break;
 
-					String vlanInterface = parms.get("vlans.vlan[" + i + "].vlan-interface");
-					String vlanIdInner	= parms.get("vlans.vlan[" + i + "].vlan-id-inner");
-					String vlanIdOute 	= parms.get("vlans.vlan[" + i + "].vlan-id-outer");
-					String speedValue 	= parms.get("vlans.vlan[" + i + "].speed-value");
-					String speedUnits 	= parms.get("vlans.vlan[" + i + "].speed-units");
+					String vlanInterface = params.get("vlans.vlan[" + i + "].vlan-interface");
+					String vlanIdInner	= params.get("vlans.vlan[" + i + "].vlan-id-inner");
+					String vlanIdOute 	= params.get("vlans.vlan[" + i + "].vlan-id-outer");
+					String speedValue 	= params.get("vlans.vlan[" + i + "].speed-value");
+					String speedUnits 	= params.get("vlans.vlan[" + i + "].speed-units");
 
 					Vlan vlan = new Vlan();
 					vlan.setVlanInterface(vlanInterface);
@@ -1419,10 +1406,10 @@ public abstract class AAIDeclarations implements AAIClient {
 				int i = 0;
 				while(true){
 					String metaKey = "metadata.metadatum[" + i + "].meta-key";
-					if(!parms.containsKey(metaKey))
+					if(!params.containsKey(metaKey))
 						break;
 
-					String metaValue = parms.get("metadata.metadatum[" + i + "].meta-value");
+					String metaValue = params.get("metadata.metadatum[" + i + "].meta-value");
 
 					Metadatum vlan = new Metadatum();
 					vlan.setMetaname(metaKey);
@@ -1457,6 +1444,8 @@ public abstract class AAIDeclarations implements AAIClient {
 						return retval;
 					}
 				}
+//			} else {
+//				boolean response = getExecutor().post(request);
 
 		} catch(AAIServiceException exc){
 			ctx.setAttribute(prefix + ".error.message", exc.getMessage());
@@ -1483,13 +1472,6 @@ public abstract class AAIDeclarations implements AAIClient {
 		return QueryStatus.SUCCESS;
 	}
 
-	private static final String regex = "([A-Z][a-z,0-9]+)";
-	private static final String replacement = "-$1";
-
-	private String camelCaseToDashedString(String propOrder) {
-		return propOrder.replaceAll(regex, replacement).toLowerCase();
-	}
-
 	private QueryStatus newModelProcessRelationshipList(Object instance, Map<String, String> params, String prefix, SvcLogicContext ctx) throws Exception {
 
 		Class resourceClass = instance.getClass();
@@ -1511,7 +1493,12 @@ public abstract class AAIDeclarations implements AAIClient {
 		if(!relationshipKeys.isEmpty()) {
 			RelationshipList relationshipList = null;
 			Object obj = null;
-			Method getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
+			Method getRelationshipListMethod = null;
+			try {
+				 getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
+			} catch(Exception exc) {
+				getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
+			}
 			if(getRelationshipListMethod != null){
 				try {
 					getRelationshipListMethod.setAccessible(true);
@@ -1546,13 +1533,12 @@ public abstract class AAIDeclarations implements AAIClient {
 			}
 
 			int i = 0;
-			int j = 0;
 			while(true){
 				String searchKey = "relationship-list.relationship[" + i + "].related-to";
 				if(!params.containsKey(searchKey))
 					break;
 
-				j = 0;
+				int j = 0;
 				String relatedTo = params.get(searchKey);
 				String relatedLinkKey = "relationship-list.relationship[" + i + "].related-link";
 				String relatedLink = null;
@@ -1566,22 +1552,30 @@ public abstract class AAIDeclarations implements AAIClient {
 					if(relatedLink != null) {
 						relationship.setRelatedLink(relatedLink);
 				} else  {
-				List<RelationshipData> relData = relationship.getRelationshipData();
+//					List<RelationshipData> relData = relationship.getRelationshipData();
+					Map<String, String> relParams = new HashMap<String, String>();
 
-				while(true) {
-					String searchRelationshipKey = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-key";
-					String searchRelationshipValue = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-value";
-					if(!params.containsKey(searchRelationshipKey))
-						break;
-
-					RelationshipData relDatum = new RelationshipData();
-					relDatum.setRelationshipKey(params.get(searchRelationshipKey));
-					relDatum.setRelationshipValue(params.get(searchRelationshipValue));
-					relData.add(relDatum);
-					j++;
+					while(true) {
+						String searchRelationshipKey = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-key";
+						String searchRelationshipValue = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-value";
+						if(!params.containsKey(searchRelationshipKey))
+							break;
+	
+//							RelationshipData relDatum = new RelationshipData();
+//							relDatum.setRelationshipKey(params.get(searchRelationshipKey));
+//							relDatum.setRelationshipValue(params.get(searchRelationshipValue));
+//							relData.add(relDatum);
+							
+						relParams.put(params.get(searchRelationshipKey), params.get(searchRelationshipValue));
+						j++;
+					}
+					AAIRequest rlRequest = AAIRequest.createRequest(relatedTo, relParams);
+					for(String key : relParams.keySet()) {
+						rlRequest.addRequestProperty(key, relParams.get(key));
+					}
+					String path = rlRequest.updatePathDataValues(null);
+					relationship.setRelatedLink(path);
 				}
-				}
-
 
 				i++;
 			}
@@ -1600,113 +1594,6 @@ public abstract class AAIDeclarations implements AAIClient {
 			}
 		}
 		return null;
-	}
-
-	protected HashMap<String,String> keyToHashMap(String key,	SvcLogicContext ctx) {
-		if (key == null) {
-			return (null);
-		}
-
-		getLogger().debug("Converting key [" + key + "] to where clause");
-
-		if (key.startsWith("'") && key.endsWith("'")) {
-			key = key.substring(1, key.length() - 1);
-
-			getLogger().debug("Stripped outer single quotes - key is now [" + key + "]");
-		}
-
-		String[] keyTerms = key.split("\\s+");
-
-		StringBuffer whereBuff = new StringBuffer();
-		String term1 = null;
-		String op = null;
-		String term2 = null;
-		HashMap<String, String> results = new HashMap<String, String>();
-
-		for (int i = 0; i < keyTerms.length; i++) {
-			if (term1 == null) {
-				if ("and".equalsIgnoreCase(keyTerms[i])
-						|| "or".equalsIgnoreCase(keyTerms[i])) {
-					// Skip over ADD/OR
-				} else {
-					term1 = resolveTerm(keyTerms[i], ctx);
-				}
-			} else if (op == null) {
-				if ("==".equals(keyTerms[i])) {
-					op = "=";
-				} else {
-					op = keyTerms[i];
-				}
-			} else {
-				term2 = resolveTerm(keyTerms[i], ctx);
-				term2 = term2.trim().replace("'", "").replace("$", "").replace("'", "");
-				results.put(term1,  term2);
-
-				term1 = null;
-				op = null;
-				term2 = null;
-			}
-		}
-
-		return (results);
-	}
-
-	private String resolveTerm(String term, SvcLogicContext ctx) {
-		if (term == null) {
-			return (null);
-		}
-
-		getLogger().debug("resolveTerm: term is " + term);
-
-		if (term.startsWith("$") && (ctx != null)) {
-			// Resolve any index variables.
-
-			return ("'" + resolveCtxVariable(term.substring(1), ctx) + "'");
-		} else if (term.startsWith("'") || term.startsWith("\"")) {
-			return (term);
-		} else {
-			return (term.replaceAll("-", "_"));
-
-		}
-
-	}
-
-	private String resolveCtxVariable(String ctxVarName, SvcLogicContext ctx) {
-
-		if (ctxVarName.indexOf('[') == -1) {
-			// Ctx variable contains no arrays
-			return (ctx.getAttribute(ctxVarName));
-		}
-
-		// Resolve any array references
-		StringBuffer sbuff = new StringBuffer();
-		String[] ctxVarParts = ctxVarName.split("\\[");
-		sbuff.append(ctxVarParts[0]);
-		for (int i = 1; i < ctxVarParts.length; i++) {
-			if (ctxVarParts[i].startsWith("$")) {
-				int endBracketLoc = ctxVarParts[i].indexOf("]");
-				if (endBracketLoc == -1) {
-					// Missing end bracket ... give up parsing
-					getLogger().warn("Variable reference " + ctxVarName
-							+ " seems to be missing a ']'");
-					return (ctx.getAttribute(ctxVarName));
-				}
-
-				String idxVarName = ctxVarParts[i].substring(1, endBracketLoc);
-				String remainder = ctxVarParts[i].substring(endBracketLoc);
-
-				sbuff.append("[");
-				sbuff.append(ctx.getAttribute(idxVarName));
-				sbuff.append(remainder);
-
-			} else {
-				// Index is not a variable reference
-				sbuff.append("[");
-				sbuff.append(ctxVarParts[i]);
-			}
-		}
-
-		return (ctx.getAttribute(sbuff.toString()));
 	}
 
 
@@ -1811,7 +1698,12 @@ public abstract class AAIDeclarations implements AAIClient {
 
 			RelationshipList relationshipList = null;
 			Object obj = null;
-			Method getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
+			Method getRelationshipListMethod = null;
+			try {
+				 getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
+			} catch(Exception exc) {
+				getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
+			}
 			if(getRelationshipListMethod != null){
 				try {
 					getRelationshipListMethod.setAccessible(true);

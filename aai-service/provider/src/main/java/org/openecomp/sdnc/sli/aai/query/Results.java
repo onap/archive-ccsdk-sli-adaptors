@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.openecomp.aai.inventory.v10.*;
+import org.openecomp.aai.inventory.v11.*;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)

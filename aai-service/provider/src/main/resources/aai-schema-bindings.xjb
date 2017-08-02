@@ -3,7 +3,7 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
   jxb:extensionBindingPrefixes="xjc">
-    <jxb:bindings schemaLocation="aai_schema_v10.xsd" node="/xs:schema">
+    <jxb:bindings schemaLocation="aai_schema_v11.xsd" node="/xs:schema">
     <jxb:globalBindings>
         <xjc:superInterface name="org.openecomp.sdnc.sli.aai.data.AAIDatum"/>
     </jxb:globalBindings>

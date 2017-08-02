@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.openecomp.sdnc.sli.aai.data.AAIDatum;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
