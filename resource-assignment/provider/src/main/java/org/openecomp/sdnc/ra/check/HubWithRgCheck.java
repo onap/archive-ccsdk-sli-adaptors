@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,72 +36,72 @@ import org.slf4j.LoggerFactory;
 
 public class HubWithRgCheck implements EquipmentCheck {
 
-	private static final Logger log = LoggerFactory.getLogger(HubWithRgCheck.class);
+    private static final Logger log = LoggerFactory.getLogger(HubWithRgCheck.class);
 
-	private ResourceManager resourceManager;
+    private ResourceManager resourceManager;
 
-	@Override
-	public boolean checkEquipment(
-	        String endPointPosition,
-	        ServiceData serviceData,
-	        EquipmentData equipData,
-	        Map<String, Object> equipmentConstraints) {
-		String vrfName = (String) serviceData.data.get("vrf-name");
-		if (vrfName == null)
-			return true;
+    @Override
+    public boolean checkEquipment(
+            String endPointPosition,
+            ServiceData serviceData,
+            EquipmentData equipData,
+            Map<String, Object> equipmentConstraints) {
+        String vrfName = (String) serviceData.data.get("vrf-name");
+        if (vrfName == null)
+            return true;
 
-		// Check if this is HUB. If not, this check is not applicable
-		VpnParam vpnp = VrfUtil.parseVrfInstanceName(vrfName);
-		if (vpnp.siteType == null || !vpnp.siteType.equals("HUB"))
-			return true;
+        // Check if this is HUB. If not, this check is not applicable
+        VpnParam vpnp = VrfUtil.parseVrfInstanceName(vrfName);
+        if (vpnp.siteType == null || !vpnp.siteType.equals("HUB"))
+            return true;
 
-		boolean rgPresent = vpnp.routeGroupName != null;
+        boolean rgPresent = vpnp.routeGroupName != null;
 
-		// First check if a new VRF would be required. If not, we are good
-		Resource r = resourceManager.getResource("VRF", equipData.equipmentId);
-		if (r != null && r.allocationItems != null) {
-			for (AllocationItem ai : r.allocationItems)
-				if (ai.resourceShareGroupList.contains(vrfName))
-					return true;
+        // First check if a new VRF would be required. If not, we are good
+        Resource r = resourceManager.getResource("VRF", equipData.equipmentId);
+        if (r != null && r.allocationItems != null) {
+            for (AllocationItem ai : r.allocationItems)
+                if (ai.resourceShareGroupList.contains(vrfName))
+                    return true;
 
-			String resourceUnionId = serviceData.serviceInstanceId + '/' + serviceData.endPointPosition;
+            String resourceUnionId = serviceData.serviceInstanceId + '/' + serviceData.endPointPosition;
 
-			// Check if there is already another HUB VRF with RG presence that does not match the requested
-			for (AllocationItem ai : r.allocationItems) {
+            // Check if there is already another HUB VRF with RG presence that does not match the requested
+            for (AllocationItem ai : r.allocationItems) {
 
-				// Skip the allocation item for the current service instance, if there, in case it is a change order
-				if (ai.resourceUnionId.equals(resourceUnionId))
-					continue;
+                // Skip the allocation item for the current service instance, if there, in case it is a change order
+                if (ai.resourceUnionId.equals(resourceUnionId))
+                    continue;
 
-				if (ai.resourceShareGroupList != null && ai.resourceShareGroupList.size() > 0) {
-					String vrfName2 = ai.resourceShareGroupList.iterator().next();
-					VpnParam vpnp2 = VrfUtil.parseVrfInstanceName(vrfName2);
+                if (ai.resourceShareGroupList != null && ai.resourceShareGroupList.size() > 0) {
+                    String vrfName2 = ai.resourceShareGroupList.iterator().next();
+                    VpnParam vpnp2 = VrfUtil.parseVrfInstanceName(vrfName2);
 
-					if (vpnp2.siteType == null || !vpnp2.siteType.equals("HUB"))
-						continue;
+                    if (vpnp2.siteType == null || !vpnp2.siteType.equals("HUB"))
+                        continue;
 
-					boolean rgPresent2 = vpnp2.routeGroupName != null;
+                    boolean rgPresent2 = vpnp2.routeGroupName != null;
 
-					if (rgPresent && !rgPresent2) {
-						log.info("Skipping VPE " + equipData.equipmentId +
-						        ": This request requires new HUB with RG VRF, " +
-						        "but there is already another HUB VRF with no RG: " + vrfName2 + ".");
-						return false;
-					}
-					if (!rgPresent && rgPresent2) {
-						log.info("Skipping VPE " + equipData.equipmentId +
-						        ": This request requires new HUB VRF with no RG, " +
-						        "but there is already another HUB with RG VRF: " + vrfName2 + ".");
-						return false;
-					}
-				}
-			}
-		}
+                    if (rgPresent && !rgPresent2) {
+                        log.info("Skipping VPE " + equipData.equipmentId +
+                                ": This request requires new HUB with RG VRF, " +
+                                "but there is already another HUB VRF with no RG: " + vrfName2 + ".");
+                        return false;
+                    }
+                    if (!rgPresent && rgPresent2) {
+                        log.info("Skipping VPE " + equipData.equipmentId +
+                                ": This request requires new HUB VRF with no RG, " +
+                                "but there is already another HUB with RG VRF: " + vrfName2 + ".");
+                        return false;
+                    }
+                }
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public void setResourceManager(ResourceManager resourceManager) {
-		this.resourceManager = resourceManager;
-	}
+    public void setResourceManager(ResourceManager resourceManager) {
+        this.resourceManager = resourceManager;
+    }
 }

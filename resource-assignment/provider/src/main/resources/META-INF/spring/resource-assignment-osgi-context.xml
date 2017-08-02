@@ -4,7 +4,7 @@
   openECOMP : SDN-C
   ================================================================================
   Copyright (C) 2017 ONAP Intellectual Property. All rights
-  						reserved.
+  reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -21,19 +21,19 @@
   -->
 
 <beans:beans xmlns="http://www.springframework.org/schema/osgi"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
-	xsi:schemaLocation="http://www.springframework.org/schema/osgi
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+    xsi:schemaLocation="http://www.springframework.org/schema/osgi
        http://www.springframework.org/schema/osgi/spring-osgi.xsd
        http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<reference id="dblib.dataSource">
-		<interfaces>
-			<beans:value>javax.sql.DataSource</beans:value>
-			<beans:value>org.openecomp.sdnc.sli.resource.dblib.DbLibService</beans:value>
-		</interfaces>
-	</reference>
+    <reference id="dblib.dataSource">
+        <interfaces>
+            <beans:value>javax.sql.DataSource</beans:value>
+            <beans:value>org.openecomp.sdnc.sli.resource.dblib.DbLibService</beans:value>
+        </interfaces>
+    </reference>
 
-	<service ref="resourceAllocator" interface="org.openecomp.sdnc.ra.ResourceAllocator" />
+    <service ref="resourceAllocator" interface="org.openecomp.sdnc.ra.ResourceAllocator" />
 
 </beans:beans>

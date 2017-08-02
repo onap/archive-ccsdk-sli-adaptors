@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,63 +33,63 @@ import org.openecomp.sdnc.rm.data.ResourceType;
 
 public class LabelUtil {
 
-	public static boolean checkLabel(LabelResource l, LabelAllocationRequest req) {
-		if (req.check && req.label != null && l.allocationItems != null && !l.allocationItems.isEmpty()) {
-			for (AllocationItem ai : l.allocationItems) {
-				LabelAllocationItem lai = (LabelAllocationItem) ai;
-				if (!eq(req.resourceUnionId, lai.resourceUnionId) && !eq(req.label, lai.label))
-					return false;
-			}
-		}
-		return true;
-	}
+    public static boolean checkLabel(LabelResource l, LabelAllocationRequest req) {
+        if (req.check && req.label != null && l.allocationItems != null && !l.allocationItems.isEmpty()) {
+            for (AllocationItem ai : l.allocationItems) {
+                LabelAllocationItem lai = (LabelAllocationItem) ai;
+                if (!eq(req.resourceUnionId, lai.resourceUnionId) && !eq(req.label, lai.label))
+                    return false;
+            }
+        }
+        return true;
+    }
 
-	public static String allocateLabel(LabelResource l, LabelAllocationRequest req, String applicationId) {
-		if (!req.allocate)
-			return null;
+    public static String allocateLabel(LabelResource l, LabelAllocationRequest req, String applicationId) {
+        if (!req.allocate)
+            return null;
 
-		LabelAllocationItem lai = (LabelAllocationItem) ResourceUtil.getAllocationItem(l, req.resourceSetId);
-		if (lai == null) {
-			lai = new LabelAllocationItem();
-			lai.resourceType = ResourceType.Label;
-			lai.resourceKey = new ResourceKey();
-			lai.resourceKey.assetId = req.assetId;
-			lai.resourceKey.resourceName = req.resourceName;
-			lai.applicationId = applicationId;
-			lai.resourceSetId = req.resourceSetId;
-			lai.resourceUnionId = req.resourceUnionId;
-			lai.resourceShareGroupList = req.resourceShareGroupList;
+        LabelAllocationItem lai = (LabelAllocationItem) ResourceUtil.getAllocationItem(l, req.resourceSetId);
+        if (lai == null) {
+            lai = new LabelAllocationItem();
+            lai.resourceType = ResourceType.Label;
+            lai.resourceKey = new ResourceKey();
+            lai.resourceKey.assetId = req.assetId;
+            lai.resourceKey.resourceName = req.resourceName;
+            lai.applicationId = applicationId;
+            lai.resourceSetId = req.resourceSetId;
+            lai.resourceUnionId = req.resourceUnionId;
+            lai.resourceShareGroupList = req.resourceShareGroupList;
 
-			if (l.allocationItems == null)
-				l.allocationItems = new ArrayList<AllocationItem>();
-			l.allocationItems.add(lai);
-		}
+            if (l.allocationItems == null)
+                l.allocationItems = new ArrayList<AllocationItem>();
+            l.allocationItems.add(lai);
+        }
 
-		lai.label = req.label;
-		lai.allocationTime = new Date();
+        lai.label = req.label;
+        lai.allocationTime = new Date();
 
-		recalculate(l);
+        recalculate(l);
 
-		return lai.label;
-	}
+        return lai.label;
+    }
 
-	public static void recalculate(LabelResource l) {
-		l.label = null;
-		l.referenceCount = 0;
-		if (l.allocationItems != null)
-			for (AllocationItem ai : l.allocationItems) {
-				LabelAllocationItem lai = (LabelAllocationItem) ai;
-				if (lai.label != null) {
-					l.referenceCount++;
-					if (l.label == null)
-						l.label = lai.label;
-					else if (!l.label.equals(lai.label))
-						l.label = "__BLOCKED__";
-				}
-			}
-	}
+    public static void recalculate(LabelResource l) {
+        l.label = null;
+        l.referenceCount = 0;
+        if (l.allocationItems != null)
+            for (AllocationItem ai : l.allocationItems) {
+                LabelAllocationItem lai = (LabelAllocationItem) ai;
+                if (lai.label != null) {
+                    l.referenceCount++;
+                    if (l.label == null)
+                        l.label = lai.label;
+                    else if (!l.label.equals(lai.label))
+                        l.label = "__BLOCKED__";
+                }
+            }
+    }
 
-	private static boolean eq(Object o1, Object o2) {
-		return o1 == null ? o2 == null : o1.equals(o2);
-	}
+    private static boolean eq(Object o1, Object o2) {
+        return o1 == null ? o2 == null : o1.equals(o2);
+    }
 }

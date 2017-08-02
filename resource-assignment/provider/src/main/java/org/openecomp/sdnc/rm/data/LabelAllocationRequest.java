@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ package org.openecomp.sdnc.rm.data;
 
 public class LabelAllocationRequest extends AllocationRequest {
 
-	public String label = null;
-	public boolean check = false;
-	public boolean allocate = false;
+    public String label = null;
+    public boolean check = false;
+    public boolean allocate = false;
 }

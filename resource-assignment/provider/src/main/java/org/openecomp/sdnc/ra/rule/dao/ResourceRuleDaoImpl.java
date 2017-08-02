@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,83 +35,83 @@ import org.springframework.jdbc.core.RowMapper;
 
 public class ResourceRuleDaoImpl implements ResourceRuleDao {
 
-	@SuppressWarnings("unused")
-	private static final Logger log = LoggerFactory.getLogger(ResourceRuleDaoImpl.class);
+    @SuppressWarnings("unused")
+    private static final Logger log = LoggerFactory.getLogger(ResourceRuleDaoImpl.class);
 
-	private static final String GET1_SQL =
-	        "SELECT * FROM RESOURCE_RULE WHERE service_model = ? AND end_point_position = ? AND equipment_level = ?";
-	private static final String GET2_SQL =
-	        "SELECT * FROM RESOURCE_RULE WHERE service_model = ? AND end_point_position = ? AND equipment_level = ? AND resource_name = ?";
-	private static final String THRESHOLD_SQL = "SELECT * FROM RESOURCE_THRESHOLD WHERE resource_rule_id = ?";
+    private static final String GET1_SQL =
+            "SELECT * FROM RESOURCE_RULE WHERE service_model = ? AND end_point_position = ? AND equipment_level = ?";
+    private static final String GET2_SQL =
+            "SELECT * FROM RESOURCE_RULE WHERE service_model = ? AND end_point_position = ? AND equipment_level = ? AND resource_name = ?";
+    private static final String THRESHOLD_SQL = "SELECT * FROM RESOURCE_THRESHOLD WHERE resource_rule_id = ?";
 
-	private JdbcTemplate jdbcTemplate;
-	ResourceRuleRowMapper resourceRuleRowMapper = new ResourceRuleRowMapper();
-	ResourceThresholdRowMapper resourceThresholdRowMapper = new ResourceThresholdRowMapper();
+    private JdbcTemplate jdbcTemplate;
+    ResourceRuleRowMapper resourceRuleRowMapper = new ResourceRuleRowMapper();
+    ResourceThresholdRowMapper resourceThresholdRowMapper = new ResourceThresholdRowMapper();
 
-	@Override
-	public List<ResourceRule> getResourceRules(
-	        String serviceModel,
-	        String endPointPosition,
-	        EquipmentLevel equipLevel) {
-		List<ResourceRule> resourceRuleList = jdbcTemplate.query(GET1_SQL,
-		        new Object[] { serviceModel, endPointPosition, equipLevel.toString() }, resourceRuleRowMapper);
+    @Override
+    public List<ResourceRule> getResourceRules(
+            String serviceModel,
+            String endPointPosition,
+            EquipmentLevel equipLevel) {
+        List<ResourceRule> resourceRuleList = jdbcTemplate.query(GET1_SQL,
+                new Object[] { serviceModel, endPointPosition, equipLevel.toString() }, resourceRuleRowMapper);
 
-		for (ResourceRule rr : resourceRuleList)
-			rr.thresholdList = jdbcTemplate.query(THRESHOLD_SQL, new Object[] { rr.id }, resourceThresholdRowMapper);
+        for (ResourceRule rr : resourceRuleList)
+            rr.thresholdList = jdbcTemplate.query(THRESHOLD_SQL, new Object[] { rr.id }, resourceThresholdRowMapper);
 
-		return resourceRuleList;
-	}
+        return resourceRuleList;
+    }
 
-	@Override
-	public ResourceRule getResourceRule(
-	        String serviceModel,
-	        String endPointPosition,
-	        EquipmentLevel equipLevel,
-	        String resourceName) {
-		List<ResourceRule> resourceRuleList = jdbcTemplate.query(GET2_SQL,
-		        new Object[] { serviceModel, endPointPosition, equipLevel.toString(), resourceName },
-		        resourceRuleRowMapper);
+    @Override
+    public ResourceRule getResourceRule(
+            String serviceModel,
+            String endPointPosition,
+            EquipmentLevel equipLevel,
+            String resourceName) {
+        List<ResourceRule> resourceRuleList = jdbcTemplate.query(GET2_SQL,
+                new Object[] { serviceModel, endPointPosition, equipLevel.toString(), resourceName },
+                resourceRuleRowMapper);
 
-		if (resourceRuleList == null || resourceRuleList.isEmpty())
-			return null;
+        if (resourceRuleList == null || resourceRuleList.isEmpty())
+            return null;
 
-		ResourceRule rr = resourceRuleList.get(0);
-		rr.thresholdList = jdbcTemplate.query(THRESHOLD_SQL, new Object[] { rr.id }, resourceThresholdRowMapper);
+        ResourceRule rr = resourceRuleList.get(0);
+        rr.thresholdList = jdbcTemplate.query(THRESHOLD_SQL, new Object[] { rr.id }, resourceThresholdRowMapper);
 
-		return rr;
-	}
+        return rr;
+    }
 
-	private static class ResourceRuleRowMapper implements RowMapper<ResourceRule> {
+    private static class ResourceRuleRowMapper implements RowMapper<ResourceRule> {
 
-		@Override
-		public ResourceRule mapRow(ResultSet rs, int rowNum) throws SQLException {
-			ResourceRule rl = new ResourceRule();
-			rl.id = rs.getLong("resource_rule_id");
-			rl.resourceName = rs.getString("resource_name");
-			rl.serviceModel = rs.getString("service_model");
-			rl.endPointPosition = rs.getString("end_point_position");
-			rl.serviceExpression = rs.getString("service_expression");
-			rl.equipmentLevel = rs.getString("equipment_level");
-			rl.equipmentExpression = rs.getString("equipment_expression");
-			rl.allocationExpression = rs.getString("allocation_expression");
-			rl.softLimitExpression = rs.getString("soft_limit_expression");
-			rl.hardLimitExpression = rs.getString("hard_limit_expression");
-			return rl;
-		}
-	}
+        @Override
+        public ResourceRule mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ResourceRule rl = new ResourceRule();
+            rl.id = rs.getLong("resource_rule_id");
+            rl.resourceName = rs.getString("resource_name");
+            rl.serviceModel = rs.getString("service_model");
+            rl.endPointPosition = rs.getString("end_point_position");
+            rl.serviceExpression = rs.getString("service_expression");
+            rl.equipmentLevel = rs.getString("equipment_level");
+            rl.equipmentExpression = rs.getString("equipment_expression");
+            rl.allocationExpression = rs.getString("allocation_expression");
+            rl.softLimitExpression = rs.getString("soft_limit_expression");
+            rl.hardLimitExpression = rs.getString("hard_limit_expression");
+            return rl;
+        }
+    }
 
-	private static class ResourceThresholdRowMapper implements RowMapper<ResourceThreshold> {
+    private static class ResourceThresholdRowMapper implements RowMapper<ResourceThreshold> {
 
-		@Override
-		public ResourceThreshold mapRow(ResultSet rs, int rowNum) throws SQLException {
-			ResourceThreshold th = new ResourceThreshold();
-			th.expression = rs.getString("threshold_expression");
-			th.message = rs.getString("threshold_message");
-			return th;
-		}
-	}
+        @Override
+        public ResourceThreshold mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ResourceThreshold th = new ResourceThreshold();
+            th.expression = rs.getString("threshold_expression");
+            th.message = rs.getString("threshold_message");
+            return th;
+        }
+    }
 
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 }

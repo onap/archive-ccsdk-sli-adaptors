@@ -4,7 +4,7 @@
   openECOMP : SDN-C
   ================================================================================
   Copyright (C) 2017 ONAP Intellectual Property. All rights
-  						reserved.
+                        reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -32,15 +32,15 @@
         <bundle>mvn:org.openecomp.sdnc.adaptors/aai-service-provider/${project.version}</bundle>
         <bundle>mvn:com.sun.jersey/jersey-client/${jersey.client.version}</bundle>
         <bundle>mvn:com.sun.jersey/jersey-core/${jersey.version}</bundle>
-		<bundle>mvn:org.apache.httpcomponents/httpcore-osgi/${apache.httpcomponents.version}</bundle>
-		<bundle>mvn:org.apache.httpcomponents/httpclient-osgi/${apache.httpcomponents.version}</bundle>
-		<bundle>mvn:com.fasterxml.jackson.core/jackson-databind/${jackson.version}</bundle>
-		<bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.version}</bundle>
-		<bundle>mvn:com.fasterxml.jackson.core/jackson-core/${jackson.version}</bundle>
-		<bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
-		<bundle>mvn:com.fasterxml.jackson.module/jackson-module-jaxb-annotations/${jackson.version}</bundle>
-		<!--
-		<bundle>mvn:org.jvnet.jaxb2_commons/jaxb2-basics-runtime/${jvnet.jaxb2.version}</bundle>
-		-->
+        <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/${apache.httpcomponents.version}</bundle>
+        <bundle>mvn:org.apache.httpcomponents/httpclient-osgi/${apache.httpcomponents.version}</bundle>
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/${jackson.version}</bundle>
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.version}</bundle>
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-core/${jackson.version}</bundle>
+        <bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
+        <bundle>mvn:com.fasterxml.jackson.module/jackson-module-jaxb-annotations/${jackson.version}</bundle>
+        <!--
+        <bundle>mvn:org.jvnet.jaxb2_commons/jaxb2-basics-runtime/${jvnet.jaxb2.version}</bundle>
+        -->
     </feature>
 </features>

@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,13 @@ import org.openecomp.sdnc.rm.data.Resource;
 
 public interface ResourceDao {
 
-	Resource getResource(String assetId, String resourceName);
+    Resource getResource(String assetId, String resourceName);
 
-	void saveResource(Resource resource);
+    void saveResource(Resource resource);
 
-	void deleteResource(String assetId, String resourceName);
+    void deleteResource(String assetId, String resourceName);
 
-	List<Resource> getResourceSet(String resourceSetId);
+    List<Resource> getResourceSet(String resourceSetId);
 
-	List<Resource> getResourceUnion(String resourceUnionId);
+    List<Resource> getResourceUnion(String resourceUnionId);
 }

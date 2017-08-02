@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,52 +37,52 @@ import org.slf4j.LoggerFactory;
 
 class ReleaseFunction extends SynchronizedFunction {
 
-	@SuppressWarnings("unused")
-	private static final Logger log = LoggerFactory.getLogger(ReleaseFunction.class);
+    @SuppressWarnings("unused")
+    private static final Logger log = LoggerFactory.getLogger(ReleaseFunction.class);
 
-	private ResourceDao resourceDao;
+    private ResourceDao resourceDao;
 
-	private String resourceSetId, resourceUnionId;
+    private String resourceSetId, resourceUnionId;
 
-	public ReleaseFunction(LockHelper lockHelper, ResourceDao resourceDao, String resourceSetId,
-	        String resourceUnionId, Collection<String> lockNames, int lockTimeout) {
-		super(lockHelper, lockNames, lockTimeout);
-		this.resourceDao = resourceDao;
-		this.resourceSetId = resourceSetId;
-		this.resourceUnionId = resourceUnionId;
-	}
+    public ReleaseFunction(LockHelper lockHelper, ResourceDao resourceDao, String resourceSetId,
+            String resourceUnionId, Collection<String> lockNames, int lockTimeout) {
+        super(lockHelper, lockNames, lockTimeout);
+        this.resourceDao = resourceDao;
+        this.resourceSetId = resourceSetId;
+        this.resourceUnionId = resourceUnionId;
+    }
 
-	@Override
-	public void _exec() throws ResourceLockedException {
-		List<Resource> resourceList =
-		        resourceSetId != null
-		                ? resourceDao.getResourceSet(resourceSetId) : resourceDao.getResourceUnion(resourceUnionId);
-		for (Resource r : resourceList) {
-			boolean updated = false;
-			if (r.allocationItems != null) {
-				Iterator<AllocationItem> i = r.allocationItems.iterator();
-				while (i.hasNext()) {
-					AllocationItem ai = i.next();
-					if (resourceSetId != null) {
-						if (resourceSetId.equals(ai.resourceSetId)) {
-							i.remove();
-							updated = true;
-						}
+    @Override
+    public void _exec() throws ResourceLockedException {
+        List<Resource> resourceList =
+                resourceSetId != null
+                        ? resourceDao.getResourceSet(resourceSetId) : resourceDao.getResourceUnion(resourceUnionId);
+        for (Resource r : resourceList) {
+            boolean updated = false;
+            if (r.allocationItems != null) {
+                Iterator<AllocationItem> i = r.allocationItems.iterator();
+                while (i.hasNext()) {
+                    AllocationItem ai = i.next();
+                    if (resourceSetId != null) {
+                        if (resourceSetId.equals(ai.resourceSetId)) {
+                            i.remove();
+                            updated = true;
+                        }
 
-					} else if (resourceUnionId != null) {
+                    } else if (resourceUnionId != null) {
 
-						if (resourceUnionId.equals(ai.resourceUnionId)) {
-							i.remove();
-							updated = true;
-						}
+                        if (resourceUnionId.equals(ai.resourceUnionId)) {
+                            i.remove();
+                            updated = true;
+                        }
 
-					}
-				}
-			}
-			if (updated) {
-				ResourceUtil.recalculate(r);
-				resourceDao.saveResource(r);
-			}
-		}
-	}
+                    }
+                }
+            }
+            if (updated) {
+                ResourceUtil.recalculate(r);
+                resourceDao.saveResource(r);
+            }
+        }
+    }
 }

@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,66 +33,66 @@ import org.slf4j.LoggerFactory;
 
 public class DataSourceWrap implements DataSource {
 
-	private static final Logger log = LoggerFactory.getLogger(DataSourceWrap.class);
+    private static final Logger log = LoggerFactory.getLogger(DataSourceWrap.class);
 
-	private DataSource dataSource;
+    private DataSource dataSource;
 
-	@Override
-	public PrintWriter getLogWriter() throws SQLException {
-		return dataSource.getLogWriter();
-	}
+    @Override
+    public PrintWriter getLogWriter() throws SQLException {
+        return dataSource.getLogWriter();
+    }
 
-	@Override
-	public void setLogWriter(PrintWriter out) throws SQLException {
-		dataSource.setLogWriter(out);
-	}
+    @Override
+    public void setLogWriter(PrintWriter out) throws SQLException {
+        dataSource.setLogWriter(out);
+    }
 
-	@Override
-	public void setLoginTimeout(int seconds) throws SQLException {
-		dataSource.setLoginTimeout(seconds);
-	}
+    @Override
+    public void setLoginTimeout(int seconds) throws SQLException {
+        dataSource.setLoginTimeout(seconds);
+    }
 
-	@Override
-	public int getLoginTimeout() throws SQLException {
-		return dataSource.getLoginTimeout();
-	}
+    @Override
+    public int getLoginTimeout() throws SQLException {
+        return dataSource.getLoginTimeout();
+    }
 
-	@Override
-	public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
-		return dataSource.getParentLogger();
-	}
+    @Override
+    public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        return dataSource.getParentLogger();
+    }
 
-	@Override
-	public <T> T unwrap(Class<T> iface) throws SQLException {
-		return dataSource.unwrap(iface);
-	}
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return dataSource.unwrap(iface);
+    }
 
-	@Override
-	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		return dataSource.isWrapperFor(iface);
-	}
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return dataSource.isWrapperFor(iface);
+    }
 
-	@Override
-	public Connection getConnection() throws SQLException {
-		Connection c = dataSource.getConnection();
+    @Override
+    public Connection getConnection() throws SQLException {
+        Connection c = dataSource.getConnection();
 
-		log.debug("getConnection: " + c.getClass().getName());
+        log.debug("getConnection: " + c.getClass().getName());
 
-		c.setAutoCommit(true);
-		return c;
-	}
+        c.setAutoCommit(true);
+        return c;
+    }
 
-	@Override
-	public Connection getConnection(String username, String password) throws SQLException {
-		Connection c = dataSource.getConnection(username, password);
+    @Override
+    public Connection getConnection(String username, String password) throws SQLException {
+        Connection c = dataSource.getConnection(username, password);
 
-		log.debug("getConnection: " + c.getClass().getName());
+        log.debug("getConnection: " + c.getClass().getName());
 
-		c.setAutoCommit(true);
-		return c;
-	}
+        c.setAutoCommit(true);
+        return c;
+    }
 
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 }

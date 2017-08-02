@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,90 +33,90 @@ import org.slf4j.LoggerFactory;
 
 public class CachedDataSourceWrap implements DataSource {
 
-	private static final Logger log = LoggerFactory.getLogger(CachedDataSourceWrap.class);
+    private static final Logger log = LoggerFactory.getLogger(CachedDataSourceWrap.class);
 
-	private ThreadLocal<ConnectionWrap> con = new ThreadLocal<>();
+    private ThreadLocal<ConnectionWrap> con = new ThreadLocal<>();
 
-	private DataSource dataSource;
+    private DataSource dataSource;
 
-	@Override
-	public PrintWriter getLogWriter() throws SQLException {
-		return dataSource.getLogWriter();
-	}
+    @Override
+    public PrintWriter getLogWriter() throws SQLException {
+        return dataSource.getLogWriter();
+    }
 
-	@Override
-	public void setLogWriter(PrintWriter out) throws SQLException {
-		dataSource.setLogWriter(out);
-	}
+    @Override
+    public void setLogWriter(PrintWriter out) throws SQLException {
+        dataSource.setLogWriter(out);
+    }
 
-	@Override
-	public void setLoginTimeout(int seconds) throws SQLException {
-		dataSource.setLoginTimeout(seconds);
-	}
+    @Override
+    public void setLoginTimeout(int seconds) throws SQLException {
+        dataSource.setLoginTimeout(seconds);
+    }
 
-	@Override
-	public int getLoginTimeout() throws SQLException {
-		return dataSource.getLoginTimeout();
-	}
+    @Override
+    public int getLoginTimeout() throws SQLException {
+        return dataSource.getLoginTimeout();
+    }
 
-	@Override
-	public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
-		return dataSource.getParentLogger();
-	}
+    @Override
+    public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        return dataSource.getParentLogger();
+    }
 
-	@Override
-	public <T> T unwrap(Class<T> iface) throws SQLException {
-		return dataSource.unwrap(iface);
-	}
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return dataSource.unwrap(iface);
+    }
 
-	@Override
-	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		return dataSource.isWrapperFor(iface);
-	}
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return dataSource.isWrapperFor(iface);
+    }
 
-	@Override
-	public Connection getConnection() throws SQLException {
-		if (con.get() == null) {
-			Connection c = dataSource.getConnection();
-			ConnectionWrap cc = new ConnectionWrap(c);
-			con.set(cc);
+    @Override
+    public Connection getConnection() throws SQLException {
+        if (con.get() == null) {
+            Connection c = dataSource.getConnection();
+            ConnectionWrap cc = new ConnectionWrap(c);
+            con.set(cc);
 
-			log.info("Got new DB connection: " + c);
-		} else
-			log.info("Using thread DB connection: " + con.get().getCon());
+            log.info("Got new DB connection: " + c);
+        } else
+            log.info("Using thread DB connection: " + con.get().getCon());
 
-		return con.get();
-	}
+        return con.get();
+    }
 
-	@Override
-	public Connection getConnection(String username, String password) throws SQLException {
-		if (con.get() == null) {
-			Connection c = dataSource.getConnection(username, password);
-			ConnectionWrap cc = new ConnectionWrap(c);
-			con.set(cc);
+    @Override
+    public Connection getConnection(String username, String password) throws SQLException {
+        if (con.get() == null) {
+            Connection c = dataSource.getConnection(username, password);
+            ConnectionWrap cc = new ConnectionWrap(c);
+            con.set(cc);
 
-			log.info("Got new DB connection: " + c);
-		} else
-			log.info("Using thread DB connection: " + con.get().getCon());
+            log.info("Got new DB connection: " + c);
+        } else
+            log.info("Using thread DB connection: " + con.get().getCon());
 
-		return con.get();
-	}
+        return con.get();
+    }
 
-	public void releaseConnection() {
-		if (con.get() != null) {
-			try {
-				con.get().realClose();
+    public void releaseConnection() {
+        if (con.get() != null) {
+            try {
+                con.get().realClose();
 
-				log.info("DB Connection released: " + con.get().getCon());
-			} catch (SQLException e) {
-				log.warn("Failed to release DB connection", e);
-			} finally {
-				con.remove();
-			}
-		}
-	}
+                log.info("DB Connection released: " + con.get().getCon());
+            } catch (SQLException e) {
+                log.warn("Failed to release DB connection", e);
+            } finally {
+                con.remove();
+            }
+        }
+    }
 
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 }

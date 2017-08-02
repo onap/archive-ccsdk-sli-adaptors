@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,11 @@ import java.util.Set;
 
 public class AllocationRequest {
 
-	public String resourceUnionId = null;
-	public String resourceSetId = null;
-	public Set<String> resourceShareGroupList = null;
-	public String resourceName = null;
-	public String assetId = null;
-	public AllocationAction missingResourceAction = AllocationAction.Succeed_Allocate;
-	public AllocationAction expiredResourceAction = AllocationAction.Succeed_Allocate;
+    public String resourceUnionId = null;
+    public String resourceSetId = null;
+    public Set<String> resourceShareGroupList = null;
+    public String resourceName = null;
+    public String assetId = null;
+    public AllocationAction missingResourceAction = AllocationAction.Succeed_Allocate;
+    public AllocationAction expiredResourceAction = AllocationAction.Succeed_Allocate;
 }

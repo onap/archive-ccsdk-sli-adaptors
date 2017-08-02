@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,20 +29,20 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class VpeLockDaoImpl implements VpeLockDao {
 
-	@SuppressWarnings("unused")
-	private static final Logger log = LoggerFactory.getLogger(VpeLockDaoImpl.class);
+    @SuppressWarnings("unused")
+    private static final Logger log = LoggerFactory.getLogger(VpeLockDaoImpl.class);
 
-	private final static String GET_SQL = "SELECT vpn_lock FROM VPE_LOCK WHERE vpe_name = ?";
+    private final static String GET_SQL = "SELECT vpn_lock FROM VPE_LOCK WHERE vpe_name = ?";
 
-	private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-	@Override
-	public String getVpeLock(String vpeName) {
-		List<String> ll = jdbcTemplate.queryForList(GET_SQL, String.class, vpeName);
-		return ll != null && !ll.isEmpty() ? ll.get(0) : null;
-	}
+    @Override
+    public String getVpeLock(String vpeName) {
+        List<String> ll = jdbcTemplate.queryForList(GET_SQL, String.class, vpeName);
+        return ll != null && !ll.isEmpty() ? ll.get(0) : null;
+    }
 
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 }

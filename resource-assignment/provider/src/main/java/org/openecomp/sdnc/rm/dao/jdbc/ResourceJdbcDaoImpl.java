@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,107 +38,107 @@ import org.springframework.jdbc.support.KeyHolder;
 
 public class ResourceJdbcDaoImpl implements ResourceJdbcDao {
 
-	@SuppressWarnings("unused")
-	private static final Logger log = LoggerFactory.getLogger(ResourceJdbcDaoImpl.class);
+    @SuppressWarnings("unused")
+    private static final Logger log = LoggerFactory.getLogger(ResourceJdbcDaoImpl.class);
 
-	private static final String RESOURCE_SQL = "SELECT * FROM RESOURCE WHERE asset_id = ? AND resource_name = ?";
+    private static final String RESOURCE_SQL = "SELECT * FROM RESOURCE WHERE asset_id = ? AND resource_name = ?";
 
-	private static final String RESOURCE_SET_SQL = "SELECT * FROM RESOURCE WHERE resource_id IN (\n"
-	        + "SELECT DISTINCT resource_id FROM ALLOCATION_ITEM WHERE resource_set_id = ?)";
+    private static final String RESOURCE_SET_SQL = "SELECT * FROM RESOURCE WHERE resource_id IN (\n"
+            + "SELECT DISTINCT resource_id FROM ALLOCATION_ITEM WHERE resource_set_id = ?)";
 
-	private static final String RESOURCE_UNION_SQL = "SELECT * FROM RESOURCE WHERE resource_id IN (\n"
-	        + "SELECT DISTINCT resource_id FROM ALLOCATION_ITEM WHERE resource_union_id = ?)";
+    private static final String RESOURCE_UNION_SQL = "SELECT * FROM RESOURCE WHERE resource_id IN (\n"
+            + "SELECT DISTINCT resource_id FROM ALLOCATION_ITEM WHERE resource_union_id = ?)";
 
-	private static final String INSERT_SQL = "INSERT INTO RESOURCE (\n"
-	        + "  asset_id, resource_name, resource_type, lt_used, ll_label, ll_reference_count, rr_used)\n"
-	        + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_SQL = "INSERT INTO RESOURCE (\n"
+            + "  asset_id, resource_name, resource_type, lt_used, ll_label, ll_reference_count, rr_used)\n"
+            + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-	private static final String UPDATE_SQL = "UPDATE RESOURCE SET\n"
-	        + "  lt_used = ?, ll_label = ?, ll_reference_count = ?, rr_used = ?\nWHERE resource_id = ?";
+    private static final String UPDATE_SQL = "UPDATE RESOURCE SET\n"
+            + "  lt_used = ?, ll_label = ?, ll_reference_count = ?, rr_used = ?\nWHERE resource_id = ?";
 
-	private static final String DELETE_SQL = "DELETE FROM RESOURCE WHERE resource_id = ?";
+    private static final String DELETE_SQL = "DELETE FROM RESOURCE WHERE resource_id = ?";
 
-	private JdbcTemplate jdbcTemplate;
-	private ResourceRowMapper resourceRowMapper = new ResourceRowMapper();
+    private JdbcTemplate jdbcTemplate;
+    private ResourceRowMapper resourceRowMapper = new ResourceRowMapper();
 
-	@Override
-	public Resource getResource(String assetId, String resourceName) {
-		if (assetId == null || assetId.trim().length() == 0 || resourceName == null ||
-		        resourceName.trim().length() == 0)
-			return null;
+    @Override
+    public Resource getResource(String assetId, String resourceName) {
+        if (assetId == null || assetId.trim().length() == 0 || resourceName == null ||
+                resourceName.trim().length() == 0)
+            return null;
 
-		List<Resource> ll = jdbcTemplate.query(RESOURCE_SQL, new Object[] { assetId, resourceName }, resourceRowMapper);
-		return ll.isEmpty() ? null : ll.get(0);
-	}
+        List<Resource> ll = jdbcTemplate.query(RESOURCE_SQL, new Object[] { assetId, resourceName }, resourceRowMapper);
+        return ll.isEmpty() ? null : ll.get(0);
+    }
 
-	@Override
-	public List<Resource> getResourceSet(String resourceSetId) {
-		if (resourceSetId == null)
-			return Collections.emptyList();
+    @Override
+    public List<Resource> getResourceSet(String resourceSetId) {
+        if (resourceSetId == null)
+            return Collections.emptyList();
 
-		return jdbcTemplate.query(RESOURCE_SET_SQL, new Object[] { resourceSetId }, resourceRowMapper);
-	}
+        return jdbcTemplate.query(RESOURCE_SET_SQL, new Object[] { resourceSetId }, resourceRowMapper);
+    }
 
-	@Override
-	public List<Resource> getResourceUnion(String resourceUnionId) {
-		if (resourceUnionId == null)
-			return Collections.emptyList();
+    @Override
+    public List<Resource> getResourceUnion(String resourceUnionId) {
+        if (resourceUnionId == null)
+            return Collections.emptyList();
 
-		return jdbcTemplate.query(RESOURCE_UNION_SQL, new Object[] { resourceUnionId }, resourceRowMapper);
-	}
+        return jdbcTemplate.query(RESOURCE_UNION_SQL, new Object[] { resourceUnionId }, resourceRowMapper);
+    }
 
-	@Override
-	public void add(final Resource r) {
-		PreparedStatementCreator psc = new PreparedStatementCreator() {
+    @Override
+    public void add(final Resource r) {
+        PreparedStatementCreator psc = new PreparedStatementCreator() {
 
-			@Override
-			public PreparedStatement createPreparedStatement(Connection dbc) throws SQLException {
-				PreparedStatement ps = dbc.prepareStatement(INSERT_SQL, new String[] { "resource_id" });
-				ps.setString(1, r.assetId);
-				ps.setString(2, r.name);
-				ps.setString(3, r.type);
-				ps.setLong(4, r.ltUsed);
-				ps.setString(5, r.llLabel);
-				ps.setInt(6, r.llReferenceCount);
-				ps.setString(7, r.rrUsed);
-				return ps;
-			}
-		};
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		jdbcTemplate.update(psc, keyHolder);
-		r.id = keyHolder.getKey().longValue();
-	}
+            @Override
+            public PreparedStatement createPreparedStatement(Connection dbc) throws SQLException {
+                PreparedStatement ps = dbc.prepareStatement(INSERT_SQL, new String[] { "resource_id" });
+                ps.setString(1, r.assetId);
+                ps.setString(2, r.name);
+                ps.setString(3, r.type);
+                ps.setLong(4, r.ltUsed);
+                ps.setString(5, r.llLabel);
+                ps.setInt(6, r.llReferenceCount);
+                ps.setString(7, r.rrUsed);
+                return ps;
+            }
+        };
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(psc, keyHolder);
+        r.id = keyHolder.getKey().longValue();
+    }
 
-	@Override
+    @Override
     public void update(Resource r) {
-		Long ltUsed = r.ltUsed <= 0 ? null : r.ltUsed;
-		Integer llRefCount = r.llReferenceCount <= 0 ? null : r.llReferenceCount;
-		jdbcTemplate.update(UPDATE_SQL, ltUsed, r.llLabel, llRefCount, r.rrUsed, r.id);
-	}
+        Long ltUsed = r.ltUsed <= 0 ? null : r.ltUsed;
+        Integer llRefCount = r.llReferenceCount <= 0 ? null : r.llReferenceCount;
+        jdbcTemplate.update(UPDATE_SQL, ltUsed, r.llLabel, llRefCount, r.rrUsed, r.id);
+    }
 
-	@Override
-	public void delete(long id) {
-		jdbcTemplate.update(DELETE_SQL, id);
-	}
+    @Override
+    public void delete(long id) {
+        jdbcTemplate.update(DELETE_SQL, id);
+    }
 
-	private static class ResourceRowMapper implements RowMapper<Resource> {
+    private static class ResourceRowMapper implements RowMapper<Resource> {
 
-		@Override
-		public Resource mapRow(ResultSet rs, int arg1) throws SQLException {
-			Resource r = new Resource();
-			r.id = rs.getLong("resource_id");
-			r.assetId = rs.getString("asset_id");
-			r.name = rs.getString("resource_name");
-			r.type = rs.getString("resource_type");
-			r.ltUsed = rs.getLong("lt_used");
-			r.llLabel = rs.getString("ll_label");
-			r.llReferenceCount = rs.getInt("ll_reference_count");
-			r.rrUsed = rs.getString("rr_used");
-			return r;
-		}
-	}
+        @Override
+        public Resource mapRow(ResultSet rs, int arg1) throws SQLException {
+            Resource r = new Resource();
+            r.id = rs.getLong("resource_id");
+            r.assetId = rs.getString("asset_id");
+            r.name = rs.getString("resource_name");
+            r.type = rs.getString("resource_type");
+            r.ltUsed = rs.getLong("lt_used");
+            r.llLabel = rs.getString("ll_label");
+            r.llReferenceCount = rs.getInt("ll_reference_count");
+            r.rrUsed = rs.getString("rr_used");
+            return r;
+        }
+    }
 
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 }

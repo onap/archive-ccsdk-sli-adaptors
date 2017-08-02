@@ -1,155 +1,155 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>aai-service</artifactId>
-		<groupId>org.onap.ccsdk.sli.adaptors</groupId>
-		<version>0.0.1-SNAPSHOT</version>
-	</parent>
-	<artifactId>aai-service-features</artifactId>
-	<name>AAI Interface Service - Features</name>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>aai-service</artifactId>
+        <groupId>org.onap.ccsdk.sli.adaptors</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>aai-service-features</artifactId>
+    <name>AAI Interface Service - Features</name>
 
-	<packaging>jar</packaging>
+    <packaging>jar</packaging>
 
-	<dependencies>
-
-
-		<dependency>
-			<groupId>org.onap.ccsdk.sli.adaptors</groupId>
-			<artifactId>aai-service-provider</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.opendaylight.mdsal</groupId>
-			<artifactId>features-mdsal</artifactId>
-			<version>${odl.mdsal.features.version}</version>
-			<classifier>features</classifier>
-			<type>xml</type>
-
-			<scope>runtime</scope>
-		</dependency>
+    <dependencies>
 
 
-		<!-- dependency for opendaylight-karaf-empty for use by testing -->
-		<dependency>
-			<groupId>org.opendaylight.odlparent</groupId>
-			<artifactId>opendaylight-karaf-empty</artifactId>
-			<version>${odl.karaf.empty.distro.version}</version>
-			<type>zip</type>
-		</dependency>
+        <dependency>
+            <groupId>org.onap.ccsdk.sli.adaptors</groupId>
+            <artifactId>aai-service-provider</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>features-mdsal</artifactId>
+            <version>${odl.mdsal.features.version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
+
+            <scope>runtime</scope>
+        </dependency>
 
 
-		<dependency>
-			<!-- Required for launching the feature tests -->
-			<groupId>org.opendaylight.odlparent</groupId>
-			<artifactId>features-test</artifactId>
-			<version>${odl.commons.opendaylight.version}</version>
-			<scope>test</scope>
-		</dependency>
+        <!-- dependency for opendaylight-karaf-empty for use by testing -->
+        <dependency>
+            <groupId>org.opendaylight.odlparent</groupId>
+            <artifactId>opendaylight-karaf-empty</artifactId>
+            <version>${odl.karaf.empty.distro.version}</version>
+            <type>zip</type>
+        </dependency>
 
-		<dependency>
-			<groupId>org.opendaylight.yangtools</groupId>
-			<artifactId>features-yangtools</artifactId>
-			<version>${odl.yangtools.version}</version>
-			<classifier>features</classifier>
-			<type>xml</type>
-			<scope>runtime</scope>
-		</dependency>
 
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-client</artifactId>
-			<version>1.17</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-core</artifactId>
-			<version>1.17</version>
-		</dependency>
-		<dependency>
-		    <groupId>commons-lang</groupId>
-		    <artifactId>commons-lang</artifactId>
-		    <version>2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <!-- Required for launching the feature tests -->
+            <groupId>org.opendaylight.odlparent</groupId>
+            <artifactId>features-test</artifactId>
+            <version>${odl.commons.opendaylight.version}</version>
+            <scope>test</scope>
+        </dependency>
 
-	<build>
-		<resources>
-			<resource>
-				<filtering>true</filtering>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>filter</id>
-						<goals>
-							<goal>resources</goal>
-						</goals>
-						<phase>generate-resources</phase>
-					</execution>
-				</executions>
-			</plugin>
-					<!-- launches the feature test, which validates that your karaf feature
-					can be installed inside of a karaf container. It doesn't validate that your
-					functionality works correctly, just that you have all of the dependent bundles
-					defined correctly.
-			<plugin>
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>features-yangtools</artifactId>
+            <version>${odl.yangtools.version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
+            <scope>runtime</scope>
+        </dependency>
 
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.16</version>
-				<configuration>
-					<systemPropertyVariables>
-						<karaf.distro.groupId>org.opendaylight.controller</karaf.distro.groupId>
-						<karaf.distro.artifactId>opendaylight-karaf-empty</karaf.distro.artifactId>
-						<karaf.distro.version>${odl.karaf.empty.distro.version}</karaf.distro.version>
-					</systemPropertyVariables>
-					<dependenciesToScan>
-						<dependency>org.opendaylight.yangtools:features-test</dependency>
-					</dependenciesToScan>
-				</configuration>
-			</plugin>
-			-->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-artifacts</id>
-						<goals>
-							<goal>attach-artifact</goal>
-						</goals>
-						<phase>package</phase>
-						<configuration>
-							<artifacts>
-								<artifact>
-									<file>${project.build.directory}/classes/${features.file}</file>
-									<type>xml</type>
-									<classifier>features</classifier>
-								</artifact>
-							</artifacts>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.17</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <version>1.17</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>filter</id>
+                        <goals>
+                            <goal>resources</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                </executions>
+            </plugin>
+                    <!-- launches the feature test, which validates that your karaf feature
+                    can be installed inside of a karaf container. It doesn't validate that your
+                    functionality works correctly, just that you have all of the dependent bundles
+                    defined correctly.
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <karaf.distro.groupId>org.opendaylight.controller</karaf.distro.groupId>
+                        <karaf.distro.artifactId>opendaylight-karaf-empty</karaf.distro.artifactId>
+                        <karaf.distro.version>${odl.karaf.empty.distro.version}</karaf.distro.version>
+                    </systemPropertyVariables>
+                    <dependenciesToScan>
+                        <dependency>org.opendaylight.yangtools:features-test</dependency>
+                    </dependenciesToScan>
+                </configuration>
+            </plugin>
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-artifacts</id>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${project.build.directory}/classes/${features.file}</file>
+                                    <type>xml</type>
+                                    <classifier>features</classifier>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

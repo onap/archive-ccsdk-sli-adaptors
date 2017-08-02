@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,29 +32,29 @@ import org.slf4j.LoggerFactory;
 
 public class EvcExistingVrfPref implements PreferenceRule {
 
-	private static final Logger log = LoggerFactory.getLogger(EvcExistingVrfPref.class);
+    private static final Logger log = LoggerFactory.getLogger(EvcExistingVrfPref.class);
 
-	private ResourceManager resourceManager;
+    private ResourceManager resourceManager;
 
-	@Override
-	public int assignOrderNumber(String endPointPosition, ServiceData serviceData, EquipmentData equipData) {
-		String vrfName = (String) serviceData.data.get("vrf-name");
-		if (vrfName == null)
-			return 0;
+    @Override
+    public int assignOrderNumber(String endPointPosition, ServiceData serviceData, EquipmentData equipData) {
+        String vrfName = (String) serviceData.data.get("vrf-name");
+        if (vrfName == null)
+            return 0;
 
-		Resource r = resourceManager.getResource("VRF", equipData.equipmentId);
-		if (r != null && r.allocationItems != null)
-			for (AllocationItem ai : r.allocationItems)
-				if (ai.resourceShareGroupList.contains(vrfName)) {
-					log.info("VRF for VPN: " + vrfName + " found on VPE: " + equipData.equipmentId);
-					return 1;
-				}
+        Resource r = resourceManager.getResource("VRF", equipData.equipmentId);
+        if (r != null && r.allocationItems != null)
+            for (AllocationItem ai : r.allocationItems)
+                if (ai.resourceShareGroupList.contains(vrfName)) {
+                    log.info("VRF for VPN: " + vrfName + " found on VPE: " + equipData.equipmentId);
+                    return 1;
+                }
 
-		log.info("VRF for VPN: " + vrfName + " NOT found on VPE: " + equipData.equipmentId);
-		return 2;
-	}
+        log.info("VRF for VPN: " + vrfName + " NOT found on VPE: " + equipData.equipmentId);
+        return 2;
+    }
 
-	public void setResourceManager(ResourceManager resourceManager) {
-		this.resourceManager = resourceManager;
-	}
+    public void setResourceManager(ResourceManager resourceManager) {
+        this.resourceManager = resourceManager;
+    }
 }

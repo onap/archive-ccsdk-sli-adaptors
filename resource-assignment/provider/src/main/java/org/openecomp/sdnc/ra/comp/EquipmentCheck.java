@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ import org.openecomp.sdnc.ra.equip.data.EquipmentData;
 
 public interface EquipmentCheck {
 
-	boolean checkEquipment(
-	        String endPointPosition,
-	        ServiceData serviceData,
-	        EquipmentData equipData,
-	        Map<String, Object> equipmentConstraints);
+    boolean checkEquipment(
+            String endPointPosition,
+            ServiceData serviceData,
+            EquipmentData equipData,
+            Map<String, Object> equipmentConstraints);
 }

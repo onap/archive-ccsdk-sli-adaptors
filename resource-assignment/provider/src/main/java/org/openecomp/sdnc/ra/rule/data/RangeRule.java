@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,11 @@ package org.openecomp.sdnc.ra.rule.data;
 
 public class RangeRule {
 
-	public long id;
-	public String rangeName;
-	public String serviceModel;
-	public String endPointPosition;
-	public String equipmentLevel;
-	public int minValue;
-	public int maxValue;
+    public long id;
+    public String rangeName;
+    public String serviceModel;
+    public String endPointPosition;
+    public String equipmentLevel;
+    public int minValue;
+    public int maxValue;
 }

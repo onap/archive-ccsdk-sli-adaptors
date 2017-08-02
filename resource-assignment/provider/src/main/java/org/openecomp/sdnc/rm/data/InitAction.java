@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,15 @@
 package org.openecomp.sdnc.rm.data;
 
 public enum InitAction {
-	CheckInit("Initialize if needed"), ForceInit("Always Initialize"), NoInit("No initialization");
+    CheckInit("Initialize if needed"), ForceInit("Always Initialize"), NoInit("No initialization");
 
-	private String str;
+    private String str;
 
-	private InitAction(String str) {
-		this.str = str;
-	}
+    private InitAction(String str) {
+        this.str = str;
+    }
 
-	public String getInitActionStr() {
-		return str;
-	}
+    public String getInitActionStr() {
+        return str;
+    }
 }

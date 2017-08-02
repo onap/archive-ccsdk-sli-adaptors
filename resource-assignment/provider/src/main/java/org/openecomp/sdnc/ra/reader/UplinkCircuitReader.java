@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,24 +31,24 @@ import org.openecomp.sdnc.ra.equip.data.EquipmentLevel;
 
 public class UplinkCircuitReader implements EquipmentReader {
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<EquipmentData> readEquipment(Map<String, Object> equipmentConstraints) {
-		List<EquipmentData> equipList = new ArrayList<>();
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<EquipmentData> readEquipment(Map<String, Object> equipmentConstraints) {
+        List<EquipmentData> equipList = new ArrayList<>();
 
-		List<Map<String, Object>> uplinkCircuitList =
-		        (List<Map<String, Object>>) equipmentConstraints.get("uplink-circuit-list");
-		if (uplinkCircuitList == null || uplinkCircuitList.isEmpty())
-			return equipList;
+        List<Map<String, Object>> uplinkCircuitList =
+                (List<Map<String, Object>>) equipmentConstraints.get("uplink-circuit-list");
+        if (uplinkCircuitList == null || uplinkCircuitList.isEmpty())
+            return equipList;
 
-		for (Map<String, Object> uplinkCircuit : uplinkCircuitList) {
-			EquipmentData equipData = new EquipmentData();
-			equipData.equipmentLevel = EquipmentLevel.Device;
-			equipData.equipmentId = (String) uplinkCircuit.get("uplink-circuit-id");
-			equipData.data = uplinkCircuit;
-			equipList.add(equipData);
-		}
+        for (Map<String, Object> uplinkCircuit : uplinkCircuitList) {
+            EquipmentData equipData = new EquipmentData();
+            equipData.equipmentLevel = EquipmentLevel.Device;
+            equipData.equipmentId = (String) uplinkCircuit.get("uplink-circuit-id");
+            equipData.data = uplinkCircuit;
+            equipList.add(equipData);
+        }
 
-		return equipList;
-	}
+        return equipList;
+    }
 }

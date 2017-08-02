@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,6 @@ import org.openecomp.sdnc.ra.equip.data.EquipmentData;
 
 public interface PreferenceRule {
 
-	// Smaller order number is preferred
-	int assignOrderNumber(String endPointPosition, ServiceData serviceData, EquipmentData equipData);
+    // Smaller order number is preferred
+    int assignOrderNumber(String endPointPosition, ServiceData serviceData, EquipmentData equipData);
 }

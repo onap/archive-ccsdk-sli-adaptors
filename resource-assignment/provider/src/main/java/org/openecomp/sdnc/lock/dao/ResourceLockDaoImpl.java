@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,81 +35,81 @@ import org.springframework.jdbc.core.RowMapper;
 
 public class ResourceLockDaoImpl implements ResourceLockDao {
 
-	private static final Logger log = LoggerFactory.getLogger(ResourceLockDaoImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(ResourceLockDaoImpl.class);
 
-	private JdbcTemplate jdbcTemplate;
-	private boolean testing = false;
+    private JdbcTemplate jdbcTemplate;
+    private boolean testing = false;
 
-	@Override
-	public void lockTable() {
-		if (!testing) {
-			jdbcTemplate.update("LOCK TABLES RESOURCE_LOCK WRITE");
-		log.info("Table RESOURCE_LOCK locked.");
-	}
-	}
+    @Override
+    public void lockTable() {
+        if (!testing) {
+            jdbcTemplate.update("LOCK TABLES RESOURCE_LOCK WRITE");
+        log.info("Table RESOURCE_LOCK locked.");
+    }
+    }
 
-	@Override
-	public void unlockTable() {
-		if (!testing) {
-			jdbcTemplate.update("UNLOCK TABLES");
-		log.info("Table RESOURCE_LOCK unlocked.");
+    @Override
+    public void unlockTable() {
+        if (!testing) {
+            jdbcTemplate.update("UNLOCK TABLES");
+        log.info("Table RESOURCE_LOCK unlocked.");
 
-			CachedDataSourceWrap ds = (CachedDataSourceWrap) jdbcTemplate.getDataSource();
-			ds.releaseConnection();
-		}
-	}
+            CachedDataSourceWrap ds = (CachedDataSourceWrap) jdbcTemplate.getDataSource();
+            ds.releaseConnection();
+        }
+    }
 
-	@Override
-	public void add(ResourceLock l) {
-		jdbcTemplate.update(
-		        "INSERT INTO RESOURCE_LOCK (resource_name, lock_holder, lock_count, lock_time, expiration_time)\n" +
-		                "VALUES (?, ?, ?, ?, ?)",
-		        new Object[] { l.resourceName, l.lockHolder, l.lockCount, l.lockTime, l.expirationTime });
-	}
+    @Override
+    public void add(ResourceLock l) {
+        jdbcTemplate.update(
+                "INSERT INTO RESOURCE_LOCK (resource_name, lock_holder, lock_count, lock_time, expiration_time)\n" +
+                        "VALUES (?, ?, ?, ?, ?)",
+                new Object[] { l.resourceName, l.lockHolder, l.lockCount, l.lockTime, l.expirationTime });
+    }
 
-	@Override
-	public void update(long id, Date lockTime, Date expirationTime, int lockCount) {
-		jdbcTemplate.update(
-		        "UPDATE RESOURCE_LOCK SET lock_time = ?, expiration_time = ?, lock_count = ? WHERE resource_lock_id = ?",
-		        new Object[] { lockTime, expirationTime, lockCount, id });
-	}
+    @Override
+    public void update(long id, Date lockTime, Date expirationTime, int lockCount) {
+        jdbcTemplate.update(
+                "UPDATE RESOURCE_LOCK SET lock_time = ?, expiration_time = ?, lock_count = ? WHERE resource_lock_id = ?",
+                new Object[] { lockTime, expirationTime, lockCount, id });
+    }
 
-	@Override
-	public ResourceLock getByResourceName(String resourceName) {
-		List<ResourceLock> ll = jdbcTemplate.query("SELECT * FROM RESOURCE_LOCK WHERE resource_name = ?",
-		        new Object[] { resourceName }, new RowMapper<ResourceLock>() {
+    @Override
+    public ResourceLock getByResourceName(String resourceName) {
+        List<ResourceLock> ll = jdbcTemplate.query("SELECT * FROM RESOURCE_LOCK WHERE resource_name = ?",
+                new Object[] { resourceName }, new RowMapper<ResourceLock>() {
 
-			        @Override
-			        public ResourceLock mapRow(ResultSet rs, int rowNum) throws SQLException {
-				        ResourceLock rl = new ResourceLock();
-				        rl.id = rs.getLong("resource_lock_id");
-				        rl.resourceName = rs.getString("resource_name");
-				        rl.lockHolder = rs.getString("lock_holder");
-				        rl.lockCount = rs.getInt("lock_count");
-				        rl.lockTime = rs.getTimestamp("lock_time");
-				        rl.expirationTime = rs.getTimestamp("expiration_time");
-				        return rl;
-			        }
-		        });
-		return ll != null && !ll.isEmpty() ? ll.get(0) : null;
-	}
+                    @Override
+                    public ResourceLock mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        ResourceLock rl = new ResourceLock();
+                        rl.id = rs.getLong("resource_lock_id");
+                        rl.resourceName = rs.getString("resource_name");
+                        rl.lockHolder = rs.getString("lock_holder");
+                        rl.lockCount = rs.getInt("lock_count");
+                        rl.lockTime = rs.getTimestamp("lock_time");
+                        rl.expirationTime = rs.getTimestamp("expiration_time");
+                        return rl;
+                    }
+                });
+        return ll != null && !ll.isEmpty() ? ll.get(0) : null;
+    }
 
-	@Override
-	public void delete(long id) {
-		jdbcTemplate.update("DELETE FROM RESOURCE_LOCK WHERE resource_lock_id = ?", new Object[] { id });
-	}
+    @Override
+    public void delete(long id) {
+        jdbcTemplate.update("DELETE FROM RESOURCE_LOCK WHERE resource_lock_id = ?", new Object[] { id });
+    }
 
-	@Override
-	public void decrementLockCount(long id) {
-		jdbcTemplate.update("UPDATE RESOURCE_LOCK SET lock_count = lock_count - 1 WHERE resource_lock_id = ?",
-		        new Object[] { id });
-	}
+    @Override
+    public void decrementLockCount(long id) {
+        jdbcTemplate.update("UPDATE RESOURCE_LOCK SET lock_count = lock_count - 1 WHERE resource_lock_id = ?",
+                new Object[] { id });
+    }
 
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
-	public void setTesting(boolean testing) {
-		this.testing = testing;
-	}
+    public void setTesting(boolean testing) {
+        this.testing = testing;
+    }
 }

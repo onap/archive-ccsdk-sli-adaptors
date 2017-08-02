@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,46 +40,46 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestQuery {
 
-	private static final Logger log = LoggerFactory.getLogger(TestQuery.class);
+    private static final Logger log = LoggerFactory.getLogger(TestQuery.class);
 
-	@Autowired(required = true)
-	private ResourceAllocator resourceAllocator;
+    @Autowired(required = true)
+    private ResourceAllocator resourceAllocator;
 
-	@Autowired(required = true)
-	private DataSetup dataSetup;
+    @Autowired(required = true)
+    private DataSetup dataSetup;
 
-	@Test
-	public void test001() throws Exception {
-		String t = "001";
-		log.info("============== query " + t + " ================================");
-		log.info("=== Test reading assigned resources (subinterface-id, vlan-id-inner)");
+    @Test
+    public void test001() throws Exception {
+        String t = "001";
+        log.info("============== query " + t + " ================================");
+        log.info("=== Test reading assigned resources (subinterface-id, vlan-id-inner)");
 
-		String service1 = "ICOREPVC" + t + "-1";
+        String service1 = "ICOREPVC" + t + "-1";
 
-		dataSetup.cleanup();
-		dataSetup.setupVpePort("MTSNJA4LCP1", "mtanjrsv126", "ae0", "PROV", "juniper-vpe-image");
+        dataSetup.cleanup();
+        dataSetup.setupVpePort("MTSNJA4LCP1", "mtanjrsv126", "ae0", "PROV", "juniper-vpe-image");
 
-		SvcLogicContext ctx = new SvcLogicContext();
-		ctx.setAttribute("tmp.resource-allocator.request-type", "New");
-		ctx.setAttribute("tmp.resource-allocator.service-model", "L3AVPN-EVC");
-		ctx.setAttribute("tmp.resource-allocator.service-instance-id", service1);
-		ctx.setAttribute("tmp.resource-allocator.speed", "300");
-		ctx.setAttribute("tmp.resource-allocator.speed-unit", "Mbps");
-		ctx.setAttribute("tmp.resource-allocator.aic-site-id", "MTSNJA4LCP1");
-		ctx.setAttribute("tmp.resource-allocator.vpn-id", "123");
-		ctx.setAttribute("tmp.resource-allocator.vrf-required", "false");
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("tmp.resource-allocator.request-type", "New");
+        ctx.setAttribute("tmp.resource-allocator.service-model", "L3AVPN-EVC");
+        ctx.setAttribute("tmp.resource-allocator.service-instance-id", service1);
+        ctx.setAttribute("tmp.resource-allocator.speed", "300");
+        ctx.setAttribute("tmp.resource-allocator.speed-unit", "Mbps");
+        ctx.setAttribute("tmp.resource-allocator.aic-site-id", "MTSNJA4LCP1");
+        ctx.setAttribute("tmp.resource-allocator.vpn-id", "123");
+        ctx.setAttribute("tmp.resource-allocator.vrf-required", "false");
 
-		QueryStatus st = resourceAllocator.reserve("NetworkCapacity", null, null, null, ctx);
+        QueryStatus st = resourceAllocator.reserve("NetworkCapacity", null, null, null, ctx);
 
-		Assert.assertTrue(st == QueryStatus.SUCCESS);
-		Assert.assertTrue(dataSetup.serviceCorrectInDb(service1, "VPE-Cust", "Pending", 1, 300000));
+        Assert.assertTrue(st == QueryStatus.SUCCESS);
+        Assert.assertTrue(dataSetup.serviceCorrectInDb(service1, "VPE-Cust", "Pending", 1, 300000));
 
-		st = resourceAllocator.query("NetworkCapacity", true, null, service1, "end-point", null, ctx);
+        st = resourceAllocator.query("NetworkCapacity", true, null, service1, "end-point", null, ctx);
 
-		Assert.assertTrue(st == QueryStatus.SUCCESS);
-		Assert.assertEquals(ctx.getAttribute("end-point.subinterface-id"), "100");
-		Assert.assertEquals(ctx.getAttribute("end-point.vlan-id-inner"), "2");
-		Assert.assertEquals(ctx.getAttribute("end-point.vpe-name"), "mtanjrsv126");
-		Assert.assertEquals(ctx.getAttribute("end-point.affinity-link"), "1");
-	}
+        Assert.assertTrue(st == QueryStatus.SUCCESS);
+        Assert.assertEquals(ctx.getAttribute("end-point.subinterface-id"), "100");
+        Assert.assertEquals(ctx.getAttribute("end-point.vlan-id-inner"), "2");
+        Assert.assertEquals(ctx.getAttribute("end-point.vpe-name"), "mtanjrsv126");
+        Assert.assertEquals(ctx.getAttribute("end-point.affinity-link"), "1");
+    }
 }

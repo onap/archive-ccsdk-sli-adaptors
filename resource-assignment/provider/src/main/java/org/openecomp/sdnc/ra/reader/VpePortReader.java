@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,39 +32,39 @@ import org.openecomp.sdnc.ra.equip.data.EquipmentLevel;
 
 public class VpePortReader implements EquipmentReader {
 
-	private VpePortDao vpePortDao;
+    private VpePortDao vpePortDao;
 
-	@Override
-	public List<EquipmentData> readEquipment(Map<String, Object> equipmentConstraints) {
-		String clli = (String) equipmentConstraints.get("clli");
-		String vpeName = (String) equipmentConstraints.get("vpe-name");
-		if (vpeName == null) {
-			String equipmentId = (String) equipmentConstraints.get("equipment-id");
-			if (equipmentId != null) {
-				int i1 = equipmentId.indexOf('/');
-				if (i1 > 0)
-					equipmentId = equipmentId.substring(0, i1);
-				vpeName = equipmentId;
-			}
-		}
+    @Override
+    public List<EquipmentData> readEquipment(Map<String, Object> equipmentConstraints) {
+        String clli = (String) equipmentConstraints.get("clli");
+        String vpeName = (String) equipmentConstraints.get("vpe-name");
+        if (vpeName == null) {
+            String equipmentId = (String) equipmentConstraints.get("equipment-id");
+            if (equipmentId != null) {
+                int i1 = equipmentId.indexOf('/');
+                if (i1 > 0)
+                    equipmentId = equipmentId.substring(0, i1);
+                vpeName = equipmentId;
+            }
+        }
 
-		List<Map<String, Object>> vpeDataList = vpePortDao.getVpePortData(clli, vpeName);
+        List<Map<String, Object>> vpeDataList = vpePortDao.getVpePortData(clli, vpeName);
 
-		List<EquipmentData> equipList = new ArrayList<>();
-		for (Map<String, Object> vpeData : vpeDataList) {
-			EquipmentData equipData = new EquipmentData();
-			equipData.equipmentLevel = EquipmentLevel.Port;
-			equipData.equipmentId =
-			        (String) vpeData.get("vpe-id") + '/' + (String) vpeData.get("physical-interface-name");
-			equipData.data = vpeData;
+        List<EquipmentData> equipList = new ArrayList<>();
+        for (Map<String, Object> vpeData : vpeDataList) {
+            EquipmentData equipData = new EquipmentData();
+            equipData.equipmentLevel = EquipmentLevel.Port;
+            equipData.equipmentId =
+                    (String) vpeData.get("vpe-id") + '/' + (String) vpeData.get("physical-interface-name");
+            equipData.data = vpeData;
 
-			equipList.add(equipData);
-		}
+            equipList.add(equipData);
+        }
 
-		return equipList;
-	}
+        return equipList;
+    }
 
-	public void setVpePortDao(VpePortDao vpePortDao) {
-		this.vpePortDao = vpePortDao;
-	}
+    public void setVpePortDao(VpePortDao vpePortDao) {
+        this.vpePortDao = vpePortDao;
+    }
 }

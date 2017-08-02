@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,34 +27,34 @@ import org.openecomp.sdnc.ra.equip.comp.EquipmentReader;
 
 public class EndPointAllocationDefinition {
 
-	public String serviceModel;
-	public String endPointPosition;
-	public EquipmentReader equipmentReader;
-	public List<EquipmentCheck> equipmentCheckList;
-	public List<PreferenceRule> preferenceRuleList;
-	public List<AllocationRule> allocationRuleList;
+    public String serviceModel;
+    public String endPointPosition;
+    public EquipmentReader equipmentReader;
+    public List<EquipmentCheck> equipmentCheckList;
+    public List<PreferenceRule> preferenceRuleList;
+    public List<AllocationRule> allocationRuleList;
 
-	public void setServiceModel(String serviceModel) {
-		this.serviceModel = serviceModel;
-	}
+    public void setServiceModel(String serviceModel) {
+        this.serviceModel = serviceModel;
+    }
 
-	public void setEndPointPosition(String endPointPosition) {
-		this.endPointPosition = endPointPosition;
-	}
+    public void setEndPointPosition(String endPointPosition) {
+        this.endPointPosition = endPointPosition;
+    }
 
-	public void setEquipmentReader(EquipmentReader equipmentReader) {
-		this.equipmentReader = equipmentReader;
-	}
+    public void setEquipmentReader(EquipmentReader equipmentReader) {
+        this.equipmentReader = equipmentReader;
+    }
 
-	public void setEquipmentCheckList(List<EquipmentCheck> equipmentCheckList) {
-		this.equipmentCheckList = equipmentCheckList;
-	}
+    public void setEquipmentCheckList(List<EquipmentCheck> equipmentCheckList) {
+        this.equipmentCheckList = equipmentCheckList;
+    }
 
-	public void setPreferenceRuleList(List<PreferenceRule> preferenceRuleList) {
-		this.preferenceRuleList = preferenceRuleList;
-	}
+    public void setPreferenceRuleList(List<PreferenceRule> preferenceRuleList) {
+        this.preferenceRuleList = preferenceRuleList;
+    }
 
-	public void setAllocationRuleList(List<AllocationRule> allocationRuleList) {
-		this.allocationRuleList = allocationRuleList;
-	}
+    public void setAllocationRuleList(List<AllocationRule> allocationRuleList) {
+        this.allocationRuleList = allocationRuleList;
+    }
 }

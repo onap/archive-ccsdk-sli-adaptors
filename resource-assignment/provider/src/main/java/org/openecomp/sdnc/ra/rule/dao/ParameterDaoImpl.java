@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,28 +30,28 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class ParameterDaoImpl implements ParameterDao {
 
-	private static final Logger log = LoggerFactory.getLogger(ParameterDaoImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(ParameterDaoImpl.class);
 
-	private final static String GET_SQL = "SELECT * FROM PARAMETERS WHERE name = ?";
+    private final static String GET_SQL = "SELECT * FROM PARAMETERS WHERE name = ?";
 
-	private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-	@Override
-	public String getParameter(String name) {
-		List<Map<String, Object>> ll = jdbcTemplate.queryForList(GET_SQL, name);
+    @Override
+    public String getParameter(String name) {
+        List<Map<String, Object>> ll = jdbcTemplate.queryForList(GET_SQL, name);
 
-		if (ll == null || ll.isEmpty()) {
-			log.info("Parameter: " + name + " not found in DB");
-			return null;
-		}
+        if (ll == null || ll.isEmpty()) {
+            log.info("Parameter: " + name + " not found in DB");
+            return null;
+        }
 
-		String v = (String) ll.get(0).get("value");
-		log.info("Parameter from DB: " + name + "='" + v + "'");
+        String v = (String) ll.get(0).get("value");
+        log.info("Parameter from DB: " + name + "='" + v + "'");
 
-		return v;
-	}
+        return v;
+    }
 
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 }

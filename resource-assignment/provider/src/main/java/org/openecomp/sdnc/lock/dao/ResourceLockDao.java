@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,17 +27,17 @@ import org.openecomp.sdnc.lock.data.ResourceLock;
 
 public interface ResourceLockDao {
 
-	void lockTable();
+    void lockTable();
 
-	void unlockTable();
+    void unlockTable();
 
-	void add(ResourceLock l);
+    void add(ResourceLock l);
 
-	void update(long id, Date lockTime, Date expirationTime, int lockCount);
+    void update(long id, Date lockTime, Date expirationTime, int lockCount);
 
-	ResourceLock getByResourceName(String resourceName);
+    ResourceLock getByResourceName(String resourceName);
 
-	void delete(long id);
+    void delete(long id);
 
-	void decrementLockCount(long id);
+    void decrementLockCount(long id);
 }
