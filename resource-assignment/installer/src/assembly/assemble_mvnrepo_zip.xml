@@ -3,7 +3,7 @@
   openECOMP : SDN-C
   ================================================================================
   Copyright (C) 2017 ONAP Intellectual Property. All rights
-  						reserved.
+  reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -22,27 +22,27 @@
 <!-- Defines how we build the .zip file which is our distribution. -->
 
 <assembly
-	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-	<id>mvnrepo_zip</id>
-	<formats>
-		<format>zip</format>
-	</formats>
+    xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+    <id>mvnrepo_zip</id>
+    <formats>
+        <format>zip</format>
+    </formats>
 
-	<!--  we want "system" and related files right at the root level
-		  as this file is suppose to be unzip on top of a karaf
-		  distro. -->
-	<includeBaseDirectory>false</includeBaseDirectory>
+    <!--  we want "system" and related files right at the root level
+          as this file is suppose to be unzip on top of a karaf
+          distro. -->
+    <includeBaseDirectory>false</includeBaseDirectory>
 
-	<fileSets>
-		<fileSet>
-			<directory>target/assembly/</directory>
-			<outputDirectory>.</outputDirectory>
-			<excludes>
-			</excludes>
-		</fileSet>
-	</fileSets>
+    <fileSets>
+        <fileSet>
+            <directory>target/assembly/</directory>
+            <outputDirectory>.</outputDirectory>
+            <excludes>
+            </excludes>
+        </fileSet>
+    </fileSets>
 
 
 

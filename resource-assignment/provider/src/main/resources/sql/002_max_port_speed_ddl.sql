@@ -3,7 +3,7 @@
 -- openECOMP : SDN-C
 -- ================================================================================
 -- Copyright (C) 2017 ONAP Intellectual Property. All rights
--- 						reserved.
+-- reserved.
 -- ================================================================================
 -- Licensed under the Apache License, Version 2.0 (the "License");
 -- you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@
 ---
 
 CREATE TABLE max_port_speed (
-	max_port_speed_id SERIAL PRIMARY KEY,
-	image_file_name VARCHAR(50) NOT NULL,
-	end_point_position VARCHAR(50) NOT NULL,
-	interface_name VARCHAR(100) NOT NULL,
-	max_speed BIGINT NOT NULL,
-	unit VARCHAR(10) NOT NULL
+  max_port_speed_id SERIAL PRIMARY KEY,
+  image_file_name VARCHAR(50) NOT NULL,
+  end_point_position VARCHAR(50) NOT NULL,
+  interface_name VARCHAR(100) NOT NULL,
+  max_speed BIGINT NOT NULL,
+  unit VARCHAR(10) NOT NULL
 );

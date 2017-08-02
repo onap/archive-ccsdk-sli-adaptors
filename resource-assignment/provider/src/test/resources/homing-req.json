@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,27 +20,27 @@
  */
 
 {
-	"input":{
-		"sdnc-homing-header":{
-			"svc-request-id":"omx-123",
-			"svc-action":"homing"
-		},
-		"request-information":{
-			"request-id":"mso-1234",
-			"request-action":"GetAicNodesRequest",
-			"source":"OMX",
-			"list-length":1
-		},
-		"homing-request-information":{
-			"service-type":"SDN-ETHERNET-INTERNET",
-			"global-customer-id":"custid-123",
-			"customer-location":{
-				"lata":332
-			}
-		},
-		"homing-other-information":{
-			"bandwidth-value":150,
-			"bandwidth-units":"Mbps"
-		}
-	}
+    "input":{
+        "sdnc-homing-header":{
+            "svc-request-id":"omx-123",
+            "svc-action":"homing"
+        },
+        "request-information":{
+            "request-id":"mso-1234",
+            "request-action":"GetAicNodesRequest",
+            "source":"OMX",
+            "list-length":1
+        },
+        "homing-request-information":{
+            "service-type":"SDN-ETHERNET-INTERNET",
+            "global-customer-id":"custid-123",
+            "customer-location":{
+                "lata":332
+            }
+        },
+        "homing-other-information":{
+            "bandwidth-value":150,
+            "bandwidth-units":"Mbps"
+        }
+    }
 }

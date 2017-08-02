@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,19 +23,19 @@ package org.openecomp.sdnc.lock.comp;
 
 public class ResourceLockedException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String lockName, lockHolder, lockRequester;
+    private String lockName, lockHolder, lockRequester;
 
-	public ResourceLockedException(String lockName, String lockHolder, String lockRequester) {
-		this.lockName = lockName;
-		this.lockHolder = lockHolder;
-		this.lockRequester = lockRequester;
-	}
+    public ResourceLockedException(String lockName, String lockHolder, String lockRequester) {
+        this.lockName = lockName;
+        this.lockHolder = lockHolder;
+        this.lockRequester = lockRequester;
+    }
 
-	@Override
-	public String getMessage() {
-		return "Failed to lock [" + lockName + "] for [" + lockRequester + "]. Currently locked by [" + lockHolder +
-		        "].";
-	}
+    @Override
+    public String getMessage() {
+        return "Failed to lock [" + lockName + "] for [" + lockRequester + "]. Currently locked by [" + lockHolder +
+                "].";
+    }
 }

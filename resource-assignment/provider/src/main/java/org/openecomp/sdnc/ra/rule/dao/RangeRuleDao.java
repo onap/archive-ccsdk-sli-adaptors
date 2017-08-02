@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,5 +28,5 @@ import org.openecomp.sdnc.ra.rule.data.RangeRule;
 
 public interface RangeRuleDao {
 
-	List<RangeRule> getRangeRules(String serviceModel, String endPointPosition, EquipmentLevel equipLevel);
+    List<RangeRule> getRangeRules(String serviceModel, String endPointPosition, EquipmentLevel equipLevel);
 }

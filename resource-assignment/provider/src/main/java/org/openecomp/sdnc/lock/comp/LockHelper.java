@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,11 @@ import java.util.Collection;
 
 public interface LockHelper {
 
-	void lock(String resourceName, String lockRequester, int lockTimeout /* Seconds */);
+    void lock(String resourceName, String lockRequester, int lockTimeout /* Seconds */);
 
-	void unlock(String resourceName, boolean force);
+    void unlock(String resourceName, boolean force);
 
-	void lock(Collection<String> resourceNameList, String lockRequester, int lockTimeout /* Seconds */);
+    void lock(Collection<String> resourceNameList, String lockRequester, int lockTimeout /* Seconds */);
 
-	void unlock(Collection<String> resourceNameList, boolean force);
+    void unlock(Collection<String> resourceNameList, boolean force);
 }

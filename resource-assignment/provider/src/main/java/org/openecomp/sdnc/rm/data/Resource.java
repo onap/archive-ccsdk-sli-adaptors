@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import java.util.Collection;
 
 public abstract class Resource {
 
-	public ResourceKey resourceKey;
-	public ResourceType resourceType;
-	public Collection<AllocationItem> allocationItems;
-	public Collection<ResourceLoad> resourceLoadList;
+    public ResourceKey resourceKey;
+    public ResourceType resourceType;
+    public Collection<AllocationItem> allocationItems;
+    public Collection<ResourceLoad> resourceLoadList;
 }

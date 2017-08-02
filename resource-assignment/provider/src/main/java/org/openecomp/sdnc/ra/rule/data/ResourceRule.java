@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +25,15 @@ import java.util.List;
 
 public class ResourceRule {
 
-	public long id;
-	public String resourceName;
-	public String serviceModel;
-	public String endPointPosition;
-	public String serviceExpression;
-	public String equipmentLevel;
-	public String equipmentExpression;
-	public String allocationExpression;
-	public String softLimitExpression;
-	public String hardLimitExpression;
-	public List<ResourceThreshold> thresholdList;
+    public long id;
+    public String resourceName;
+    public String serviceModel;
+    public String endPointPosition;
+    public String serviceExpression;
+    public String equipmentLevel;
+    public String equipmentExpression;
+    public String allocationExpression;
+    public String softLimitExpression;
+    public String hardLimitExpression;
+    public List<ResourceThreshold> thresholdList;
 }

@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,53 +33,53 @@ import org.springframework.jdbc.core.RowMapper;
 
 public class MaxPortSpeedDaoImpl implements MaxPortSpeedDao {
 
-	@SuppressWarnings("unused")
-	private static final Logger log = LoggerFactory.getLogger(MaxPortSpeedDaoImpl.class);
+    @SuppressWarnings("unused")
+    private static final Logger log = LoggerFactory.getLogger(MaxPortSpeedDaoImpl.class);
 
-	private final static String GET_SQL =
-	        "SELECT * FROM MAX_PORT_SPEED WHERE image_file_name = ? AND end_point_position = ? AND interface_name = ?";
+    private final static String GET_SQL =
+            "SELECT * FROM MAX_PORT_SPEED WHERE image_file_name = ? AND end_point_position = ? AND interface_name = ?";
 
-	private JdbcTemplate jdbcTemplate;
-	private long defaultMaxPortSpeed = 5000000;
-	private SpeedUtil speedUtil;
+    private JdbcTemplate jdbcTemplate;
+    private long defaultMaxPortSpeed = 5000000;
+    private SpeedUtil speedUtil;
 
-	@Override
-	public long getMaxPortSpeed(String imageFile, String endPointPosition, String interfaceName) {
-		List<MaxPortSpeed> maxPortSpeedList =
-		        jdbcTemplate.query(GET_SQL, new Object[] { imageFile, endPointPosition, interfaceName },
-		                new RowMapper<MaxPortSpeed>() {
+    @Override
+    public long getMaxPortSpeed(String imageFile, String endPointPosition, String interfaceName) {
+        List<MaxPortSpeed> maxPortSpeedList =
+                jdbcTemplate.query(GET_SQL, new Object[] { imageFile, endPointPosition, interfaceName },
+                        new RowMapper<MaxPortSpeed>() {
 
-			                @Override
-			                public MaxPortSpeed mapRow(ResultSet rs, int rowNum) throws SQLException {
-				                MaxPortSpeed mps = new MaxPortSpeed();
-				                mps.maxSpeed = rs.getLong("max_speed");
-				                mps.unit = rs.getString("unit");
-				                return mps;
-			                }
-		                });
+                            @Override
+                            public MaxPortSpeed mapRow(ResultSet rs, int rowNum) throws SQLException {
+                                MaxPortSpeed mps = new MaxPortSpeed();
+                                mps.maxSpeed = rs.getLong("max_speed");
+                                mps.unit = rs.getString("unit");
+                                return mps;
+                            }
+                        });
 
-		if (maxPortSpeedList.isEmpty())
-			return defaultMaxPortSpeed;
+        if (maxPortSpeedList.isEmpty())
+            return defaultMaxPortSpeed;
 
-		MaxPortSpeed mps = maxPortSpeedList.get(0);
-		return speedUtil.convertToKbps(mps.maxSpeed, mps.unit);
-	}
+        MaxPortSpeed mps = maxPortSpeedList.get(0);
+        return speedUtil.convertToKbps(mps.maxSpeed, mps.unit);
+    }
 
-	private static class MaxPortSpeed {
+    private static class MaxPortSpeed {
 
-		public long maxSpeed;
-		public String unit;
-	}
+        public long maxSpeed;
+        public String unit;
+    }
 
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
-	public void setDefaultMaxPortSpeed(long defaultMaxPortSpeed) {
-		this.defaultMaxPortSpeed = defaultMaxPortSpeed;
-	}
+    public void setDefaultMaxPortSpeed(long defaultMaxPortSpeed) {
+        this.defaultMaxPortSpeed = defaultMaxPortSpeed;
+    }
 
-	public void setSpeedUtil(SpeedUtil speedUtil) {
-		this.speedUtil = speedUtil;
-	}
+    public void setSpeedUtil(SpeedUtil speedUtil) {
+        this.speedUtil = speedUtil;
+    }
 }

@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,19 +23,19 @@ package org.openecomp.sdnc.util.speed;
 
 public class SpeedUtil {
 
-	private long unitFactor = 1000;
+    private long unitFactor = 1000;
 
-	public long convertToKbps(long maxSpeed, String unit) {
-		if (unit.equalsIgnoreCase("kbps"))
-			return maxSpeed;
-		if (unit.equalsIgnoreCase("Mbps"))
-			return maxSpeed * unitFactor;
-		if (unit.equalsIgnoreCase("Gbps"))
-			return maxSpeed * unitFactor * unitFactor;
-		return 0;
-	}
+    public long convertToKbps(long maxSpeed, String unit) {
+        if (unit.equalsIgnoreCase("kbps"))
+            return maxSpeed;
+        if (unit.equalsIgnoreCase("Mbps"))
+            return maxSpeed * unitFactor;
+        if (unit.equalsIgnoreCase("Gbps"))
+            return maxSpeed * unitFactor * unitFactor;
+        return 0;
+    }
 
-	public void setUnitFactor(long unitFactor) {
-		this.unitFactor = unitFactor;
-	}
+    public void setUnitFactor(long unitFactor) {
+        this.unitFactor = unitFactor;
+    }
 }

@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,76 +35,76 @@ import org.openecomp.sdnc.rm.data.ResourceType;
 
 public class RangeUtil {
 
-	public static void recalculate(RangeResource r) {
-		r.used = new TreeSet<Integer>();
-		if (r.allocationItems != null)
-			for (AllocationItem ai : r.allocationItems) {
-				RangeAllocationItem rai = (RangeAllocationItem) ai;
-				if (rai.used != null)
-					r.used.addAll(rai.used);
-			}
-	}
+    public static void recalculate(RangeResource r) {
+        r.used = new TreeSet<Integer>();
+        if (r.allocationItems != null)
+            for (AllocationItem ai : r.allocationItems) {
+                RangeAllocationItem rai = (RangeAllocationItem) ai;
+                if (rai.used != null)
+                    r.used.addAll(rai.used);
+            }
+    }
 
-	public static boolean checkRange(RangeResource r, RangeAllocationRequest req, int num) {
-		if (num < req.checkMin || num > req.checkMax)
-			return false;
+    public static boolean checkRange(RangeResource r, RangeAllocationRequest req, int num) {
+        if (num < req.checkMin || num > req.checkMax)
+            return false;
 
-		if (r.allocationItems != null)
-			for (AllocationItem ai : r.allocationItems) {
-				RangeAllocationItem rai = (RangeAllocationItem) ai;
-				if (!eq(req.resourceUnionId, rai.resourceUnionId) && rai.used != null && rai.used.contains(num))
-					return false;
-			}
+        if (r.allocationItems != null)
+            for (AllocationItem ai : r.allocationItems) {
+                RangeAllocationItem rai = (RangeAllocationItem) ai;
+                if (!eq(req.resourceUnionId, rai.resourceUnionId) && rai.used != null && rai.used.contains(num))
+                    return false;
+            }
 
-		return true;
-	}
+        return true;
+    }
 
-	private static boolean eq(Object o1, Object o2) {
-		return o1 == null ? o2 == null : o1.equals(o2);
-	}
+    private static boolean eq(Object o1, Object o2) {
+        return o1 == null ? o2 == null : o1.equals(o2);
+    }
 
-	public static SortedSet<Integer> getUsed(RangeResource r, String resourceUnionId) {
-		SortedSet<Integer> used = new TreeSet<Integer>();
-		if (r.allocationItems != null)
-			for (AllocationItem ai : r.allocationItems) {
-				RangeAllocationItem rai = (RangeAllocationItem) ai;
-				if (eq(resourceUnionId, rai.resourceUnionId) && rai.used != null)
-					used.addAll(rai.used);
-			}
-		return used;
-	}
+    public static SortedSet<Integer> getUsed(RangeResource r, String resourceUnionId) {
+        SortedSet<Integer> used = new TreeSet<Integer>();
+        if (r.allocationItems != null)
+            for (AllocationItem ai : r.allocationItems) {
+                RangeAllocationItem rai = (RangeAllocationItem) ai;
+                if (eq(resourceUnionId, rai.resourceUnionId) && rai.used != null)
+                    used.addAll(rai.used);
+            }
+        return used;
+    }
 
-	public static void allocateRange(
-	        RangeResource rr,
-	        SortedSet<Integer> requestedNumbers,
-	        RangeAllocationRequest req,
-	        String applicationId) {
-		if (!req.allocate)
-			return;
+    public static void allocateRange(
+            RangeResource rr,
+            SortedSet<Integer> requestedNumbers,
+            RangeAllocationRequest req,
+            String applicationId) {
+        if (!req.allocate)
+            return;
 
-		RangeAllocationItem rai = (RangeAllocationItem) ResourceUtil.getAllocationItem(rr, req.resourceSetId);
-		if (rai == null) {
-			rai = new RangeAllocationItem();
-			rai.resourceType = ResourceType.Range;
-			rai.resourceKey = new ResourceKey();
-			rai.resourceKey.assetId = req.assetId;
-			rai.resourceKey.resourceName = req.resourceName;
-			rai.applicationId = applicationId;
-			rai.resourceSetId = req.resourceSetId;
-			rai.resourceUnionId = req.resourceUnionId;
-			rai.resourceShareGroupList = req.resourceShareGroupList;
-			rai.used = requestedNumbers;
+        RangeAllocationItem rai = (RangeAllocationItem) ResourceUtil.getAllocationItem(rr, req.resourceSetId);
+        if (rai == null) {
+            rai = new RangeAllocationItem();
+            rai.resourceType = ResourceType.Range;
+            rai.resourceKey = new ResourceKey();
+            rai.resourceKey.assetId = req.assetId;
+            rai.resourceKey.resourceName = req.resourceName;
+            rai.applicationId = applicationId;
+            rai.resourceSetId = req.resourceSetId;
+            rai.resourceUnionId = req.resourceUnionId;
+            rai.resourceShareGroupList = req.resourceShareGroupList;
+            rai.used = requestedNumbers;
 
-			if (rr.allocationItems == null)
-				rr.allocationItems = new ArrayList<AllocationItem>();
-			rr.allocationItems.add(rai);
-		} else if (req.replace)
-			rai.used = requestedNumbers;
-		else
-			rai.used.addAll(requestedNumbers);
+            if (rr.allocationItems == null)
+                rr.allocationItems = new ArrayList<AllocationItem>();
+            rr.allocationItems.add(rai);
+        } else if (req.replace)
+            rai.used = requestedNumbers;
+        else
+            rai.used.addAll(requestedNumbers);
 
-		rai.allocationTime = new Date();
+        rai.allocationTime = new Date();
 
-		recalculate(rr);
-	}
+        recalculate(rr);
+    }
 }

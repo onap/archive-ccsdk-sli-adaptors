@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,18 +32,18 @@ import org.openecomp.sdnc.ra.equip.data.EquipmentLevel;
 
 public class AicSiteReader implements EquipmentReader {
 
-	@Override
-	public List<EquipmentData> readEquipment(Map<String, Object> equipmentConstraints) {
-		String aicSiteId = (String) equipmentConstraints.get("aic-site-id");
+    @Override
+    public List<EquipmentData> readEquipment(Map<String, Object> equipmentConstraints) {
+        String aicSiteId = (String) equipmentConstraints.get("aic-site-id");
 
-		EquipmentData equipData = new EquipmentData();
-		equipData.equipmentLevel = EquipmentLevel.Site;
-		equipData.equipmentId = aicSiteId;
-		equipData.data = new HashMap<String, Object>();
+        EquipmentData equipData = new EquipmentData();
+        equipData.equipmentLevel = EquipmentLevel.Site;
+        equipData.equipmentId = aicSiteId;
+        equipData.data = new HashMap<String, Object>();
 
-		List<EquipmentData> equipList = new ArrayList<>();
-		equipList.add(equipData);
+        List<EquipmentData> equipList = new ArrayList<>();
+        equipList.add(equipData);
 
-		return equipList;
-	}
+        return equipList;
+    }
 }

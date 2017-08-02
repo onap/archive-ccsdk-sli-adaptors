@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,11 @@ import java.util.List;
 
 public interface AllocationItemJdbcDao {
 
-	void add(AllocationItem ai);
+    void add(AllocationItem ai);
 
-	List<AllocationItem> getAllocationItems(long resourceId);
+    List<AllocationItem> getAllocationItems(long resourceId);
 
-	void update(AllocationItem ai);
+    void update(AllocationItem ai);
 
-	void delete(long id);
+    void delete(long id);
 }

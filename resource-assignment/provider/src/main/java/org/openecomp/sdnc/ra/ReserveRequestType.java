@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,22 +22,22 @@
 package org.openecomp.sdnc.ra;
 
 public enum ReserveRequestType {
-	New, Change;
+    New, Change;
 
-	public static ReserveRequestType convert(Object o) {
-		if (o == null)
-			return null;
-		String s = o.toString();
-		s = s.trim();
-		if (s.length() == 0)
-			return null;
+    public static ReserveRequestType convert(Object o) {
+        if (o == null)
+            return null;
+        String s = o.toString();
+        s = s.trim();
+        if (s.length() == 0)
+            return null;
 
-		if (s.equalsIgnoreCase("New"))
-			return New;
-		if (s.equalsIgnoreCase("Change"))
-			return Change;
+        if (s.equalsIgnoreCase("New"))
+            return New;
+        if (s.equalsIgnoreCase("Change"))
+            return Change;
 
-		throw new IllegalArgumentException("Invalid request-type: " + s +
-		        ". Supported values are New, Change.");
-	}
+        throw new IllegalArgumentException("Invalid request-type: " + s +
+                ". Supported values are New, Change.");
+    }
 }

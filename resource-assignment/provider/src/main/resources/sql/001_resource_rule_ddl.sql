@@ -3,7 +3,7 @@
 -- openECOMP : SDN-C
 -- ================================================================================
 -- Copyright (C) 2017 ONAP Intellectual Property. All rights
--- 						reserved.
+-- reserved.
 -- ================================================================================
 -- Licensed under the Apache License, Version 2.0 (the "License");
 -- you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@
 ---
 
 CREATE TABLE resource_rule (
-	resource_rule_id SERIAL PRIMARY KEY,
-	resource_name VARCHAR(50) NOT NULL,
-	end_point_position VARCHAR(50) NOT NULL,
-	service_expression VARCHAR(2000) NOT NULL,
-	equipment_level VARCHAR(50) NOT NULL,
-	equipment_expression VARCHAR(2000) NOT NULL,
-	allocation_expression VARCHAR(2000) NOT NULL,
-	soft_limit_expression VARCHAR(2000) NOT NULL,
-	hard_limit_expression VARCHAR(2000) NOT NULL
+  resource_rule_id SERIAL PRIMARY KEY,
+  resource_name VARCHAR(50) NOT NULL,
+  end_point_position VARCHAR(50) NOT NULL,
+  service_expression VARCHAR(2000) NOT NULL,
+  equipment_level VARCHAR(50) NOT NULL,
+  equipment_expression VARCHAR(2000) NOT NULL,
+  allocation_expression VARCHAR(2000) NOT NULL,
+  soft_limit_expression VARCHAR(2000) NOT NULL,
+  hard_limit_expression VARCHAR(2000) NOT NULL
 );

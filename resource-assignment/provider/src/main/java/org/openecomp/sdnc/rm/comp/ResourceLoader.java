@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,13 @@ import org.openecomp.sdnc.rm.data.Resource;
 
 public interface ResourceLoader {
 
-	void loadResource(String applicationId, Resource resource, boolean force);
+    void loadResource(String applicationId, Resource resource, boolean force);
 
-	void loadResources(String applicationId, Collection<Resource> resourceList, boolean force);
+    void loadResources(String applicationId, Collection<Resource> resourceList, boolean force);
 
-	void loadResourcesForAsset(String applicationId, String assetId, Collection<Resource> resourceList, boolean force);
+    void loadResourcesForAsset(String applicationId, String assetId, Collection<Resource> resourceList, boolean force);
 
-	void deleteResource(String applicationId, String assetId, String resourceName);
+    void deleteResource(String applicationId, String assetId, String resourceName);
 
-	void deleteResourcesForAsset(String applicationId, String assetId);
+    void deleteResourcesForAsset(String applicationId, String assetId);
 }

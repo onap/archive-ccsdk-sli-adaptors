@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,21 +29,21 @@ import org.openecomp.sdnc.rm.data.ResourceType;
 
 public class ResourceUtil {
 
-	public static AllocationItem getAllocationItem(Resource r, String resourceSetId) {
-		if (r.allocationItems != null)
-			for (AllocationItem ai : r.allocationItems)
-				if (ai.resourceSetId != null && ai.resourceSetId.equals(resourceSetId))
-					return ai;
-		return null;
-	}
+    public static AllocationItem getAllocationItem(Resource r, String resourceSetId) {
+        if (r.allocationItems != null)
+            for (AllocationItem ai : r.allocationItems)
+                if (ai.resourceSetId != null && ai.resourceSetId.equals(resourceSetId))
+                    return ai;
+        return null;
+    }
 
-	public static void recalculate(Resource r) {
-		if (r == null)
-			return;
+    public static void recalculate(Resource r) {
+        if (r == null)
+            return;
 
-		if (r.resourceType == ResourceType.Limit)
-			LimitUtil.recalculate((LimitResource) r);
-		else if (r.resourceType == ResourceType.Label)
-			LabelUtil.recalculate((LabelResource) r);
-	}
+        if (r.resourceType == ResourceType.Limit)
+            LimitUtil.recalculate((LimitResource) r);
+        else if (r.resourceType == ResourceType.Label)
+            LabelUtil.recalculate((LabelResource) r);
+    }
 }

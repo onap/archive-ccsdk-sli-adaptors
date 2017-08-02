@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,37 +34,37 @@ import org.springframework.jdbc.core.RowMapper;
 
 public class RangeRuleDaoImpl implements RangeRuleDao {
 
-	@SuppressWarnings("unused")
-	private static final Logger log = LoggerFactory.getLogger(RangeRuleDaoImpl.class);
+    @SuppressWarnings("unused")
+    private static final Logger log = LoggerFactory.getLogger(RangeRuleDaoImpl.class);
 
-	private static final String GET_SQL =
-	        "SELECT * FROM RANGE_RULE WHERE service_model = ? AND end_point_position = ? AND equipment_level = ?";
+    private static final String GET_SQL =
+            "SELECT * FROM RANGE_RULE WHERE service_model = ? AND end_point_position = ? AND equipment_level = ?";
 
-	private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-	@Override
-	public List<RangeRule> getRangeRules(String serviceModel, String endPointPosition, EquipmentLevel equipLevel) {
-		List<RangeRule> rangeRuleList =
-		        jdbcTemplate.query(GET_SQL, new Object[] { serviceModel, endPointPosition, equipLevel.toString() },
-		                new RowMapper<RangeRule>() {
+    @Override
+    public List<RangeRule> getRangeRules(String serviceModel, String endPointPosition, EquipmentLevel equipLevel) {
+        List<RangeRule> rangeRuleList =
+                jdbcTemplate.query(GET_SQL, new Object[] { serviceModel, endPointPosition, equipLevel.toString() },
+                        new RowMapper<RangeRule>() {
 
-			                @Override
-			                public RangeRule mapRow(ResultSet rs, int rowNum) throws SQLException {
-				                RangeRule rl = new RangeRule();
-				                rl.id = rs.getLong("range_rule_id");
-				                rl.rangeName = rs.getString("range_name");
-				                rl.serviceModel = rs.getString("service_model");
-				                rl.endPointPosition = rs.getString("end_point_position");
-				                rl.equipmentLevel = rs.getString("equipment_level");
-				                rl.minValue = rs.getInt("min_value");
-				                rl.maxValue = rs.getInt("max_value");
-				                return rl;
-			                }
-		                });
-		return rangeRuleList;
-	}
+                            @Override
+                            public RangeRule mapRow(ResultSet rs, int rowNum) throws SQLException {
+                                RangeRule rl = new RangeRule();
+                                rl.id = rs.getLong("range_rule_id");
+                                rl.rangeName = rs.getString("range_name");
+                                rl.serviceModel = rs.getString("service_model");
+                                rl.endPointPosition = rs.getString("end_point_position");
+                                rl.equipmentLevel = rs.getString("equipment_level");
+                                rl.minValue = rs.getInt("min_value");
+                                rl.maxValue = rs.getInt("max_value");
+                                return rl;
+                            }
+                        });
+        return rangeRuleList;
+    }
 
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 }

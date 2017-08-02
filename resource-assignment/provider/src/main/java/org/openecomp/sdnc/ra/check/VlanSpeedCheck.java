@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,20 +31,20 @@ import org.slf4j.LoggerFactory;
 
 public class VlanSpeedCheck implements EquipmentCheck {
 
-	private static final Logger log = LoggerFactory.getLogger(VlanSpeedCheck.class);
+    private static final Logger log = LoggerFactory.getLogger(VlanSpeedCheck.class);
 
-	@Override
-	public boolean checkEquipment(
-	        String endPointPosition,
-	        ServiceData serviceData,
-	        EquipmentData equipData,
-	        Map<String, Object> equipmentConstraints) {
-		String vpeName = (String) equipData.data.get("vpe-id");
-		Long serviceSpeed = (Long) serviceData.data.get("service-speed-kbps");
-		if (serviceSpeed != null && serviceSpeed > 0 && serviceSpeed < 1000) {
-			log.info("Skipping VPE " + vpeName + ": Service speed < 1Mbps is not supported.");
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean checkEquipment(
+            String endPointPosition,
+            ServiceData serviceData,
+            EquipmentData equipData,
+            Map<String, Object> equipmentConstraints) {
+        String vpeName = (String) equipData.data.get("vpe-id");
+        Long serviceSpeed = (Long) serviceData.data.get("service-speed-kbps");
+        if (serviceSpeed != null && serviceSpeed > 0 && serviceSpeed < 1000) {
+            log.info("Skipping VPE " + vpeName + ": Service speed < 1Mbps is not supported.");
+            return false;
+        }
+        return true;
+    }
 }

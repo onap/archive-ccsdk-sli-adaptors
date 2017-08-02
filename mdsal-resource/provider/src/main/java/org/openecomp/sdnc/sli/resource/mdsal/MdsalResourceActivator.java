@@ -38,69 +38,69 @@ public class MdsalResourceActivator implements BundleActivator {
 
 
 
-	private static final String SDNC_CONFIG_DIR = "SDNC_CONFIG_DIR";
+    private static final String SDNC_CONFIG_DIR = "SDNC_CONFIG_DIR";
 
-	public LinkedList<ServiceRegistration> registrations = new LinkedList<ServiceRegistration>();
+    public LinkedList<ServiceRegistration> registrations = new LinkedList<ServiceRegistration>();
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(MdsalResourceActivator.class);
+    private static final Logger LOG = LoggerFactory
+            .getLogger(MdsalResourceActivator.class);
 
-	@Override
-	public void start(BundleContext ctx) throws Exception {
+    @Override
+    public void start(BundleContext ctx) throws Exception {
 
-		// Read properties
-		Properties props = new Properties();
+        // Read properties
+        Properties props = new Properties();
 
-		String propDir = System.getenv(SDNC_CONFIG_DIR);
-		if (propDir == null) {
+        String propDir = System.getenv(SDNC_CONFIG_DIR);
+        if (propDir == null) {
 
-			propDir = "/opt/sdnc/data/properties";
-		}
-		String propPath = propDir + "/mdsal-resource.properties";
+            propDir = "/opt/sdnc/data/properties";
+        }
+        String propPath = propDir + "/mdsal-resource.properties";
 
 
-		File propFile = new File(propPath);
+        File propFile = new File(propPath);
 
-		if (!propFile.exists()) {
+        if (!propFile.exists()) {
 
-			throw new ConfigurationException(
-					"Missing configuration properties file : "
-							+ propFile);
-		}
-		try {
+            throw new ConfigurationException(
+                    "Missing configuration properties file : "
+                            + propFile);
+        }
+        try {
 
-			props.load(new FileInputStream(propFile));
-		} catch (Exception e) {
-			throw new ConfigurationException(
-					"Could not load properties file " + propPath, e);
+            props.load(new FileInputStream(propFile));
+        } catch (Exception e) {
+            throw new ConfigurationException(
+                    "Could not load properties file " + propPath, e);
 
-		}
+        }
 
-		String sdncUser = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-user", "admin");
-		String sdncPasswd = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-passwd", "admin");
-		String sdncHost = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-host", "localhost");
-		String sdncProtocol = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-protocol", "https");
-		String sdncPort = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-port", "8443");
+        String sdncUser = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-user", "admin");
+        String sdncPasswd = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-passwd", "admin");
+        String sdncHost = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-host", "localhost");
+        String sdncProtocol = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-protocol", "https");
+        String sdncPort = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-port", "8443");
 
-		// Advertise MD-SAL resource adaptors
-		SvcLogicResource impl = new ConfigResource(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd);
+        // Advertise MD-SAL resource adaptors
+        SvcLogicResource impl = new ConfigResource(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd);
 
-		LOG.debug("Registering MdsalResource service "+impl.getClass().getName());
-		registrations.add(ctx.registerService(impl.getClass().getName(), impl, null));
+        LOG.debug("Registering MdsalResource service "+impl.getClass().getName());
+        registrations.add(ctx.registerService(impl.getClass().getName(), impl, null));
 
-		impl = new OperationalResource(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd);
+        impl = new OperationalResource(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd);
 
-		LOG.debug("Registering MdsalResource service "+impl.getClass().getName());
-		registrations.add(ctx.registerService(impl.getClass().getName(), impl, null));
-	}
+        LOG.debug("Registering MdsalResource service "+impl.getClass().getName());
+        registrations.add(ctx.registerService(impl.getClass().getName(), impl, null));
+    }
 
-	@Override
-	public void stop(BundleContext ctx) throws Exception {
+    @Override
+    public void stop(BundleContext ctx) throws Exception {
 
-		for (ServiceRegistration registration : registrations)
-		{
-			registration.unregister();
-		}
-	}
+        for (ServiceRegistration registration : registrations)
+        {
+            registration.unregister();
+        }
+    }
 
 }

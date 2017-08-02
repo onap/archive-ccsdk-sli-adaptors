@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,18 +32,18 @@ import org.openecomp.sdnc.ra.equip.data.EquipmentLevel;
 
 public class VnfReader implements EquipmentReader {
 
-	@Override
-	public List<EquipmentData> readEquipment(Map<String, Object> equipmentConstraints) {
-		String vnfName = (String) equipmentConstraints.get("vnf-name");
+    @Override
+    public List<EquipmentData> readEquipment(Map<String, Object> equipmentConstraints) {
+        String vnfName = (String) equipmentConstraints.get("vnf-name");
 
-		EquipmentData equipData = new EquipmentData();
-		equipData.equipmentLevel = EquipmentLevel.Device;
-		equipData.equipmentId = vnfName;
-		equipData.data = new HashMap<String, Object>();
+        EquipmentData equipData = new EquipmentData();
+        equipData.equipmentLevel = EquipmentLevel.Device;
+        equipData.equipmentId = vnfName;
+        equipData.data = new HashMap<String, Object>();
 
-		List<EquipmentData> equipList = new ArrayList<>();
-		equipList.add(equipData);
+        List<EquipmentData> equipList = new ArrayList<>();
+        equipList.add(equipData);
 
-		return equipList;
-	}
+        return equipList;
+    }
 }

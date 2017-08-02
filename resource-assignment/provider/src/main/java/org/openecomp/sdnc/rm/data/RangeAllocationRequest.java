@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,12 @@ import java.util.SortedSet;
 
 public class RangeAllocationRequest extends AllocationRequest {
 
-	public int checkMin = 0;
-	public int checkMax = 0;
-	public boolean check = false;
-	public boolean allocate = false;
-	public boolean replace = false;
-	public SortedSet<Integer> requestedNumbers = null;
-	public int requestedCount = 1;
-	public boolean sequential = false;
+    public int checkMin = 0;
+    public int checkMax = 0;
+    public boolean check = false;
+    public boolean allocate = false;
+    public boolean replace = false;
+    public SortedSet<Integer> requestedNumbers = null;
+    public int requestedCount = 1;
+    public boolean sequential = false;
 }

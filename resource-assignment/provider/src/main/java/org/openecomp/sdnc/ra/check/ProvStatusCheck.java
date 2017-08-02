@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,19 +31,19 @@ import org.slf4j.LoggerFactory;
 
 public class ProvStatusCheck implements EquipmentCheck {
 
-	private static final Logger log = LoggerFactory.getLogger(ProvStatusCheck.class);
+    private static final Logger log = LoggerFactory.getLogger(ProvStatusCheck.class);
 
-	@Override
-	public boolean checkEquipment(
-	        String endPointPosition,
-	        ServiceData serviceData,
-	        EquipmentData equipData,
-	        Map<String, Object> equipmentConstraints) {
-		String provStatus = (String) equipData.data.get("provisioning-status");
-		if (provStatus == null || !provStatus.equals("PROV")) {
-			log.info("Skipping VPE " + equipData.equipmentId + ": Not in PROV status.");
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean checkEquipment(
+            String endPointPosition,
+            ServiceData serviceData,
+            EquipmentData equipData,
+            Map<String, Object> equipmentConstraints) {
+        String provStatus = (String) equipData.data.get("provisioning-status");
+        if (provStatus == null || !provStatus.equals("PROV")) {
+            log.info("Skipping VPE " + equipData.equipmentId + ": Not in PROV status.");
+            return false;
+        }
+        return true;
+    }
 }

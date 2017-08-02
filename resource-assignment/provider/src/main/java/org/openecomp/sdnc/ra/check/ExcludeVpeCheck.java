@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,27 +31,27 @@ import org.slf4j.LoggerFactory;
 
 public class ExcludeVpeCheck implements EquipmentCheck {
 
-	private static final Logger log = LoggerFactory.getLogger(ExcludeVpeCheck.class);
+    private static final Logger log = LoggerFactory.getLogger(ExcludeVpeCheck.class);
 
-	@Override
-	public boolean checkEquipment(
-	        String endPointPosition,
-	        ServiceData serviceData,
-	        EquipmentData equipData,
-	        Map<String, Object> equipmentConstraints) {
-		String excludeVpeListStr = (String) equipmentConstraints.get("exclude-vpe-list");
-		if (excludeVpeListStr == null)
-			return true;
+    @Override
+    public boolean checkEquipment(
+            String endPointPosition,
+            ServiceData serviceData,
+            EquipmentData equipData,
+            Map<String, Object> equipmentConstraints) {
+        String excludeVpeListStr = (String) equipmentConstraints.get("exclude-vpe-list");
+        if (excludeVpeListStr == null)
+            return true;
 
-		String vpeName = (String) equipData.data.get("vpe-id");
+        String vpeName = (String) equipData.data.get("vpe-id");
 
-		String[] excludeVpeList = excludeVpeListStr.split(",");
-		for (String excludeVpe : excludeVpeList)
-			if (excludeVpe.equals(vpeName)) {
-				log.info("Skipping VPE " + equipData.equipmentId + ": Present in the exclude VPE list.");
-				return false;
-			}
+        String[] excludeVpeList = excludeVpeListStr.split(",");
+        for (String excludeVpe : excludeVpeList)
+            if (excludeVpe.equals(vpeName)) {
+                log.info("Skipping VPE " + equipData.equipmentId + ": Present in the exclude VPE list.");
+                return false;
+            }
 
-		return true;
-	}
+        return true;
+    }
 }

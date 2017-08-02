@@ -33,52 +33,52 @@ import org.w3c.dom.Document;
 
 public class OperationalResource implements SvcLogicResource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(OperationalResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OperationalResource.class);
 
-	private RestService restService;
+    private RestService restService;
 
-	public OperationalResource(String sdncProtocol, String sdncHost, String sdncPort, String sdncUser, String sdncPasswd)
-	{
-		restService = new RestService(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd, RestService.PayloadType.XML);
-
-
-	}
-
-	@Override
-	public QueryStatus isAvailable(String resource, String key, String prefix, SvcLogicContext ctx) throws SvcLogicException
-	{
-		return(query(resource, false, null, key, prefix, null, null));
-	}
-
-	@Override
-	public QueryStatus exists(String resource, String key, String prefix, SvcLogicContext ctx) throws SvcLogicException
-	{
-
-		return(query(resource, false, null, key, prefix, null, null));
-
-	}
-
-	@Override
-	public QueryStatus query(String resource, boolean localOnly, String select, String key, String prefix,
-			String orderBy, SvcLogicContext ctx) throws SvcLogicException {
+    public OperationalResource(String sdncProtocol, String sdncHost, String sdncPort, String sdncUser, String sdncPasswd)
+    {
+        restService = new RestService(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd, RestService.PayloadType.XML);
 
 
-		String module = resource;
-		StringBuffer restQuery = new StringBuffer();
+    }
 
-		String[] keyParts = key.split("/");
+    @Override
+    public QueryStatus isAvailable(String resource, String key, String prefix, SvcLogicContext ctx) throws SvcLogicException
+    {
+        return(query(resource, false, null, key, prefix, null, null));
+    }
 
-		for (String keyPart : keyParts) {
-			if (restQuery.length() > 0) {
-				restQuery.append("/");
-			}
-			if (keyPart.startsWith("$")) {
+    @Override
+    public QueryStatus exists(String resource, String key, String prefix, SvcLogicContext ctx) throws SvcLogicException
+    {
 
-				restQuery.append(ctx.resolve(keyPart.substring(1)));
-			} else {
-				restQuery.append(keyPart);
-			}
-		}
+        return(query(resource, false, null, key, prefix, null, null));
+
+    }
+
+    @Override
+    public QueryStatus query(String resource, boolean localOnly, String select, String key, String prefix,
+            String orderBy, SvcLogicContext ctx) throws SvcLogicException {
+
+
+        String module = resource;
+        StringBuffer restQuery = new StringBuffer();
+
+        String[] keyParts = key.split("/");
+
+        for (String keyPart : keyParts) {
+            if (restQuery.length() > 0) {
+                restQuery.append("/");
+            }
+            if (keyPart.startsWith("$")) {
+
+                restQuery.append(ctx.resolve(keyPart.substring(1)));
+            } else {
+                restQuery.append(keyPart);
+            }
+        }
 
         String restQueryStr = restQuery.toString();
         if ((restQueryStr.startsWith("'") && restQueryStr.endsWith("'")) ||
@@ -86,66 +86,66 @@ public class OperationalResource implements SvcLogicResource {
             restQueryStr = restQueryStr.substring(1, restQueryStr.length()-1);
         }
 
-		String urlString = "restconf/operational/" + module + ":" + restQueryStr;
+        String urlString = "restconf/operational/" + module + ":" + restQueryStr;
 
                 LOG.info("Querying resource: " + resource + ". At URL: " + urlString);
 
-		Document results = restService.get(urlString);
+        Document results = restService.get(urlString);
 
 
-		if (results == null) {
-			return(QueryStatus.NOT_FOUND);
-		} else {
+        if (results == null) {
+            return(QueryStatus.NOT_FOUND);
+        } else {
 
-			if (ctx != null) {
-				ctx.mergeDocument(prefix, results);
-			}
-			return(QueryStatus.SUCCESS);
-		}
+            if (ctx != null) {
+                ctx.mergeDocument(prefix, results);
+            }
+            return(QueryStatus.SUCCESS);
+        }
 
-	}
+    }
 
-	@Override
-	public QueryStatus reserve(String resource, String select, String key, String prefix,
-			SvcLogicContext ctx) throws SvcLogicException {
+    @Override
+    public QueryStatus reserve(String resource, String select, String key, String prefix,
+            SvcLogicContext ctx) throws SvcLogicException {
 
 
-		return(QueryStatus.SUCCESS);
+        return(QueryStatus.SUCCESS);
 
-	}
+    }
 
-	@Override
-	public QueryStatus release(String resource, String key, SvcLogicContext ctx) throws SvcLogicException {
+    @Override
+    public QueryStatus release(String resource, String key, SvcLogicContext ctx) throws SvcLogicException {
 
-		return(QueryStatus.SUCCESS);
-	}
+        return(QueryStatus.SUCCESS);
+    }
 
-	@Override
-	public QueryStatus delete(String arg0, String arg1, SvcLogicContext arg2)
-			throws SvcLogicException {
-		// TODO Auto-generated method stub
-		return(QueryStatus.SUCCESS);
-	}
+    @Override
+    public QueryStatus delete(String arg0, String arg1, SvcLogicContext arg2)
+            throws SvcLogicException {
+        // TODO Auto-generated method stub
+        return(QueryStatus.SUCCESS);
+    }
 
-	@Override
-	public QueryStatus save(String arg0, boolean arg1, boolean localOnly, String arg2,
-			Map<String, String> arg3, String arg4, SvcLogicContext arg5)
-			throws SvcLogicException {
-		// TODO Auto-generated method stub
-		return(QueryStatus.SUCCESS);
-	}
+    @Override
+    public QueryStatus save(String arg0, boolean arg1, boolean localOnly, String arg2,
+            Map<String, String> arg3, String arg4, SvcLogicContext arg5)
+            throws SvcLogicException {
+        // TODO Auto-generated method stub
+        return(QueryStatus.SUCCESS);
+    }
 
-	@Override
-	public QueryStatus notify(String resource, String action, String key,
-			SvcLogicContext ctx) throws SvcLogicException {
-		return(QueryStatus.SUCCESS);
-	}
+    @Override
+    public QueryStatus notify(String resource, String action, String key,
+            SvcLogicContext ctx) throws SvcLogicException {
+        return(QueryStatus.SUCCESS);
+    }
 
-	public QueryStatus update(String resource, String key,
-			Map<String, String> parms, String prefix, SvcLogicContext ctx)
-			throws SvcLogicException {
-		return(QueryStatus.SUCCESS);
-	}
+    public QueryStatus update(String resource, String key,
+            Map<String, String> parms, String prefix, SvcLogicContext ctx)
+            throws SvcLogicException {
+        return(QueryStatus.SUCCESS);
+    }
 
 
 }

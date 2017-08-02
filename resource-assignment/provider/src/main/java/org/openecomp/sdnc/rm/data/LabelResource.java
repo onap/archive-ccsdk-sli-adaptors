@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ package org.openecomp.sdnc.rm.data;
 
 public class LabelResource extends Resource {
 
-	public static final String BLOCKED = "__BLOCKED__";
+    public static final String BLOCKED = "__BLOCKED__";
 
-	public String label;
-	public int referenceCount;
+    public String label;
+    public int referenceCount;
 }

@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ package org.openecomp.sdnc.util.vrf;
 
 public class VpnParam {
 
-	public String vpnId;
-	public String siteType;
-	public String spokeServiceInstanceId;
-	public String routeGroupName;
+    public String vpnId;
+    public String siteType;
+    public String spokeServiceInstanceId;
+    public String routeGroupName;
 }

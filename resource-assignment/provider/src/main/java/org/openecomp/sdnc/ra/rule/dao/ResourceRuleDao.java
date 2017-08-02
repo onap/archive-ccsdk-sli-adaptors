@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 ONAP Intellectual Property. All rights
- * 						reserved.
+ * reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,11 @@ import org.openecomp.sdnc.ra.rule.data.ResourceRule;
 
 public interface ResourceRuleDao {
 
-	List<ResourceRule> getResourceRules(String serviceModel, String endPointPosition, EquipmentLevel equipLevel);
+    List<ResourceRule> getResourceRules(String serviceModel, String endPointPosition, EquipmentLevel equipLevel);
 
-	ResourceRule getResourceRule(
-	        String serviceModel,
-	        String endPointPosition,
-	        EquipmentLevel equipLevel,
-	        String resourceName);
+    ResourceRule getResourceRule(
+            String serviceModel,
+            String endPointPosition,
+            EquipmentLevel equipLevel,
+            String resourceName);
 }
