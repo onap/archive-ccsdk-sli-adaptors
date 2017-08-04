@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ============LICENSE_START=======================================================
-  openECOMP : SDN-C
+  ONAP : CCSDK
   ================================================================================
   Copyright (C) 2017 ONAP Intellectual Property. All rights
-                        reserved.
+  reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,17 +19,17 @@
   -->
 
 
-<features name="sdnc-aai-service-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
+<features name="ccsdk-aai-service-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">
 
     <repository>mvn:org.opendaylight.mdsal/features-mdsal/${odl.mdsal.features.version}/xml/features</repository>
 
-    <feature name='sdnc-aai-service' description="sdnc-aai-service" version='${project.version}'>
+    <feature name='ccsdk-aai-service' description="ccsdk-aai-service" version='${project.version}'>
         <!-- Most applications will have a dependency on the ODL MD-SAL Broker -->
         <feature version="${odl.mdsal.version}">odl-mdsal-broker</feature>
-        <feature>sdnc-sli</feature>
-        <bundle>mvn:org.openecomp.sdnc.adaptors/aai-service-provider/${project.version}</bundle>
+        <feature>ccsdk-sli</feature>
+        <bundle>mvn:org.onap.ccsdk.sli.adaptors/aai-service-provider/${project.version}</bundle>
         <bundle>mvn:com.sun.jersey/jersey-client/${jersey.client.version}</bundle>
         <bundle>mvn:com.sun.jersey/jersey-core/${jersey.version}</bundle>
         <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/${apache.httpcomponents.version}</bundle>
