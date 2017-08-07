@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a1a2d67_3fb9e2e9",
+        "filename": "aai-service/provider/src/main/java/org/onap/sli/adaptors/aai/query/NamedQueryData.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 667
+      },
+      "writtenOn": "2017-08-07T18:54:05Z",
+      "side": 1,
+      "message": "Agreed. Was thinking of doing space/style stuff in another patch.",
+      "parentUuid": "1a1a2d67_dff0aecb",
+      "range": {
+        "startLine": 13,
+        "startChar": 2,
+        "endLine": 13,
+        "endChar": 3
+      },
+      "revId": "16e3d1b7b926870e9300bf31b46c58af2e835b2d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a1a2d67_ffe36a03",
         "filename": "aai-service/provider/src/main/java/org/onap/sli/adaptors/aai/query/NamedQueryData.java",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2017-08-07T18:47:23Z",
       "side": 1,
       "message": "Should have a space below this.  Not sure on the style conventions for ONAP... is anyone?",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 53
+      },
+      "revId": "16e3d1b7b926870e9300bf31b46c58af2e835b2d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a1a2d67_7fbf5ad1",
+        "filename": "aai-service/provider/src/main/java/org/onap/sli/adaptors/aai/query/NamedQueryData.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 667
+      },
+      "writtenOn": "2017-08-07T18:54:05Z",
+      "side": 1,
+      "message": "Thanks, agree, will update and fix style. https://wiki.onap.org/display/DW/Java+code+style - Basically says use google java style with change to 4 spaces for tabs and 120 character limit on lines. I think this is same/similar to OpenDaylight style. But most of the code does not conform as of yet. On my list for this release is conforming to style and enforcing style on reviews.",
+      "parentUuid": "1a1a2d67_ffe36a03",
       "range": {
         "startLine": 28,
         "startChar": 0,
