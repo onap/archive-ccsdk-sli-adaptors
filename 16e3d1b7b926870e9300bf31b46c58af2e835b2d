@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a1a2d67_dff0aecb",
+        "filename": "aai-service/provider/src/main/java/org/onap/sli/adaptors/aai/query/NamedQueryData.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1517
+      },
+      "writtenOn": "2017-08-07T18:47:23Z",
+      "side": 1,
+      "message": "dead space outside of patch we will want to fix.",
+      "range": {
+        "startLine": 13,
+        "startChar": 2,
+        "endLine": 13,
+        "endChar": 3
+      },
+      "revId": "16e3d1b7b926870e9300bf31b46c58af2e835b2d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a1a2d67_ffe36a03",
+        "filename": "aai-service/provider/src/main/java/org/onap/sli/adaptors/aai/query/NamedQueryData.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1517
+      },
+      "writtenOn": "2017-08-07T18:47:23Z",
+      "side": 1,
+      "message": "Should have a space below this.  Not sure on the style conventions for ONAP... is anyone?",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 53
+      },
+      "revId": "16e3d1b7b926870e9300bf31b46c58af2e835b2d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
