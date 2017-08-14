@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.onap.ccsdk.sli.adaptors</groupId>
 		<artifactId>aai-service</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>aai-service-provider</artifactId>
 	<packaging>bundle</packaging>
@@ -22,7 +22,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
+			<artifactId>mockito-core</artifactId>
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
