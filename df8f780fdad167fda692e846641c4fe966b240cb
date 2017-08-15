@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_182be931",
+        "filename": "aai-service/features/src/main/resources/features.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 667
+      },
+      "writtenOn": "2017-08-15T14:07:55Z",
+      "side": 1,
+      "message": "do we want this changed as well?",
+      "range": {
+        "startLine": 4,
+        "startChar": 2,
+        "endLine": 4,
+        "endChar": 18
+      },
+      "revId": "df8f780fdad167fda692e846641c4fe966b240cb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
