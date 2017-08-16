@@ -66,10 +66,10 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>org.openecomp.sdnc.sli.resource.mdsal</Bundle-SymbolicName>
-                        <Bundle-Activator>org.openecomp.sdnc.sli.resource.mdsal.MdsalResourceActivator</Bundle-Activator>
-                        <Export-Package>org.openecomp.sdnc.sli.resource.mdsal</Export-Package>
-                        <Import-Package>org.openecomp.sdnc.sli.*,org.osgi.framework.*,org.slf4j.*,com.mysql.jdbc.*</Import-Package>
+                        <Bundle-SymbolicName>org.onap.ccsdk.sli.adaptors.resource.mdsal</Bundle-SymbolicName>
+                        <Bundle-Activator>org.onap.ccsdk.sli.adaptors.resource.mdsal.MdsalResourceActivator</Bundle-Activator>
+                        <Export-Package>org.onap.ccsdk.sli.adaptors.resource.mdsal</Export-Package>
+                        <Import-Package>org.onap.ccsdk.sli.adaptors.*,org.osgi.framework.*,org.slf4j.*,com.mysql.jdbc.*</Import-Package>
                         <!-- <Embed-Dependency>*;scope=compile|runtime;artifactId=!sli-common|org.eclipse.osgi|slf4j-api|jcl-over-slf4j|mysql-connector-java|xml-apis</Embed-Dependency> -->
                         <Import-Package>*</Import-Package>
                         <Embed-Transitive>true</Embed-Transitive>

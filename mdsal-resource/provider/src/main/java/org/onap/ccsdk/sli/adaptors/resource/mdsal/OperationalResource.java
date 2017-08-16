@@ -19,7 +19,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.openecomp.sdnc.sli.resource.mdsal;
+package org.onap.ccsdk.sli.adaptors.resource.mdsal;
 
 import java.util.Map;
 
@@ -31,15 +31,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-public class ConfigResource implements SvcLogicResource {
+public class OperationalResource implements SvcLogicResource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ConfigResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OperationalResource.class);
 
     private RestService restService;
 
-    public ConfigResource(String sdncProtocol, String sdncHost, String sdncPort, String sdncUser, String sdncPasswd)
+    public OperationalResource(String sdncProtocol, String sdncHost, String sdncPort, String sdncUser, String sdncPasswd)
     {
         restService = new RestService(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd, RestService.PayloadType.XML);
+
+
     }
 
     @Override
@@ -84,7 +86,7 @@ public class ConfigResource implements SvcLogicResource {
             restQueryStr = restQueryStr.substring(1, restQueryStr.length()-1);
         }
 
-        String urlString = "restconf/config/" + module + ":" + restQueryStr;
+        String urlString = "restconf/operational/" + module + ":" + restQueryStr;
 
                 LOG.info("Querying resource: " + resource + ". At URL: " + urlString);
 
@@ -139,13 +141,11 @@ public class ConfigResource implements SvcLogicResource {
         return(QueryStatus.SUCCESS);
     }
 
-
     public QueryStatus update(String resource, String key,
             Map<String, String> parms, String prefix, SvcLogicContext ctx)
             throws SvcLogicException {
         return(QueryStatus.SUCCESS);
     }
-
 
 
 }

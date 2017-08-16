@@ -32,7 +32,7 @@
         <!-- Most applications will have a dependency on the ODL MD-SAL Broker -->
         <feature version="${odl.mdsal.version}">odl-mdsal-broker</feature>
         <feature>sdnc-sli</feature>
-        <bundle>mvn:org.openecomp.sdnc.adaptors/mdsal-resource-provider/${project.version}</bundle>
+        <bundle>mvn:org.onap.ccsdk.sli.adaptors/mdsal-resource-provider/${project.version}</bundle>
     </feature>
 
 </features>

@@ -19,7 +19,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.openecomp.sdnc.sli.resource.mdsal;
+package org.onap.ccsdk.sli.adaptors.resource.mdsal;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

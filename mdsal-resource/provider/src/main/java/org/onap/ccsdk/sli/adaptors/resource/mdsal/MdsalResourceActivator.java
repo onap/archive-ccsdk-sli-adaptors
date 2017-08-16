@@ -19,7 +19,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.openecomp.sdnc.sli.resource.mdsal;
+package org.onap.ccsdk.sli.adaptors.resource.mdsal;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -76,11 +76,11 @@ public class MdsalResourceActivator implements BundleActivator {
 
         }
 
-        String sdncUser = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-user", "admin");
-        String sdncPasswd = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-passwd", "admin");
-        String sdncHost = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-host", "localhost");
-        String sdncProtocol = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-protocol", "https");
-        String sdncPort = props.getProperty("org.openecomp.sdnc.sli.resource.mdsal.sdnc-port", "8443");
+        String sdncUser = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-user", "admin");
+        String sdncPasswd = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-passwd", "admin");
+        String sdncHost = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-host", "localhost");
+        String sdncProtocol = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-protocol", "https");
+        String sdncPort = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-port", "8443");
 
         // Advertise MD-SAL resource adaptors
         SvcLogicResource impl = new ConfigResource(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd);
