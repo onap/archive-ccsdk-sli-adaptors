@@ -40,5 +40,5 @@ Release:
 			Error message in: error-message, error-code
 
 
-Plugin name: org.openecomp.sdnc.ra.ResourceAllocator
+Plugin name: org.onap.ccsdk.sli.adaptors.ra.ResourceAllocator
 Resource: NetworkCapacity
