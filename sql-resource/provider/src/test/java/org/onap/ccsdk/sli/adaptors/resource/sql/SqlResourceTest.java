@@ -19,7 +19,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.openecomp.sdnc.sli.resource.sql;
+package org.onap.ccsdk.sli.adaptors.resource.sql;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

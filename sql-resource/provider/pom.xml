@@ -87,9 +87,9 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>org.openecomp.sdnc.sli.resource.sql</Bundle-SymbolicName>
-						<Bundle-Activator>org.openecomp.sdnc.sli.resource.sql.SqlResourceActivator</Bundle-Activator>
-						<Export-Package>org.openecomp.sdnc.sli.resource.sql</Export-Package>
+						<Bundle-SymbolicName>org.onap.ccsdk.sli.adaptors.resource.sql</Bundle-SymbolicName>
+						<Bundle-Activator>org.onap.ccsdk.sli.adaptors.resource.sql.SqlResourceActivator</Bundle-Activator>
+						<Export-Package>org.onap.ccsdk.sli.adaptors.resource.sql</Export-Package>
 						<Import-Package>*</Import-Package>
 						<DynamicImport-Package>*</DynamicImport-Package>
 					</instructions>
