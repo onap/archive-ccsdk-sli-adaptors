@@ -1,9 +1,9 @@
 /*-
  * ============LICENSE_START=======================================================
- * openECOMP : SDN-C
+ * ONAP : CCSDK
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
- * 			reserved.
+ *                         reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package jtest.util.org.openecomp.sdnc.ra;
+package jtest.util.org.onap.ccsdk.sli.adaptors.ra;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;

@@ -92,9 +92,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>org.openecomp.sdnc.ra</Bundle-SymbolicName>
-                        <Export-Package>org.openecomp.sdnc.ra</Export-Package>
-                        <Import-Package>*,org.openecomp.sdnc.sli.resource.dblib,org.openecomp.sdnc.sli.*,org.osgi.framework.*,org.slf4j.*,com.mysql.jdbc.*</Import-Package>
+                        <Bundle-SymbolicName>org.onap.ccsdk.sli.adaptors.ra</Bundle-SymbolicName>
+                        <Export-Package>org.onap.ccsdk.sli.adaptors.ra</Export-Package>
+                        <Import-Package>*,org.onap.ccsdk.sli.adaptors.resource.dblib,org.onap.ccsdk.sli.adaptors.*,org.osgi.framework.*,org.slf4j.*,com.mysql.jdbc.*</Import-Package>
                         <!--Import-Package>*</Import-Package-->
                         <Embed-Transitive>true</Embed-Transitive>
                     </instructions>

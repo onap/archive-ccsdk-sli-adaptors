@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ============LICENSE_START=======================================================
-  openECOMP : SDN-C
+  ONAP : CCSDK
   ================================================================================
   Copyright (C) 2017 AT&T Intellectual Property. All rights
-  			reserved.
+                          reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -30,10 +30,10 @@
     <reference id="dblib.dataSource">
         <interfaces>
             <beans:value>javax.sql.DataSource</beans:value>
-            <beans:value>org.openecomp.sdnc.sli.resource.dblib.DbLibService</beans:value>
+            <beans:value>org.onap.ccsdk.sli.adaptors.resource.dblib.DbLibService</beans:value>
         </interfaces>
     </reference>
 
-    <service ref="resourceAllocator" interface="org.openecomp.sdnc.ra.ResourceAllocator" />
+    <service ref="resourceAllocator" interface="org.onap.ccsdk.sli.adaptors.ra.ResourceAllocator" />
 
 </beans:beans>

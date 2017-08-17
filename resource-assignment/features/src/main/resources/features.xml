@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ============LICENSE_START=======================================================
-  openECOMP : SDN-C
+  ONAP : CCSDK
   ================================================================================
   Copyright (C) 2017 AT&T Intellectual Property. All rights
-  			reserved.
+                          reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@
         <feature>spring</feature>
         <feature version="[3.1,4)">spring-jdbc</feature>
         <feature>spring-dm</feature>
-        <bundle start-level="88">mvn:org.openecomp.sdnc.adaptors/resource-assignment-provider/${project.version}</bundle>
+        <bundle start-level="88">mvn:org.onap.ccsdk.sli.adaptors/resource-assignment-provider/${project.version}</bundle>
         <bundle>mvn:mysql/mysql-connector-java/${mysql.connector.version}</bundle>
     </feature>
 

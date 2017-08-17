@@ -2,10 +2,10 @@
 
 ###
 # ============LICENSE_START=======================================================
-# openECOMP : SDN-C
+# ONAP : CCSDK
 # ================================================================================
 # Copyright (C) 2017 AT&T Intellectual Property. All rights
-# 			reserved.
+#                         reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
