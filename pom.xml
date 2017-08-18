@@ -11,34 +11,35 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
-    <artifactId>sdnc-adaptors</artifactId>
+    <artifactId>ccsdk-adaptors</artifactId>
 
-    <name>SDN-C Adaptors</name>
-    <url>https://wiki.openecomp.org</url>
-    <description>The SDN-C core components contains the SLI, dblib and root pom</description>
+    <name>CCSDK SLI Adaptors</name>
+    <url>https://wiki.onap.org</url>
+    <description>The CCSDK core components contains the SLI, dblib and root pom</description>
 
 
     <issueManagement>
         <system>JIRA</system>
-        <url>https://jira.openecomp.org/</url>
+        <url>https://jira.onap.org/</url>
     </issueManagement>
 
 
     <scm>
-        <connection>scm:git:ssh://git@${openecomp.git.host}/sdnc-adaptors.git</connection>
-        <developerConnection>scm:git:ssh://${openecomp.git.host}:${openecomp.git.port}/${openecomp.git.project}/sdnc-adaptors.git</developerConnection>
-        <url>${openecomp.git.protocol}://${openecomp.git.host}/projects/${openecomp.git.project}/repos/sdnc-adaptors/browse</url>
+        <connection>scm:git:ssh://git@${onap.git.host}/ccsdk/sli/adaptors</connection>
+        <developerConnection>scm:git:ssh://${onap.git.host}:${onap.git.port}/ccsdk/sli/adaptors</developerConnection>
+        <url>${onap.git.protocol}://${onap.git.host}/ccsdk/sli/adaptors</url>
+        <tag>ccsdk-adaptors-${project.version}</tag>
     </scm>
 
     <ciManagement>
         <system>Jenkins</system>
-        <url>https://jenkins.openecomp.org/</url>
+        <url>https://jenkins.onap.org/</url>
     </ciManagement>
 
     <distributionManagement>
         <site>
             <id>sdnc-javadoc</id>
-            <url>dav:https://${openecomp.nexus.host}/content/sites/site/org/onap/sdnc/adaptors/${project.artifactId}/${project.version}</url>
+            <url>dav:https://${onap.nexus.host}/content/sites/site/org/onap/sdnc/adaptors/${project.artifactId}/${project.version}</url>
         </site>
     </distributionManagement>
 
@@ -96,9 +97,9 @@
                 <version>1.6.7</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <nexusUrl>https://${openecomp.nexus.host}</nexusUrl>
-                    <stagingProfileId>${openecomp.nexus.staging.profile-id}</stagingProfileId>
-                    <serverId>${openecomp.nexus.staging.server-id}</serverId>
+                    <nexusUrl>https://${onap.nexus.host}</nexusUrl>
+                    <stagingProfileId>${onap.nexus.staging.profile-id}</stagingProfileId>
+                    <serverId>${onap.nexus.staging.server-id}</serverId>
                 </configuration>
             </plugin>
         </plugins>
@@ -111,7 +112,7 @@
         <module>sql-resource</module>
     </modules>
     <organization>
-        <name>OpenECOMP</name>
+        <name>ONAP</name>
     </organization>
     <version>0.1.0-SNAPSHOT</version>
 

@@ -33,6 +33,6 @@ provider/src/main/java/META-INF/
 provider/src/main/java/inventory/
 
 ## BlackDuck generated file
-sdnc-adaptors_bdio.jsonld
+ccsdk-adaptors_bdio.jsonld
 blackDuckHubProjectName.txt
 blackDuckHubProjectVersionName.txt
