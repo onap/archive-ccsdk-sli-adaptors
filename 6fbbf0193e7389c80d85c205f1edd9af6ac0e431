@@ -1,0 +1,7 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Marcus Williams <marcus.williams@intel.com>
+Submitted-by: Marcus Williams <marcus.williams@intel.com>
+Submitted-at: Tue, 29 Aug 2017 18:49:38 +0000
+Reviewed-on: http://gerrit.onap.org/r/9101
+Project: ccsdk/sli/adaptors
+Branch: refs/heads/master
