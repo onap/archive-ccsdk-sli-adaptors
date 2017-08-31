@@ -109,6 +109,7 @@ import org.onap.ccsdk.sli.adaptors.aai.data.notify.NotifyEvent;
 import org.onap.ccsdk.sli.adaptors.aai.data.v1507.VServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
@@ -673,9 +674,13 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 //		protected static AtomicLong tracker = new AtomicLong();
 
 		public static String getNextTransactionId() {
-//			long id = tracker.getAndIncrement();
-//			String transactionId = String.format("N%016X", id);
-			String transactionId = UUID.randomUUID().toString();
+			// Check if RequestId exists as MDC. If not, create new.
+			String transactionId = MDC.get("RequestId");
+			if ("".equals(transactionId) || transactionId == null) {
+				transactionId = UUID.randomUUID().toString();
+				LOG.info("Missing requestID. Assigned " + transactionId);
+				MDC.put("RequestId", transactionId);
+			}
 			return transactionId;
 		}
 
