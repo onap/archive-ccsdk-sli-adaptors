@@ -34,10 +34,10 @@ import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 
-public class SqlResourceTest extends TestCase {
+public class ITCaseSqlResource extends TestCase {
 
 	private static final Logger LOG = LoggerFactory
-			.getLogger(SqlResourceTest.class);
+			.getLogger(ITCaseSqlResource.class);
 
 
 	public void testExists() {
