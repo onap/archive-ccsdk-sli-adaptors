@@ -19,16 +19,16 @@
   -->
 
 
-<features name="ccsdk-aai-service-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
+<features name="sdnc-aai-service-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">
 
     <repository>mvn:org.opendaylight.mdsal/features-mdsal/${odl.mdsal.features.version}/xml/features</repository>
 
-    <feature name='ccsdk-aai-service' description="ccsdk-aai-service" version='${project.version}'>
+    <feature name='sdnc-aai-service' description="sdnc-aai-service" version='${project.version}'>
         <!-- Most applications will have a dependency on the ODL MD-SAL Broker -->
         <feature version="${odl.mdsal.version}">odl-mdsal-broker</feature>
-        <feature>ccsdk-sli</feature>
+        <feature>sdnc-sli</feature>
         <bundle>mvn:org.onap.ccsdk.sli.adaptors/aai-service-provider/${project.version}</bundle>
         <bundle>mvn:com.sun.jersey/jersey-client/${jersey.client.version}</bundle>
         <bundle>mvn:com.sun.jersey/jersey-core/${jersey.version}</bundle>
