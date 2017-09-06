@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_e7b96a2f",
+        "filename": "sql-resource/provider/src/test/java/org/onap/ccsdk/sli/adaptors/resource/sql/ITCaseSqlResource.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 667
+      },
+      "writtenOn": "2017-09-06T20:21:11Z",
+      "side": 1,
+      "message": "Changed to IT test due to database requirement.",
+      "revId": "7703d8d1f66f7a3709f7d44202833cb8fe0e4274",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}

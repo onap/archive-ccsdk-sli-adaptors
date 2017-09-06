@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_27b09242",
+        "filename": "resource-assignment/provider/src/test/java/jtest/org/onap/ccsdk/sli/adaptors/ra/TestIsAvailable.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 379,
+      "author": {
+        "id": 667
+      },
+      "writtenOn": "2017-09-06T20:21:11Z",
+      "side": 0,
+      "message": "The requirement for tmp.resource-allocator.speed appears to have been removed with this patch: https://git.onap.org/sdnc/adaptors/diff/resource-assignment/provider/src/main/java/org/openecomp/sdnc/ra/ResourceAllocator.java?id\u003d328d71305e529887d78bec5d028d54feaea737c1\n\nSo here the test is removed.",
+      "range": {
+        "startLine": 379,
+        "startChar": 53,
+        "endLine": 379,
+        "endChar": 114
+      },
+      "revId": "6fbbf0193e7389c80d85c205f1edd9af6ac0e431",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
