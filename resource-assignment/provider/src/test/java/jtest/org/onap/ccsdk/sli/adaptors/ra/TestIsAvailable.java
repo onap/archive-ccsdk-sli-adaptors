@@ -367,25 +367,6 @@ public class TestIsAvailable {
     public void test011() throws Exception {
         String t = "011";
         log.info("============== isAvailable " + t + " ================================");
-        log.info("=== Test input validations - no speed in input");
-
-        SvcLogicContext ctx = new SvcLogicContext();
-        ctx.setAttribute("tmp.resource-allocator.speed-unit", "Gbps");
-        ctx.setAttribute("tmp.resource-allocator.aic-site-id", "MTSNJA4LCP1");
-
-        try {
-            resourceAllocator.isAvailable("NetworkCapacity", null, null, ctx);
-        } catch (SvcLogicException e) {
-            Assert.assertTrue(e.getMessage().equals("tmp.resource-allocator.speed is required in ResourceAllocator"));
-            return;
-        }
-        Assert.fail("SvcLogicException expected");
-    }
-
-    @Test
-    public void test012() throws Exception {
-        String t = "012";
-        log.info("============== isAvailable " + t + " ================================");
         log.info("=== Test input validations - speed not a number in input");
 
         SvcLogicContext ctx = new SvcLogicContext();
@@ -403,8 +384,8 @@ public class TestIsAvailable {
     }
 
     @Test
-    public void test013() throws Exception {
-        String t = "013";
+    public void test012() throws Exception {
+        String t = "012";
         log.info("============== isAvailable " + t + " ================================");
         log.info("=== Test input validations - speed-unit missing in input");
 
