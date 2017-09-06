@@ -15,6 +15,7 @@
         <features.boot>sdnc-resource-assignment</features.boot>
         <features.repositories>mvn:org.onap.ccsdk.sli.adaptors/resource-assignment-features/${project.version}/xml/features</features.repositories>
         <include.transitive.dependencies>false</include.transitive.dependencies>
+        <commons.lang.version>2.6</commons.lang.version>
     </properties>
 
     <dependencies>
@@ -38,6 +39,7 @@
             <artifactId>resource-assignment-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
+
 
     </dependencies>
 
