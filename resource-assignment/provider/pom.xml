@@ -94,9 +94,11 @@
                     <instructions>
                         <Bundle-SymbolicName>org.onap.ccsdk.sli.adaptors.ra</Bundle-SymbolicName>
                         <Export-Package>org.onap.ccsdk.sli.adaptors.ra</Export-Package>
+                        <!--
                         <Import-Package>*,org.onap.ccsdk.sli.adaptors.resource.dblib,org.onap.ccsdk.sli.adaptors.*,org.osgi.framework.*,org.slf4j.*,com.mysql.jdbc.*</Import-Package>
-                        <!--Import-Package>*</Import-Package-->
                         <Embed-Transitive>true</Embed-Transitive>
+                        -->
+                        <Import-Package>*,org.onap.ccsdk.sli.core.dblib</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
