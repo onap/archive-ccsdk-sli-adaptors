@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -1261,7 +1261,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 				while( ( line = reader.readLine() ) != null ) {
 					stringBuilder.append( line );
 				}
-				LOGwriteEndingTrace(responseCode, "SUCCESS", (stringBuilder != null) ? stringBuilder.toString() : "{no-data}");
+				LOGwriteEndingTrace(responseCode, "SUCCESS", (stringBuilder.length() > 0) ? stringBuilder.toString() : "{no-data}");
 				return true;
             } else {
             	ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
@@ -1371,7 +1371,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 				while( ( line = reader.readLine() ) != null ) {
 					stringBuilder.append( line );
 				}
-				LOGwriteEndingTrace(responseCode, "SUCCESS", (stringBuilder != null) ? stringBuilder.toString() : "{no-data}");
+				LOGwriteEndingTrace(responseCode, "SUCCESS", (stringBuilder.length() > 0) ? stringBuilder.toString() : "{no-data}");
 				return true;
             } else {
             	ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
@@ -1484,7 +1484,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 				while( ( line = reader.readLine() ) != null ) {
 					stringBuilder.append( line );
 				}
-				LOGwriteEndingTrace(responseCode, "SUCCESS", (stringBuilder != null) ? stringBuilder.toString() : "{no-data}");
+				LOGwriteEndingTrace(responseCode, "SUCCESS", (stringBuilder.length() > 0) ? stringBuilder.toString() : "{no-data}");
 				return true;
             } else {
             	ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
@@ -3043,7 +3043,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		    return true;
 		}
 
-	
+
 	public boolean isValidURI(String url) {
 
 		URI u = null;
@@ -3057,7 +3057,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		return true;
 	}
 
-	
+
 	@Override
 	protected boolean deleteRelationshipList(URL httpReqUrl, String json_text) throws AAIServiceException {
 		if(httpReqUrl ==  null) {
@@ -3329,7 +3329,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 	public String getPathTemplateForResource(String resoourceName, String keys, SvcLogicContext ctx) throws MalformedURLException {
 		return AAIServiceUtils.getPathForResource(resoourceName, StringUtils.join(keys, " AND "), ctx);
 	}
-	
+
 	@Override
 	public boolean isDeprecatedFormat(String resource, HashMap<String, String> nameValues) {
 		return !AAIServiceUtils.isValidFormat(resource, nameValues);

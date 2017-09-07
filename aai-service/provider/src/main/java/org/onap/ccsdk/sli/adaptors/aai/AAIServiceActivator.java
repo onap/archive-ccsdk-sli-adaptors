@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -157,13 +157,13 @@ public class AAIServiceActivator implements BundleActivator {
 		if (sdnConfigDirectory == null || sdnConfigDirectory.isEmpty()) {
 			String filename = DEFAULT_SDNC_PROPERTY_FILE;
     		File file = new File(filename);
-    		if(file != null && file.exists()) {
+    		if(file.exists()) {
     			propertiesPath = filename;
     			LOG.info("Using property file (1): " + propertiesPath);
     		} else {
     			filename = BVC_PROPERTY_FILE;
     			file = new File(filename);
-        		if(file != null && file.exists()) {
+        		if(file.exists()) {
         			propertiesPath = filename;
         			LOG.info("Using property file (1): " + propertiesPath);
         		} else {
@@ -179,13 +179,13 @@ public class AAIServiceActivator implements BundleActivator {
 		if(!propFile.exists()) {
 			String filename = DEFAULT_SDNC_PROPERTY_FILE;
     		File file = new File(filename);
-    		if(file != null && file.exists()) {
+    		if(file.exists()) {
     			propertiesPath = filename;
     			LOG.info("Using property file (1): " + propertiesPath);
     		} else {
     			filename = BVC_PROPERTY_FILE;
     			file = new File(filename);
-        		if(file != null && file.exists()) {
+        		if(file.exists()) {
         			propertiesPath = filename;
         			LOG.info("Using property file (1): " + propertiesPath);
         		} else {
