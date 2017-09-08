@@ -13,7 +13,7 @@
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>ccsdk-sli-adaptors</artifactId>
 
-    <name>CCSDK SLI Adaptors</name>
+    <name>ccsdk-sli-adaptors</name>
     <url>https://wiki.onap.org</url>
     <description>The CCSDK core components contains the SLI, dblib and root pom</description>
 
