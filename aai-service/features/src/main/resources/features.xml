@@ -32,8 +32,8 @@
         <bundle>mvn:org.onap.ccsdk.sli.adaptors/aai-service-provider/${project.version}</bundle>
         <bundle>mvn:com.sun.jersey/jersey-client/${jersey.client.version}</bundle>
         <bundle>mvn:com.sun.jersey/jersey-core/${jersey.version}</bundle>
-        <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/${apache.httpcomponents.version}</bundle>
-        <bundle>mvn:org.apache.httpcomponents/httpclient-osgi/${apache.httpcomponents.version}</bundle>
+        <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/${apache.httpcomponents.core.version}</bundle>
+        <bundle>mvn:org.apache.httpcomponents/httpclient-osgi/${apache.httpcomponents.client.version}</bundle>
         <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/${jackson.version}</bundle>
         <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.version}</bundle>
         <bundle>mvn:com.fasterxml.jackson.core/jackson-core/${jackson.version}</bundle>
