@@ -146,7 +146,7 @@ public abstract class AAIDeclarations implements AAIClient {
 
 		getLogger().debug("AAIService.query \tresource = "+resource);
 
-		String vnfId = null;
+		String vnfId;
 		String vnfName = null;
 		HashMap<String, String> nameValues = AAIServiceUtils.keyToHashMap(key, ctx);
 		getLogger().debug("key = "+ nameValues.toString());
@@ -164,7 +164,7 @@ public abstract class AAIDeclarations implements AAIClient {
 		// process data using new model
 		boolean useNewModelProcessing = true;
 		// process server query by name the old way
-		if(("vserver".equals(resource) || "vserver2".equals(resource))){
+		if("vserver".equals(resource) || "vserver2".equals(resource)){
 			if(nameValues.containsKey("vserver_name") || nameValues.containsKey("vserver-name") || nameValues.containsKey("vserver.vserver_name") || nameValues.containsKey("vserver.vserver-name"))
 				useNewModelProcessing = false;
 		}
@@ -185,7 +185,7 @@ public abstract class AAIDeclarations implements AAIClient {
 		}
 
 		ObjectMapper mapper = AAIService.getObjectMapper();
-		Map<String,Object> attributes = new HashMap<String,Object>();
+		Map<String,Object> attributes = new HashMap<>();
 
 		String modifier = null;
 
@@ -349,12 +349,12 @@ public abstract class AAIDeclarations implements AAIClient {
 			} else {
 				if (ctx != null) {
 					if (prefix != null) {
-						ArrayList<String> keys = new ArrayList<String>(attributes.keySet());
+						ArrayList<String> keys = new ArrayList<>(attributes.keySet());
 
 						int numCols = keys.size();
 
 						for (int i = 0; i < numCols; i++) {
-							String colValue = null;
+							String colValue;
 							String colName = keys.get(i);
 							Object object = attributes.get(colName);
 
@@ -369,7 +369,7 @@ public abstract class AAIDeclarations implements AAIClient {
 									ctx.setAttribute(colValue.replaceAll("_", "-"), colValue);
 								}
 							} else if(object != null && object instanceof Map) {
-								if(colName.equals(modifier) || colName.equals("relationship-list")){
+								if(colName.equals(modifier) || "relationship-list".equals(colName)){
 									String localNodifier = modifier;
 									if(localNodifier == null)
 										localNodifier = "relationship-list";
@@ -382,7 +382,7 @@ public abstract class AAIDeclarations implements AAIClient {
 				}
 			}
 			getLogger().debug("Query - returning " + retval);
-			return (retval);
+			return retval;
 
 		} catch (Exception exc) {
 			getLogger().warn("Failed query - returning FAILURE", exc);
@@ -426,7 +426,7 @@ public abstract class AAIDeclarations implements AAIClient {
 			}
 		}
 
-		if(list.size() > 0) {
+		if(!list.isEmpty()) {
 			ctx.setAttribute(prefix + "_length", Integer.toString(list.size()));
 			getLogger().debug(prefix + "_length"  + " : " + Integer.toString(list.size()));
 		}
@@ -465,7 +465,7 @@ public abstract class AAIDeclarations implements AAIClient {
 
 		boolean useNewModelProcessing = true;
 		// process server query by name the old way
-		if(("vserver".equals(resource) || "vserver2".equals(resource))){
+		if("vserver".equals(resource) || "vserver2".equals(resource)){
 			if(nameValues.containsKey("vserver-name")) {
 				useNewModelProcessing = false;
 			}
@@ -532,7 +532,7 @@ public abstract class AAIDeclarations implements AAIClient {
 			}
 		} else {
 			String reSource = resource.toLowerCase().replace("-", "_");
-				String vnfId = null;
+				String vnfId;
 
 			try {
 				switch(reSource) {
@@ -801,7 +801,7 @@ public abstract class AAIDeclarations implements AAIClient {
 				return QueryStatus.FAILURE;
 			}
 
-			Map<String, String> params = new HashMap<String, String>();
+			Map<String, String> params = new HashMap<>();
 
 			request.processRequestPathValues(nameValues);
 			if(nameValues.containsKey("prefix")){
@@ -820,7 +820,8 @@ public abstract class AAIDeclarations implements AAIClient {
 			int errorCode = aaiexc.getReturnCode();
 			ctx.setAttribute(prefix + ".error.message", aaiexc.getMessage());
 			if(errorCode >= 300) {
-				ctx.setAttribute(prefix + ".error.http.response-code", "" + aaiexc.getReturnCode());
+				ctx.setAttribute(prefix + ".error.http.response-code", "" +
+						Integer.toString(aaiexc.getReturnCode()));
 			}
 
 			if(aaiexc.getReturnCode() == 404)
@@ -838,7 +839,7 @@ public abstract class AAIDeclarations implements AAIClient {
 
 	public QueryStatus processResponseData(String rv, String resource, AAIRequest request, String prefix,  SvcLogicContext ctx, HashMap<String, String> nameValues, String modifier) throws JsonParseException, JsonMappingException, IOException, AAIServiceException
 	{
-		Object response = null;
+		Object response;
 
 			if(rv == null) {
 				return QueryStatus.NOT_FOUND;
@@ -910,7 +911,7 @@ public abstract class AAIDeclarations implements AAIClient {
 			getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
 		}
 
-			String preFix = null;
+			String preFix;
 			if(prefix == null || prefix.isEmpty()) {
 				preFix = "";
 			} else {
@@ -1001,7 +1002,7 @@ public abstract class AAIDeclarations implements AAIClient {
 	public QueryStatus newModelBackupRequest(String resource,  Map<String, String> params,  String prefix,  SvcLogicContext ctx) {
 
 		QueryStatus retval = QueryStatus.SUCCESS;
-		HashMap<String, String> nameValues = new HashMap<String, String>();
+		HashMap<String, String> nameValues = new HashMap<>();
 
 		try {
 			AAIRequest request = AAIRequest.createRequest(resource, nameValues);
@@ -1083,10 +1084,10 @@ public abstract class AAIDeclarations implements AAIClient {
 		HashMap<String, String> nameValues = AAIServiceUtils.keyToHashMap(key, ctx);
 
 		try {
-			ArrayList<String> subResources = new ArrayList<String>();
+			ArrayList<String> subResources = new ArrayList<>();
 			Set<String> set = params.keySet();
-			Map<String, Method> setters = new HashMap<String, Method>();
-			Map<String, Method> getters = new HashMap<String, Method>();
+			Map<String, Method> setters = new HashMap<>();
+			Map<String, Method> getters = new HashMap<>();
 
 			// 1. find class
 			AAIRequest request = AAIRequest.createRequest(resource, nameValues);
@@ -1137,11 +1138,11 @@ public abstract class AAIDeclarations implements AAIClient {
 										getLogger().warn("Failed process for " + resourceClass.getName(), x);
 									}
 								} else if(type.getName().equals("java.util.List")) {
-									List<String> newValues = new ArrayList<String>();
+									List<String> newValues = new ArrayList<>();
 									String length = id+"_length";
 									if(!params.isEmpty() && params.containsKey(length)) {
 										String tmp = params.get(length).toString();
-										int count = Integer.valueOf(tmp);
+										int count = Integer.parseInt(tmp);
 										for(int i=0; i<count; i++) {
 											String tmpValue = params.get(String.format("%s[%d]", id, i));
 											newValues.add(tmpValue);
@@ -1158,7 +1159,7 @@ public abstract class AAIDeclarations implements AAIClient {
 
 							}
 
-							Method getter = null;
+							Method getter;
 							try {
 								getter = resourceClass.getMethod("get"+StringUtils.capitalize(value));
 								if(!type.getName().equals("java.lang.String")) {
@@ -1181,9 +1182,9 @@ public abstract class AAIDeclarations implements AAIClient {
 				}
 			}
 
-			Set<String> relationshipKeys = new TreeSet<String>();
-			Set<String> vlansKeys = new TreeSet<String>();
-			Set<String> metadataKeys = new TreeSet<String>();
+			Set<String> relationshipKeys = new TreeSet<>();
+			Set<String> vlansKeys = new TreeSet<>();
+			Set<String> metadataKeys = new TreeSet<>();
 
 			for(String attribute : set) {
 				String value = params.get(attribute);
@@ -1452,7 +1453,8 @@ public abstract class AAIDeclarations implements AAIClient {
 			ctx.setAttribute(prefix + ".error.message", exc.getMessage());
 			int returnCode = exc.getReturnCode();
 			if(returnCode >= 300) {
-				ctx.setAttribute(prefix + ".error.http.response-code", "" + exc.getReturnCode());
+				ctx.setAttribute(prefix + ".error.http.response-code", "" +
+						Integer.toString(exc.getReturnCode()));
 			}
 
 			if(returnCode == 400 || returnCode == 412)
@@ -1477,7 +1479,7 @@ public abstract class AAIDeclarations implements AAIClient {
 
 		Class resourceClass = instance.getClass();
 
-		Set<String> relationshipKeys = new TreeSet<String>();
+		Set<String> relationshipKeys = new TreeSet<>();
 
 		Set<String> set = params.keySet();
 
@@ -1492,7 +1494,7 @@ public abstract class AAIDeclarations implements AAIClient {
 		// 3. Process Relationships
 		// add relationship list
 		if(!relationshipKeys.isEmpty()) {
-			RelationshipList relationshipList = null;
+			RelationshipList relationshipList;
 			Object obj = null;
 			Method getRelationshipListMethod = null;
 			try {
@@ -1553,7 +1555,7 @@ public abstract class AAIDeclarations implements AAIClient {
 					if(relatedLink != null) {
 						relationship.setRelatedLink(relatedLink);
 				} else  {
-					Map<String, String> relParams = new HashMap<String, String>();
+					Map<String, String> relParams = new HashMap<>();
 
 				while(true) {
 					String searchRelationshipKey = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-key";
@@ -1596,7 +1598,7 @@ public abstract class AAIDeclarations implements AAIClient {
 		String resource = params.get("resource").toLowerCase();
 		String prefix = params.get("data-key");
 
-		HashMap<String, String> nameValues = new HashMap<String, String>();
+		HashMap<String, String> nameValues = new HashMap<>();
 		if(AAIRequest.createRequest(resource, nameValues) != null) {
 
 			try {
@@ -1617,7 +1619,7 @@ public abstract class AAIDeclarations implements AAIClient {
 		String resource = params.get("resource").toLowerCase();
 		String prefix = params.get("data-key");
 
-		HashMap<String, String> nameValues = new HashMap<String, String>();
+		HashMap<String, String> nameValues = new HashMap<>();
 		if(AAIRequest.createRequest(resource, nameValues) != null) {
 
 			try {
@@ -1782,7 +1784,7 @@ public abstract class AAIDeclarations implements AAIClient {
 	}
 
 	static final Map<String, String> ctxGetBeginsWith( SvcLogicContext ctx, String prefix ) {
-		Map<String, String> tmpPrefixMap = new HashMap<String, String>();
+		Map<String, String> tmpPrefixMap = new HashMap<>();
 
 		if(prefix == null || prefix.isEmpty()){
 			return tmpPrefixMap;
@@ -1795,7 +1797,7 @@ public abstract class AAIDeclarations implements AAIClient {
 			}
 		}
 
-		Map<String, String> prefixMap = new HashMap<String, String>();
+		Map<String, String> prefixMap = new HashMap<>();
 		Pattern p = Pattern.compile(".*\\[\\d\\]");
 
 		SortedSet<String> keys = new TreeSet(tmpPrefixMap.keySet () );
@@ -1807,7 +1809,7 @@ public abstract class AAIDeclarations implements AAIClient {
 				String listKey = key.substring(0, key.indexOf("_length"));
 				int max = Integer.parseInt(tmpPrefixMap.get(key));
 
-				ArrayList<String> data = new ArrayList<String>();
+				ArrayList<String> data = new ArrayList<>();
 				for(int x = 0; x < max; x++){
 					String tmpKey = String.format("%s[%d]", listKey, x);
 					String tmpValue = tmpPrefixMap.get(tmpKey);
