@@ -182,7 +182,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		LOG.info("Entered AAIService.ctor");
 
 		String runtime = System.getProperty("aaiclient.runtime");
-		if(runtime != null && runtime.equals("OSGI")) {
+		if(runtime != null && "OSGI".equals(runtime)) {
 			runtimeOSGI = true;
 		} else {
 			runtimeOSGI = false;
@@ -306,7 +306,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
                 String extension = keystore_path.substring(keystore_path.lastIndexOf(".") + 1);
 
-                if(extension != null && !extension.isEmpty() && extension.equalsIgnoreCase("JKS")) {
+                if(extension != null && !extension.isEmpty() && "JKS".equalsIgnoreCase(extension)) {
                 	storeType = "JKS";
                 }
                 KeyStore ks = KeyStore.getInstance(storeType);
@@ -422,7 +422,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch(AAIServiceException aaiexc) {
 			throw aaiexc;
 		} catch (Exception exc) {
-			LOG.warn(new Object(){}.getClass().getEnclosingMethod().getName(), exc);
+			LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
 			throw new AAIServiceException(exc);
 		}
 
@@ -480,7 +480,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch(AAIServiceException aaiexc) {
 			throw aaiexc;
 		} catch (Exception exc) {
-			LOG.warn(new Object(){}.getClass().getEnclosingMethod().getName(), exc);
+			LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
 			throw new AAIServiceException(exc);
 		}
 
@@ -588,7 +588,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 				try {
 					inputStream.close();
 				} catch(Exception exc) {
-
 				}
 			}
 		}
@@ -752,7 +751,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch(AAIServiceException aaiexc) {
 			throw aaiexc;
 		} catch (Exception exc) {
-			LOG.warn(new Object(){}.getClass().getEnclosingMethod().getName(), exc);
+			LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
 			throw new AAIServiceException(exc);
 		}
 		return response;
@@ -769,7 +768,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch(AAIServiceException aaiexc) {
 			throw aaiexc;
 		} catch (Exception exc) {
-			LOG.warn(new Object(){}.getClass().getEnclosingMethod().getName(), exc);
+			LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
 			throw new AAIServiceException(exc);
 		}
 	}
@@ -785,7 +784,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch(AAIServiceException aaiexc) {
 			throw aaiexc;
 		} catch (Exception exc) {
-			LOG.warn(new Object(){}.getClass().getEnclosingMethod().getName(), exc);
+			LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
 			throw new AAIServiceException(exc);
 		}
 		return response;
@@ -807,7 +806,8 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 			} catch(AAIServiceException aaiexc) {
 				throw aaiexc;
 			} catch (Exception exc) {
-				LOG.warn(new Object(){}.getClass().getEnclosingMethod().getName(), exc);
+				LOG.warn(Object.class.getClass().getEnclosingMethod().getName(),
+						exc);
 				throw new AAIServiceException(exc);
 			}
 			return response;
@@ -935,7 +935,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch(AAIServiceException aaiexc) {
 			throw aaiexc;
 		} catch (Exception exc) {
-			LOG.warn(new Object(){}.getClass().getEnclosingMethod().getName(), exc);
+			LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
 			throw new AAIServiceException(exc);
 		}
 		return response;
@@ -1109,7 +1109,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch(AAIServiceException aaiexc) {
 			throw aaiexc;
 		} catch (Exception exc) {
-			LOG.warn(new Object(){}.getClass().getEnclosingMethod().getName(), exc);
+			LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
 			throw new AAIServiceException(exc);
 		}
 	}
@@ -1166,7 +1166,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch(AAIServiceException aaiexc) {
 			throw aaiexc;
 		} catch (Exception exc) {
-			LOG.warn(new Object(){}.getClass().getEnclosingMethod().getName(), exc);
+			LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
 			throw new AAIServiceException(exc);
 		}
 	}
@@ -1205,7 +1205,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch(AAIServiceException aaiexc) {
 			throw aaiexc;
 		} catch (Exception exc) {
-			LOG.warn(new Object(){}.getClass().getEnclosingMethod().getName(), exc);
+			LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
 			throw new AAIServiceException(exc);
 		}
 		return response;
@@ -1318,7 +1318,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch(AAIServiceException aaiexc) {
 			throw aaiexc;
 		} catch (Exception exc) {
-			LOG.warn(new Object(){}.getClass().getEnclosingMethod().getName(), exc);
+			LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
 			throw new AAIServiceException(exc);
 		}
 		return response;
@@ -1620,76 +1620,92 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 	}
 
 	/* DELETE */
+	@Override
 	public boolean dataChangeDeleteVServerData(URL url) throws AAIServiceException {
 
 		if(url ==  null) {
 			throw new NullPointerException();
 		}
 
-		return deleteAAIEntity(url, new Object(){}.getClass().getEnclosingMethod().getName());
+		return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
+				.getName());
 	}
 
+	@Override
 	public boolean dataChangeDeleteCtagPoolData(URL url) throws AAIServiceException {
 
 		if(url ==  null) {
 			throw new NullPointerException();
 		}
 
-		return deleteAAIEntity(url, new Object(){}.getClass().getEnclosingMethod().getName());
+		return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
+				.getName());
 	}
 
+	@Override
 	public boolean dataChangeDeleteVplsPeData(URL url) throws AAIServiceException {
 
 		if(url ==  null) {
 			throw new NullPointerException();
 		}
 
-		return deleteAAIEntity(url, new Object(){}.getClass().getEnclosingMethod().getName());
+		return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
+				.getName());
 	}
 
+	@Override
 	public boolean dataChangeDeleteVpeData(URL url) throws AAIServiceException {
 
 		if(url ==  null) {
 			throw new NullPointerException();
 		}
 
-		return deleteAAIEntity(url, new Object(){}.getClass().getEnclosingMethod().getName());
+		return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
+				.getName());
 	}
 
+	@Override
 	public boolean dataChangeDeleteDvsSwitchData(URL url) throws AAIServiceException {
 
 		if(url ==  null) {
 			throw new NullPointerException();
 		}
 
-		return deleteAAIEntity(url, new Object(){}.getClass().getEnclosingMethod().getName());
+		return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
+				.getName());
 	}
 	//OAM-Network:
+	@Override
 	public boolean dataChangeDeleteOAMNetworkData(URL url) throws AAIServiceException {
 
 		if(url ==  null) {
 			throw new NullPointerException();
 		}
 
-		return deleteAAIEntity(url, new Object(){}.getClass().getEnclosingMethod().getName());
+		return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
+				.getName());
 	}
 	//Availability-Zone:
+	@Override
 	public boolean dataChangeDeleteAvailabilityZoneData(URL url) throws AAIServiceException {
 
 		if(url ==  null) {
 			throw new NullPointerException();
 		}
 
-		return deleteAAIEntity(url, new Object(){}.getClass().getEnclosingMethod().getName());
+		return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
+				.getName());
 	}
 	//Complex:
+	@Override
 	public boolean dataChangeDeleteComplexData(URL url) throws AAIServiceException {
 
 		if(url ==  null) {
 			throw new NullPointerException();
 		}
 
-		return deleteAAIEntity(url, new Object(){}.getClass().getEnclosingMethod().getName());
+		return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
+				.getName());
 	}
 
 	private boolean deleteAAIEntity(URL url, String caller) throws AAIServiceException {
@@ -1836,7 +1852,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch(AAIServiceException aaiexc) {
 			throw aaiexc;
 		} catch (Exception exc) {
-			LOG.warn(new Object(){}.getClass().getEnclosingMethod().getName(), exc);
+			LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
 			throw new AAIServiceException(exc);
 		}
 	}
@@ -1926,7 +1942,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch(AAIServiceException aaiexc) {
 			throw aaiexc;
 		} catch (Exception exc) {
-			LOG.warn(new Object(){}.getClass().getEnclosingMethod().getName(), exc);
+			LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
 			throw new AAIServiceException(exc);
 		}
 	}
@@ -2682,7 +2698,8 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 			String requestId = UUID.randomUUID().toString();
 
 			try {
-	            con = getConfiguredConnection(requestUrl = request.getRequestQueryUrl(HttpMethod.GET), HttpMethod.GET);
+				requestUrl = request.getRequestQueryUrl(HttpMethod.GET);
+	            con = getConfiguredConnection(requestUrl , HttpMethod.GET);
 	            logMetricRequest(requestId, "GET "+requestUrl.getPath(), "", requestUrl.getPath());
 
 	            // Check for errors
@@ -3292,7 +3309,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		if(clazz == null)
 			return key;
 
-		List<String> fieldAnnotatedNames = new LinkedList<String>();
+		List<String> fieldAnnotatedNames = new LinkedList<>();
 
 		Field[] fields = clazz.getDeclaredFields();
 		for(Field field : fields) {
