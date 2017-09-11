@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_c2908297",
+        "filename": "aai-service/provider/src/main/java/org/onap/ccsdk/sli/adaptors/aai/AAIService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 373
+      },
+      "writtenOn": "2017-09-11T13:31:27Z",
+      "side": 1,
+      "message": "this change not required as there is a null check for \"runtime\"",
+      "range": {
+        "startLine": 185,
+        "startChar": 24,
+        "endLine": 185,
+        "endChar": 30
+      },
+      "revId": "df575679a1170125d05f0fc0b07cf4f0ebd42938",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_a28b3e67",
+        "filename": "aai-service/provider/src/main/java/org/onap/ccsdk/sli/adaptors/aai/AAIService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 373
+      },
+      "writtenOn": "2017-09-11T13:31:27Z",
+      "side": 1,
+      "message": "this change not required as there is a null check for \"extension\"",
+      "range": {
+        "startLine": 309,
+        "startChar": 64,
+        "endLine": 309,
+        "endChar": 69
+      },
+      "revId": "df575679a1170125d05f0fc0b07cf4f0ebd42938",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
