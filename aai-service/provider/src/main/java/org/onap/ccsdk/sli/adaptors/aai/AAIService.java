@@ -849,7 +849,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 	@Override
 	public Complex  requestNetworkComplexData(String pLocId) throws AAIServiceException {
 		Complex response = null;
-		InputStream inputStream = null;
 
 		try {
 			AAIRequest request = AAIRequest.getRequestFromResource("complex");
@@ -865,14 +864,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch (Exception exc) {
 			LOG.warn("requestNetworkComplexData", exc);
 			throw new AAIServiceException(exc);
-		} finally {
-			if(inputStream != null){
-				try {
-					inputStream.close();
-				} catch(Exception exc) {
-
-				}
-			}
 		}
 		return response;
 	}
@@ -1070,7 +1061,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 	@Override
 	public DvsSwitch  requestDvsSwitchData(String vnf_id) throws AAIServiceException {
 		DvsSwitch response = null;
-		InputStream inputStream = null;
 
 		try {
 			AAIRequest request = AAIRequest.getRequestFromResource("dvs-switch");
@@ -1086,14 +1076,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch (Exception exc) {
 			LOG.warn("requestDvsSwitchData", exc);
 			throw new AAIServiceException(exc);
-		} finally {
-			if(inputStream != null){
-				try {
-					inputStream.close();
-				} catch(Exception exc) {
-
-				}
-			}
 		}
 		return response;
 	}
@@ -1902,7 +1884,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 	@Override
 	public L3Network requestL3NetworkQueryByName(String networkName) throws AAIServiceException {
 		L3Network response = null;
-		InputStream inputStream = null;
 
 		try {
 			AAIRequest request = AAIRequest.getRequestFromResource("l3-network");
@@ -1919,14 +1900,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 		} catch (Exception exc) {
 			LOG.warn("requestL3NetworkQueryByName", exc);
 			throw new AAIServiceException(exc);
-		} finally {
-			if(inputStream != null){
-				try {
-					inputStream.close();
-				} catch(Exception exc) {
-
-				}
-			}
 		}
 		return response;
 	}
@@ -2167,7 +2140,8 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 				while( ( line = reader.readLine() ) != null ) {
 					stringBuilder.append( line );
 				}
-				LOGwriteEndingTrace(responseCode, "SUCCESS", (stringBuilder != null) ? stringBuilder.toString() : "{no-data}");
+				LOGwriteEndingTrace(responseCode, "SUCCESS", (stringBuilder.length() > 0) ? stringBuilder.toString() :
+                                                                                            "{no-data}");
 				return true;
             } else {
             	ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
@@ -2794,7 +2768,8 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 					while( ( line = reader.readLine() ) != null ) {
 						stringBuilder.append( line );
 					}
-					LOGwriteEndingTrace(responseCode, responseMessage, (stringBuilder != null) ? stringBuilder.toString() : "{no-data}");
+					LOGwriteEndingTrace(responseCode, responseMessage,
+                                               (stringBuilder.length() > 0) ? stringBuilder.toString() : "{no-data}");
 					return true;
 	            } else {
 					StringBuilder stringBuilder = new StringBuilder();
