@@ -140,11 +140,11 @@ public abstract class AAIRequest {
 	/**
 	 * Map containing resource tag to its bit position in bitset mapping
 	 */
-	private static Map<String, String> tagValues = new LinkedHashMap<String, String>();
+	private static Map<String, String> tagValues = new LinkedHashMap<>();
 	/**
 	 * Map containing bitset value of the path to its path mapping
 	 */
-	private static Map<BitSet, String> bitsetPaths = new LinkedHashMap<BitSet, String>();
+	private static Map<BitSet, String> bitsetPaths = new LinkedHashMap<>();
 
 
 	public static Set<String> getResourceNames() {
@@ -180,7 +180,7 @@ public abstract class AAIRequest {
 			Set<String> keys = properties.stringPropertyNames();
 
 			int index = 0;
-			Set<String> resourceNames = new TreeSet<String>();
+			Set<String> resourceNames = new TreeSet<>();
 
 			for(String key : keys) {
 				String[] tags = key.split("\\|");
@@ -325,8 +325,8 @@ public abstract class AAIRequest {
 	}
 
 	protected static Set<String> extractUniqueResourceSetFromKeys(Set<String> keySet) {
-		Set<String> uniqueResources = new TreeSet<String>();
-		List<String> keys = new ArrayList<String>(keySet);
+		Set<String> uniqueResources = new TreeSet<>();
+		List<String> keys = new ArrayList<>(keySet);
 		for(String resource : keys) {
 			if(resource.contains(".")) {
 				String [] split = resource.split("\\.");
@@ -339,7 +339,7 @@ public abstract class AAIRequest {
 	public void processRequestPathValues(Map<String, String> nameValues) {
 		Set<String> uniqueResources = extractUniqueResourceSetFromKeys(nameValues.keySet());
 
-		Set<String> tokens = new TreeSet<String>();
+		Set<String> tokens = new TreeSet<>();
 		tokens.add(DEPTH);
 		tokens.addAll(Arrays.asList(this.getArgsList()));
 
@@ -409,12 +409,12 @@ public abstract class AAIRequest {
 	}
 
 	public static Map<String, String> splitQuery(String query) throws UnsupportedEncodingException {
-	    Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+	    Map<String, String> query_pairs = new LinkedHashMap<>();
 
 	    if(query != null && !query.isEmpty()) {
 	    	String[] pairs = query.split("&");
 	    	for (String pair : pairs) {
-	    		int idx = pair.indexOf("=");
+	    		int idx = pair.indexOf('=');
 	    		query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
 	    	}
 	    }
@@ -422,12 +422,12 @@ public abstract class AAIRequest {
 	}
 
 	public static Map<String, String> splitPath(String path) throws UnsupportedEncodingException {
-	    Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+	    Map<String, String> query_pairs = new LinkedHashMap<>();
 
 	    if(path != null && !path.isEmpty()) {
 	    	String[] pairs = path.split("/");
 	    	for (String pair : pairs) {
-	    		int idx = pair.indexOf("=");
+	    		int idx = pair.indexOf('=');
 	    		query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
 	    	}
 	    }

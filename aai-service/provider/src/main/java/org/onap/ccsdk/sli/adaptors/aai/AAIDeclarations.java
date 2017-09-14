@@ -245,7 +245,8 @@ public abstract class AAIDeclarations implements AAIClient {
 							}
 							ctx.setAttribute(prefix + ".error.message", exc.getMessage());
 							if(errorCode >= 300) {
-								ctx.setAttribute(prefix + ".error.http.response-code", "" + exc.getReturnCode());
+								ctx.setAttribute(prefix + ".error.http.response-code",
+												 Integer.toString(exc.getReturnCode()));
 							}
 							return QueryStatus.FAILURE;
 						}
@@ -1295,8 +1296,8 @@ public abstract class AAIDeclarations implements AAIClient {
 						j++;
 					}
 						AAIRequest rlRequest = AAIRequest.createRequest(relatedTo, relParams);
-						for(String key1 : relParams.keySet()) {
-							rlRequest.addRequestProperty(key1, relParams.get(key1));
+						for(Map.Entry<String,String> entry : relParams.entrySet()) {
+							rlRequest.addRequestProperty(entry.getKey(), entry.getValue());
 						}
 						String path = rlRequest.updatePathDataValues(null);
 						relationship.setRelatedLink(path);
