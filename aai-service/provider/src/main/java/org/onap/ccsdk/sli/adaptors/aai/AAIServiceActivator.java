@@ -76,7 +76,6 @@ public class AAIServiceActivator implements BundleActivator {
 		}
 
 		Properties properties = new Properties();
-		InputStream input = null;
 
 		// find aaiclient config file
 		File[] files = findFiles(configDirectory, DEFAULT_CONFIG_FILE_NAME);
@@ -84,20 +83,12 @@ public class AAIServiceActivator implements BundleActivator {
 		// read the aai config data
 		if(files != null && files.length > 0) {
 			LOG.debug("AAIService config file exists and it is named :" + files[0].getAbsolutePath() );
-			try {
-				input = new FileInputStream(files[0]);
+			try ( InputStream input = new FileInputStream(files[0])) {
 				properties.load(input);
 				LOG.debug("Loaded AAI Client properties from " + files[0].getAbsolutePath());
 			} catch (IOException exc) {
 				LOG.warn("Problem loading AAI Client properties from " + files[0].getAbsolutePath(), exc);
 			} finally {
-				if(input != null ) {
-					try {
-						input.close();
-					} catch(Exception exc) {
-						// ignore
-					}
-				}
 				int size = properties.keySet().size() ;
 				if(size == 0) {
 					LOG.debug(files[0].getAbsolutePath() + " contained no entries. Adding the default entry");
