@@ -1712,6 +1712,170 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="esr-system-info">
+    <xs:complexType>
+      <xs:annotation>
+        <xs:appinfo>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="Persist common address information of external systems.",indexedProps="esr-system-info-id,system-name,system-type",searchable="esr-system-info-id,system-name,system-type",container="esr-system-info-list",dependentOn="cloud-region,esr-ems,esr-vnfm,esr-thirdparty-sdnc")</annox:annotate>
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:sequence>
+        <xs:element name="esr-system-info-id" type="xs:string">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(isKey=true,description="Unique ID of esr system info.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="system-name" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="name of external system.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="type" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="type of external systems.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="vendor" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="vendor of external systems.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="version" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="version of external systems.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="service-url" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="url used to access external systems.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="user-name" type="xs:string">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="username used to access external systems.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="password" type="xs:string">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="password used to access external systems.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="system-type" type="xs:string">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="it could be vim/vnfm/thirdparty-sdnc/ems-resource/ems-performance/ems-alarm.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="protocol" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="protocol of third party SDNC, for example netconf/snmp.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="ssl-cacert" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="ca file content if enabled ssl on auth-url.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="ssl-insecure" type="xs:boolean" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Whether to verify VIM's certificate.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="ip-address" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="service IP of ftp server.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="port" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="service port of ftp server.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="cloud-domain" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="domain info for authentication.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="default-tenant" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="default tenant of VIM.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="passive" type="xs:boolean" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="ftp passive mode or not.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="remote-path" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="resource or performance data file path.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="system-status" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="the status of external system.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="resource-version" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Used for optimistic concurrency.  Must be empty on create, valid on update and delete.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element ref="tns:relationship-list" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="esr-system-info-list">
+    <xs:complexType>
+      <xs:annotation>
+        <xs:appinfo>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="Collection of persistent block-level external system auth info.")</annox:annotate>
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:sequence>
+        <xs:element ref="tns:esr-system-info" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="cloud-region">
     <xs:complexType>
       <xs:annotation>
@@ -1800,6 +1964,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         <xs:element ref="tns:oam-networks" minOccurs="0"/>
         <xs:element ref="tns:availability-zones" minOccurs="0"/>
         <xs:element ref="tns:relationship-list" minOccurs="0"/>
+        <xs:element ref="tns:esr-system-info-list" minOccurs="0"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -6892,6 +7057,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         <xs:element ref="tns:tenant" minOccurs="0"/>
         <xs:element ref="tns:cloud-region" minOccurs="0"/>
         <xs:element ref="tns:service-instance" minOccurs="0"/>
+        <xs:element ref="tns:esr-system-info" minOccurs="0"/>
         <xs:element name="model-name" type="xs:string" minOccurs="0"/>
         <xs:element ref="tns:extra-properties" minOccurs="0"/>
         <xs:element ref="tns:inventory-response-items" minOccurs="0"/>

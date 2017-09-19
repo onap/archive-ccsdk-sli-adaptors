@@ -3,14 +3,14 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
- * 			reserved.
+ *             reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,10 +33,16 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import org.openecomp.aai.inventory.v11.CloudRegion;
+import org.openecomp.aai.inventory.v11.GenericVnf;
 import org.openecomp.aai.inventory.v11.L3Network;
 import org.openecomp.aai.inventory.v11.Pnf;
 import org.openecomp.aai.inventory.v11.LogicalLink;
+import org.openecomp.aai.inventory.v11.PInterface;
 import org.openecomp.aai.inventory.v11.ServiceInstance;
+import org.openecomp.aai.inventory.v11.Tenant;
+import org.openecomp.aai.inventory.v11.Vnf;
+import org.openecomp.aai.inventory.v11.Vserver;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
@@ -44,7 +50,13 @@ import org.openecomp.aai.inventory.v11.ServiceInstance;
     "logical-link",
     "pnf",
     "l3-network",
-    "service-instance"
+    "p-interface",
+    "generic-vnf",
+    "vserver",
+    "tenant",
+    "cloud-region",
+    "service-instance",
+    "vnfc"
 })
 public class InstanceFilter {
 
@@ -52,16 +64,28 @@ public class InstanceFilter {
     private LogicalLink logicalLink;
     @JsonProperty("pnf")
     private Pnf pnf;
-	@JsonProperty("l3-network")
+    @JsonProperty("l3-network")
     private L3Network l3Network;
-	@JsonProperty("service-instance")
+    @JsonProperty("p-interface")
+    private PInterface pInterface;
+    @JsonProperty("generic-vnf")
+    private GenericVnf genericVnf;
+    @JsonProperty("vserver")
+    private Vserver vserver;
+    @JsonProperty("tenant")
+    private Tenant tenant;
+    @JsonProperty("cloud-region")
+    private CloudRegion cloudRegion;
+    @JsonProperty("service-instance")
     private ServiceInstance serviceInstance;
+    @JsonProperty("vnfc")
+    private Vnf vnfc;
 
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
-     * 
+     *
      * @return
      *     The logicalLink
      */
@@ -71,7 +95,7 @@ public class InstanceFilter {
     }
 
     /**
-     * 
+     *
      * @param logicalLink
      *     The logical-link
      */
@@ -81,7 +105,7 @@ public class InstanceFilter {
     }
 
     /**
-     * 
+     *
      * @return
      *     The pnf
      */
@@ -91,7 +115,7 @@ public class InstanceFilter {
     }
 
     /**
-     * 
+     *
      * @param pnf
      *     The pnf
      */
@@ -102,13 +126,13 @@ public class InstanceFilter {
 
     @JsonProperty("l3-network")
     public L3Network getL3Network() {
-		return l3Network;
-	}
+        return l3Network;
+    }
 
     @JsonProperty("l3-network")
     public void setL3Network(L3Network l3Network) {
-		this.l3Network = l3Network;
-	}
+        this.l3Network = l3Network;
+    }
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
@@ -121,13 +145,61 @@ public class InstanceFilter {
     }
 
     @JsonProperty("service-instance")
-	public ServiceInstance getServiceInstance() {
-		return serviceInstance;
-	}
+    public ServiceInstance getServiceInstance() {
+        return serviceInstance;
+    }
 
     @JsonProperty("service-instance")
-	public void setServiceInstance(ServiceInstance serviceInstance) {
-		this.serviceInstance = serviceInstance;
-	}
+    public void setServiceInstance(ServiceInstance serviceInstance) {
+        this.serviceInstance = serviceInstance;
+    }
+    @JsonProperty("p-interface")
+    public PInterface getpInterface() {
+        return pInterface;
+    }
+    @JsonProperty("p-interface")
+    public void setpInterface(PInterface pInterface) {
+        this.pInterface = pInterface;
+    }
+    @JsonProperty("generic-vnf")
+    public GenericVnf getGenericVnf() {
+        return genericVnf;
+    }
+    @JsonProperty("generic-vnf")
+    public void setGenericVnf(GenericVnf genericVnf) {
+        this.genericVnf = genericVnf;
+    }
+    @JsonProperty("vserver")
+    public Vserver getVserver() {
+        return vserver;
+    }
+    @JsonProperty("vserver")
+    public void setVserver(Vserver vserver) {
+        this.vserver = vserver;
+    }
+    @JsonProperty("tenant")
+    public Tenant getTenant() {
+        return tenant;
+    }
+    @JsonProperty("tenant")
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
+    }
+    @JsonProperty("cloud-region")
+    public CloudRegion getCloudRegion() {
+        return cloudRegion;
+    }
+    @JsonProperty("cloud-region")
+    public void setCloudRegion(CloudRegion cloudRegion) {
+        this.cloudRegion = cloudRegion;
+    }
+    @JsonProperty("vnfc")
+    public Vnf getVnfc() {
+        return vnfc;
+    }
+    @JsonProperty("vnfc")
+    public void setVnfc(Vnf vnfc) {
+        this.vnfc = vnfc;
+    }
 
 }
