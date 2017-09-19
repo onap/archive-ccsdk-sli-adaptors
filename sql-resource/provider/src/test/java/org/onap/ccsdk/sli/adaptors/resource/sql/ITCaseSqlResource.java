@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,6 +32,8 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.vorburger.mariadb4j.DB;
+import ch.vorburger.mariadb4j.DBConfigurationBuilder;
 import junit.framework.TestCase;
 
 public class ITCaseSqlResource extends TestCase {
@@ -40,7 +42,7 @@ public class ITCaseSqlResource extends TestCase {
 			.getLogger(ITCaseSqlResource.class);
 
 
-	public void testExists() {
+	public void testExists() throws Exception {
 
 
 		Properties props = new Properties();
@@ -56,6 +58,17 @@ public class ITCaseSqlResource extends TestCase {
 			e.printStackTrace();
 			fail("Could not initialize properties");
 		}
+
+
+		// Start MariaDB4j database
+        DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
+        config.setPort(0); // 0 => autom. detect free port
+        DB db = DB.newEmbeddedDB(config.build());
+        db.start();
+
+		// Override jdbc URL and database name
+        props.setProperty("org.onap.ccsdk.sli.jdbc.database", "test");
+		props.setProperty("org.onap.ccsdk.sli.jdbc.url", config.getURL("test"));
 
 		// Add properties to global properties
 

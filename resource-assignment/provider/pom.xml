@@ -61,9 +61,9 @@
             <version>${slf4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.connector.version}</version>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>${mariadb.connector.version}</version>
             <type>jar</type>
             <scope>runtime</scope>
         </dependency>
