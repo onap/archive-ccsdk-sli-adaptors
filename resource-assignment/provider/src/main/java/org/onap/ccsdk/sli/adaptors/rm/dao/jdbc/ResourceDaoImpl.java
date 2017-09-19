@@ -298,10 +298,12 @@ public class ResourceDaoImpl implements ResourceDao {
             r = rr;
         }
 
-        r.resourceType = type;
-        r.resourceKey = new ResourceKey();
-        r.resourceKey.assetId = resourceEntity.assetId;
-        r.resourceKey.resourceName = resourceEntity.name;
+        if (r != null) {
+            r.resourceType = type;
+            r.resourceKey = new ResourceKey();
+            r.resourceKey.assetId = resourceEntity.assetId;
+            r.resourceKey.resourceName = resourceEntity.name;
+        }
 
         return r;
     }
