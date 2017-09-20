@@ -331,14 +331,16 @@ public class ResourceDaoImpl implements ResourceDao {
             ai = rai;
         }
 
-        ai.resourceType = r.resourceType;
-        ai.resourceKey = r.resourceKey;
-        ai.resourceSetId = aiEntity.resourceSetId;
-        ai.resourceUnionId = aiEntity.resourceUnionId;
-        if (aiEntity.resourceShareGroupList != null)
-            ai.resourceShareGroupList = new HashSet<String>(StrUtil.listStr(aiEntity.resourceShareGroupList));
-        ai.applicationId = aiEntity.applicationId;
-        ai.allocationTime = aiEntity.allocationTime;
+        if (ai!=null) {
+            ai.resourceType = r.resourceType;
+            ai.resourceKey = r.resourceKey;
+            ai.resourceSetId = aiEntity.resourceSetId;
+            ai.resourceUnionId = aiEntity.resourceUnionId;
+            if (aiEntity.resourceShareGroupList != null)
+                ai.resourceShareGroupList = new HashSet<String>(StrUtil.listStr(aiEntity.resourceShareGroupList));
+            ai.applicationId = aiEntity.applicationId;
+            ai.allocationTime = aiEntity.allocationTime;
+        }
 
         return ai;
     }
