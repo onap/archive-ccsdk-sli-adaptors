@@ -382,72 +382,41 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
 		return (executeSqlWrite(key, ctx));
 	}
 
-	private String decryptColumn(String tableName, String colName, byte[] colValue, DbLibService dblibSvc) {
-		String strValue = new String(colValue);
+    private String decryptColumn(String tableName, String colName, byte[] colValue, DbLibService dblibSvc) {
+        String strValue = new String(colValue);
 
-		if (StringUtils.isAsciiPrintable(strValue)) {
+        if (StringUtils.isAsciiPrintable(strValue)) {
 
-			// If printable, not encrypted
-			return (strValue);
-		} else {
-			PreparedStatement stmt = null;
-			Connection conn = null;
-			ResultSet results = null;
-			try {
-				// CachedRowSet results =
-				// dblibSvc.getData("SELECT
-				// CAST(AES_DECRYPT('"+strValue+"','"+CRYPT_KEY+"') AS CHAR(50))
-				// FROM DUAL",
-				// null, null);
-				conn = ((DBResourceManager) dblibSvc).getConnection();
+            // If printable, not encrypted
+            return (strValue);
+        } else {
+            ResultSet results = null;
+            try (Connection conn = ((DBResourceManager) dblibSvc).getConnection();
+               PreparedStatement stmt = conn.prepareStatement("SELECT CAST(AES_DECRYPT(?, ?) AS CHAR(50)) FROM DUAL")) {
 
-				stmt = conn.prepareStatement("SELECT CAST(AES_DECRYPT(?, ?) AS CHAR(50)) FROM DUAL");
+                stmt.setBytes(1, colValue);
+                stmt.setString(2, getCryptKey());
+                results = stmt.executeQuery();
 
-				stmt.setBytes(1, colValue);
-				stmt.setString(2, getCryptKey());
+                if ((results != null) && results.next()) {
+                    strValue = results.getString(1);
+                    LOG.debug("Decrypted value is " + strValue);
+                } else {
+                    LOG.warn("Cannot decrypt " + tableName + "." + colName);
+                }
+            } catch (Exception e) {
+                if (results != null) {
+                    try {
+                        results.close();
+                    } catch (SQLException ignored) {
 
-				results = stmt.executeQuery();
-
-				if ((results != null) && results.next()) {
-					strValue = results.getString(1);
-					LOG.debug("Decrypted value is " + strValue);
-				} else {
-					LOG.warn("Cannot decrypt " + tableName + "." + colName);
-				}
-			} catch (Exception e) {
-				LOG.error("Caught exception trying to decrypt " + tableName + "." + colName, e);
-			} finally {
-				try {
-					if (results != null) {
-						results.close();
-						results = null;
-					}
-				} catch (Exception exc) {
-
-				}
-
-				try {
-					if (stmt != null) {
-						stmt.close();
-						stmt = null;
-					}
-				} catch (Exception exc) {
-
-				}
-
-				try {
-					if (conn != null) {
-						conn.close();
-						conn = null;
-					}
-				} catch (Exception exc) {
-
-				}
-
-			}
-		}
-		return (strValue);
-	}
+                    }
+                }
+                LOG.error("Caught exception trying to decrypt " + tableName + "." + colName, e);
+            }
+        }
+        return (strValue);
+    }
 
 	public static String getCryptKey() {
 		return (CRYPT_KEY);
