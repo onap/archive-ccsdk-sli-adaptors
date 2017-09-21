@@ -149,7 +149,7 @@ public class ResourceAllocator implements SvcLogicResource {
 
         prefix = prefix == null ? "" : prefix + '.';
 
-        if (!resource.equals("NetworkCapacity")) {
+        if (!"NetworkCapacity".equals(resource)) {
             log.info("resource: " + resource);
             log.info("key: " + key);
 
@@ -374,7 +374,7 @@ public class ResourceAllocator implements SvcLogicResource {
             log.info("Checking VPE port: " + portId);
 
             String provStatus = String.valueOf(vpe.get("provisioning-status"));
-            if (!provStatus.equals("PROV")) {
+            if (!"PROV".equals(provStatus)) {
                 log.info("Skipping port " + portId + ": Provisioning status is not PROV.");
                 continue;
             }
@@ -476,7 +476,7 @@ public class ResourceAllocator implements SvcLogicResource {
             log.info("Checking VPLSPE port: " + portId);
 
             String provStatus = String.valueOf(vplspe.get("provisioning-status"));
-            if (!provStatus.equals("PROV")) {
+            if (!"PROV".equals(provStatus)) {
                 log.info("Skipping port " + portId + ": Provisioning status is not PROV.");
                 continue;
             }
@@ -572,7 +572,7 @@ public class ResourceAllocator implements SvcLogicResource {
                     for (AllocationOutcome ao1 : mrao.allocationOutcomeList) {
                         if (ao1 instanceof LimitAllocationOutcome) {
                             LimitAllocationOutcome lao = (LimitAllocationOutcome) ao1;
-                            if (lao.request.resourceName.equals("Bandwidth")) {
+                            if ("Bandwidth".equals(lao.request.resourceName)) {
                                 ThresholdStatus th = allocationRequestBuilder.getThresholdStatus(sd, ed, lao);
                                 setThresholdData(ctx, th, sd, ed);
                             }
@@ -588,12 +588,12 @@ public class ResourceAllocator implements SvcLogicResource {
                 for (AllocationOutcome ao1 : mrao.allocationOutcomeList) {
                     if (ao1 instanceof LimitAllocationOutcome) {
                         LimitAllocationOutcome lao = (LimitAllocationOutcome) ao1;
-                        if (lao.status == AllocationStatus.Failure && lao.request.resourceName.equals("Bandwidth")) {
+                        if (lao.status == AllocationStatus.Failure && "Bandwidth".equals(lao.request.resourceName)) {
                             long available = lao.limit - lao.used;
                             if (available > maxAvailableSpeedServer)
                                 maxAvailableSpeedServer = available;
                         }
-                        if (lao.status == AllocationStatus.Failure && lao.request.resourceName.equals("Connection")) {
+                        if (lao.status == AllocationStatus.Failure && "Connection".equals(lao.request.resourceName)) {
                             maxAvailableSpeedServer = 0;
                             break;
                         }
