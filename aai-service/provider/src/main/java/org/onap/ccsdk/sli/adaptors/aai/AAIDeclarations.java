@@ -710,22 +710,19 @@ public abstract class AAIDeclarations implements AAIClient {
                 return QueryStatus.FAILURE;
             }
         } else {
-            String resoourceName = resource;
+            String resourceName = resource;
             String identifier = null;
 
-            if(resoourceName == null)
-                return QueryStatus.FAILURE;
-
-            if(resoourceName.contains(":")) {
-                String[] tokens = resoourceName.split(":");
+            if(resourceName.contains(":")) {
+                String[] tokens = resourceName.split(":");
                 if(tokens != null && tokens.length > 0) {
-                    resoourceName = tokens[0];
+                    resourceName = tokens[0];
                     identifier = tokens[1];
                 }
             }
             if("relationship-list".equals(identifier) || "relationshipList".equals(identifier)) {
 //                RelationshipRequest relationshipRequest = new RelationshipRequest();
-                if("generic-vnf".equals(resoourceName)){
+                if("generic-vnf".equals(resourceName)){
                     String vnfId = nameValues.get("vnf_id");
                     String relatedTo  = nameValues.get("related_to");
                     vnfId = vnfId.trim().replace("'", "").replace("$", "").replace("'", "");
