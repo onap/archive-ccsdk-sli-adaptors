@@ -281,7 +281,7 @@ public abstract class AAIDeclarations implements AAIClient {
                     } catch (AAIServiceException aaiexc) {
                         ctx.setAttribute(prefix + ".error.message", aaiexc.getMessage());
                         if (aaiexc.getReturnCode() >= 300) {
-                            ctx.setAttribute(prefix + ".error.http.response-code", "" + aaiexc.getReturnCode());
+                            ctx.setAttribute(prefix + ".error.http" + "" + ".response-code", Integer.toString(aaiexc.getReturnCode()));
                         }
 
                         if (aaiexc.getReturnCode() == 404)
@@ -303,7 +303,7 @@ public abstract class AAIDeclarations implements AAIClient {
                     } catch (AAIServiceException aaiexc) {
                         ctx.setAttribute(prefix + ".error.message", aaiexc.getMessage());
                         if (aaiexc.getReturnCode() >= 300) {
-                            ctx.setAttribute(prefix + ".error.http.response-code", "" + aaiexc.getReturnCode());
+                            ctx.setAttribute(prefix + ".error.http" + ".response-code", Integer.toString(aaiexc.getReturnCode()));
                         }
 
                         if (aaiexc.getReturnCode() == 404)
@@ -521,7 +521,7 @@ public abstract class AAIDeclarations implements AAIClient {
                 if(exc instanceof AAIServiceException) {
                     AAIServiceException aaiexc = (AAIServiceException)exc;
                     if(aaiexc.getReturnCode() >= 300) {
-                        ctx.setAttribute(prefix + ".error.http.response-code", "" + aaiexc.getReturnCode());
+                        ctx.setAttribute(prefix + ".error.http" + ".response-code", Integer.toString(aaiexc.getReturnCode()));
                     }
 
                     if(aaiexc.getReturnCode() == 404) {
