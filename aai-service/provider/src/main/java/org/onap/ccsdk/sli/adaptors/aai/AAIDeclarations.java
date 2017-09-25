@@ -1580,8 +1580,8 @@ public abstract class AAIDeclarations implements AAIClient {
                     j++;
                 }
                     AAIRequest rlRequest = AAIRequest.createRequest(relatedTo, relParams);
-                    for(String key : relParams.keySet()) {
-                        rlRequest.addRequestProperty(key, relParams.get(key));
+                    for(Map.Entry<String,String> entry : relParams.entrySet()) {
+                        rlRequest.addRequestProperty(entry.getKey(), entry.getValue());
                     }
                     String path = rlRequest.updatePathDataValues(null);
                     relationship.setRelatedLink(path);
