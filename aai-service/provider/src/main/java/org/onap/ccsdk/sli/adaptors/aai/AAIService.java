@@ -290,12 +290,11 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             ctx = SSLContext.getInstance("TLS");
 
             KeyManagerFactory kmf = null;
-            try {
+            try (FileInputStream fin = new FileInputStream(keystore_path)){
                 String def = "SunX509";
                 String storeType = "PKCS12";
                 def = KeyStore.getDefaultType();
                 kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-                FileInputStream fin = new FileInputStream(keystore_path);
 
                 String extension = keystore_path.substring(keystore_path.lastIndexOf(".") + 1);
                 if("JKS".equalsIgnoreCase(extension)) {
