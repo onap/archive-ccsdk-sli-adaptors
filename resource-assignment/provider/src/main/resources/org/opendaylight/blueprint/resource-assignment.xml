@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ============LICENSE_START=======================================================
+  openECOMP : SDN-C
+  ================================================================================
+  Copyright (C) 2017 AT&T Intellectual Property. All rights
+  							reserved.
+  ================================================================================
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  ============LICENSE_END=========================================================
+  -->
+
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
+           odl:use-default-for-reference-types="true">
+
+	<!-- JDBC setup -->
+
+	<bean id="rm.dataSource" class="org.openecomp.sdnc.util.db.DataSourceWrap">
+		<property name="dataSource" ref="dblib.dataSource" />
+	</bean>
+
+	<bean id="lock.dataSource" class="org.openecomp.sdnc.util.db.CachedDataSourceWrap">
+		<property name="dataSource" ref="rm.dataSource" />
+	</bean>
+
+	<bean id="rm.jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="rm.dataSource" />
+	</bean>
+
+	<bean id="lock.jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="lock.dataSource" />
+	</bean>
+
+	<!-- Resource Lock Configuration -->
+
+	<bean id="resourceLockDao" class="org.openecomp.sdnc.lock.dao.ResourceLockDaoImpl">
+		<property name="jdbcTemplate" ref="lock.jdbcTemplate" />
+	</bean>
+
+	<bean id="lockHelper" class="org.openecomp.sdnc.lock.comp.LockHelperImpl">
+		<property name="resourceLockDao" ref="resourceLockDao" />
+		<property name="retryCount" value="10" />
+		<property name="lockWait" value="5" /> <!-- Seconds -->
+	</bean>
+
+	<!-- RM Configuration -->
+
+	<bean id="resourceJdbcDao" class="org.openecomp.sdnc.rm.dao.jdbc.ResourceJdbcDaoImpl">
+		<property name="jdbcTemplate" ref="rm.jdbcTemplate" />
+	</bean>
+
+	<bean id="allocationItemJdbcDao" class="org.openecomp.sdnc.rm.dao.jdbc.AllocationItemJdbcDaoImpl">
+		<property name="jdbcTemplate" ref="rm.jdbcTemplate" />
+	</bean>
+
+	<bean id="resourceLoadJdbcDao" class="org.openecomp.sdnc.rm.dao.jdbc.ResourceLoadJdbcDaoImpl">
+		<property name="jdbcTemplate" ref="rm.jdbcTemplate" />
+	</bean>
+
+	<bean id="resourceDao" class="org.openecomp.sdnc.rm.dao.jdbc.ResourceDaoImpl">
+		<property name="resourceJdbcDao" ref="resourceJdbcDao" />
+		<property name="allocationItemJdbcDao" ref="allocationItemJdbcDao" />
+		<property name="resourceLoadJdbcDao" ref="resourceLoadJdbcDao" />
+	</bean>
+
+	<bean id="resourceManager" class="org.openecomp.sdnc.rm.comp.ResourceManagerImpl">
+		<property name="lockHelper" ref="lockHelper" />
+		<property name="resourceDao" ref="resourceDao" />
+		<property name="applicationId" value="SDNC" />
+		<property name="lockTimeout" value="600" /> <!-- Seconds -->
+	</bean>
+
+	<!-- Rule DAO Configuration -->
+
+	<bean id="resourceRuleDao" class="org.openecomp.sdnc.ra.rule.dao.ResourceRuleDaoImpl">
+		<property name="jdbcTemplate" ref="rm.jdbcTemplate" />
+	</bean>
+
+	<bean id="rangeRuleDao" class="org.openecomp.sdnc.ra.rule.dao.RangeRuleDaoImpl">
+		<property name="jdbcTemplate" ref="rm.jdbcTemplate" />
+	</bean>
+
+	<!-- ResourceAllocator Configuration -->
+
+	<bean id="resourceAllocator" class="org.openecomp.sdnc.ra.ResourceAllocator">
+		<property name="resourceManager" ref="resourceManager" />
+		<property name="endPointAllocator" ref="endPointAllocator" />
+		<property name="speedUtil" ref="speedUtil" />
+	</bean>
+	
+	<bean id="speedUtil" class="org.openecomp.sdnc.util.speed.SpeedUtil" />
+
+	<!-- EndPointAllocator Configuration -->
+
+	<bean id="endPointAllocator" class="org.openecomp.sdnc.ra.comp.EndPointAllocatorImpl">
+		<property name="resourceManager" ref="resourceManager" />
+		<property name="allocationRuleMap">
+			<map>
+				<entry key="DEFAULT">
+					<list>
+						<ref component-id="dbAllocationRule" />
+					</list>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<!-- Resource Allocation Rule Configuration -->
+
+	<bean id="dbAllocationRule" class="org.openecomp.sdnc.ra.alloc.DbAllocationRule">
+		<property name="resourceRuleDao" ref="resourceRuleDao" />
+		<property name="rangeRuleDao" ref="rangeRuleDao" />
+	</bean>
+
+</blueprint>
