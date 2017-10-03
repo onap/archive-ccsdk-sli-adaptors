@@ -1,0 +1,97 @@
+{
+  "selflink": "https://mtinjvmsdn30.cip.att.com:8443/aai/v4/network/pservers/pserver/chcil129snd",
+  "hostname": "chcil129snd",
+  "ptnii-equip-name": "chcil129snd",
+  "equip-type": "server1",
+  "equip-vendor": "HP",
+  "equip-model": "DL380p-nd",
+  "fqdn": "chcilrsv129.chcil.sbcglobal.net",
+  "ipv4-oam-address": "12.80.1.83",
+  "serial-number": "n02kvcBczBI",
+  "in-maint":false,
+  "resource-version": "1455988020",
+  "purpose": "Gamma-VCE",
+  "relationship-list": {
+    "relationship": [
+      {
+        "related-to": "complex",
+        "related-link": "https://aai.infra.aic.att.net:8443/aai/v5/cloud-infrastructure/complexes/complex/CHCGILCL73W/",
+        "relationship-data": [
+          {
+            "relationship-key": "complex.physical-location-id",
+            "relationship-value": "CHCGILCL73W"
+          }
+        ]
+      }
+    ]
+  },
+  "p-interfaces": {
+    "p-interface": [
+      {
+        "interface-name": "p6p2-6/2",
+        "speed-value": "10000000",
+        "speed-units": "kbps",
+        "resource-version": "1455988020",
+        "relationship-list": {
+          "relationship": [
+            {
+              "related-to": "physical-link",
+              "related-link": "https://aai.infra.aic.att.net:8443/aai/v5/network/physical-links/physical-link/chcil129snd%3Ap6p2-6%2F2%7Cchciltax102%3Axe-1%2F0%2F29/",
+              "relationship-data": [
+                {
+                  "relationship-key": "physical-link.link-name",
+                  "relationship-value": "chcil129snd:p6p2-6/2|chciltax102:xe-1/0/29"
+                }
+              ]
+            }
+          ]
+        },
+        "l-interfaces": {
+          
+        }
+      },
+      {
+        "interface-name": "p6p1-6/1",
+        "speed-value": "10000000",
+        "speed-units": "kbps",
+        "resource-version": "1455988020",
+        "relationship-list": {
+          "relationship": [
+            {
+              "related-to": "physical-link",
+              "related-link": "https://aai.infra.aic.att.net:8443/aai/v5/network/physical-links/physical-link/chcil129snd%3Ap6p1-6%2F1%7Cchciltax101%3Axe-0%2F0%2F29/",
+              "relationship-data": [
+                {
+                  "relationship-key": "physical-link.link-name",
+                  "relationship-value": "chcil129snd:p6p1-6/1|chciltax101:xe-0/0/29"
+                }
+              ]
+            }
+          ]
+        },
+        "l-interfaces": {
+          
+        }
+      },
+      {
+        "interface-name": "em0-0/1",
+        "speed-value": "10000000",
+        "speed-units": "kbps",
+        "resource-version": "1455988020",
+        "relationship-list": {
+          "relationship": [
+            {
+              "related-to": "physical-link",
+              "related-link": "https://aai.infra.aic.att.net:8443/aai/v5/network/physical-links/physical-link/chcil129snd%3Aem0-0%2F1%7Cchciltax101%3Axe-0%2F0%2F59/",
+              "relationship-data": [
+                {
+                  
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
