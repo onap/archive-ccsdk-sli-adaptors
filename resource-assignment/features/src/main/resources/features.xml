@@ -33,7 +33,7 @@
         <feature>spring</feature>
         <feature version="[3.1,4)">spring-jdbc</feature>
         <feature>spring-dm</feature>
-        <bundle start-level="88">mvn:org.onap.ccsdk.sli.adaptors/resource-assignment-provider/${project.version}</bundle>
+        <bundle>mvn:org.onap.ccsdk.sli.adaptors/resource-assignment-provider/${project.version}</bundle>
         <bundle>mvn:org.mariadb.jdbc/mariadb-java-client/${mariadb.connector.version}</bundle>
         <bundle>mvn:commons-lang/commons-lang/2.6</bundle>
     </feature>
