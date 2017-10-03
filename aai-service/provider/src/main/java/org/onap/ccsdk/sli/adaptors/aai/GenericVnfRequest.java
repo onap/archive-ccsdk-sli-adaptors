@@ -54,7 +54,7 @@ public class GenericVnfRequest extends AAIRequest {
 	@Override
 	public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
 
-		String request_url = target_uri+generic_vnf_path;
+		String request_url = targetUri+generic_vnf_path;
 		String key = VNF_ID;
 		if(requestProperties.containsKey(GENERIC_VNF_ID)) {
 			key = GENERIC_VNF_ID;
@@ -80,7 +80,7 @@ public class GenericVnfRequest extends AAIRequest {
 	@Override
 	public URL getRequestQueryUrl(String method) throws UnsupportedEncodingException, MalformedURLException {
 
-		String request_url = target_uri+generic_vnf_path;
+		String request_url = targetUri+generic_vnf_path;
 		
 		String key = VNF_ID;
 		if(requestProperties.containsKey(GENERIC_VNF_ID)) {

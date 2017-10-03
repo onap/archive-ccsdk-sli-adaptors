@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,29 +34,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class EchoRequest extends AAIRequest {
 
 
-	
-	private final String echo_path;
-	
+
+	private final String echoPath;
+
 	public EchoRequest() {
-		echo_path = "/aai/util/echo";
+		echoPath = "/aai/util/echo";
 	}
 
-	
+
 	@Override
 	public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
 
-		String request_url = target_uri+echo_path;
+		String requestUrl = targetUri+echoPath;
 
 		if(resourceVersion != null) {
-			request_url = request_url +"?resource-version="+resourceVersion;
+			requestUrl = requestUrl +"?resource-version="+resourceVersion;
 		}
-		URL http_req_url =	new URL(request_url);
+		URL httpReqUrl =	new URL(requestUrl);
 
-		aaiService.LOGwriteFirstTrace(method, http_req_url.toString());
-		
-		return http_req_url;
+		aaiService.LOGwriteFirstTrace(method, httpReqUrl.toString());
+
+		return httpReqUrl;
 	}
-	
+
 	@Override
 	public URL getRequestQueryUrl(String method) throws UnsupportedEncodingException, MalformedURLException {
 		return getRequestUrl(method, null);

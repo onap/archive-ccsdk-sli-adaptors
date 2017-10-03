@@ -44,7 +44,7 @@ public class PathRequest extends AAIRequest {
 	@Override
 	public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
 
-		String request_url = target_uri + "{resource-path}";
+		String request_url = targetUri + "{resource-path}";
 		
 		String encoded_vnf = requestProperties.getProperty(RESOURCE_PATH);
 		request_url = request_url.replace("{resource-path}", encoded_vnf) ;

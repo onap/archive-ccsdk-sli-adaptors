@@ -32,9 +32,7 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
 import org.onap.ccsdk.sli.adaptors.aai.data.notify.NotifyEvent;
-import org.onap.ccsdk.sli.adaptors.aai.data.v1507.VServer;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -79,7 +77,7 @@ public interface AAIClient extends SvcLogicResource, SvcLogicJavaPlugin {
 
     // --------------------------------- 1507 ---------------------------
     // Data Change
-    public VServer  dataChangeRequestVServerData(URL url) throws AAIServiceException;
+    public Vserver  dataChangeRequestVServerData(URL url) throws AAIServiceException;
 
     public CtagPool dataChangeRequestCtagPoolData(URL url) throws AAIServiceException;
 

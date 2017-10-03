@@ -67,7 +67,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.UriBuilder;
 import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.commons.codec.binary.Base64;
@@ -96,7 +95,6 @@ import org.openecomp.aai.inventory.v11.Tenant;
 import org.openecomp.aai.inventory.v11.Vce;
 import org.openecomp.aai.inventory.v11.VnfImage;
 import org.openecomp.aai.inventory.v11.VnfImages;
-import org.openecomp.aai.inventory.v11.Vpe;
 import org.openecomp.aai.inventory.v11.VplsPe;
 import org.openecomp.aai.inventory.v11.VpnBinding;
 import org.openecomp.aai.inventory.v11.Vserver;
@@ -106,7 +104,6 @@ import org.onap.ccsdk.sli.adaptors.aai.data.RequestError;
 import org.onap.ccsdk.sli.adaptors.aai.data.ResourceVersion;
 import org.onap.ccsdk.sli.adaptors.aai.data.ServiceException;
 import org.onap.ccsdk.sli.adaptors.aai.data.notify.NotifyEvent;
-import org.onap.ccsdk.sli.adaptors.aai.data.v1507.VServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -1106,9 +1103,9 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         PInterface response = null;
 
         try {
-            AAIRequest request = new PInterfaceRequest();
-            request.addRequestProperty(PInterfaceRequest.PINTERFACE_INTERFACE_NAME, interfaceName);
-            request.addRequestProperty(PInterfaceRequest.PSERVER_HOSTNAME, hostname);
+            AAIRequest request =  AAIRequest.getRequestFromResource("p-interface");
+            request.addRequestProperty("p-interface.interface-name", interfaceName);
+            request.addRequestProperty("pserver.hostname", hostname);
             String rv = executor.get(request);
             if(rv != null) {
                 ObjectMapper mapper = getObjectMapper();
@@ -1438,16 +1435,14 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     //================== End of Service =================
 
 
-
-    // 1507 - Request
     @Override
-    public VServer dataChangeRequestVServerData(URL url) throws AAIServiceException {
+    public Vserver dataChangeRequestVServerData(URL url) throws AAIServiceException {
 
         if(url ==  null) {
             throw new NullPointerException();
         }
 
-        return this.getResource(url.toString(), VServer.class);
+        return this.getResource(url.toString(), Vserver.class);
     }
 
     @Override
@@ -2267,7 +2262,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
                 String data_type = datum.getResourceType();
                 String resourceLink = datum.getResourceLink();
                 if(!resourceLink.isEmpty() && !resourceLink.toLowerCase().startsWith("http")) {
-                    resourceLink = (new EchoRequest()).target_uri + resourceLink;
+                    resourceLink = (new EchoRequest()).targetUri + resourceLink;
                 }
                 entity = new URL(resourceLink);
             }

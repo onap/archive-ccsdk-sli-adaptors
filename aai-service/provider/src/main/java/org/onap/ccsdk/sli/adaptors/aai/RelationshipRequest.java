@@ -81,7 +81,7 @@ public class RelationshipRequest extends AAIRequest {
 	@Override
 	public URL getRequestQueryUrl(String method) throws UnsupportedEncodingException, MalformedURLException {
 
-		String request_url = target_uri+relationship_query_path;
+		String request_url = targetUri+relationship_query_path;
 		String encoded_vnf = encodeQuery(requestProperties.getProperty(RELATIONSHIP_KEY));
 		request_url = request_url.replace("{tenant-name}", encoded_vnf) ;
 		URL http_req_url =	new URL(request_url);
