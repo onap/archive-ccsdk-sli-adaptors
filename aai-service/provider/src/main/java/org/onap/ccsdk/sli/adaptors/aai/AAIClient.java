@@ -32,7 +32,6 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
 import org.onap.ccsdk.sli.adaptors.aai.data.notify.NotifyEvent;
 import org.onap.ccsdk.sli.adaptors.aai.data.v1507.VServer;
 

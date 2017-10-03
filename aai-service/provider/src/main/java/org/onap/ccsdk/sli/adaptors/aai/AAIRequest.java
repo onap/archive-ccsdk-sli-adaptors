@@ -69,7 +69,7 @@ public abstract class AAIRequest {
     public static final String DEPTH = "depth";
 
     protected static Properties configProperties;
-    protected final String target_uri;
+    protected final String targetUri;
     protected static AAIService aaiService;
 
     protected AAIDatum requestDatum;
@@ -116,15 +116,21 @@ public abstract class AAIRequest {
         case "custom-query":
         case "formatted-query":
             return new CustomQueryRequest();
-        case "linterface":
-            return new LInterfaceRequest(LInterfaceRequest.TYPE.L2_BRIDGE_SBG);
-        case "l2-bridge-sbg":
-            return new SubInterfaceRequest(SubInterfaceRequest.TYPE.L2_BRIDGE_SBG);
-        case "l2-bridge-bgf":
-            return new SubInterfaceRequest(SubInterfaceRequest.TYPE.L2_BRIDGE_BGF);
         case "echo":
         case "test":
             return new EchoRequest();
+
+        case "linterface":
+        case "l2-bridge-sbg":
+        case "l2-bridge-bgf":
+            {
+            	resoource = "l-interface";
+                AAIRequest request = getRequestFromResource("l-interface");
+                if(request ==  null) {
+                    return null;
+                }
+                return request;
+            }
 
         default:
             {
@@ -210,7 +216,7 @@ public abstract class AAIRequest {
     }
 
     public AAIRequest() {
-        target_uri    = configProperties.getProperty(TARGET_URI);
+        targetUri    = configProperties.getProperty(TARGET_URI);
     }
 
     public void addRequestProperty(String key, String value) {
@@ -241,7 +247,7 @@ public abstract class AAIRequest {
 
         String request_url = null;
 
-        request_url = target_uri + updatePathDataValues(resourceVersion);
+        request_url = targetUri + updatePathDataValues(resourceVersion);
 
         URL http_req_url =    new URL(request_url);
 
@@ -469,6 +475,6 @@ public abstract class AAIRequest {
 
 
     public String getTargetUri() {
-        return target_uri;
+        return targetUri;
     }
 }
