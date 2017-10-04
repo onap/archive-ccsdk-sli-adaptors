@@ -41,10 +41,13 @@ public class EchoRequestTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EchoRequestTest.class);
 
-	protected static AAIRequest request;
+	private static AAIRequest request;
+	private static AAIService aaiService;
 
 	@BeforeClass
 	public static void setUp() throws Exception {
+		aaiService = new AAIService(
+	            AAIService.class.getResource(AAIService.AAICLIENT_PROPERTIES));
 		request = new EchoRequest();
 		LOG.info("\nEchoRequestTest.setUp\n");
 	}

@@ -95,7 +95,7 @@ public class AAIServiceActivator implements BundleActivator {
 					try {
 						input.close();
 					} catch(Exception exc) {
-						// ignore
+						LOG.debug(exc.getMessage());
 					}
 				}
 				int size = properties.keySet().size() ;
@@ -157,13 +157,13 @@ public class AAIServiceActivator implements BundleActivator {
 		if (sdnConfigDirectory == null || sdnConfigDirectory.isEmpty()) {
 			String filename = DEFAULT_SDNC_PROPERTY_FILE;
     		File file = new File(filename);
-    		if(file != null && file.exists()) {
+    		if(file.exists()) {
     			propertiesPath = filename;
     			LOG.info("Using property file (1): " + propertiesPath);
     		} else {
     			filename = BVC_PROPERTY_FILE;
     			file = new File(filename);
-        		if(file != null && file.exists()) {
+        		if(file.exists()) {
         			propertiesPath = filename;
         			LOG.info("Using property file (1): " + propertiesPath);
         		} else {
@@ -179,13 +179,13 @@ public class AAIServiceActivator implements BundleActivator {
 		if(!propFile.exists()) {
 			String filename = DEFAULT_SDNC_PROPERTY_FILE;
     		File file = new File(filename);
-    		if(file != null && file.exists()) {
+    		if(file.exists()) {
     			propertiesPath = filename;
     			LOG.info("Using property file (1): " + propertiesPath);
     		} else {
     			filename = BVC_PROPERTY_FILE;
     			file = new File(filename);
-        		if(file != null && file.exists()) {
+        		if(file.exists()) {
         			propertiesPath = filename;
         			LOG.info("Using property file (1): " + propertiesPath);
         		} else {
