@@ -1,0 +1,43 @@
+      {
+        "interface-name": "example-interface-name-val-1600",
+        "interface-role": "example-interface-role-val-1600",
+        "v6-wan-link-ip": "example-v6-wan-link-ip-val-1600",
+        "resource-version": "1450729537",
+        "vlans": {
+          "vlan": [
+            {
+              "vlan-interface": "example-vlan-interface-val-7133",
+              "vlan-id-inner": 1318,
+              "vlan-id-outer": 244,
+              "resource-version": "1450729537",
+              "relationship-list": {
+                
+              },
+              "l3-interface-ipv4-address-list": [
+                {
+                  "l3-interface-ipv4-address": "example-l3-interface-ipv4-address-val-9533",
+                  "l3-interface-ipv4-prefix-length": 3013,
+                  "vlan-id-inner": 7150,
+                  "vlan-id-outer": 1027,
+                  "resource-version": "1450729537",
+                  "relationship-list": {
+                    
+                  }
+                }
+              ],
+              "l3-interface-ipv6-address-list": [
+                {
+                  "l3-interface-ipv6-address": "example-l3-interface-ipv6-address-val-7149",
+                  "l3-interface-ipv6-prefix-length": 4538,
+                  "vlan-id-inner": 8271,
+                  "vlan-id-outer": 8990,
+                  "resource-version": "1450729537",
+                  "relationship-list": {
+                    
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }

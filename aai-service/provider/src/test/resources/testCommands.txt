@@ -1,0 +1,1 @@
+query|generic-vnf|generic-vnf.vnf-id:assign:value:adb28ac0-a260-4b7d-9ce5-adf15733c458
