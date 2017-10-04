@@ -126,18 +126,18 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
     private static final Logger LOG = LoggerFactory.getLogger(AAIService.class);
 
-    private final String truststore_path;
-    private final String truststore_password;
-    private final String keystore_path;
-    private final String keystore_password;
-    private final Boolean ignore_certificate_host_error;
+    private final String truststorePath;
+    private final String truststorePassword;
+    private final String keystorePath;
+    private final String keystorePassword;
+    private final Boolean ignoreCertificateHostError;
 
     private final String target_uri;
-    private final String query_path;
+    private final String queryPath;
 
-    private final String network_vserver_path;
+    private final String networkVserverPath;
 
-    private final String svc_instance_path;
+    private final String svcInstancePath;
     private final String svc_inst_qry_path;
 
     private final String vnf_image_query_path;
@@ -206,13 +206,13 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             LOG.debug("Basic password is not set");
         }
 
-        truststore_path     = props.getProperty(TRUSTSTORE_PATH);
-        truststore_password = props.getProperty(TRUSTSTORE_PSSWD);
-        keystore_path         = props.getProperty(KEYSTORE_PATH);
-        keystore_password     = props.getProperty(KEYSTORE_PSSWD);
+        truststorePath     = props.getProperty(TRUSTSTORE_PATH);
+        truststorePassword = props.getProperty(TRUSTSTORE_PSSWD);
+        keystorePath         = props.getProperty(KEYSTORE_PATH);
+        keystorePassword     = props.getProperty(KEYSTORE_PSSWD);
 
         target_uri             = props.getProperty(TARGET_URI);
-        query_path             = props.getProperty(QUERY_PATH);
+        queryPath             = props.getProperty(QUERY_PATH);
         update_path         = props.getProperty(UPDATE_PATH);
 
         String applicationId =props.getProperty(APPLICATION_ID);
@@ -239,9 +239,9 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         connection_timeout = tmpConnectionTimeout;
         read_timeout = tmpReadTimeout;
 
-        network_vserver_path =props.getProperty(NETWORK_VSERVER_PATH);
+        networkVserverPath =props.getProperty(NETWORK_VSERVER_PATH);
 
-        svc_instance_path    = props.getProperty(SVC_INSTANCE_PATH);
+        svcInstancePath    = props.getProperty(SVC_INSTANCE_PATH);
         svc_inst_qry_path    = props.getProperty(SVC_INST_QRY_PATH);
         param_service_type     = props.getProperty(PARAM_SERVICE_TYPE, "service-type");
 
@@ -266,20 +266,20 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             host_error = Boolean.valueOf(iche);
         }
 
-        ignore_certificate_host_error = host_error;
+        ignoreCertificateHostError = host_error;
 
         HttpsURLConnection.setDefaultHostnameVerifier( new HostnameVerifier(){
             public boolean verify(String string,SSLSession ssls) {
-                return ignore_certificate_host_error;
+                return ignoreCertificateHostError;
             }
         });
 
-        if(truststore_path != null && truststore_password != null && (new File(truststore_path)).exists()) {
-            System.setProperty("javax.net.ssl.trustStore", truststore_path);
-            System.setProperty("javax.net.ssl.trustStorePassword", truststore_password);
+        if(truststorePath != null && truststorePassword != null && (new File(truststorePath)).exists()) {
+            System.setProperty("javax.net.ssl.trustStore", truststorePath);
+            System.setProperty("javax.net.ssl.trustStorePassword", truststorePassword);
         }
 
-        if(keystore_path != null && keystore_password != null && (new File(keystore_path)).exists()) {
+        if(keystorePath != null && keystorePassword != null && (new File(keystorePath)).exists()) {
         DefaultClientConfig config = new DefaultClientConfig();
         //both jersey and HttpURLConnection can use this
         SSLContext ctx = null;
@@ -287,19 +287,19 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             ctx = SSLContext.getInstance("TLS");
 
             KeyManagerFactory kmf = null;
-            try (FileInputStream fin = new FileInputStream(keystore_path)){
+            try (FileInputStream fin = new FileInputStream(keystorePath)){
                 String def = "SunX509";
                 String storeType = "PKCS12";
                 def = KeyStore.getDefaultType();
                 kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 
-                String extension = keystore_path.substring(keystore_path.lastIndexOf(".") + 1);
+                String extension = keystorePath.substring(keystorePath.lastIndexOf(".") + 1);
                 if("JKS".equalsIgnoreCase(extension)) {
                     storeType = "JKS";
                 }
                 KeyStore ks = KeyStore.getInstance(storeType);
 
-                char[] pwd = keystore_password.toCharArray();
+                char[] pwd = keystorePassword.toCharArray();
                 ks.load(fin, pwd);
                 kmf.init(ks, pwd);
             } catch (Exception ex) {
@@ -310,7 +310,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties( new HostnameVerifier() {
                     @Override
                     public boolean verify( String s, SSLSession sslSession ) {
-                        return ignore_certificate_host_error;
+                        return ignoreCertificateHostError;
                     }
             }, ctx));
 
@@ -883,74 +883,22 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     @Override
     public boolean deleteVServerData(String tenant_id, String vserver_id, String cloudOwner, String cloudRegionId, String resourceVersion) throws AAIServiceException {
         boolean response = false;
-        InputStream inputStream = null;
 
         try {
-            String local_network_complexes_path = network_vserver_path.replace("{tenant-id}", encodeQuery(tenant_id));
-            local_network_complexes_path = local_network_complexes_path.replace("{vserver-id}", encodeQuery(vserver_id));
-            local_network_complexes_path = local_network_complexes_path.replace("{cloud-owner}", encodeQuery(cloudOwner));
-            local_network_complexes_path = local_network_complexes_path.replace("{cloud-region-id}", encodeQuery(cloudRegionId));
+            AAIRequest request = AAIRequest.getRequestFromResource("vserver");
 
-            String request_url = target_uri+local_network_complexes_path;
-            if(resourceVersion!=null) {
-                request_url = request_url +"?resource-version="+resourceVersion;
-            }
-            URL http_req_url =    new URL(request_url);
+            request.addRequestProperty("vserver.vserver-id", vserver_id);
+            request.addRequestProperty("tenant.tenant-id", tenant_id);
+            request.addRequestProperty("cloud-region.cloud-owner", cloudOwner);
+            request.addRequestProperty("cloud-region.cloud-region-id",cloudRegionId);
 
-            HttpURLConnection con = getConfiguredConnection(http_req_url, HttpMethod.DELETE);
-
-            LOGwriteFirstTrace(HttpMethod.DELETE, http_req_url.toString());
-            LOGwriteDateTrace("tenant_id", tenant_id);
-            LOGwriteDateTrace("vserver_id", vserver_id);
-            LOGwriteDateTrace("cloud-owner", cloudOwner);
-            LOGwriteDateTrace("cloud-region-id", cloudRegionId);
-
-            // Check for errors
-            int responseCode = con.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                inputStream = con.getInputStream();
-            } else {
-                inputStream = con.getErrorStream();
-            }
-
-            // Process the response
-            LOG.debug("HttpURLConnection result:" + responseCode);
-            if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
-            BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
-            String line = null;
-
-            ObjectMapper mapper = getObjectMapper();
-
-            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while( ( line = reader.readLine() ) != null ) {
-                    stringBuilder.append( line );
-                }
-                LOGwriteEndingTrace(responseCode, "SUCCESS", stringBuilder.toString());
-                response = true;
-            } else if(responseCode == HttpURLConnection.HTTP_NOT_FOUND ) {
-                LOGwriteEndingTrace(responseCode, "HTTP_NOT_FOUND", "Entry does not exist.");
-                response = false;
-            } else {
-                ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
-                LOGwriteEndingTrace(responseCode, "FAILURE", mapper.writeValueAsString(errorresponse));
-                throw new AAIServiceException(responseCode, errorresponse);
-            }
+            response = executor.delete(request, resourceVersion);
 
         } catch(AAIServiceException aaiexc) {
             throw aaiexc;
         } catch (Exception exc) {
             LOG.warn("deleteVServerData", exc);
             throw new AAIServiceException(exc);
-        } finally {
-            if(inputStream != null){
-                try {
-                    inputStream.close();
-                } catch(Exception exc) {
-
-                }
-            }
         }
         return response;
     }
@@ -2808,7 +2756,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
     @Override
     public String getVServerIdFromVserverUrl(URL url, String tenantId) {
-        String pattern =  network_vserver_path;
+        String pattern =  networkVserverPath;
         pattern = pattern.replace("{tenant-id}", tenantId);
 
         int end = pattern.indexOf("{vserver-id}");
