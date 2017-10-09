@@ -95,7 +95,7 @@ public class AAIServiceActivator implements BundleActivator {
                     try {
                         input.close();
                     } catch(Exception exc) {
-                        LOG.debug(exc.getMessage());
+                        LOG.error("Failed to close InputStream", exc);
                     }
                 }
                 int size = properties.keySet().size() ;
