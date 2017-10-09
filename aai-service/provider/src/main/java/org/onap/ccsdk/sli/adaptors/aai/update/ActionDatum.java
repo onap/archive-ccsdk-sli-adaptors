@@ -44,7 +44,7 @@ public class ActionDatum {
     @JsonProperty("property-value")
     private String propertyValue;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * 

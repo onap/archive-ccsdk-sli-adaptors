@@ -88,7 +88,7 @@ public class Result {
     @XmlElement(name = "vserver")
     private Vserver vserver;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     @XmlElement(name = "cloud-region")
     public CloudRegion getCloudRegion() {

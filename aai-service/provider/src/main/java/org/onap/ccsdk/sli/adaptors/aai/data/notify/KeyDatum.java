@@ -44,7 +44,7 @@ public class KeyDatum {
     @JsonProperty("key-value")
     private String keyValue;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * 

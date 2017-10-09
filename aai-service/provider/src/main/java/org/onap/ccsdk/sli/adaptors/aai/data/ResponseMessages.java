@@ -43,7 +43,7 @@ public class ResponseMessages {
     @JsonProperty("responseMessage")
     private List<ResponseMessage> responseMessage = new ArrayList<ResponseMessage>();
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * 

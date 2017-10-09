@@ -41,7 +41,7 @@ public class QueryParameters {
     @JsonProperty("named-query")
     private NamedQuery namedQuery;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * 

@@ -43,7 +43,7 @@ public class InstanceFilters {
     @JsonProperty("instance-filter")
     private List<InstanceFilter> instanceFilter = new ArrayList<InstanceFilter>();
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * 

@@ -140,6 +140,9 @@ public abstract class AAIDeclarations implements AAIClient {
     public abstract AAIRequestExecutor getExecutor();
 
 
+    /* (non-Javadoc)
+     * @see org.onap.ccsdk.sli.core.sli.SvcLogicResource#query(java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.onap.ccsdk.sli.core.sli.SvcLogicContext)
+     */
     @Override
     public QueryStatus query(String resource, boolean localOnly, String select, String key, String prefix, String orderBy, SvcLogicContext ctx)
         throws SvcLogicException {
@@ -394,45 +397,9 @@ public abstract class AAIDeclarations implements AAIClient {
     }
 
 
-    public void writeMap(Map<String, Object> properties, String prefix, SvcLogicContext ctx) {
-        Set<String> mapKeys = properties.keySet();
-
-        for(String mapKey : mapKeys) {
-            Object entity = properties.get(mapKey);
-            if(entity instanceof ArrayList) {
-                writeList((ArrayList<?>)entity, prefix + "." + mapKey, ctx);
-            } else
-            if(entity instanceof String ||  entity instanceof Long || entity instanceof Integer || entity instanceof Boolean) {
-                ctx.setAttribute(prefix + "." + mapKey, entity.toString());
-                getLogger().debug(prefix + "." + mapKey + " : " + entity.toString());
-            } else if(entity instanceof Map) {
-                String localPrefix = prefix;
-                if(mapKey != null) {
-                    localPrefix = String.format("%s.%s", prefix, mapKey);
-                }
-                writeMap( (Map<String, Object>)entity,  localPrefix,  ctx);
-            }
-        }
-    }
-
-    private void writeList(ArrayList<?> list, String prefix, SvcLogicContext ctx) {
-        for(int i = 0; i < list.size(); i++ ) {
-            Object entity = list.get(i);
-            if(entity instanceof Map) {
-                writeMap( (Map<String, Object>)entity,  prefix + "[" + i + "]",  ctx);
-            } else
-                if(entity instanceof String ||  entity instanceof Long || entity instanceof Integer || entity instanceof Boolean) {
-                ctx.setAttribute(prefix, entity.toString());
-                getLogger().debug(prefix  + " : " + entity.toString());
-            }
-        }
-
-        if(!list.isEmpty()) {
-            ctx.setAttribute(prefix + "_length", Integer.toString(list.size()));
-            getLogger().debug(prefix + "_length"  + " : " + Integer.toString(list.size()));
-        }
-    }
-
+    /* (non-Javadoc)
+     * @see org.onap.ccsdk.sli.core.sli.SvcLogicResource#save(java.lang.String, boolean, boolean, java.lang.String, java.util.Map, java.lang.String, org.onap.ccsdk.sli.core.sli.SvcLogicContext)
+     */
     @Override
     public QueryStatus save(String resource, boolean force, boolean localOnly, String key, Map<String, String> params, String prefix, SvcLogicContext ctx)
             throws SvcLogicException {
@@ -573,6 +540,48 @@ public abstract class AAIDeclarations implements AAIClient {
         return QueryStatus.SUCCESS;
     }
 
+    public void writeMap(Map<String, Object> properties, String prefix, SvcLogicContext ctx) {
+        Set<String> mapKeys = properties.keySet();
+
+        for(String mapKey : mapKeys) {
+            Object entity = properties.get(mapKey);
+            if(entity instanceof ArrayList) {
+                writeList((ArrayList<?>)entity, prefix + "." + mapKey, ctx);
+            } else
+            if(entity instanceof String ||  entity instanceof Long || entity instanceof Integer || entity instanceof Boolean) {
+                ctx.setAttribute(prefix + "." + mapKey, entity.toString());
+                getLogger().debug(prefix + "." + mapKey + " : " + entity.toString());
+            } else if(entity instanceof Map) {
+                String localPrefix = prefix;
+                if(mapKey != null) {
+                    localPrefix = String.format("%s.%s", prefix, mapKey);
+                }
+                writeMap( (Map<String, Object>)entity,  localPrefix,  ctx);
+            }
+        }
+    }
+
+    private void writeList(ArrayList<?> list, String prefix, SvcLogicContext ctx) {
+        for(int i = 0; i < list.size(); i++ ) {
+            Object entity = list.get(i);
+            if(entity instanceof Map) {
+                writeMap( (Map<String, Object>)entity,  prefix + "[" + i + "]",  ctx);
+            } else
+                if(entity instanceof String ||  entity instanceof Long || entity instanceof Integer || entity instanceof Boolean) {
+                ctx.setAttribute(prefix, entity.toString());
+                getLogger().debug(prefix  + " : " + entity.toString());
+            }
+        }
+
+        if(!list.isEmpty()) {
+            ctx.setAttribute(prefix + "_length", Integer.toString(list.size()));
+            getLogger().debug(prefix + "_length"  + " : " + Integer.toString(list.size()));
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.onap.ccsdk.sli.core.sli.SvcLogicResource#update(java.lang.String, java.lang.String, java.util.Map, java.lang.String, org.onap.ccsdk.sli.core.sli.SvcLogicContext)
+     */
     @Override
     public QueryStatus update(String resource, String key, Map<String, String> params, String prefix, SvcLogicContext ctx) throws SvcLogicException {
 
@@ -641,6 +650,9 @@ public abstract class AAIDeclarations implements AAIClient {
         return QueryStatus.SUCCESS;
     }
 
+    /* (non-Javadoc)
+     * @see org.onap.ccsdk.sli.core.sli.SvcLogicResource#delete(java.lang.String, java.lang.String, org.onap.ccsdk.sli.core.sli.SvcLogicContext)
+     */
     @Override
     public QueryStatus delete(String resource, String key, SvcLogicContext ctx) throws SvcLogicException {
         getLogger().debug("AAIService.delete\tresource="+resource);
@@ -778,6 +790,9 @@ public abstract class AAIDeclarations implements AAIClient {
         return QueryStatus.FAILURE;
     }
 
+    /* (non-Javadoc)
+     * @see org.onap.ccsdk.sli.core.sli.SvcLogicResource#exists(java.lang.String, java.lang.String, java.lang.String, org.onap.ccsdk.sli.core.sli.SvcLogicContext)
+     */
     @Override
     public QueryStatus exists(String resource, String key, String prefix, SvcLogicContext ctx) throws SvcLogicException {
         return query(resource, false, null, key, prefix, null, ctx);

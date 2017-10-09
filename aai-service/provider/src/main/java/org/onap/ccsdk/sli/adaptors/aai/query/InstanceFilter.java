@@ -82,7 +82,7 @@ public class InstanceFilter {
     private Vnf vnfc;
 
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      *

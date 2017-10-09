@@ -43,7 +43,7 @@ public class RequestError {
     @JsonProperty("serviceException")
     private ServiceException serviceException;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * 

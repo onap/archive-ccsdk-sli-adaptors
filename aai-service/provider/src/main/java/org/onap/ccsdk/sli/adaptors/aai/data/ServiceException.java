@@ -51,7 +51,7 @@ public class ServiceException {
     @JsonProperty("variables")
     private List<String> variables = new ArrayList<String>();
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * 

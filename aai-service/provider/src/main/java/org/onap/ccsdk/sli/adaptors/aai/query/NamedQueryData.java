@@ -47,7 +47,7 @@ public class NamedQueryData implements AAIDatum {
     @JsonProperty("instance-filters")
     private InstanceFilters instanceFilters;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * 

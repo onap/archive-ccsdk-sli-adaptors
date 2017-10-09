@@ -56,7 +56,7 @@ public class SubInterface implements AAIDatum {
     @JsonProperty("relationshipList")
     private RelationshipList relationshipList;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * 

@@ -47,7 +47,7 @@ public class ResponseMessage {
     @JsonProperty("variables")
     private Variables variables;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * 

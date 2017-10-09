@@ -46,7 +46,7 @@ public class Action {
     @JsonProperty("action-type")
     private String actionType;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * 

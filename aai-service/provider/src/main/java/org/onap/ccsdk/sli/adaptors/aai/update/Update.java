@@ -49,7 +49,7 @@ public class Update {
     @JsonProperty("update-node-key")
     private List<UpdateNodeKey> updateNodeKey = new ArrayList<UpdateNodeKey>();
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * 

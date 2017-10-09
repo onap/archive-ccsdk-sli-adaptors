@@ -55,7 +55,7 @@ public class NotifyEvent {
     @JsonProperty("selflink")
     private String selflink;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * 

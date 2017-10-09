@@ -123,23 +123,10 @@ public abstract class AAIRequest {
         case "linterface":
         case "l2-bridge-sbg":
         case "l2-bridge-bgf":
-            {
-            	resoource = "l-interface";
-                AAIRequest request = getRequestFromResource("l-interface");
-                if(request ==  null) {
-                    return null;
-                }
-                return request;
-            }
+            return getRequestFromResource("l-interface");
 
         default:
-            {
-                AAIRequest request = getRequestFromResource(resoource);
-                if(request ==  null) {
-                    return null;
-                }
-                return request;
-            }
+            return getRequestFromResource(resoource);
         }
     }
 
@@ -292,7 +279,7 @@ public abstract class AAIRequest {
             // for group search add itself, but remove singular version of itself
             if(!uniqueResources.contains(resource)) {
                 boolean replaced =  false;
-                Set<String> tmpUniqueResources = new HashSet<String>();
+                Set<String> tmpUniqueResources = new HashSet<>();
                 tmpUniqueResources.addAll(uniqueResources);
                 for(String item : tmpUniqueResources){
                     String plural = item +"s";

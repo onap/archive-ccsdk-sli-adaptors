@@ -41,7 +41,7 @@ public class EchoResponse implements AAIDatum {
     @JsonProperty("responseMessages")
     private ResponseMessages responseMessages;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * 

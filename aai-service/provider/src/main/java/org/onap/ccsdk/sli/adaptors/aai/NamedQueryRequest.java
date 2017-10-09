@@ -107,7 +107,7 @@ public class NamedQueryRequest extends AAIRequest {
                         if(innerChild != null) {
                             if(innerChild instanceof ObjectNode) {
                                 ObjectNode on = ObjectNode.class.cast(innerChild);
-                                List<String> namesToDelete = new ArrayList<String>();
+                                List<String> namesToDelete = new ArrayList<>();
                                 Iterator<String> names = on.fieldNames();
                                 while(names.hasNext()) {
                                     String name = names.next();
@@ -125,7 +125,7 @@ public class NamedQueryRequest extends AAIRequest {
                         if(innerChild != null) {
                             if(innerChild instanceof ObjectNode) {
                                 ObjectNode on = ObjectNode.class.cast(innerChild);
-                                List<String> namesToDelete = new ArrayList<String>();
+                                List<String> namesToDelete = new ArrayList<>();
                                 Iterator<String> names = on.fieldNames();
                                 while(names.hasNext()) {
                                     String name = names.next();
@@ -143,7 +143,7 @@ public class NamedQueryRequest extends AAIRequest {
                         if(innerChild != null) {
                             if(innerChild instanceof ObjectNode) {
                                 ObjectNode on = ObjectNode.class.cast(innerChild);
-                                List<String> namesToDelete = new ArrayList<String>();
+                                List<String> namesToDelete = new ArrayList<>();
                                 Iterator<String> names = on.fieldNames();
                                 while(names.hasNext()) {
                                     String name = names.next();
