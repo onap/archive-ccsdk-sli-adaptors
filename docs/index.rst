@@ -5,4 +5,8 @@ TODO Add files to toctree and delete this header
 .. toctree::
    :maxdepth: 1
 
-
+   architecture.rst
+   offeredapis.rst
+   logging.rst
+   build.rst
+   release-notes.rst
