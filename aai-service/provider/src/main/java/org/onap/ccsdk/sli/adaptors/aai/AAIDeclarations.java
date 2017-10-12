@@ -740,7 +740,7 @@ public abstract class AAIDeclarations implements AAIClient {
                     boolean itemRemoved = false;
                     RelationshipList relationshipList = vnf.getRelationshipList();
                     List<Relationship> relationships = relationshipList.getRelationship();
-                    List<Relationship> iterableList = new LinkedList<Relationship>(relationships);
+                    List<Relationship> iterableList = new LinkedList<>(relationships);
                     for(Relationship relationship : iterableList) {
                         if(relationship.getRelatedTo().equals(relatedTo)) {
                             relationships.remove(relationship);
@@ -1154,7 +1154,7 @@ public abstract class AAIDeclarations implements AAIClient {
                                     List<String> newValues = new ArrayList<>();
                                     String length = id+"_length";
                                     if(!params.isEmpty() && params.containsKey(length)) {
-                                        String tmp = params.get(length).toString();
+                                        String tmp = params.get(length);
                                         int count = Integer.parseInt(tmp);
                                         for(int i=0; i<count; i++) {
                                             String tmpValue = params.get(String.format("%s[%d]", id, i));
@@ -1296,7 +1296,7 @@ public abstract class AAIDeclarations implements AAIClient {
                         relationship.setRelatedLink(relatedLink);
                     } else {
 //                        List<RelationshipData> relData = relationship.getRelationshipData();
-                        Map<String, String> relParams = new HashMap<String, String>();
+                        Map<String, String> relParams = new HashMap<>();
 
                     while(true) {
                         String searchRelationshipKey = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-key";
@@ -1544,7 +1544,7 @@ public abstract class AAIDeclarations implements AAIClient {
             boolean createdNewRelationships = false;
             List<Relationship> relationships = relationshipList.getRelationship();
             if(relationships == null) {
-                relationships = new ArrayList<Relationship>();
+                relationships = new ArrayList<>();
                 createdNewRelationships = true;
             }
 
@@ -1745,7 +1745,7 @@ public abstract class AAIDeclarations implements AAIClient {
             }
 
             List<Relationship> relationships = relationshipList.getRelationship();
-            List<Relationship> relationshipsToDelete = new LinkedList<Relationship>();
+            List<Relationship> relationshipsToDelete = new LinkedList<>();
 
             for(Relationship relationship : relationships) {
                 if(relatedTo.equals(relationship.getRelatedTo())) {
