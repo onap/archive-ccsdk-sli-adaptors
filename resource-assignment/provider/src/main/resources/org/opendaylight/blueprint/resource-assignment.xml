@@ -9,9 +9,9 @@
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
        http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,11 +26,11 @@
 
 	<!-- JDBC setup -->
 
-	<bean id="rm.dataSource" class="org.openecomp.sdnc.util.db.DataSourceWrap">
+	<bean id="rm.dataSource" class="org.onap.ccsdk.sli.adaptors.util.db.DataSourceWrap">
 		<property name="dataSource" ref="dblib.dataSource" />
 	</bean>
 
-	<bean id="lock.dataSource" class="org.openecomp.sdnc.util.db.CachedDataSourceWrap">
+	<bean id="lock.dataSource" class="org.onap.ccsdk.sli.adaptors.util.db.CachedDataSourceWrap">
 		<property name="dataSource" ref="rm.dataSource" />
 	</bean>
 
@@ -44,11 +44,11 @@
 
 	<!-- Resource Lock Configuration -->
 
-	<bean id="resourceLockDao" class="org.openecomp.sdnc.lock.dao.ResourceLockDaoImpl">
+	<bean id="resourceLockDao" class="org.onap.ccsdk.sli.adaptors.lock.dao.ResourceLockDaoImpl">
 		<property name="jdbcTemplate" ref="lock.jdbcTemplate" />
 	</bean>
 
-	<bean id="lockHelper" class="org.openecomp.sdnc.lock.comp.LockHelperImpl">
+	<bean id="lockHelper" class="org.onap.ccsdk.sli.adaptors.lock.comp.LockHelperImpl">
 		<property name="resourceLockDao" ref="resourceLockDao" />
 		<property name="retryCount" value="10" />
 		<property name="lockWait" value="5" /> <!-- Seconds -->
@@ -56,25 +56,25 @@
 
 	<!-- RM Configuration -->
 
-	<bean id="resourceJdbcDao" class="org.openecomp.sdnc.rm.dao.jdbc.ResourceJdbcDaoImpl">
+	<bean id="resourceJdbcDao" class="org.onap.ccsdk.sli.adaptors.rm.dao.jdbc.ResourceJdbcDaoImpl">
 		<property name="jdbcTemplate" ref="rm.jdbcTemplate" />
 	</bean>
 
-	<bean id="allocationItemJdbcDao" class="org.openecomp.sdnc.rm.dao.jdbc.AllocationItemJdbcDaoImpl">
+	<bean id="allocationItemJdbcDao" class="org.onap.ccsdk.sli.adaptors.rm.dao.jdbc.AllocationItemJdbcDaoImpl">
 		<property name="jdbcTemplate" ref="rm.jdbcTemplate" />
 	</bean>
 
-	<bean id="resourceLoadJdbcDao" class="org.openecomp.sdnc.rm.dao.jdbc.ResourceLoadJdbcDaoImpl">
+	<bean id="resourceLoadJdbcDao" class="org.onap.ccsdk.sli.adaptors.rm.dao.jdbc.ResourceLoadJdbcDaoImpl">
 		<property name="jdbcTemplate" ref="rm.jdbcTemplate" />
 	</bean>
 
-	<bean id="resourceDao" class="org.openecomp.sdnc.rm.dao.jdbc.ResourceDaoImpl">
+	<bean id="resourceDao" class="org.onap.ccsdk.sli.adaptors.rm.dao.jdbc.ResourceDaoImpl">
 		<property name="resourceJdbcDao" ref="resourceJdbcDao" />
 		<property name="allocationItemJdbcDao" ref="allocationItemJdbcDao" />
 		<property name="resourceLoadJdbcDao" ref="resourceLoadJdbcDao" />
 	</bean>
 
-	<bean id="resourceManager" class="org.openecomp.sdnc.rm.comp.ResourceManagerImpl">
+	<bean id="resourceManager" class="org.onap.ccsdk.sli.adaptors.rm.comp.ResourceManagerImpl">
 		<property name="lockHelper" ref="lockHelper" />
 		<property name="resourceDao" ref="resourceDao" />
 		<property name="applicationId" value="SDNC" />
@@ -83,27 +83,27 @@
 
 	<!-- Rule DAO Configuration -->
 
-	<bean id="resourceRuleDao" class="org.openecomp.sdnc.ra.rule.dao.ResourceRuleDaoImpl">
+	<bean id="resourceRuleDao" class="org.onap.ccsdk.sli.adaptors.ra.rule.dao.ResourceRuleDaoImpl">
 		<property name="jdbcTemplate" ref="rm.jdbcTemplate" />
 	</bean>
 
-	<bean id="rangeRuleDao" class="org.openecomp.sdnc.ra.rule.dao.RangeRuleDaoImpl">
+	<bean id="rangeRuleDao" class="org.onap.ccsdk.sli.adaptors.ra.rule.dao.RangeRuleDaoImpl">
 		<property name="jdbcTemplate" ref="rm.jdbcTemplate" />
 	</bean>
 
 	<!-- ResourceAllocator Configuration -->
 
-	<bean id="resourceAllocator" class="org.openecomp.sdnc.ra.ResourceAllocator">
+	<bean id="resourceAllocator" class="org.onap.ccsdk.sli.adaptors.ra.ResourceAllocator">
 		<property name="resourceManager" ref="resourceManager" />
 		<property name="endPointAllocator" ref="endPointAllocator" />
 		<property name="speedUtil" ref="speedUtil" />
 	</bean>
-	
-	<bean id="speedUtil" class="org.openecomp.sdnc.util.speed.SpeedUtil" />
+
+	<bean id="speedUtil" class="org.onap.ccsdk.sli.adaptors.util.speed.SpeedUtil" />
 
 	<!-- EndPointAllocator Configuration -->
 
-	<bean id="endPointAllocator" class="org.openecomp.sdnc.ra.comp.EndPointAllocatorImpl">
+	<bean id="endPointAllocator" class="org.onap.ccsdk.sli.adaptors.ra.comp.EndPointAllocatorImpl">
 		<property name="resourceManager" ref="resourceManager" />
 		<property name="allocationRuleMap">
 			<map>
@@ -118,7 +118,7 @@
 
 	<!-- Resource Allocation Rule Configuration -->
 
-	<bean id="dbAllocationRule" class="org.openecomp.sdnc.ra.alloc.DbAllocationRule">
+	<bean id="dbAllocationRule" class="org.onap.ccsdk.sli.adaptors.ra.alloc.DbAllocationRule">
 		<property name="resourceRuleDao" ref="resourceRuleDao" />
 		<property name="rangeRuleDao" ref="rangeRuleDao" />
 	</bean>
