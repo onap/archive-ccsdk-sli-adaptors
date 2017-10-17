@@ -105,16 +105,28 @@
 
 	<bean id="endPointAllocator" class="org.onap.ccsdk.sli.adaptors.ra.comp.EndPointAllocatorImpl">
 		<property name="resourceManager" ref="resourceManager" />
-		<property name="allocationRuleMap">
+		<property name="endPointAllocationDefinitionMap">
 			<map>
 				<entry key="DEFAULT">
 					<list>
-						<ref component-id="dbAllocationRule" />
+                        <bean class="org.onap.ccsdk.sli.adaptors.ra.comp.EndPointAllocationDefinition">
+                            <property name="serviceModel" value="DEFAULT" />
+                            <property name="endPointPosition" value="DEFAULT" />
+                            <property name="equipmentReader" ref="vnfReader" />
+                            <property name="allocationRuleList">
+                                <list>
+                                    <ref component-id="dbAllocationRule" />
+                                </list>
+                            </property>
+                        </bean>
 					</list>
 				</entry>
 			</map>
 		</property>
 	</bean>
+
+    <bean id="vnfReader" class="org.onap.ccsdk.sli.adaptors.ra.reader.VnfReader">
+    </bean>
 
 	<!-- Resource Allocation Rule Configuration -->
 
