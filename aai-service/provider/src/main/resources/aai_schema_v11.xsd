@@ -272,7 +272,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
     <xs:complexType>
       <xs:annotation>
         <xs:appinfo>
-          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="Collection of digital virtual switch metadata used for vmWare VCEs and VPEs.")</annox:annotate>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="Collection of digital virtual switch metadata used for vmWare VCEs and GenericVnfs.")</annox:annotate>
         </xs:appinfo>
       </xs:annotation>
       <xs:sequence>
@@ -678,7 +678,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
     <xs:complexType>
       <xs:annotation>
         <xs:appinfo>
-          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="IPv4 Address Range",indexedProps="l3-interface-ipv4-address,vlan-id-inner,neutron-network-id,neutron-subnet-id",dependentOn="vlan,l-interface")</annox:annotate>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="IPv4 Address Range",indexedProps="l3-interface-ipv4-address,vlan-id-inner,neutron-network-id,neutron-subnet-id",dependentOn="vlan,l-interface,vnfc")</annox:annotate>
         </xs:appinfo>
       </xs:annotation>
       <xs:sequence>
@@ -1048,7 +1048,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
     <xs:complexType>
       <xs:annotation>
         <xs:appinfo>
-          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="Logical interfaces, e.g., a vnic.",indexedProps="macaddr,interface-id,interface-name,network-name",dependentOn="generic-vnf,newvce,vpe,p-interface,vserver,lag-interface",container="l-interfaces")</annox:annotate>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="Logical interfaces, e.g., a vnic.",indexedProps="macaddr,interface-id,interface-name,network-name",dependentOn="generic-vnf,newvce,p-interface,vserver,lag-interface",container="l-interfaces")</annox:annotate>
         </xs:appinfo>
       </xs:annotation>
       <xs:sequence>
@@ -1147,6 +1147,13 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
           <xs:annotation>
             <xs:appinfo>
               <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(defaultValue="false",description="Flag indicating the interface uses the IP Unnumbered configuration.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="allowed-address-pairs" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Freeform field for storing an ip address, list of ip addresses or a subnet block.")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
@@ -1880,14 +1887,14 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
     <xs:complexType>
       <xs:annotation>
         <xs:appinfo>
-          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="cloud-region designates an installation of a cloud cluster or region or instantiation. In AT&amp;Ts AIC cloud, this could be an LCP or DCP. Cloud regions are uniquely identified by a composite key, cloud-owner + cloud-region-id. The format of the cloud-owner is vendor-cloudname and we will use att-aic for AT&amp;T's AIC.",indexedProps="cloud-owner,cloud-region-id,cloud-type,owner-defined-type",nameProps="owner-defined-type",container="cloud-regions",namespace="cloud-infrastructure")</annox:annotate>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="cloud-region designates an installation of a cloud cluster or region or instantiation.",indexedProps="cloud-owner,cloud-region-id,cloud-type,owner-defined-type",nameProps="owner-defined-type",container="cloud-regions",namespace="cloud-infrastructure")</annox:annotate>
         </xs:appinfo>
       </xs:annotation>
       <xs:sequence>
         <xs:element name="cloud-owner" type="xs:string">
           <xs:annotation>
             <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(isKey=true,description="Identifies the vendor and cloud name, e.g., att-aic. First part of composite key should be formatted as vendor-cloudname")</annox:annotate>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(isKey=true,description="Identifies the vendor and cloud name. First part of composite key should be formatted as vendor-cloudname")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
@@ -1944,6 +1951,20 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
           <xs:annotation>
             <xs:appinfo>
               <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(defaultValue="false",description="Whether the cloud region supports (true) or does not support (false) SR-IOV automation.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="cloud-extra-info" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="ESR inputs extra information about the VIM or Cloud which will be decoded by MultiVIM.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="cloud-epa-caps" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="MultiVIM will discover and expose EPA capabilities.")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
@@ -2127,6 +2148,13 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
+        <xs:element name="mac-addresss" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="MAC Address of the p-interface.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
         <xs:element name="resource-version" type="xs:string" minOccurs="0">
           <xs:annotation>
             <xs:appinfo>
@@ -2170,7 +2198,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
     <xs:complexType>
       <xs:annotation>
         <xs:appinfo>
-          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="Link aggregate interface",indexedProps="interface-name,interface-id,interface-role",dependentOn="generic-vnf,pserver,vpe,vpls-pe,pnf",container="lag-interfaces")</annox:annotate>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="Link aggregate interface",indexedProps="interface-name,interface-id,interface-role",dependentOn="generic-vnf,pserver,vpls-pe,pnf",container="lag-interfaces")</annox:annotate>
         </xs:appinfo>
       </xs:annotation>
       <xs:sequence>
@@ -3893,7 +3921,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         <xs:element name="ip-version" type="xs:string" minOccurs="0">
           <xs:annotation>
             <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="v4, v6, or ds for dual stack (should be att-ip-version)")</annox:annotate>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="v4, v6, or ds for dual stack")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
@@ -4141,7 +4169,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
     <xs:complexType>
       <xs:annotation>
         <xs:appinfo>
-          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(indexedProps="routing-instance-id",uniqueProps="routing-instance-id",dependentOn="site-pair-set",container="routing-instances")</annox:annotate>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(indexedProps="routing-instance-id",dependentOn="site-pair-set",container="routing-instances")</annox:annotate>
         </xs:appinfo>
       </xs:annotation>
       <xs:sequence>
@@ -4374,7 +4402,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         <xs:element name="ipv4-oam-address" type="xs:string" minOccurs="0">
           <xs:annotation>
             <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Address tail-f uses to configure vpe, also used for troubleshooting and is IP used for traps generated by VPE (v4-loopback0-ip-address).")</annox:annotate>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Address tail-f uses to configure generic-vnf, also used for troubleshooting and is IP used for traps generated by GenericVnf (v4-loopback0-ip-address).")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
@@ -4603,7 +4631,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
     <xs:complexType>
       <xs:annotation>
         <xs:appinfo>
-          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="Metadata for license group.",indexedProps="group-uuid,resource-uuid",dependentOn="generic-vnf,vce,vpe",container="licenses")</annox:annotate>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="Metadata for license group.",indexedProps="group-uuid,resource-uuid",dependentOn="generic-vnf,vce",container="licenses")</annox:annotate>
         </xs:appinfo>
       </xs:annotation>
       <xs:sequence>
@@ -4648,7 +4676,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
     <xs:complexType>
       <xs:annotation>
         <xs:appinfo>
-          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="Metadata for entitlement group.",indexedProps="group-uuid,resource-uuid",dependentOn="generic-vnf,vce,vpe",container="entitlements")</annox:annotate>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="Metadata for entitlement group.",indexedProps="group-uuid,resource-uuid",dependentOn="generic-vnf,vce",container="entitlements")</annox:annotate>
         </xs:appinfo>
       </xs:annotation>
       <xs:sequence>
@@ -4849,6 +4877,116 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="vnfc">
+    <xs:complexType>
+      <xs:annotation>
+        <xs:appinfo>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(indexedProps="vnfc-name,prov-status,nfc-function,nfc-naming-code,ipaddress-v4-oam-vip,in-maint,is-closed-loop-disabled,group-notation,model-invariant-id,model-version-id",searchable="vnfc-name",container="vnfcs",namespace="network")</annox:annotate>
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:sequence>
+        <xs:element name="vnfc-name" type="xs:string">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(isKey=true,description="Unique ID of vnfc.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="nfc-naming-code" type="xs:string">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Short code that is used in naming instances of the item being modeled")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="nfc-function" type="xs:string">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="English description of function that the specific resource deployment is providing. Assigned as part of the customization of a resource in a service")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="prov-status" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="prov status of this vnfc")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="orchestration-status" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Orchestration status of this VNF, mastered by APP-C")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="ipaddress-v4-oam-vip" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Oam V4 vip address of this vnfc")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="in-maint" type="xs:boolean">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(defaultValue="false",description="used to indicate whether or not this object is in maintenance mode (maintenance mode = true)")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="is-closed-loop-disabled" type="xs:boolean">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(defaultValue="false",description="used to indicate whether closed loop function is enabled on this node")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="group-notation" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Group notation of VNFC")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="model-invariant-id" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="the ASDC model id for this resource or service model.",visibility="deployment",requires="model-version-id")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="model-version-id" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="the ASDC model version for this resource or service model.",visibility="deployment",requires="model-invariant-id")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="resource-version" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Used for optimistic concurrency.  Must be empty on create, valid on update and delete.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element ref="tns:relationship-list" minOccurs="0"/>
+        <xs:element ref="tns:l3-interface-ipv4-address-list" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="tns:l3-interface-ipv6-address-list" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="vnfcs">
+    <xs:complexType>
+      <xs:annotation>
+        <xs:appinfo>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="virtual network components associated with a vserver from application controller.")</annox:annotate>
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:sequence>
+        <xs:element ref="tns:vnfc" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="vpe">
     <xs:complexType>
       <xs:annotation>
@@ -5031,88 +5169,39 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="vnfc">
+  <xs:element name="host-route">
     <xs:complexType>
       <xs:annotation>
         <xs:appinfo>
-          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(indexedProps="vnfc-name,prov-status,nfc-function,nfc-naming-code,ipaddress-v4-oam-vip,in-maint,is-closed-loop-disabled,group-notation,model-invariant-id,model-version-id",searchable="vnfc-name",container="vnfcs",namespace="network")</annox:annotate>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(indexedProps="host-route-id",dependentOn="subnet",container="host-routes")</annox:annotate>
         </xs:appinfo>
       </xs:annotation>
       <xs:sequence>
-        <xs:element name="vnfc-name" type="xs:string">
+        <xs:element name="host-route-id" type="xs:string">
           <xs:annotation>
             <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(isKey=true,description="Unique ID of vnfc.")</annox:annotate>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(isKey=true,description="host-route id")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
-        <xs:element name="nfc-naming-code" type="xs:string">
+        <xs:element name="route-prefix" type="xs:string">
           <xs:annotation>
             <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Short code that is used in naming instances of the item being modeled")</annox:annotate>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="subnet prefix")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
-        <xs:element name="nfc-function" type="xs:string">
+        <xs:element name="next-hop" type="xs:string">
           <xs:annotation>
             <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="English description of function that the specific resource deployment is providing. Assigned as part of the customization of a resource in a service")</annox:annotate>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Could be ip-address, hostname, or service-instance")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
-        <xs:element name="prov-status" type="xs:string" minOccurs="0">
+        <xs:element name="next-hop-type" type="xs:string" minOccurs="0">
           <xs:annotation>
             <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="prov status of this vnfc")</annox:annotate>
-            </xs:appinfo>
-          </xs:annotation>
-        </xs:element>
-        <xs:element name="orchestration-status" type="xs:string" minOccurs="0">
-          <xs:annotation>
-            <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Orchestration status of this VNF, mastered by APP-C")</annox:annotate>
-            </xs:appinfo>
-          </xs:annotation>
-        </xs:element>
-        <xs:element name="ipaddress-v4-oam-vip" type="xs:string" minOccurs="0">
-          <xs:annotation>
-            <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Oam V4 vip address of this vnfc")</annox:annotate>
-            </xs:appinfo>
-          </xs:annotation>
-        </xs:element>
-        <xs:element name="in-maint" type="xs:boolean">
-          <xs:annotation>
-            <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(defaultValue="false",description="used to indicate whether or not this object is in maintenance mode (maintenance mode = true)")</annox:annotate>
-            </xs:appinfo>
-          </xs:annotation>
-        </xs:element>
-        <xs:element name="is-closed-loop-disabled" type="xs:boolean">
-          <xs:annotation>
-            <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(defaultValue="false",description="used to indicate whether closed loop function is enabled on this node")</annox:annotate>
-            </xs:appinfo>
-          </xs:annotation>
-        </xs:element>
-        <xs:element name="group-notation" type="xs:string" minOccurs="0">
-          <xs:annotation>
-            <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Group notation of VNFC")</annox:annotate>
-            </xs:appinfo>
-          </xs:annotation>
-        </xs:element>
-        <xs:element name="model-invariant-id" type="xs:string" minOccurs="0">
-          <xs:annotation>
-            <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="the ASDC model id for this resource or service model.",visibility="deployment",requires="model-version-id")</annox:annotate>
-            </xs:appinfo>
-          </xs:annotation>
-        </xs:element>
-        <xs:element name="model-version-id" type="xs:string" minOccurs="0">
-          <xs:annotation>
-            <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="the ASDC model version for this resource or service model.",visibility="deployment",requires="model-invariant-id")</annox:annotate>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Should be ip-address, hostname, or service-instance to match next-hop")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
@@ -5127,15 +5216,10 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="vnfcs">
+  <xs:element name="host-routes">
     <xs:complexType>
-      <xs:annotation>
-        <xs:appinfo>
-          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="virtual network components associated with a vserver from application controller.")</annox:annotate>
-        </xs:appinfo>
-      </xs:annotation>
       <xs:sequence>
-        <xs:element ref="tns:vnfc" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="tns:host-route" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -5231,6 +5315,13 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
+        <xs:element name="ip-assignment-direction" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="ip address assignment direction of the subnet")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
         <xs:element name="resource-version" type="xs:string" minOccurs="0">
           <xs:annotation>
             <xs:appinfo>
@@ -5238,6 +5329,14 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
+        <xs:element name="subnet-sequence" type="xs:int" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="sequence of the subnet")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element ref="tns:host-routes" minOccurs="0"/>
         <xs:element ref="tns:relationship-list" minOccurs="0"/>
       </xs:sequence>
     </xs:complexType>
@@ -5808,7 +5907,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         <xs:element name="management-option" type="xs:string" minOccurs="0">
           <xs:annotation>
             <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="identifier of managed by ONAP or customer")</annox:annotate>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="identifier of managed by ATT or customer")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
@@ -6183,14 +6282,14 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         <xs:element name="ipv4-oam-address" type="xs:string" minOccurs="0">
           <xs:annotation>
             <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Address tail-f uses to configure vpe, also used for troubleshooting and is IP used for traps generated by VPE (v4-loopback0-ip-address).")</annox:annotate>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Address tail-f uses to configure generic-vnf, also used for troubleshooting and is IP used for traps generated by GenericVnf (v4-loopback0-ip-address).")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
         <xs:element name="equipment-role" type="xs:string" minOccurs="0">
           <xs:annotation>
             <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Client should send valid enumerated value, e.g., VPE.")</annox:annotate>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Client should send valid enumerated value.")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
@@ -6306,7 +6405,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         <xs:element name="management-option" type="xs:string" minOccurs="0">
           <xs:annotation>
             <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="identifier of managed by ONAP or customer")</annox:annotate>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="identifier of managed by ATT or customer")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
@@ -6483,6 +6582,34 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
+        <xs:element name="service-provider-bandwidth-up-value" type="xs:int" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Upstream Bandwidth value agreed with the service provider")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="service-provider-bandwidth-up-units" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Units for the upstream BW value")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="service-provider-bandwidth-down-value" type="xs:int" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Downstream Bandwidth value agreed with the service provider")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="service-provider-bandwidth-down-units" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Units for downstream BW value")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
         <xs:element name="resource-version" type="xs:string" minOccurs="0">
           <xs:annotation>
             <xs:appinfo>
@@ -6620,7 +6747,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         <xs:element name="ikev1-encryption" type="xs:string" minOccurs="0">
           <xs:annotation>
             <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Encyption values like 3des-cbc, des-cbc, aes-128-cbc,Â aes-192-cbc, aes-265-cbc")</annox:annotate>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Encyption values like 3des-cbc, des-cbc, aes-128-cbc,?aes-192-cbc, aes-265-cbc")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
@@ -6662,7 +6789,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         <xs:element name="ipsec-encryption" type="xs:string" minOccurs="0">
           <xs:annotation>
             <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="3des-cbc, des-cbc, aes-128-cbc,Â aes-192-cbc, aes-265-cbc")</annox:annotate>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="3des-cbc, des-cbc, aes-128-cbc,?aes-192-cbc, aes-265-cbc")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
@@ -6877,7 +7004,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         <xs:element name="design-type" type="xs:string">
           <xs:annotation>
             <xs:appinfo>
-              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Design of zone [Medium/Large…]")</annox:annotate>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Design of zone [Medium/Large?]")</annox:annotate>
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
@@ -6915,6 +7042,142 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
       </xs:annotation>
       <xs:sequence>
         <xs:element ref="tns:zone" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="vip-ipv4-address-list">
+    <xs:complexType>
+      <xs:annotation>
+        <xs:appinfo>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="IPv4 Address Range",indexedProps="vip-ipv4-address,vlan-id-inner,neutron-network-id,neutron-subnet-id")</annox:annotate>
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:sequence>
+        <xs:element name="vip-ipv4-address" type="xs:string">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(isKey=true,description="IP address")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="vip-ipv4-prefix-length" type="xs:unsignedInt" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Prefix length, 32 for single address")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="vlan-id-inner" type="xs:unsignedInt" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Inner VLAN tag")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="vlan-id-outer" type="xs:unsignedInt" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Outer VLAN tag")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="is-floating" type="xs:boolean" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Indicator of fixed or floating address")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="resource-version" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Used for optimistic concurrency.  Must be empty on create, valid on update and delete.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="neutron-network-id" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Neutron network id of the interface that address belongs to")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="neutron-subnet-id" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Neutron id of subnet that address belongs to")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element ref="tns:relationship-list" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="vip-ipv6-address-list">
+    <xs:complexType>
+      <xs:annotation>
+        <xs:appinfo>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="IPv6 Address Range",indexedProps="vip-ipv6-address,vlan-id-inner,neutron-network-id,neutron-subnet-id")</annox:annotate>
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:sequence>
+        <xs:element name="vip-ipv6-address" type="xs:string">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(isKey=true,description="IP address")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="vip-ipv6-prefix-length" type="xs:unsignedInt" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Prefix length, 128 for single address")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="vlan-id-inner" type="xs:unsignedInt" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Inner VLAN tag")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="vlan-id-outer" type="xs:unsignedInt" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Outer VLAN tag")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="is-floating" type="xs:boolean" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Indicator of fixed or floating address")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="resource-version" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Used for optimistic concurrency.  Must be empty on create, valid on update and delete.")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="neutron-network-id" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Neutron network id of the interface that address belongs to")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="neutron-subnet-id" type="xs:string" minOccurs="0">
+          <xs:annotation>
+            <xs:appinfo>
+              <annox:annotate target="field">@org.openecomp.aai.annotations.Metadata(description="Neutron id of subnet that address belongs to")</annox:annotate>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element ref="tns:relationship-list" minOccurs="0"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -7054,6 +7317,8 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         <xs:element ref="tns:route-table-references" minOccurs="0"/>
         <xs:element ref="tns:instance-groups" minOccurs="0"/>
         <xs:element ref="tns:zones" minOccurs="0"/>
+        <xs:element ref="tns:vip-ipv4-address-list" minOccurs="0"/>
+        <xs:element ref="tns:vip-ipv6-address-list" minOccurs="0"/>
         <xs:element ref="tns:configurations" minOccurs="0"/>
       </xs:sequence>
     </xs:complexType>
@@ -7087,9 +7352,8 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         <xs:element name="edgeLabel" type="xs:string" minOccurs="0"/>
         <xs:element name="direction" type="xs:string" minOccurs="0"/>
         <xs:element name="multiplicityRule" type="xs:string" minOccurs="0"/>
-        <xs:element name="is-parent" type="xs:string" minOccurs="0"/>
-        <xs:element name="uses-resource" type="xs:string" minOccurs="0"/>
-        <xs:element name="has-del-target" type="xs:string" minOccurs="0"/>
+        <xs:element name="contains-other-v" type="xs:string" minOccurs="0"/>
+        <xs:element name="delete-other-v" type="xs:string" minOccurs="0"/>
         <xs:element name="SVC-INFRA" type="xs:string" minOccurs="0"/>
         <xs:element name="prevent-delete" type="xs:string" minOccurs="0"/>
       </xs:sequence>
@@ -7362,7 +7626,7 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
     <xs:complexType>
       <xs:annotation>
         <xs:appinfo>
-          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="Abstract vnf class",indexedProps="vnf-id",uniqueProps="vnf-id",inheritors="vce,vpe,generic-vnf",isAbstract="true")</annox:annotate>
+          <annox:annotate target="class">@org.openecomp.aai.annotations.Metadata(description="Abstract vnf class",indexedProps="vnf-id",uniqueProps="vnf-id",inheritors="vce,generic-vnf",isAbstract="true")</annox:annotate>
         </xs:appinfo>
       </xs:annotation>
       <xs:sequence>
