@@ -51,7 +51,7 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SqlResource.class);
 
-	private static final String DBLIB_SERVICE = "org.onap.ccsdk.sli.adaptors.resource.dblib.DBResourceManager";
+	private static final String DBLIB_SERVICE = "org.onap.ccsdk.sli.core.dblib.DbLibService";
 
 	private static String CRYPT_KEY = "";
 
