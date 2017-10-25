@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -48,6 +49,7 @@ import org.apache.commons.lang.StringUtils;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
+import org.openecomp.aai.inventory.v11.Image;
 import org.openecomp.aai.inventory.v11.GenericVnf;
 import org.openecomp.aai.inventory.v11.InventoryResponseItem;
 import org.openecomp.aai.inventory.v11.InventoryResponseItems;
@@ -503,9 +505,12 @@ public abstract class AAIDeclarations implements AAIClient {
                     }
 
                     switch(dependency){
-                    case "relationship-list":
-                        newModelProcessRelationshipList(instance, params, prefix, ctx);
-                        break;
+                        case "relationship-list":
+                            newModelProcessRelationshipList(instance, params, prefix, ctx);
+                            break;
+                        case "metadata":
+                            newModelProcessMetadata(instance, params, prefix, ctx);
+                            break;
                     }
                     // create a method to update relationship-list
                     AAIRequest request = AAIRequest.createRequest(localResource, nameValues);
@@ -665,7 +670,12 @@ public abstract class AAIDeclarations implements AAIClient {
 
         if(AAIRequest.createRequest(resource, nameValues) != null) {
             if(resource.contains(":")) {
-                return processDeleteRelationshipList(resource, key, ctx, nameValues);
+                switch (resource.split(":")[1]){
+                    case "relationship-list":
+                        return processDeleteRelationshipList(resource, key, ctx, nameValues);
+                    case "metadata":
+                        return processDeleteMetadata(resource, key, ctx, nameValues);
+                }
             }
 
 
@@ -1594,6 +1604,69 @@ public abstract class AAIDeclarations implements AAIClient {
         return QueryStatus.SUCCESS;
     }
 
+    private QueryStatus newModelProcessMetadata(Object instance, Map<String, String> params, String prefix, SvcLogicContext ctx) throws Exception {
+
+        if (!(instance instanceof ServiceInstance) && !(instance instanceof Image)) {
+            throw new IllegalArgumentException("request is not applicable for selected request");
+        }
+
+        Class resourceClass = instance.getClass();
+        Set<String> metadataKeys = new TreeSet<String>();
+        Set<String> set = params.keySet();
+        for(String attribute : set) {
+            if(attribute.startsWith("metadata")) {
+                metadataKeys.add(attribute);
+            }
+        }
+
+        // 3. Process Metadata
+        // add metadata
+        if(!metadataKeys.isEmpty()) {
+            Metadata metadata = null;
+            Object obj = null;
+            Method getMetadataMethod = resourceClass.getMethod("getMetadata");
+            if(getMetadataMethod != null){
+                try {
+                    getMetadataMethod.setAccessible(true);
+                    obj = getMetadataMethod.invoke(instance);
+                } catch (InvocationTargetException x) {
+                    Throwable cause = x.getCause();
+                }
+            }
+            if(obj != null && obj instanceof Metadata){
+                metadata = (Metadata)obj;
+            } else {
+                metadata = new Metadata();
+                Method setMetadataMethod = resourceClass.getMethod("setMetadata", Metadata.class);
+                if(setMetadataMethod != null){
+                    try {
+                        setMetadataMethod.setAccessible(true);
+                        setMetadataMethod.invoke(instance, metadata);
+                    } catch (InvocationTargetException x) {
+                    }
+                }
+            }
+
+            List<Metadatum> metadatumList = metadata.getMetadatum();
+            int i = 0;
+            while(true){
+                String metaNameKey = "metadata.metadatum[" + i + "].metaname";
+                String metaValueKey = "metadata.metadatum[" + i + "].metaval";
+                if(!params.containsKey(metaNameKey) || !params.containsKey(metaValueKey))
+                    break;
+
+                Metadatum metadatum = new Metadatum();
+                metadatum.setMetaname(params.get(metaNameKey));
+                metadatum.setMetaval(params.get(metaValueKey));
+                metadatumList.add(metadatum);
+
+                i++;
+            }
+        }
+
+        return QueryStatus.SUCCESS;
+    }
+
     private Relationship findRelationship(List<Relationship> relationships, String relatedTo) {
         if(relatedTo == null)
             return null;
@@ -1779,7 +1852,7 @@ public abstract class AAIDeclarations implements AAIClient {
 
             for(Relationship targetRelationship : relationshipsToDelete) {
                 String json_text = mapper.writeValueAsString(targetRelationship);
-                boolean response = deleteRelationshipList(deleteUrl, json_text);
+                boolean response = deleteList(deleteUrl, json_text);
                 if(!response)
                     cumulativeResponse = response;
 
@@ -1794,6 +1867,90 @@ public abstract class AAIDeclarations implements AAIClient {
             getLogger().warn("processDelete", exc);
             return QueryStatus.FAILURE;
         }
+    }
+
+    private QueryStatus processDeleteMetadata(String resource, String key, SvcLogicContext ctx, HashMap<String, String> nameValues) {
+        try {
+            AAIRequest request = AAIRequest.createRequest(resource, nameValues);
+            if(request == null) {
+                return QueryStatus.FAILURE;
+            }
+
+            request.processRequestPathValues(nameValues);
+            URL url = request.getRequestUrl("GET", null);
+
+            Class resourceClass = request.getModelClass();
+            Object instance = getResource(url.toString(), resourceClass);
+
+            // get resource version
+            String resourceVersion = null;
+            Method getResourceVersionMethod = resourceClass.getMethod("getResourceVersion");
+            if(getResourceVersionMethod != null){
+                try {
+                    getResourceVersionMethod.setAccessible(true);
+                    resourceVersion = (String) getResourceVersionMethod.invoke(instance);
+                } catch (InvocationTargetException x) {
+                }
+            }
+
+            Metadata metadata = null;
+            Object obj = null;
+            Method getMetadataMethod = resourceClass.getMethod("getMetadata");
+            if(getMetadataMethod != null){
+                try {
+                    getMetadataMethod.setAccessible(true);
+                    obj = getMetadataMethod.invoke(instance);
+                } catch (InvocationTargetException x) {
+                    Throwable cause = x.getCause();
+                }
+            }
+            if(obj != null && obj instanceof Metadata){
+                metadata = (Metadata)obj;
+            } else {
+                getLogger().debug("No metadata found to process.");
+                return QueryStatus.NOT_FOUND;
+            }
+
+            if(metadata.getMetadatum() == null || metadata.getMetadatum().isEmpty()) {
+                return QueryStatus.NOT_FOUND;
+            }
+
+            List<Metadatum> metadatumList = metadata.getMetadatum();
+            Metadatum metadatumToDelete = null;
+
+            final String metaname = nameValues.get("metaname");
+
+            for(Metadatum metadatum : metadatumList) {
+                getLogger().debug(String.format("Comparing existing metadatum of '%s' to keyword '%s'", metadatum.getMetaname(),  metaname));
+                if(metaname.equals(metadatum.getMetaname())) {
+                    metadatumToDelete = metadatum;
+                    break;
+                }
+            }
+            if(metadatumToDelete == null) {
+                getLogger().info(String.format("Metadatum has not been found for %s", key));
+                return QueryStatus.NOT_FOUND;
+            }
+
+            String path = url.toString();
+            path = path + "/metadata/metadatum/" + encodeQuery( metadatumToDelete.getMetaname() ) +
+                    "?resource-version=" + metadatumToDelete.getResourceVersion();
+            URL deleteUrl = new URL(path);
+            boolean response = deleteList(deleteUrl, null);
+
+            if(!response)
+                return QueryStatus.FAILURE;
+
+            return QueryStatus.SUCCESS;
+
+        } catch(Exception exc) {
+            getLogger().warn("processDelete", exc);
+            return QueryStatus.FAILURE;
+        }
+    }
+
+    protected String encodeQuery(String param) throws UnsupportedEncodingException {
+        return URLEncoder.encode(param, "UTF-8").replace("+", "%20");
     }
 
     static final Map<String, String> ctxGetBeginsWith( SvcLogicContext ctx, String prefix ) {
@@ -1952,5 +2109,5 @@ public abstract class AAIDeclarations implements AAIClient {
     }
 
     public abstract <T> T getResource(String key, Class<T> type) throws AAIServiceException ;
-    protected abstract boolean deleteRelationshipList(URL url, String caller) throws AAIServiceException;
+    protected abstract boolean deleteList(URL url, String caller) throws AAIServiceException;
 }

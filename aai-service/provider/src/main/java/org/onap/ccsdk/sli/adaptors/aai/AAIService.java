@@ -381,6 +381,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         } else {
             LOG.debug("MetricLogger requestId is null");
         }
+        con.setRequestProperty("Transfer-Encoding","chunked");
 
         if(user_name != null && !user_name.isEmpty() && user_password != null && !user_password.isEmpty()) {
             String basicAuth = "Basic " + new String(Base64.encodeBase64((user_name + ":" + user_password).getBytes()));
@@ -1088,11 +1089,12 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
             HttpURLConnection con = getConfiguredConnection(http_req_url, HttpMethod.PUT);
 
-            OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-            osw.write(json_text);
-            osw.flush();
-            osw.close();
-
+            if (json_text != null) {
+                OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
+                osw.write(json_text);
+                osw.flush();
+                osw.close();
+            }
 
             LOGwriteFirstTrace("PUT", request_url);
             LOGwriteDateTrace("hostname", hostname);
@@ -1199,11 +1201,12 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
             HttpURLConnection con = getConfiguredConnection(http_req_url, HttpMethod.PUT);
 
-            OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-            osw.write(json_text);
-            osw.flush();
-            osw.close();
-
+            if (json_text != null) {
+                OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
+                osw.write(json_text);
+                osw.flush();
+                osw.close();
+            }
 
             LOGwriteFirstTrace("PUT", request_url);
             LOGwriteDateTrace("link-name", linkName);
@@ -1311,11 +1314,12 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
             HttpURLConnection con = getConfiguredConnection(http_req_url, HttpMethod.PUT);
 
-            OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-            osw.write(json_text);
-            osw.flush();
-            osw.close();
-
+            if (json_text != null) {
+                OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
+                osw.write(json_text);
+                osw.flush();
+                osw.close();
+            }
 
             LOGwriteFirstTrace("PUT", request_url);
             LOGwriteDateTrace("service-id", linkName);
@@ -1963,11 +1967,12 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
             HttpURLConnection con = getConfiguredConnection(http_req_url, HttpMethod.PUT);
 
-            OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-            osw.write(json_text);
-            osw.flush();
-            osw.close();
-
+            if (json_text != null) {
+                OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
+                osw.write(json_text);
+                osw.flush();
+                osw.close();
+            }
 
             LOGwriteFirstTrace("PUT", request_url);
             LOGwriteDateTrace("NotifyEvent", json_text);
@@ -2330,6 +2335,9 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
                 LOG.warn(errorStringBuilder.toString(), exc);
                 throw new AAIServiceException(exc);
             } finally {
+                if (con != null) {
+                    con.disconnect();
+                }
                 if(inputStream != null){
                     try {
                         inputStream.close();
@@ -2361,6 +2369,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         public String post(AAIRequest request) throws AAIServiceException {
             InputStream inputStream = null;
             String requestId = UUID.randomUUID().toString();
+            HttpURLConnection con = null;
 
             try {
                 String resourceVersion = null;
@@ -2379,17 +2388,18 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
                 }
 
                 URL requestUrl = null;
-                HttpURLConnection con = getConfiguredConnection(requestUrl = request.getRequestUrl(HttpMethod.PUT, resourceVersion), HttpMethod.PUT);
+                con = getConfiguredConnection(requestUrl = request.getRequestUrl(HttpMethod.PUT, resourceVersion), HttpMethod.PUT);
                 ObjectMapper mapper = getObjectMapper();
                 String json_text = request.toJSONString();
 
                 LOGwriteDateTrace("data", json_text);
                 logMetricRequest(requestId, "PUT "+requestUrl.getPath(), json_text, requestUrl.getPath());
 
-                OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-                osw.write(json_text);
-                osw.flush();
-
+                if (json_text != null) {
+                    OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
+                    osw.write(json_text);
+                    osw.flush();
+                }
                 // Check for errors
                 String responseMessage = con.getResponseMessage();
                 int responseCode = con.getResponseCode();
@@ -2428,6 +2438,9 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
                 LOG.warn("AAIRequestExecutor.post", exc);
                 throw new AAIServiceException(exc);
             } finally {
+                if (con != null) {
+                    con.disconnect();
+                }
                 try {
                     if(inputStream != null)
                     inputStream.close();
@@ -2558,7 +2571,9 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
                     }
                 }
-                con = null;
+                if (con != null) {
+                    con.disconnect();
+                }
             }
             return response;
         }
@@ -2582,9 +2597,12 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
                 LOGwriteDateTrace("data", json_text);
                 logMetricRequest(requestId, "PATCH "+requestUrl.getPath(), json_text, requestUrl.getPath());
 
-                OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-                osw.write(json_text);
-                osw.flush();
+                if (json_text != null) {
+                    OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
+                    osw.write(json_text);
+                    osw.flush();
+                    osw.close();
+                }
 
                 // Check for errors
                 String responseMessage = con.getResponseMessage();
@@ -2892,7 +2910,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     }
 
 
-    protected boolean deleteRelationshipList(URL httpReqUrl, String json_text) throws AAIServiceException {
+    protected boolean deleteList(URL httpReqUrl, String json_text) throws AAIServiceException {
         if(httpReqUrl ==  null) {
             throw new NullPointerException();
         }
@@ -2905,11 +2923,12 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
 //            SSLSocketFactory sockFact = CTX.getSocketFactory();
 //            con.setSSLSocketFactory( sockFact );
-            OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-            osw.write(json_text);
-            osw.flush();
-            osw.close();
-
+            if (json_text != null) {
+                OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
+                osw.write(json_text);
+                osw.flush();
+                osw.close();
+            }
 
             LOGwriteFirstTrace("DELETE", httpReqUrl.toString());
             LOGwriteDateTrace("data", json_text);
@@ -2950,7 +2969,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         } catch(AAIServiceException aaiexc) {
             throw aaiexc;
         } catch (Exception exc) {
-            LOG.warn("deleteRelationshipList", exc);
+            LOG.warn("deleteList", exc);
             throw new AAIServiceException(exc);
         } finally {
             if(inputStream != null){
