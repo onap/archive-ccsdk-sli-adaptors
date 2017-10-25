@@ -21,6 +21,8 @@
 
 package org.onap.ccsdk.sli.adaptors.resource.sql;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,6 +31,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -349,8 +352,31 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
 			// Must not be running in an OSGI container. See if you can load it
 			// as a
 			// a POJO then.
+
+			// If $SDNC_CONFIG_DIR/dblib.properties exists, that should
+			// be the properties passed to DBResourceManager constructor.
+			// If not, as default just use system properties.
+			Properties dblibProps = System.getProperties();
+			String cfgDir = System.getenv("SDNC_CONFIG_DIR");
+
+			if ((cfgDir == null) || (cfgDir.length() == 0)) {
+				cfgDir = "/opt/sdnc/data/properties";
+			}
+
+			File dblibPropFile = new File(cfgDir + "/dblib.properties");
+			if (dblibPropFile.exists()) {
+				try {
+					dblibProps = new Properties();
+					dblibProps.load(new FileInputStream(dblibPropFile));
+				} catch (Exception e) {
+					LOG.warn("Could not load properties file " + dblibPropFile.getAbsolutePath(), e);
+
+					dblibProps = System.getProperties();
+				}
+			}
+
 			try {
-				dblibSvc = new DBResourceManager(System.getProperties());
+				dblibSvc = new DBResourceManager(dblibProps);
 			} catch (Exception e) {
 				LOG.error("Caught exception trying to create dblib service", e);
 			}
