@@ -42,5 +42,3 @@ One or two sentences explaining the purpose of this Release.
 **Deprecation Notes**
 
 **Other**
-
-===========
