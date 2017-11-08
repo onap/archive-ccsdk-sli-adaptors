@@ -1,0 +1,8 @@
+Code-Review+1: Eric Debeau <eric.debeau@orange.com>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Dan Timoney <dtimoney@att.com>
+Submitted-by: Dan Timoney <dtimoney@att.com>
+Submitted-at: Wed, 08 Nov 2017 16:57:18 +0000
+Reviewed-on: http://gerrit.onap.org/r/22719
+Project: ccsdk/sli/adaptors
+Branch: refs/heads/master
