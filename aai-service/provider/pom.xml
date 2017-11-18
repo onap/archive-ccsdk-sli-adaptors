@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.onap.ccsdk.sli.adaptors</groupId>
 		<artifactId>aai-service</artifactId>
-		<version>0.1.1-SNAPSHOT</version>
+		<version>0.2.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>aai-service-provider</artifactId>
 	<packaging>bundle</packaging>
