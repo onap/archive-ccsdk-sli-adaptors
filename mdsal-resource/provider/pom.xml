@@ -113,7 +113,7 @@
                                             providermodule-plugin
                                         </artifactId>
                                         <versionRange>
-                                            [1.2.0.100-SNAPSHOT,)
+                                            [1.2.0.100-amsterdam,)
                                         </versionRange>
                                         <goals>
                                             <goal>process</goal>
