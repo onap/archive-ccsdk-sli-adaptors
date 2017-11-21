@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>sql-resource</artifactId>
 		<groupId>org.onap.ccsdk.sli.adaptors</groupId>
-		<version>0.1.1-SNAPSHOT</version>
+		<version>0.2.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>sql-resource-installer</artifactId>
 	<name>SQL Resource - Karaf  Installer</name>
