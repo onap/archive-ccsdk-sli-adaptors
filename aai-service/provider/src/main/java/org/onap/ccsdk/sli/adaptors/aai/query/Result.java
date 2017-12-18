@@ -32,11 +32,13 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.openecomp.aai.inventory.v11.CloudRegion;
 import org.openecomp.aai.inventory.v11.Complex;
+import org.openecomp.aai.inventory.v11.Configuration;
 import org.openecomp.aai.inventory.v11.GenericVnf;
 import org.openecomp.aai.inventory.v11.L3InterfaceIpv4AddressList;
 import org.openecomp.aai.inventory.v11.L3InterfaceIpv6AddressList;
 import org.openecomp.aai.inventory.v11.L3Network;
 import org.openecomp.aai.inventory.v11.LInterface;
+//import org.openecomp.aai.inventory.v11.OwningEntity;
 import org.openecomp.aai.inventory.v11.Pserver;
 import org.openecomp.aai.inventory.v11.ServiceInstance;
 import org.openecomp.aai.inventory.v11.Vnfc;
@@ -51,6 +53,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @XmlType(name = "", propOrder = {
     "cloud-region",
     "complex",
+	"configuration",
     "generic-vnf",
     "l3-interface-ipv4-address-list",
     "l3-interface-ipv6-address-list",
@@ -69,6 +72,8 @@ public class Result {
     private CloudRegion cloudRegion;
     @XmlElement(name = "complex")
     private Complex complex;
+	@XmlElement(name = "configuration")
+	private Configuration configuration;
     @XmlElement(name = "generic-vnf")
     private GenericVnf genericVnf;
     @XmlElement(name = "l3-interface-ipv4-address-list")
@@ -79,6 +84,8 @@ public class Result {
     private L3Network l3Network;
     @XmlElement(name = "l-interface")
     private LInterface lInterface;
+//	@XmlElement(name = "owning-entity")
+//	private OwningEntity owningEntity;
     @XmlElement(name = "pserver")
     private Pserver pserver;
     @XmlElement(name = "service-instance")
@@ -109,6 +116,16 @@ public class Result {
     public void setComplex(Complex complex) {
         this.complex = complex;
     }
+
+	@XmlElement(name = "configuration")
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	@XmlElement(name = "configuration")
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
 
     @XmlElement(name = "generic-vnf")
     public GenericVnf getGenericVnf ()
@@ -161,6 +178,16 @@ public class Result {
         this.lInterface = linterface;
     }
 
+//	@XmlElement(name = "owning-entity")
+//	public OwningEntity getOwningEntity() {
+//		return owningEntity;
+//	}
+
+//	@XmlElement(name = "owning-entity")
+//	public void setOwningEntity(OwningEntity owningEntity) {
+//		this.owningEntity = owningEntity;
+//	}
+
     @XmlElement(name = "pserver")
     public Pserver getPserver() {
         return pserver;
@@ -194,6 +221,7 @@ public class Result {
     public Vserver getVserver() {
         return vserver;
     }
+
     @XmlElement(name = "vserver")
     public void setVserver(Vserver vserver) {
         this.vserver = vserver;

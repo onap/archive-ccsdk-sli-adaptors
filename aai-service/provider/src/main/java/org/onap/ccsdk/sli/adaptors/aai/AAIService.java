@@ -31,8 +31,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -45,7 +43,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -71,39 +68,19 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
+import org.onap.ccsdk.sli.adaptors.aai.data.ErrorResponse;
+import org.onap.ccsdk.sli.adaptors.aai.data.notify.NotifyEvent;
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
 import org.onap.ccsdk.sli.core.sli.MetricLogger;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
-import org.openecomp.aai.inventory.v11.AvailabilityZone;
-import org.openecomp.aai.inventory.v11.Complex;
-import org.openecomp.aai.inventory.v11.CtagPool;
-import org.openecomp.aai.inventory.v11.DvsSwitch;
 import org.openecomp.aai.inventory.v11.GenericVnf;
-import org.openecomp.aai.inventory.v11.L3Network;
-import org.openecomp.aai.inventory.v11.OamNetwork;
-import org.openecomp.aai.inventory.v11.PInterface;
 import org.openecomp.aai.inventory.v11.PhysicalLink;
-import org.openecomp.aai.inventory.v11.Pserver;
 import org.openecomp.aai.inventory.v11.ResultData;
 import org.openecomp.aai.inventory.v11.SearchResults;
-import org.openecomp.aai.inventory.v11.Service;
-import org.openecomp.aai.inventory.v11.ServiceInstance;
-import org.openecomp.aai.inventory.v11.SitePairSet;
-import org.openecomp.aai.inventory.v11.Tenant;
-import org.openecomp.aai.inventory.v11.Vce;
-import org.openecomp.aai.inventory.v11.VnfImage;
-import org.openecomp.aai.inventory.v11.VnfImages;
-import org.openecomp.aai.inventory.v11.VplsPe;
-import org.openecomp.aai.inventory.v11.VpnBinding;
 import org.openecomp.aai.inventory.v11.Vserver;
-import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
-import org.onap.ccsdk.sli.adaptors.aai.data.ErrorResponse;
-import org.onap.ccsdk.sli.adaptors.aai.data.RequestError;
-import org.onap.ccsdk.sli.adaptors.aai.data.ResourceVersion;
-import org.onap.ccsdk.sli.adaptors.aai.data.ServiceException;
-import org.onap.ccsdk.sli.adaptors.aai.data.notify.NotifyEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -132,7 +109,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     private final String keystorePassword;
     private final Boolean ignoreCertificateHostError;
 
-    private final String target_uri;
+    private final String targetUri;
     private final String queryPath;
 
     private final String networkVserverPath;
@@ -145,26 +122,26 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     private final String param_service_type;            //= "service-type";
 
     private final String ubb_notify_path;
-    private final String selflink_avpn;
-    private final String selflink_fqdn;
+    private final String selflinkAvpn;
+    private final String selflinkFqdn;
 
-    private final String p_interface_path;
+    private final String pInterfacePath;
 
-    private final String service_path;
-    private final String site_pair_set_path;
+    private final String servicePath;
+    private final String sitePairSetPath;
 
-    private final int connection_timeout;
-    private final int read_timeout;
+    private final int connectionTimeout;
+    private final int readTimeout;
 
     // 1602
-    private final String query_nodes_path;
-    private final String update_path;
+    private final String queryNodesPath;
+    private final String updatePath;
 
-    private final String application_id;
+    private final String applicationId;
 
     // authentication credentials
-    private String user_name;
-    private String user_password;
+    private String userName;
+    private String userPassword;
 
     // runtime
     private final boolean runtimeOSGI;
@@ -173,7 +150,11 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
     private final MetricLogger ml = new MetricLogger();
 
-    private final AAIRequestExecutor executor;
+    private AAIExecutorInterface executor;
+
+	public void setExecutor(AAIExecutorInterface executor) {
+		this.executor = executor;
+	}
 
     public AAIService(URL propURL) {
         LOG.info("Entered AAIService.ctor");
@@ -194,15 +175,15 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             LOG.error("AicAAIResource.static", exc);
         }
 
-        executor = new AAIRequestExecutor();
+        executor = new AAIClientRESTExecutor(props);
 
-        user_name            = props.getProperty(CLIENT_NAME);
-        user_password        = props.getProperty(CLIENT_PWWD);
+        userName            = props.getProperty(CLIENT_NAME);
+        userPassword        = props.getProperty(CLIENT_PWWD);
 
-        if(user_name == null || user_name.isEmpty()){
+        if(userName == null || userName.isEmpty()){
             LOG.debug("Basic user name is not set");
         }
-        if(user_password == null || user_password.isEmpty()) {
+        if(userPassword == null || userPassword.isEmpty()) {
             LOG.debug("Basic password is not set");
         }
 
@@ -211,15 +192,15 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         keystorePath         = props.getProperty(KEYSTORE_PATH);
         keystorePassword     = props.getProperty(KEYSTORE_PSSWD);
 
-        target_uri             = props.getProperty(TARGET_URI);
+        targetUri             = props.getProperty(TARGET_URI);
         queryPath             = props.getProperty(QUERY_PATH);
-        update_path         = props.getProperty(UPDATE_PATH);
+        updatePath         = props.getProperty(UPDATE_PATH);
 
-        String applicationId =props.getProperty(APPLICATION_ID);
-        if(applicationId == null || applicationId.isEmpty()) {
-            applicationId = "SDNC";
+        String tmpApplicationId = props.getProperty(APPLICATION_ID);
+        if(tmpApplicationId == null || tmpApplicationId.isEmpty()) {
+        	tmpApplicationId = "SDNC";
         }
-        application_id = applicationId;
+        this.applicationId = tmpApplicationId;
 
         // connection timeout
         int tmpConnectionTimeout = 30000;
@@ -236,8 +217,8 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             tmpConnectionTimeout = 30000;
             tmpReadTimeout = 30000;
         }
-        connection_timeout = tmpConnectionTimeout;
-        read_timeout = tmpReadTimeout;
+        connectionTimeout = tmpConnectionTimeout;
+        readTimeout = tmpReadTimeout;
 
         networkVserverPath =props.getProperty(NETWORK_VSERVER_PATH);
 
@@ -246,19 +227,19 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         param_service_type     = props.getProperty(PARAM_SERVICE_TYPE, "service-type");
 
         // P-Interfaces
-        p_interface_path   = props.getProperty(P_INTERFACE_PATH);
+        pInterfacePath   = props.getProperty(P_INTERFACE_PATH);
 
         vnf_image_query_path    = props.getProperty(VNF_IMAGE_QUERY_PATH);
 
         ubb_notify_path = props.getProperty(UBB_NOTIFY_PATH);
-        selflink_avpn = props.getProperty(SELFLINK_AVPN);
-        selflink_fqdn = props.getProperty(SELFLINK_FQDN);
+        selflinkAvpn = props.getProperty(SELFLINK_AVPN);
+        selflinkFqdn = props.getProperty(SELFLINK_FQDN);
 
-        service_path  = props.getProperty(SERVICE_PATH);
+        servicePath  = props.getProperty(SERVICE_PATH);
 
-        site_pair_set_path  = props.getProperty(SITE_PAIR_SET_PATH);
+        sitePairSetPath  = props.getProperty(SITE_PAIR_SET_PATH);
 
-        query_nodes_path = props.getProperty(QUERY_NODES_PATH);
+        queryNodesPath = props.getProperty(QUERY_NODES_PATH);
 
         String iche = props.getProperty(CERTIFICATE_HOST_ERROR);
         boolean host_error = false;
@@ -367,12 +348,12 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         con.setDoInput(true);
         con.setDoOutput(true);
         con.setUseCaches(false);
-        con.setConnectTimeout( connection_timeout );
-        con.setReadTimeout( read_timeout );
+        con.setConnectTimeout( connectionTimeout );
+        con.setReadTimeout( readTimeout );
         con.setRequestMethod( method );
         con.setRequestProperty( "Accept", "application/json" );
         con.setRequestProperty( "Content-Type",  "PATCH".equalsIgnoreCase(method) ? "application/merge-patch+json" : "application/json" );
-        con.setRequestProperty("X-FromAppId", application_id);
+        con.setRequestProperty("X-FromAppId", applicationId);
         con.setRequestProperty("X-TransactionId",TransactionIdTracker.getNextTransactionId());
         String mlId = ml.getRequestID();
         if(mlId != null && !mlId.isEmpty()) {
@@ -383,8 +364,8 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         }
         con.setRequestProperty("Transfer-Encoding","chunked");
 
-        if(user_name != null && !user_name.isEmpty() && user_password != null && !user_password.isEmpty()) {
-            String basicAuth = "Basic " + new String(Base64.encodeBase64((user_name + ":" + user_password).getBytes()));
+        if(userName != null && !userName.isEmpty() && userPassword != null && !userPassword.isEmpty()) {
+            String basicAuth = "Basic " + new String(Base64.encodeBase64((userName + ":" + userPassword).getBytes()));
             con.setRequestProperty ("Authorization", basicAuth);
         }
 
@@ -436,88 +417,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     }
 
     @Override
-    public boolean deleteGenericVnfData(String vnf_id, String resourceVersion) throws AAIServiceException {
-        boolean response = false;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("generic-vnf");
-            request.addRequestProperty("generic-vnf.vnf-id", vnf_id);
-            response = executor.delete(request, resourceVersion);
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("deleteGenericVnfData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    /* (non-Javadoc)
-     * @see org.onap.ccsdk.sli.adaptors.resource.aic.AnAIClient#requestSdnZoneQuery(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
-    public Vce requestNetworkVceData(String vnf_id) throws AAIServiceException {
-        Vce response = null;
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("vce");
-            request.addRequestProperty("vce.vnf-id", vnf_id);
-            String rv = executor.get(request);
-            if(rv != null) {
-                ObjectMapper mapper = getObjectMapper();
-                response = mapper.readValue(rv, Vce.class);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
-            throw new AAIServiceException(exc);
-        }
-
-        return response;
-    }
-
-
-    /* (non-Javadoc)
-     * @see org.onap.ccsdk.sli.adaptors.resource.aic.AnAIClient#requestSdnZoneQuery(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
-    public boolean deleteNetworkVceData(String vnf_id, String resourceVersion) throws AAIServiceException {
-        boolean response = false;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("vce");
-            request.addRequestProperty("vce.vnf-id", vnf_id);
-            response = executor.delete(request, resourceVersion);
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("deleteNetworkVceData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    /* (non-Javadoc)
-     * @see org.onap.ccsdk.sli.adaptors.resource.aic.AnAIClient#postNetworkVceData(java.lang.String, org.onap.ccsdk.sli.adaptors.resource.aic.aai.VCERequest)
-     */
-    @Override
-    public boolean postNetworkVceData(String vnf_id, Vce data) throws AAIServiceException {
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("vce");
-            request.addRequestProperty("vce.vnf-id", vnf_id);
-            request.setRequestObject(data);
-            Object response = executor.post(request);
-            return true;
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestGenericVnfData", exc);
-            throw new AAIServiceException(exc);
-        }
-    }
-
-
-    @Override
     public SearchResults requestServiceInstanceURL(String svc_instance_id) throws AAIServiceException {
         SearchResults response = null;
         InputStream inputStream = null;
@@ -526,7 +425,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             String path = svc_inst_qry_path;
             path = path.replace("{svc-instance-id}", encodeQuery(svc_instance_id));
 
-            String request_url = target_uri+path;
+            String request_url = targetUri+path;
             URL http_req_url =    new URL(request_url);
 
             HttpURLConnection con = getConfiguredConnection(http_req_url, HttpMethod.GET);
@@ -575,48 +474,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             }
         }
         return response;
-    }
-
-    @Override
-    public ServiceInstance requestServiceInterfaceData(String customer_id, String service_type, String svc_instance_id) throws AAIServiceException {
-        ServiceInstance response = null;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("service-instance");
-            request.addRequestProperty("customer.global-customer-id", customer_id);
-            request.addRequestProperty("service-subscription.service-type", service_type);
-            request.addRequestProperty("service-instance.service-instance-id", svc_instance_id);
-
-            String rv = executor.get(request);
-            if(rv != null) {
-                ObjectMapper mapper = getObjectMapper();
-                response = mapper.readValue(rv, ServiceInstance.class);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestServiceInterfaceData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    @Override
-    public boolean postServiceInterfaceData(String customer_id, String service_type, String svc_instance_id, ServiceInstance data) throws AAIServiceException {
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("service-instance");
-            request.addRequestProperty("customer.global-customer-id", customer_id);
-            request.addRequestProperty("service-subscription.service-type", service_type);
-            request.addRequestProperty("service-instance.service-instance-id", svc_instance_id);
-            request.setRequestObject(data);
-            Object response = executor.post(request);
-            return true;
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestGenericVnfData", exc);
-            throw new AAIServiceException(exc);
-        }
     }
 
 
@@ -719,118 +576,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         return encrypted_url;
     }
 
-    @Override
-        public VplsPe requestNetworkVplsPeData(String equipment_name)throws AAIServiceException {
-            VplsPe response = null;
 
-            try {
-                AAIRequest request = AAIRequest.getRequestFromResource("vpls-pe");
-                request.addRequestProperty("vpls-pe.equipment-name", equipment_name);
-
-                String rv = executor.get(request);
-                if(rv != null) {
-                    ObjectMapper mapper = getObjectMapper();
-                    response = mapper.readValue(rv, VplsPe.class);
-                }
-            } catch(AAIServiceException aaiexc) {
-                throw aaiexc;
-            } catch (Exception exc) {
-                LOG.warn(Object.class.getClass().getEnclosingMethod().getName(),
-                        exc);
-                throw new AAIServiceException(exc);
-            }
-            return response;
-        }
-
-    @Override
-    public boolean postNetworkVplsPeData(String equipment_name, VplsPe data) throws AAIServiceException {
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("vpls-pe");
-            request.addRequestProperty("vpls-pe.equipment-name", equipment_name);
-            request.setRequestObject(data);
-            Object response = executor.post(request);
-            return true;
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestGenericVnfData", exc);
-            throw new AAIServiceException(exc);
-        }
-    }
-
-    @Override
-    public boolean deleteNetworkVplsPeData(String vnf_id, String resourceVersion)    throws AAIServiceException {
-        boolean response = false;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("vpls-pe");
-            request.addRequestProperty("vpls-pe.equipment-name", vnf_id);
-            response = executor.delete(request, resourceVersion);
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("deleteNetworkVplsPeData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    @Override
-    public Complex  requestNetworkComplexData(String pLocId) throws AAIServiceException {
-        Complex response = null;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("complex");
-            request.addRequestProperty("complex.physical-location-id", pLocId);
-
-            String rv = executor.get(request);
-            if(rv != null) {
-                ObjectMapper mapper = getObjectMapper();
-                response = mapper.readValue(rv, Complex.class);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestNetworkComplexData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    @Override
-    public boolean postNetworkComplexData(String vnf_id, Complex data) throws AAIServiceException {
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("complex");
-            request.addRequestProperty("complex.physical-location-id", vnf_id);
-            request.setRequestObject(data);
-            Object response = executor.post(request);
-            return true;
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("postNetworkComplexData", exc);
-            throw new AAIServiceException(exc);
-        }
-    }
-
-    @Override
-    public boolean deleteNetworkComplexData(String pLocId, String resourceVersion) throws AAIServiceException {
-        boolean response = false;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("complex");
-            request.addRequestProperty("complex.physical-location-id", pLocId);
-
-            response = executor.delete(request, resourceVersion);
-
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("deleteNetworkComplexData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
 
     /*
      * (non-Javadoc)
@@ -862,133 +608,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     }
 
 
-    @Override
-    public boolean postVServerData(String tenantId, String vserverId, String cloudOwner, String cloudRegionId, Vserver data) throws AAIServiceException {
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("vserver");
-            request.addRequestProperty("cloud-region.cloud-owner", cloudOwner);
-            request.addRequestProperty("cloud-region.cloud-region-id", cloudRegionId);
-            request.addRequestProperty("tenant.tenant-id", tenantId);
-            request.addRequestProperty("vserver.vserver-id", vserverId);
-            request.setRequestObject(data);
-            Object response = executor.post(request);
-            return true;
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("postNetworkComplexData", exc);
-            throw new AAIServiceException(exc);
-        }
-    }
-
-    @Override
-    public boolean deleteVServerData(String tenant_id, String vserver_id, String cloudOwner, String cloudRegionId, String resourceVersion) throws AAIServiceException {
-        boolean response = false;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("vserver");
-
-            request.addRequestProperty("vserver.vserver-id", vserver_id);
-            request.addRequestProperty("tenant.tenant-id", tenant_id);
-            request.addRequestProperty("cloud-region.cloud-owner", cloudOwner);
-            request.addRequestProperty("cloud-region.cloud-region-id",cloudRegionId);
-
-            response = executor.delete(request, resourceVersion);
-
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("deleteVServerData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * @see org.onap.ccsdk.sli.adaptors.aai.AAIClient#requestCtagPoolData(String)
-     */
-    @Override
-    public CtagPool requestCtagPoolData(String physical_location_id, String target_pe, String availability_zone_name)    throws AAIServiceException {
-        CtagPool response = null;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("ctag-pool");
-
-            request.addRequestProperty("ctag-pool.target-pe", target_pe);
-            request.addRequestProperty("ctag-pool.availability-zone-name", availability_zone_name);
-            request.addRequestProperty("complex.physical-location-id", physical_location_id);
-
-            String rv = executor.get(request);
-            if(rv != null) {
-                ObjectMapper mapper = getObjectMapper();
-                response = mapper.readValue(rv, CtagPool.class);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestNetworkVceData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    //==================== DvsSwitch ======================
-    @Override
-    public DvsSwitch  requestDvsSwitchData(String vnf_id) throws AAIServiceException {
-        DvsSwitch response = null;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("dvs-switch");
-            request.addRequestProperty("dvs-switch.switch-name", vnf_id);
-
-            String rv = executor.get(request);
-            if(rv != null) {
-                ObjectMapper mapper = getObjectMapper();
-                response = mapper.readValue(rv, DvsSwitch.class);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestDvsSwitchData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    @Override
-    public boolean postDvsSwitchData(String switch_name, DvsSwitch data) throws AAIServiceException {
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("dvs-switch");
-            request.addRequestProperty("dvs-switch.switch-name", switch_name);
-            request.setRequestObject(data);
-            Object response = executor.post(request);
-            return true;
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
-            throw new AAIServiceException(exc);
-        }
-    }
-
-    @Override
-    public boolean deleteDvsSwitchData(String vnf_id, String resourceVersion) throws AAIServiceException {
-        boolean response = false;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("dvs-switch");
-            request.addRequestProperty("dvs-switch.switch-name", vnf_id);
-            response = executor.delete(request, resourceVersion);
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("deleteDvsSwitchData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
     //================== End of DvsSwitch =================
     //==================== PhysicalLink ======================
     @Override
@@ -1045,518 +664,8 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         }
         return response;
     }
-    //================== End of PhysicalLink =================
-    //==================== PInterface ======================
-    @Override
-    public PInterface  requestPInterfaceData(String hostname, String interfaceName) throws AAIServiceException {
-        PInterface response = null;
 
-        try {
-            AAIRequest request =  AAIRequest.getRequestFromResource("p-interface");
-            request.addRequestProperty("p-interface.interface-name", interfaceName);
-            request.addRequestProperty("pserver.hostname", hostname);
-            String rv = executor.get(request);
-            if(rv != null) {
-                ObjectMapper mapper = getObjectMapper();
-                response = mapper.readValue(rv, PInterface.class);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    @Override
-    public boolean postPInterfaceData(String hostname, String interfaceName, PInterface request) throws AAIServiceException {
-        InputStream inputStream = null;
-
-        try {
-
-            ObjectMapper mapper = getObjectMapper();
-            String json_text = mapper.writeValueAsString(request);
-
-            SSLSocketFactory sockFact = CTX.getSocketFactory();
-
-            String request_url = target_uri+p_interface_path;
-            String encoded_vnf = encodeQuery(hostname);
-            request_url = request_url.replace("{hostname}", encoded_vnf) ;
-            encoded_vnf = encodeQuery(interfaceName);
-            request_url = request_url.replace("{interface-name}", encoded_vnf) ;
-            URL http_req_url =    new URL(request_url);
-
-            HttpURLConnection con = getConfiguredConnection(http_req_url, HttpMethod.PUT);
-
-            if (json_text != null) {
-                OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-                osw.write(json_text);
-                osw.flush();
-                osw.close();
-            }
-
-            LOGwriteFirstTrace("PUT", request_url);
-            LOGwriteDateTrace("hostname", hostname);
-            LOGwriteDateTrace("interface-name", interfaceName);
-            LOGwriteDateTrace("PInterface", json_text);
-
-            // Check for errors
-            int responseCode = con.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                inputStream = con.getInputStream();
-            } else {
-                inputStream = con.getErrorStream();
-            }
-
-            // Process the response
-            BufferedReader reader;
-            String line = null;
-            reader = new BufferedReader( new InputStreamReader( inputStream ) );
-
-            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while( ( line = reader.readLine() ) != null ) {
-                    stringBuilder.append( line );
-                }
-                LOGwriteEndingTrace(responseCode, "SUCCESS", (stringBuilder.length() > 0) ? stringBuilder.toString() : "{no-data}");
-                return true;
-            } else {
-                ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
-                LOGwriteEndingTrace(responseCode, "FAILURE", mapper.writeValueAsString(errorresponse));
-
-                throw new AAIServiceException(responseCode, errorresponse);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("postPInterfaceData", exc);
-            throw new AAIServiceException(exc);
-        } finally {
-            try {
-                if(inputStream != null)
-                inputStream.close();
-            } catch (Exception exc) {
-
-            }
-        }
-    }
-
-    @Override
-    public boolean deletePInterfaceData(String hostname, String interfaceName, String resourceVersion) throws AAIServiceException {
-        boolean response = false;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("p-interface");
-            request.addRequestProperty("p-interface.interface-name", interfaceName);
-            request.addRequestProperty("pserver.hostname", hostname);
-            response = executor.delete(request, resourceVersion);
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("deletePInterfaceData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-    //================== End of PInterface =================
-    //==================== SitePairSet ======================
-    @Override
-    public SitePairSet requestSitePairSetData(String sitePairSetId) throws AAIServiceException {
-        SitePairSet response = null;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("site-pair-set");
-            request.addRequestProperty("site-pair-set.site-pair-set-id", sitePairSetId);
-            String rv = executor.get(request);
-            if(rv != null) {
-                ObjectMapper mapper = getObjectMapper();
-                response = mapper.readValue(rv, SitePairSet.class);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    @Override
-    public boolean postSitePairSetData(String linkName, SitePairSet request) throws AAIServiceException {
-        InputStream inputStream = null;
-
-        try {
-
-            ObjectMapper mapper = getObjectMapper();
-            String json_text = mapper.writeValueAsString(request);
-
-            SSLSocketFactory sockFact = CTX.getSocketFactory();
-
-            String request_url = target_uri+site_pair_set_path;
-            String encoded_vnf = encodeQuery(linkName);
-            request_url = request_url.replace("{site-pair-set-id}", encoded_vnf) ;
-            URL http_req_url =    new URL(request_url);
-
-            HttpURLConnection con = getConfiguredConnection(http_req_url, HttpMethod.PUT);
-
-            if (json_text != null) {
-                OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-                osw.write(json_text);
-                osw.flush();
-                osw.close();
-            }
-
-            LOGwriteFirstTrace("PUT", request_url);
-            LOGwriteDateTrace("link-name", linkName);
-            LOGwriteDateTrace("SitePairSet", json_text);
-
-            // Check for errors
-            int responseCode = con.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                inputStream = con.getInputStream();
-            } else {
-                inputStream = con.getErrorStream();
-            }
-
-            // Process the response
-            BufferedReader reader;
-            String line = null;
-            reader = new BufferedReader( new InputStreamReader( inputStream ) );
-
-            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while( ( line = reader.readLine() ) != null ) {
-                    stringBuilder.append( line );
-                }
-                LOGwriteEndingTrace(responseCode, "SUCCESS", (stringBuilder.length() > 0) ? stringBuilder.toString() : "{no-data}");
-                return true;
-            } else {
-                ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
-                LOGwriteEndingTrace(responseCode, "FAILURE", mapper.writeValueAsString(errorresponse));
-
-                throw new AAIServiceException(responseCode, errorresponse);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("postSitePairSetData", exc);
-            throw new AAIServiceException(exc);
-        } finally {
-            try {
-                if(inputStream != null)
-                inputStream.close();
-            } catch (Exception exc) {
-
-            }
-        }
-    }
-
-    @Override
-    public boolean deleteSitePairSetData(String linkName, String resourceVersion) throws AAIServiceException {
-        boolean response = false;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("site-pair-set");
-            request.addRequestProperty("site-pair-set.site-pair-set-id", linkName);
-            response = executor.delete(request, resourceVersion);
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("deleteSitePairSetData", exc);
-            throw new AAIServiceException(exc);
-        }
-
-        return response;
-    }
-    //================== End of SitePairSet =================
-    //==================== Service ======================
-    @Override
-    public Service requestServiceData(String serviceId) throws AAIServiceException {
-        Service response = null;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("service");
-            request.addRequestProperty("service.service-id", serviceId);
-
-
-            String rv = executor.get(request);
-            if(rv != null) {
-                ObjectMapper mapper = getObjectMapper();
-                response = mapper.readValue(rv, Service.class);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestServiceData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    @Override
-    public boolean postServiceData(String linkName, Service request) throws AAIServiceException {
-        InputStream inputStream = null;
-
-        try {
-
-            ObjectMapper mapper = getObjectMapper();
-            String json_text = mapper.writeValueAsString(request);
-
-            SSLSocketFactory sockFact = CTX.getSocketFactory();
-
-            String request_url = target_uri+service_path;
-            String encoded_vnf = encodeQuery(linkName);
-            request_url = request_url.replace("{service-id}", encoded_vnf) ;
-            URL http_req_url =    new URL(request_url);
-
-            HttpURLConnection con = getConfiguredConnection(http_req_url, HttpMethod.PUT);
-
-            if (json_text != null) {
-                OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-                osw.write(json_text);
-                osw.flush();
-                osw.close();
-            }
-
-            LOGwriteFirstTrace("PUT", request_url);
-            LOGwriteDateTrace("service-id", linkName);
-            LOGwriteDateTrace("Service", json_text);
-
-            // Check for errors
-            int responseCode = con.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                inputStream = con.getInputStream();
-            } else {
-                inputStream = con.getErrorStream();
-            }
-
-            // Process the response
-            BufferedReader reader;
-            String line = null;
-            reader = new BufferedReader( new InputStreamReader( inputStream ) );
-
-            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while( ( line = reader.readLine() ) != null ) {
-                    stringBuilder.append( line );
-                }
-                LOGwriteEndingTrace(responseCode, "SUCCESS", (stringBuilder.length() > 0) ? stringBuilder.toString() : "{no-data}");
-                return true;
-            } else {
-                ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
-                LOGwriteEndingTrace(responseCode, "FAILURE", mapper.writeValueAsString(errorresponse));
-
-                throw new AAIServiceException(responseCode, errorresponse);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("postServiceData", exc);
-            throw new AAIServiceException(exc);
-        } finally {
-            try {
-                if(inputStream != null)
-                inputStream.close();
-            } catch (Exception exc) {
-
-            }
-        }
-    }
-
-    @Override
-    public boolean deleteServiceData(String service_id, String resourceVersion) throws AAIServiceException {
-        boolean response = false;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("service");
-            request.addRequestProperty("service.service-id", service_id);
-            response = executor.delete(request, resourceVersion);
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("deleteServiceData", exc);
-            throw new AAIServiceException(exc);
-        }
-
-        return response;
-    }
-    //================== End of Service =================
-
-
-    @Override
-    public Vserver dataChangeRequestVServerData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return this.getResource(url.toString(), Vserver.class);
-    }
-
-    @Override
-    public Pserver dataChangeRequestPServerData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return this.getResource(url.toString(), Pserver.class);
-    }
-
-    @Override
-    public CtagPool dataChangeRequestCtagPoolData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return this.getResource(url.toString(), CtagPool.class);
-    }
-
-    @Override
-    public VplsPe dataChangeRequestVplsPeData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return this.getResource(url.toString(), VplsPe.class);
-    }
-
-    @Override
-    public DvsSwitch dataChangeRequestDvsSwitchData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return this.getResource(url.toString(), DvsSwitch.class);
-    }
-
-    @Override
-    public OamNetwork dataChangeRequestOAMNetworkData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return this.getResource(url.toString(), OamNetwork.class);
-    }
-
-    @Override
-    public AvailabilityZone dataChangeRequestAvailabilityZoneData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return this.getResource(url.toString(), AvailabilityZone.class);
-    }
-
-    @Override
-    public Complex dataChangeRequestComplexData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return this.getResource(url.toString(), Complex.class);
-    }
-
-    /* DELETE */
-    @Override
-    public boolean dataChangeDeleteVServerData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
-                .getName());
-    }
-
-    @Override
-    public boolean dataChangeDeleteCtagPoolData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
-                .getName());
-    }
-
-    @Override
-    public boolean dataChangeDeleteVplsPeData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
-                .getName());
-    }
-
-    @Override
-    public boolean dataChangeDeleteVpeData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
-                .getName());
-    }
-
-    @Override
-    public boolean dataChangeDeleteDvsSwitchData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
-                .getName());
-    }
-    //OAM-Network:
-    @Override
-    public boolean dataChangeDeleteOAMNetworkData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
-                .getName());
-    }
-    //Availability-Zone:
-    @Override
-    public boolean dataChangeDeleteAvailabilityZoneData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
-                .getName());
-    }
-    //Complex:
-    @Override
-    public boolean dataChangeDeleteComplexData(URL url) throws AAIServiceException {
-
-        if(url ==  null) {
-            throw new NullPointerException();
-        }
-
-        return deleteAAIEntity(url, Object.class.getClass().getEnclosingMethod()
-                .getName());
-    }
-
-    private boolean deleteAAIEntity(URL url, String caller) throws AAIServiceException {
+    public boolean deleteAAIEntity(URL url, String caller) throws AAIServiceException {
 
         if(url ==  null) {
             throw new NullPointerException();
@@ -1662,297 +771,15 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         return response != null ? type.cast(response) : response;
     }
 
-    @Override
-    public Pserver requestPServerData(String hostname) throws AAIServiceException {
-        Pserver response = null;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("pserver");
-            request.addRequestProperty("pserver.hostname", hostname);
-
-
-            String rv = executor.get(request);
-            if(rv != null) {
-                ObjectMapper mapper = getObjectMapper();
-                response = mapper.readValue(rv, Pserver.class);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestPServerData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    @Override
-    public boolean postPServerData(String hostname, Pserver data) throws AAIServiceException {
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("pserver");
-            request.addRequestProperty("pserver.hostname", hostname);
-            request.setRequestObject(data);
-            Object response = executor.post(request);
-            return true;
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
-            throw new AAIServiceException(exc);
-        }
-    }
-
-    @Override
-    public boolean deletePServerData(String hostname, String resourceVersion) throws AAIServiceException {
-        boolean response = false;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("pserver");
-            request.addRequestProperty("pserver.hostname", hostname);
-            response = executor.delete(request, resourceVersion);
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("deletePServerData", exc);
-            throw new AAIServiceException(exc);
-        }
-
-        return response;
-    }
-
-
-    @Override
-    public L3Network requestL3NetworkData(String networkId) throws AAIServiceException {
-        L3Network response = null;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("l3-network");
-            request.addRequestProperty("l3-network.network-id", networkId);
-
-            String rv = executor.get(request);
-            if(rv != null) {
-                ObjectMapper mapper = getObjectMapper();
-                response = mapper.readValue(rv, L3Network.class);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestL3NetworkData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    @Override
-    public L3Network requestL3NetworkQueryByName(String networkName) throws AAIServiceException {
-        L3Network response = null;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("l3-network");
-            request.addRequestProperty("l3-network.network-name", networkName);
-
-            String rv = executor.get(request);
-            if(rv != null) {
-                ObjectMapper mapper = getObjectMapper();
-                response = mapper.readValue(rv, L3Network.class);
-            }
-
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestL3NetworkQueryByName", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    @Override
-    public boolean postL3NetworkData(String networkId, L3Network data) throws AAIServiceException {
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("l3-network");
-            request.addRequestProperty("l3-network.network-id", networkId);
-            request.setRequestObject(data);
-            Object response = executor.post(request);
-            return true;
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn(Object.class.getClass().getEnclosingMethod().getName(), exc);
-            throw new AAIServiceException(exc);
-        }
-    }
-
-    @Override
-    public boolean deleteL3NetworkData(String networkId, String resourceVersion) throws AAIServiceException {
-        boolean response = false;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("l3-network");
-            request.addRequestProperty("l3-network.network-id", networkId);
-            response = executor.delete(request, resourceVersion);
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("deleteL3NetworkData", exc);
-            throw new AAIServiceException(exc);
-        }
-
-        return response;
-    }
-
-
-    @Override
-    public VpnBinding requestVpnBindingData(String vpnId) throws AAIServiceException {
-        VpnBinding response = null;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("vpn-binding");
-            request.addRequestProperty("vpn-binding.vpn-id", vpnId);
-
-            String rv = executor.get(request);
-            if(rv != null) {
-                ObjectMapper mapper = getObjectMapper();
-                response = mapper.readValue(rv, VpnBinding.class);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestVpnBindingData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    @Override
-    public boolean deleteVpnBindingData(String vpnId, String resourceVersion) throws AAIServiceException {
-        boolean response = false;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("vpn-binding");
-            request.addRequestProperty("vpn-binding.vpn-id", vpnId);
-            response = executor.delete(request, resourceVersion);
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("deleteVpnBindingData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-
-    @Override
-    public VnfImage requestVnfImageData(String vnf_image_uuid) throws AAIServiceException {
-        VnfImage response = null;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("vnf-image");
-            request.addRequestProperty("vnf-image.vnf-image-uuid", vnf_image_uuid);
-
-            String rv = executor.get(request);
-            if(rv != null) {
-                ObjectMapper mapper = getObjectMapper();
-                response = mapper.readValue(rv, VnfImage.class);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestVnfImageData", exc);
-            throw new AAIServiceException(exc);
-        }
-        return response;
-    }
-
-    @Override
-    public VnfImage requestVnfImageDataByVendorModel(String vendor, String model) throws AAIServiceException {
-        return requestVnfImageDataByVendorModelVersion(vendor, model, null);
-    }
-
-    @Override
-    public VnfImage requestVnfImageDataByVendorModelVersion(String vendor, String model, String version) throws AAIServiceException
-    {
-        List<VnfImage> responseList = new ArrayList<VnfImage>();
-        VnfImage response = null;
-        InputStream inputStream = null;
-
-        try {
-            String request_url = target_uri+vnf_image_query_path + (version==null? "": "&application-version={application_version}");
-            request_url = request_url.replace("{application_vendor}", encodeQuery(vendor)) ;
-            request_url = request_url.replace("{application_model}", encodeQuery(model)) ;
-            if(version != null) {
-                request_url = request_url.replace("{application_version}", encodeQuery(version)) ;
-            }
-            URL http_req_url =    new URL(request_url);
-
-            HttpURLConnection con = getConfiguredConnection(http_req_url, HttpMethod.GET);
-
-            LOGwriteFirstTrace(HttpMethod.GET, http_req_url.toString());
-            LOGwriteDateTrace("application_vendor", vendor);
-            LOGwriteDateTrace("application_model", model);
-            if(version != null) {
-                LOGwriteDateTrace("application_version", version);
-            }
-
-            // Check for errors
-            int responseCode = con.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                inputStream = con.getInputStream();
-            } else {
-                inputStream = con.getErrorStream();
-            }
-
-            // Process the response
-            LOG.debug("HttpURLConnection result:" + responseCode);
-            if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
-            BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
-
-            ObjectMapper mapper = getObjectMapper();
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                response = mapper.readValue(reader, VnfImage.class);
-                String original_buffer = mapper.writeValueAsString(response);
-                LOGwriteEndingTrace(HttpURLConnection.HTTP_OK, "SUCCESS", original_buffer);
-                if(response.getApplicationVendor() == null  /*&& response.getAdditionalProperties() != null && !response.getAdditionalProperties().isEmpty()*/){
-                    LOG.warn("A List of multiple VNF-IMAGE entries has been returned");
-                    VnfImages listOfObjects = mapper.readValue(original_buffer, VnfImages.class);
-                    if(!listOfObjects.getVnfImage().isEmpty()) {
-                        response = listOfObjects.getVnfImage().get(0);
-                    }
-                }
-            } else if(responseCode == HttpURLConnection.HTTP_NOT_FOUND ) {
-                LOGwriteEndingTrace(responseCode, "HTTP_NOT_FOUND", "Entry does not exist.");
-                return response;
-            } else {
-                ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
-                LOGwriteEndingTrace(responseCode, "FAILURE", mapper.writeValueAsString(errorresponse));
-                throw new AAIServiceException(responseCode, errorresponse);
-            }
-
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestVnfImageData", exc);
-            throw new AAIServiceException(exc);
-        } finally {
-            if(inputStream != null){
-                try {
-                    inputStream.close();
-                } catch(Exception exc) {
-
-                }
-            }
-        }
-        return response;
-    }
-
 
     public boolean sendNotify(NotifyEvent event, String serviceInstanceId, String pathCode) throws AAIServiceException {
         InputStream inputStream = null;
 
         try {
 
-            String selfLink = selflink_fqdn;
+            String selfLink = selflinkFqdn;
             if(SELFLINK_AVPN != null && SELFLINK_AVPN.equals(pathCode)) {
-                selfLink = selflink_avpn;
+                selfLink = selflinkAvpn;
             }
             selfLink = selfLink.replace("{service-instance-id}", encodeQuery(serviceInstanceId));
             event.setSelflink(selfLink);
@@ -1962,7 +789,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
             SSLSocketFactory sockFact = CTX.getSocketFactory();
 
-            String request_url = target_uri+ubb_notify_path;
+            String request_url = targetUri+ubb_notify_path;
             URL http_req_url =    new URL(request_url);
 
             HttpURLConnection con = getConfiguredConnection(http_req_url, HttpMethod.PUT);
@@ -2026,7 +853,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         InputStream inputStream = null;
 
         try {
-            String request_url = target_uri+query_nodes_path;
+            String request_url = targetUri+queryNodesPath;
             request_url = request_url.replace("{node-type}", encodeQuery(node_type)) ;
             request_url = request_url.replace("{entity-identifier}", entityIdentifier) ;
             request_url = request_url.replace("{entity-name}", encodeQuery(entityName)) ;
@@ -2225,511 +1052,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         return entity;
     }
 
-    class AAIRequestExecutor implements AAIExecutorInterface {
-
-        @Override
-        public String get(AAIRequest request) throws AAIServiceException {
-            String response = null;
-            InputStream inputStream = null;
-            HttpURLConnection con = null;
-            URL requestUrl = null;
-
-            String requestId = UUID.randomUUID().toString();
-            StringBuilder errorStringBuilder = new StringBuilder();
-
-            try {
-
-                if(request.getRequestObject() != null) {
-                    requestUrl = request.getRequestUrl(HttpMethod.POST, null);
-                    requestUrl = appendDepth(requestUrl, request);
-                    con = getConfiguredConnection(requestUrl, HttpMethod.POST);
-                    String json_text = request.toJSONString();
-                    LOGwriteDateTrace("data", json_text);
-                    logMetricRequest(requestId, "POST "+requestUrl.getPath(), json_text, requestUrl.getPath());
-                    OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-                    osw.write(json_text);
-                    osw.flush();
-                } else {
-                    requestUrl = request.getRequestUrl(HttpMethod.GET, null);
-                    requestUrl = appendDepth(requestUrl, request);
-                    con = getConfiguredConnection(requestUrl, HttpMethod.GET);
-                    logMetricRequest(requestId, "GET "+requestUrl.getPath(), "", requestUrl.getPath());
-                }
-
-                // Check for errors
-                String responseMessage = con.getResponseMessage();
-                int responseCode = con.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    inputStream = con.getInputStream();
-                } else {
-                    inputStream = con.getErrorStream();
-                }
-
-                // Process the response
-                LOG.debug("HttpURLConnection result:" + responseCode + " : " + responseMessage);
-                logMetricResponse(requestId, responseCode, responseMessage);
-
-                if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
-                BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
-
-                ObjectMapper mapper = getObjectMapper();
-
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    String line = null;
-                    while( ( line = reader.readLine() ) != null ) {
-                        stringBuilder.append( line );
-                    }
-                    response = stringBuilder.toString();
-                    try {
-                        Object object = mapper.readValue(response, Object.class);
-                        LOGwriteEndingTrace(HttpURLConnection.HTTP_OK, responseMessage, mapper.writeValueAsString(object));
-                    } catch(Exception exc) {
-                        LOGwriteEndingTrace(HttpURLConnection.HTTP_OK, responseMessage, mapper.writeValueAsString(response));
-                    }
-                } else if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
-                    LOGwriteEndingTrace(responseCode, responseMessage, "Entry does not exist.");
-                    ErrorResponse errorresponse = null;
-                    try {
-                        errorresponse = mapper.readValue(reader, ErrorResponse.class);
-                    } catch(Exception exc) {
-                        errorresponse = new ErrorResponse();
-                        RequestError requestError = new RequestError();
-                        ServiceException serviceException = new ServiceException();
-                        serviceException.setText("Entry does not exist.");
-                        requestError.setServiceException(serviceException);
-                        errorresponse.setRequestError(requestError );
-                    }
-                    throw new AAIServiceException(responseCode, errorresponse);
-                } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    String line = null;
-                    while( ( line = reader.readLine() ) != null ) {
-                        stringBuilder.append( line );
-                    }
-                    LOGwriteEndingTrace(responseCode, responseMessage, stringBuilder.toString());
-                    ServiceException serviceException = new ServiceException();
-                    serviceException.setMessageId("HTTP_UNAUTHORIZED");
-                    serviceException.setText(stringBuilder.toString());
-                    RequestError requestError = new RequestError();
-                    requestError.setServiceException(serviceException);
-                    ErrorResponse errorresponse = new ErrorResponse();
-                    errorresponse.setRequestError(requestError);
-                    throw new AAIServiceException(responseCode, errorresponse);
-                } else {
-//                    StringBuilder errorStringBuilder = new StringBuilder();
-                    String line = null;
-                    while( ( line = reader.readLine() ) != null ) {
-                        errorStringBuilder.append("\n").append( line );
-                    }
-
-                    ErrorResponse errorresponse = mapper.readValue(errorStringBuilder.toString(), ErrorResponse.class);
-//                    ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
-                    LOGwriteEndingTrace(responseCode, responseMessage, mapper.writeValueAsString(errorresponse));
-                    throw new AAIServiceException(responseCode, errorresponse);
-                }
-
-            } catch(AAIServiceException aaiexc) {
-                throw aaiexc;
-            } catch (Exception exc) {
-                LOG.warn(errorStringBuilder.toString(), exc);
-                throw new AAIServiceException(exc);
-            } finally {
-                if (con != null) {
-                    con.disconnect();
-                }
-                if(inputStream != null){
-                    try {
-                        inputStream.close();
-                    } catch(Exception exc) {
-
-                    }
-                }
-            }
-            return response;
-        }
-
-        private URL appendDepth(URL requestUrl, AAIRequest request) throws MalformedURLException {
-
-            String depth = request.requestProperties.getProperty("depth", "1");
-            String path = requestUrl.toString();
-            if(path.contains("?depth=") || path.contains("&depth=")) {
-                return requestUrl;
-            } else {
-                if(path.contains("?")) {
-                    path = String.format("%s&depth=%s", path, depth);
-                } else {
-                    path = String.format("%s?depth=%s", path, depth);
-                }
-                return new URL(path);
-            }
-        }
-
-        @Override
-        public String post(AAIRequest request) throws AAIServiceException {
-            InputStream inputStream = null;
-            String requestId = UUID.randomUUID().toString();
-            HttpURLConnection con = null;
-
-            try {
-                String resourceVersion = null;
-                AAIDatum instance = request.getRequestObject();
-
-                Method getResourceVersionMethod = instance.getClass().getMethod("getResourceVersion");
-                if(getResourceVersionMethod != null){
-                    try {
-                        getResourceVersionMethod.setAccessible(true);
-                        Object object = getResourceVersionMethod.invoke(instance);
-                        if(object != null)
-                            resourceVersion = object.toString();
-                    } catch (InvocationTargetException x) {
-                        Throwable cause = x.getCause();
-                    }
-                }
-
-                URL requestUrl = null;
-                con = getConfiguredConnection(requestUrl = request.getRequestUrl(HttpMethod.PUT, resourceVersion), HttpMethod.PUT);
-                ObjectMapper mapper = getObjectMapper();
-                String json_text = request.toJSONString();
-
-                LOGwriteDateTrace("data", json_text);
-                logMetricRequest(requestId, "PUT "+requestUrl.getPath(), json_text, requestUrl.getPath());
-
-                if (json_text != null) {
-                    OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-                    osw.write(json_text);
-                    osw.flush();
-                }
-                // Check for errors
-                String responseMessage = con.getResponseMessage();
-                int responseCode = con.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                    inputStream = con.getInputStream();
-                } else {
-                    inputStream = con.getErrorStream();
-                }
-
-                LOG.debug("HttpURLConnection result:" + responseCode + " : " + responseMessage);
-                logMetricResponse(requestId,responseCode, responseMessage);
-
-                // Process the response
-                BufferedReader reader;
-                String line = null;
-                reader = new BufferedReader( new InputStreamReader( inputStream ) );
-                mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-                if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                    StringBuilder stringBuilder = new StringBuilder();
-
-                    while( ( line = reader.readLine() ) != null ) {
-                        stringBuilder.append( line );
-                    }
-                    LOGwriteEndingTrace(responseCode, responseMessage, (stringBuilder != null) ? stringBuilder.toString() : "{no-data}");
-                    return stringBuilder.toString();
-                } else {
-                    ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
-                    LOGwriteEndingTrace(responseCode, responseMessage, mapper.writeValueAsString(errorresponse));
-
-                    throw new AAIServiceException(responseCode, errorresponse);
-                }
-            } catch(AAIServiceException aaiexc) {
-                throw aaiexc;
-            } catch (Exception exc) {
-                LOG.warn("AAIRequestExecutor.post", exc);
-                throw new AAIServiceException(exc);
-            } finally {
-                if (con != null) {
-                    con.disconnect();
-                }
-                try {
-                    if(inputStream != null)
-                    inputStream.close();
-                } catch (Exception exc) {
-
-                }
-            }
-        }
-
-        @Override
-        public Boolean delete(AAIRequest request, String resourceVersion) throws AAIServiceException {
-            Boolean response = null;
-            InputStream inputStream = null;
-            String requestId = UUID.randomUUID().toString();
-
-            if(resourceVersion == null) {
-                throw new AAIServiceException("resource-version is required for DELETE request");
-            }
-
-            try {
-                URL requestUrl = null;
-                HttpURLConnection conn = getConfiguredConnection(requestUrl = request.getRequestUrl(HttpMethod.DELETE, resourceVersion), HttpMethod.DELETE);
-                logMetricRequest(requestId, "DELETE "+requestUrl.getPath(), "", requestUrl.getPath());
-                conn.setDoOutput(true);
-
-                // Check for errors
-                String responseMessage = conn.getResponseMessage();
-                int responseCode = conn.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                    inputStream = conn.getInputStream();
-                } else {
-                    inputStream = conn.getErrorStream();
-                }
-
-                // Process the response
-                LOG.debug("HttpURLConnection result:" + responseCode + " : " + responseMessage);
-                logMetricResponse(requestId,responseCode, responseMessage);
-
-                if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
-                BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
-                String line = null;
-
-                ObjectMapper mapper = getObjectMapper();
-
-                if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                    StringBuilder stringBuilder = new StringBuilder();
-
-                    while( ( line = reader.readLine() ) != null ) {
-                        stringBuilder.append( line );
-                    }
-                    LOGwriteEndingTrace(responseCode, responseMessage, stringBuilder.toString());
-                    response = true;
-                } else if(responseCode == HttpURLConnection.HTTP_NOT_FOUND ) {
-                    LOGwriteEndingTrace(responseCode, responseMessage, "Entry does not exist.");
-                    response = false;
-                } else {
-                    ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
-                    LOGwriteEndingTrace(responseCode, responseMessage, mapper.writeValueAsString(errorresponse));
-                    throw new AAIServiceException(responseCode, errorresponse);
-                }
-            } catch(AAIServiceException aaiexc) {
-                throw aaiexc;
-            } catch (Exception exc) {
-                LOG.warn("delete", exc);
-                throw new AAIServiceException(exc);
-            } finally {
-                if(inputStream != null){
-                    try {
-                        inputStream.close();
-                    } catch(Exception exc) {
-
-                    }
-                }
-            }
-            return response;
-        }
-
-        @Override
-        public Object query(AAIRequest request, Class clas) throws AAIServiceException {
-            Object response = null;
-            InputStream inputStream = null;
-            HttpURLConnection con = null;
-            URL requestUrl = null;
-            String requestId = UUID.randomUUID().toString();
-
-            try {
-                requestUrl = request.getRequestQueryUrl(HttpMethod.GET);
-                con = getConfiguredConnection(requestUrl , HttpMethod.GET);
-                logMetricRequest(requestId, "GET "+requestUrl.getPath(), "", requestUrl.getPath());
-
-                // Check for errors
-                String responseMessage = con.getResponseMessage();
-                int responseCode = con.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    inputStream = con.getInputStream();
-                } else {
-                    inputStream = con.getErrorStream();
-                }
-
-                logMetricResponse(requestId,responseCode, responseMessage);
-                ObjectMapper mapper = getObjectMapper();
-
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    // Process the response
-                    BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
-                    response = mapper.readValue(reader, clas);
-                    LOGwriteEndingTrace(HttpURLConnection.HTTP_OK, "SUCCESS", mapper.writeValueAsString(response));
-                } else if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
-                    LOGwriteEndingTrace(responseCode, "HTTP_NOT_FOUND", "Entry does not exist.");
-                    return response;
-                } else {
-                    BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
-                    ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
-                    LOGwriteEndingTrace(responseCode, "FAILURE", mapper.writeValueAsString(errorresponse));
-                    throw new AAIServiceException(responseCode, errorresponse);
-                }
-
-            } catch(AAIServiceException aaiexc) {
-                throw aaiexc;
-            } catch (Exception exc) {
-                LOG.warn("GET", exc);
-                throw new AAIServiceException(exc);
-            } finally {
-                if(inputStream != null){
-                    try {
-                        inputStream.close();
-                    } catch(Exception exc) {
-
-                    }
-                }
-                if (con != null) {
-                    con.disconnect();
-                }
-            }
-            return response;
-        }
-
-        @Override
-        public Boolean patch(AAIRequest request, String resourceVersion) throws AAIServiceException {
-            InputStream inputStream = null;
-            String requestId = UUID.randomUUID().toString();
-
-            try {
-                AAIDatum instance = request.getRequestObject();
-                if(instance instanceof ResourceVersion) {
-                    resourceVersion = ((ResourceVersion)instance).getResourceVersion();
-                }
-
-                URL requestUrl = null;
-                HttpURLConnection con = getConfiguredConnection(requestUrl = request.getRequestUrl("PATCH", resourceVersion), "PATCH");
-                ObjectMapper mapper = getObjectMapper();
-                String json_text = request.toJSONString();
-
-                LOGwriteDateTrace("data", json_text);
-                logMetricRequest(requestId, "PATCH "+requestUrl.getPath(), json_text, requestUrl.getPath());
-
-                if (json_text != null) {
-                    OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-                    osw.write(json_text);
-                    osw.flush();
-                    osw.close();
-                }
-
-                // Check for errors
-                String responseMessage = con.getResponseMessage();
-                int responseCode = con.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                    inputStream = con.getInputStream();
-                } else {
-                    inputStream = con.getErrorStream();
-                }
-
-                LOG.info("HttpURLConnection result: " + responseCode + " : " + responseMessage);
-                logMetricResponse(requestId,responseCode, responseMessage);
-
-                // Process the response
-                BufferedReader reader;
-                String line = null;
-                reader = new BufferedReader( new InputStreamReader( inputStream ) );
-                mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-                if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                    StringBuilder stringBuilder = new StringBuilder();
-
-                    while( ( line = reader.readLine() ) != null ) {
-                        stringBuilder.append( line );
-                    }
-                    LOGwriteEndingTrace(responseCode, responseMessage,
-                                               (stringBuilder.length() > 0) ? stringBuilder.toString() : "{no-data}");
-                    return true;
-                } else {
-                    StringBuilder stringBuilder = new StringBuilder();
-
-                    while( ( line = reader.readLine() ) != null ) {
-                        stringBuilder.append("\n").append( line );
-                    }
-                    LOG.info(stringBuilder.toString());
-
-
-                    ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
-                    LOGwriteEndingTrace(responseCode, responseMessage, mapper.writeValueAsString(errorresponse));
-
-                    throw new AAIServiceException(responseCode, errorresponse);
-                }
-            } catch(AAIServiceException aaiexc) {
-                throw aaiexc;
-            } catch (Exception exc) {
-                LOG.warn("AAIRequestExecutor.patch", exc);
-                throw new AAIServiceException(exc);
-            } finally {
-                try {
-                    if(inputStream != null)
-                    inputStream.close();
-                } catch (Exception exc) {
-
-                }
-            }
-        }
-    }
-
-    @Override
-    public Tenant requestTenantData(String tenant_id, String cloudOwner, String cloudRegionId) throws AAIServiceException {
-        Tenant response = null;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("tenant");
-            request.addRequestProperty("tenant.tenant-id", tenant_id);
-            request.addRequestProperty("cloud-region.cloud-owner", cloudOwner);
-            request.addRequestProperty("cloud-region.cloud-region-id", cloudRegionId);
-
-            String rv = executor.get(request);
-            if(rv != null) {
-                ObjectMapper mapper = getObjectMapper();
-                response = mapper.readValue(rv, Tenant.class);
-            }
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestTenantData", exc);
-            throw new AAIServiceException(exc);
-        }
-
-        return response;
-    }
-
-    @Override
-    public Tenant requestTenantDataByName(String tenant_name, String cloudOwner, String cloudRegionId) throws AAIServiceException {
-        Tenant response = null;
-
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("tenant");
-            request.addRequestProperty("tenant.tenant-name", tenant_name);
-            request.addRequestProperty("cloud-region.cloud-owner", cloudOwner);
-            request.addRequestProperty("cloud-region.cloud-region-id", cloudRegionId);
-            Object rv = executor.query(request, Tenant.class);
-            if(rv == null)
-                return (Tenant)null;
-            else
-                response = (Tenant)rv;
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("requestTenantDataByName", exc);
-            throw new AAIServiceException(exc);
-        }
-
-        return response;
-    }
-
-
-    @Override
-    public boolean postTenantData(String tenant_id, String cloudOwner, String cloudRegionId, Tenant tenannt) throws AAIServiceException {
-        try {
-            AAIRequest request = AAIRequest.getRequestFromResource("tenant");
-            request.addRequestProperty("tenant.tenant-id", tenant_id);
-            request.addRequestProperty("cloud-region.cloud-owner", cloudOwner);
-            request.addRequestProperty("cloud-region.cloud-region-id", cloudRegionId);
-            request.setRequestObject(tenannt);
-            Object response = executor.post(request);
-            return true;
-        } catch(AAIServiceException aaiexc) {
-            throw aaiexc;
-        } catch (Exception exc) {
-            LOG.warn("postTenantData", exc);
-            throw new AAIServiceException(exc);
-        }
-    }
-
-
     @Override
     public String getTenantIdFromVserverUrl(URL url) {
 
@@ -2795,7 +1117,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
 
     @Override
-    public AAIRequestExecutor getExecutor() {
+    public AAIExecutorInterface getExecutor() {
         return executor;
     }
 
@@ -2990,6 +1312,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         mapper.setAnnotationIntrospector(AnnotationIntrospector.pair(introspector, secondary));
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         mapper.setSerializationInclusion(Include.NON_NULL);
+        mapper.setSerializationInclusion(Include.NON_EMPTY);
         return mapper;
     }
 
@@ -2999,8 +1322,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         String partnerName = null;
         String targetEntity = "A&AI";
         String targetVirtualEntity = null;
-
-        targetServiceName = "";
 
         ml.logRequest(svcInstanceId, svcName, partnerName, targetEntity, targetServiceName, targetVirtualEntity, msg);
     }
@@ -3052,6 +1373,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         String normResource = resource.split(":")[0];
 
         switch(normResource){
+		case "custom-query":
         case "formatted-query":
         case "generic-query":
         case "named-query":
@@ -3080,6 +1402,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         String normResource = resource.split(":")[0];
 
         switch(normResource){
+		case "custom-query":
         case "formatted-query":
         case "generic-query":
         case "named-query":
@@ -3108,6 +1431,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         String normResource = resource.split(":")[0];
 
         switch(normResource){
+		case "custom-query":
         case "formatted-query":
         case "generic-query":
         case "named-query":
@@ -3193,7 +1517,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     }
 
     /* (non-Javadoc)
-     * @see org.openecomp.sdnc.sli.aai.haha#query(org.openecomp.sdnc.sli.aai.AAIRequest)
+     * @see org.onap.ccsdk.sli.core.sli.aai.haha#query(org.onap.ccsdk.sli.core.sli.aai.AAIRequest)
      */
     @Override
     public String query(AAIRequest request) throws AAIServiceException {
@@ -3201,7 +1525,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     }
 
     /* (non-Javadoc)
-     * @see org.openecomp.sdnc.sli.aai.haha#save(org.openecomp.sdnc.sli.aai.AAIRequest)
+     * @see org.onap.ccsdk.sli.core.sli.aai.haha#save(org.onap.ccsdk.sli.core.sli.aai.AAIRequest)
      */
     @Override
     public String save(AAIRequest request) throws AAIServiceException {
@@ -3213,11 +1537,11 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     }
 
     /* (non-Javadoc)
-     * @see org.openecomp.sdnc.sli.aai.haha#delete(org.openecomp.sdnc.sli.aai.AAIRequest, java.lang.String)
+     * @see org.onap.ccsdk.sli.core.sli.aai.haha#delete(org.onap.ccsdk.sli.core.sli.aai.AAIRequest, java.lang.String)
      */
     @Override
     public boolean delete(AAIRequest request, String resourceVersion) throws AAIServiceException {
-        return executor.patch(request, resourceVersion);
+        return executor.delete(request, resourceVersion);
     }
 
 }

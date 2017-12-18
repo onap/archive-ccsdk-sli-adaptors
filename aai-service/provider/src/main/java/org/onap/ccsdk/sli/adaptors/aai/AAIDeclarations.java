@@ -28,6 +28,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -68,7 +69,6 @@ import org.openecomp.aai.inventory.v11.ServiceInstance;
 import org.openecomp.aai.inventory.v11.Vlan;
 import org.openecomp.aai.inventory.v11.Vlans;
 import org.openecomp.aai.inventory.v11.Vserver;
-import org.onap.ccsdk.sli.adaptors.aai.AAIService.AAIRequestExecutor;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.onap.ccsdk.sli.adaptors.aai.query.FormattedQueryResultList;
 import org.onap.ccsdk.sli.adaptors.aai.query.InstanceFilter;
@@ -140,7 +140,7 @@ public abstract class AAIDeclarations implements AAIClient {
 
 
     protected abstract Logger getLogger();
-    public abstract AAIRequestExecutor getExecutor();
+    public abstract AAIExecutorInterface getExecutor();
 
 
     @Override
@@ -482,7 +482,7 @@ public abstract class AAIDeclarations implements AAIClient {
                     request.processRequestPathValues(nameValues);
                     path = request.getRequestUrl("GET", null);
                     params.put("vserver-selflink", path.toString());
-                } catch (UnsupportedEncodingException | MalformedURLException e) {
+                } catch (UnsupportedEncodingException | MalformedURLException | URISyntaxException e) {
                     // TODO : Fix this
                     params.put("vserver-selflink", "/vserver");
                 }

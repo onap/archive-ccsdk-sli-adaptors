@@ -75,21 +75,21 @@ public class RegressionTest {
 		LOG.info("----------------------- AAIResourceTest.tearDown -----------------------");
 	}
 
-    @Test
-	public void R1510Test05GenericVnfDataRequestDelete() {
-		LOG.info("----------------------- Test: " + new Object(){}.getClass().getEnclosingMethod().getName() + " -----------------------");
-		try
-		{
-		    String vnf_id = "bpsx0001v-7071";
-		    boolean response = client.deleteGenericVnfData(vnf_id, null);
-		    assertTrue(response);
-
-		}
-		catch (Throwable e)
-		{
-			assert(true);
-		}
-	}
+//    @Test
+//	public void R1510Test05GenericVnfDataRequestDelete() {
+//		LOG.info("----------------------- Test: " + new Object(){}.getClass().getEnclosingMethod().getName() + " -----------------------");
+//		try
+//		{
+//		    String vnf_id = "bpsx0001v-7071";
+//		    boolean response = client.deleteGenericVnfData(vnf_id, null);
+//		    assertTrue(response);
+//
+//		}
+//		catch (Throwable e)
+//		{
+//			assert(true);
+//		}
+//	}
 
 	@Test
 	public void R1604TestWanConnectorSave01Request()

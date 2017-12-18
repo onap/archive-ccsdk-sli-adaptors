@@ -32,27 +32,28 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
-import org.openecomp.aai.inventory.v11.Relationship;
+import org.openecomp.aai.inventory.v11.RelationshipList;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
 
-public class RelationshipRequest extends GenericRequest {
+public class RelationshipListRequest extends GenericRequest {
+	
+	public static final String SELFLINK = "selflink";
 
-	public RelationshipRequest(AAIRequest masterRequest) {
-		super(Relationship.class);
+	public RelationshipListRequest(AAIRequest masterRequest) {
+		super(RelationshipList.class);
 		this.addMasterRequest(masterRequest);
 	}
 
 	
 	@Override
 	public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException {
-		
 
 		URL url = super.getRequestUrl(method, null);
 		URIBuilder builder = new URIBuilder(url.toURI());
-	    String newPath = builder.getPath() + "/relationship-list/relationship";
+	    String newPath = builder.getPath() + "/relationship-list";
 	    builder.setPath(newPath);
 	    if(resourceVersion != null) {
 	    	List<NameValuePair> queryList = builder.getQueryParams();

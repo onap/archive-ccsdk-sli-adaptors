@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.AfterClass;
@@ -66,9 +67,9 @@ public class EchoRequestTest {
         try {
             url = request.getRequestUrl("GET", null);
             assertNotNull(url);
-        } catch (UnsupportedEncodingException | MalformedURLException exc) {
+        } catch (UnsupportedEncodingException | MalformedURLException | URISyntaxException exc) {
             LOG.error("Failed test", exc);
-        }
+		}
 
     }
 

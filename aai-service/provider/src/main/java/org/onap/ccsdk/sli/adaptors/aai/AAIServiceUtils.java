@@ -22,6 +22,7 @@
 package org.onap.ccsdk.sli.adaptors.aai;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -111,6 +112,16 @@ public class AAIServiceUtils {
         return null;
     }
 
+	public static Method getRelationshipListGetterMethodFromClassDefinition(Class resourceClass) {
+		Method getRelationshipListMethod = null;
+		
+		try {
+			 getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
+		} catch(Exception exc) {
+			getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
+		}
+		return getRelationshipListMethod;
+	}
 
     private static Logger getLogger() {
         return LOG;
@@ -311,6 +322,7 @@ public class AAIServiceUtils {
     public static boolean isValidFormat(String resource, HashMap<String, String> nameValues) {
 
         switch(resource){
+	case "custom-query":
         case "formatted-query":
         case "generic-query":
         case "named-query":
@@ -329,10 +341,10 @@ public class AAIServiceUtils {
         Set<String> keys = nameValues.keySet();
         for(String key : keys) {
             if(!key.contains(".")) {
-                if("depth".equals(key) || "related-to".equals(key) || "related_to".equals(key) || "related-link".equals(key) || "related_link".equals(key) || "selflink".equals(key))
+				if("depth".equals(key) || "related-to".equals(key) || "related_to".equals(key) || "related-link".equals(key) || "related_link".equals(key) || "selflink".equals(key) || "resource_path".equals(key))
                     continue;
                 else {
-                    getLogger().warn(String.format("key %s is incompatible with resource type '%s'", key, resource));
+					getLogger().warn(String.format("key '%s' is incompatible with resource type '%s'", key, resource));
                 }
             }
         }

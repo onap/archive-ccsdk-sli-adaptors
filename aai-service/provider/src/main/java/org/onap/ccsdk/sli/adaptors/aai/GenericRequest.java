@@ -24,7 +24,9 @@ package org.onap.ccsdk.sli.adaptors.aai;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +34,7 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
+import javax.xml.bind.annotation.XmlType;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.openecomp.aai.inventory.v11.L3Network;
 import org.openecomp.aai.inventory.v11.L3Networks;
@@ -153,10 +155,15 @@ public class GenericRequest extends AAIRequest {
                             Field field = fields[0];
                             String fieldName = field.getName();
                             XmlElement annotation = field.getAnnotation(XmlElement.class);
-                            String primaryId = annotation.name();
+							String primaryId = null;
+							if(annotation != null) {
+								primaryId = annotation.name();
                             if("##default".equals(primaryId)) {
                                 primaryId = fieldName;
                             }
+							} else {
+								primaryId = fieldName;
+							}
 
                             String token = String.format("%s/{%s}", splitKey[0], primaryId);
 
@@ -208,7 +215,7 @@ public class GenericRequest extends AAIRequest {
     }
 
     @Override
-    public URL getRequestQueryUrl(String method) throws UnsupportedEncodingException, MalformedURLException {
+	public URL getRequestQueryUrl(String method) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException {
         return this.getRequestUrl(method, null);
     }
 

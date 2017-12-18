@@ -28,6 +28,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -80,14 +81,28 @@ public abstract class AAIRequest {
     public static AAIRequest createRequest(String resoourceName, Map<String, String> nameValues){
 
         String resoource = resoourceName;
+		String masterResource = null;
 
         if(resoource == null)
             return null;
 
         if(resoource.contains(":")) {
             String[] tokens = resoource.split(":");
-            if(tokens != null && tokens.length > 0) {
-                resoource = tokens[0];
+			if(tokens != null && tokens.length == 2) {
+				resoource = tokens[1];
+				masterResource = tokens[0];
+				//
+				Class<? extends AAIDatum> clazz = null;
+				try {
+					clazz = getClassFromResource(resoource) ;
+				} catch (ClassNotFoundException e) {
+					LOG.warn("AAIRequest does not support class: " + e.getMessage());
+					return null;
+				}
+
+				if(clazz == null) {
+					return null;
+				}
             }
         }
 
@@ -125,21 +140,14 @@ public abstract class AAIRequest {
         case "l2-bridge-bgf":
             {
             	resoource = "l-interface";
-                AAIRequest request = getRequestFromResource("l-interface");
-                if(request ==  null) {
-                    return null;
-                }
-                return request;
+                return getRequestFromResource("l-interface");
             }
-
+		case "relationship-list":
+			 return new RelationshipListRequest(AAIRequest.createRequest(masterResource, nameValues));
+		case "relationship":
+			 return new RelationshipRequest(AAIRequest.createRequest(masterResource, nameValues));
         default:
-            {
-                AAIRequest request = getRequestFromResource(resoource);
-                if(request ==  null) {
-                    return null;
-                }
-                return request;
-            }
+                return getRequestFromResource(resoource);
         }
     }
 
@@ -243,7 +251,7 @@ public abstract class AAIRequest {
         aaiService.getLogger().warn("Could not deserialize object of type " + lInterfaceRequest.getClass().getSimpleName(), exc) ;
     }
 
-    public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
+	public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException {
 
         String request_url = null;
 
@@ -287,6 +295,10 @@ public abstract class AAIRequest {
     }
 
     protected String getRequestPath(String resource) throws MalformedURLException {
+		if(requestProperties.containsKey("resource-path")) {
+			return requestProperties.getProperty("resource-path");
+		}
+
         Set<String> uniqueResources = extractUniqueResourceSetFromKeys(requestProperties.stringPropertyNames());
         if(resource != null) {
             // for group search add itself, but remove singular version of itself
@@ -332,7 +344,7 @@ public abstract class AAIRequest {
         return path;
     }
 
-    public abstract URL getRequestQueryUrl(String method) throws UnsupportedEncodingException, MalformedURLException;
+	public abstract URL getRequestQueryUrl(String method) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException;
 
     public abstract String toJSONString();
 

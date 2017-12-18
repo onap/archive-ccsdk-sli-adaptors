@@ -27,6 +27,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +38,6 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
-import org.openecomp.aai.inventory.v11.GenericVnf;
 import org.openecomp.aai.inventory.v11.LInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,23 +116,23 @@ public class GenericRequestTest {
 		}
 	}
 
-    @Test
-	public void test003() {
-		LOG.info("----------------------- Test: " + new Object(){}.getClass().getEnclosingMethod().getName() + " -----------------------");
-		try
-		{
-		    String vnf_id = "4718302b-7884-4959-a499-f470c62418ff";
-
-		    GenericVnf genericVnf = client.requestGenericVnfData(vnf_id);
-
-		    client.deleteGenericVnfData(vnf_id, genericVnf.getResourceVersion());
-
-		}
-		catch (Throwable e)
-		{
-			LOG.error("Caught exception", e);
-		}
-	}
+//    @Test
+//	public void test003() {
+//		LOG.info("----------------------- Test: " + new Object(){}.getClass().getEnclosingMethod().getName() + " -----------------------");
+//		try
+//		{
+//		    String vnf_id = "4718302b-7884-4959-a499-f470c62418ff";
+//
+//		    GenericVnf genericVnf = client.requestGenericVnfData(vnf_id);
+//
+//		    client.deleteGenericVnfData(vnf_id, genericVnf.getResourceVersion());
+//
+//		}
+//		catch (Throwable e)
+//		{
+//			LOG.error("Caught exception", e);
+//		}
+//	}
 
 
 	@Test
@@ -143,7 +143,7 @@ public class GenericRequestTest {
 		try {
 			url = request.getRequestUrl("GET", null);
 			assertNotNull(url);
-		} catch (UnsupportedEncodingException | MalformedURLException exc) {
+		} catch (UnsupportedEncodingException | MalformedURLException | URISyntaxException exc) {
 			LOG.error("Failed test", exc);
 		}
 

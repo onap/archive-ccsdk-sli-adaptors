@@ -23,6 +23,7 @@ package org.onap.ccsdk.sli.adaptors.aai;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
@@ -44,12 +45,12 @@ public class UpdateRequest extends AAIRequest {
 
 	@Override
 	public URL getRequestUrl(String method, String resourceVersion)
-			throws UnsupportedEncodingException, MalformedURLException {
+			throws UnsupportedEncodingException, MalformedURLException, URISyntaxException {
 		return request.getRequestUrl(method, resourceVersion);
 	}
 
 	@Override
-	public URL getRequestQueryUrl(String method) throws UnsupportedEncodingException, MalformedURLException {
+	public URL getRequestQueryUrl(String method) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException {
 		return request.getRequestQueryUrl(method);
 	}
 
