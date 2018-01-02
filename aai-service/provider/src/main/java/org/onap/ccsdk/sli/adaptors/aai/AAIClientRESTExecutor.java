@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,7 +48,6 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
 import javax.ws.rs.HttpMethod;
 
 import org.apache.commons.codec.binary.Base64;
@@ -67,6 +66,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
 
+/**
+ * The AAIClientRESTExecutor class provides CRUD API for AAI Client service.
+ * @author  richtabedzki
+ */
 public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
 
 	private final String truststorePath;
@@ -78,7 +81,11 @@ public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
 	private String userName;
 	private String userPassword;
 	private final String applicationId;
-	
+
+	/**
+	 * class Constructor
+	 * @param props - properties to initialize an instance.
+	 */
 	public AAIClientRESTExecutor(Properties props) {
 		super();
 
@@ -97,13 +104,13 @@ public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
 		keystorePath 		= props.getProperty(AAIService.KEYSTORE_PATH);
 		keystorePassword 	= props.getProperty(AAIService.KEYSTORE_PSSWD);
 //		this.read_timeout = read_timeout;
-		
+
 		String tmpApplicationId =props.getProperty(AAIService.APPLICATION_ID);
 		if(tmpApplicationId == null || tmpApplicationId.isEmpty()) {
 			tmpApplicationId = "SDNC";
 		}
 		applicationId = tmpApplicationId;
-		
+
 		String iche = props.getProperty(AAIService.CERTIFICATE_HOST_ERROR);
 		boolean host_error = false;
 		if(iche != null && !iche.isEmpty()) {
@@ -123,16 +130,6 @@ public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
 			System.setProperty("javax.net.ssl.trustStorePassword", truststorePassword);
 		}
 
-//		MyX509ExtendedTrustManager trustManager = null;
-//		try {
-//			trustManager = new MyX509ExtendedTrustManager();
-//		} catch (Exception e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//		
-//		TrustManager[] trustManagers = {trustManager};
-		
         if(keystorePath != null && keystorePassword != null && (new File(keystorePath)).exists())
         {
 	    	DefaultClientConfig config = new DefaultClientConfig();
@@ -140,30 +137,28 @@ public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
 	        SSLContext ctx = null;
 	        try {
 	            ctx = SSLContext.getInstance("TLS");
-	
+
 	            KeyManagerFactory kmf = null;
 	            try {
-	            	String def = "SunX509";
 	            	String storeType = "PKCS12";
-	            	def = KeyStore.getDefaultType();
+	            	String def = KeyStore.getDefaultType();
 	                kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 	                FileInputStream fin = new FileInputStream(keystorePath);
-	//                KeyStore ks = KeyStore.getInstance("PKCS12");
-	
+
 	                String extension = keystorePath.substring(keystorePath.lastIndexOf(".") + 1);
-	
+
 	                if(extension != null && !extension.isEmpty() && extension.equalsIgnoreCase("JKS")) {
 	                	storeType = "JKS";
 	                }
 	                KeyStore ks = KeyStore.getInstance(storeType);
-	
+
 	                char[] pwd = keystorePassword.toCharArray();
 	                ks.load(fin, pwd);
 	                kmf.init(ks, pwd);
 	            } catch (Exception ex) {
 	            	LOG.error("AAIResource", ex);
 	            }
-	
+
 	            ctx.init(kmf.getKeyManagers(), null, null);
 	            config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties( new HostnameVerifier() {
 	                    @Override
@@ -171,10 +166,10 @@ public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
 	                        return ignoreCertificateHostError;
 	                    }
 	            }, ctx));
-	
+
 	            CTX = ctx;
 	        	LOG.debug("SSLContext created");
-	
+
 	        } catch (KeyManagementException | NoSuchAlgorithmException exc) {
 	        	LOG.error("AAIResource", exc);
 			}
@@ -202,28 +197,28 @@ public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
          e.printStackTrace();
         }
         LOG.info("AAIResource.ctor initialized.");
-		
+
 	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(AAIService.class);
 	private final MetricLogger ml = new MetricLogger();
-	
+
 	private SSLContext CTX;
 
 
 	private int connection_timeout = 300000;
 
 	private int read_timeout = 300000;
-	
+
 	/**
-	 * Returns an String that contains JSON data returned from the AAI Server.  
+	 * Returns an String that contains JSON data returned from the AAI Server.
 	 * <p>
-	 * This method always returns immediately, whether or not the 
-	 * data exists. 
+	 * This method always returns immediately, whether or not the
+	 * data exists.
 	 *
-	 * @param  request  an instance of AAIRequiest representing 
-	 * 				the request made by DirectedGraph node. 
-	 * @return      the JSON based representation of data instance requested. 
+	 * @param  request  an instance of AAIRequiest representing
+	 * 				the request made by DirectedGraph node.
+	 * @return      the JSON based representation of data instance requested.
 	 * @see         String
 	 */
 	@Override
@@ -344,6 +339,17 @@ public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
 		return response;
 	}
 
+	/**
+	 * Returns an String that contains JSON data returned from the AAI Server.
+	 * <p>
+	 * This method always returns immediately, whether or not the
+	 * data exists.
+	 *
+	 * @param  request  an instance of AAIRequiest representing
+	 * 				the request made by DirectedGraph node.
+	 * @return      the JSON based representation of data instance requested.
+	 * @see         String
+	 */
 	@Override
 	public String post(AAIRequest request) throws AAIServiceException {
 		InputStream inputStream = null;
@@ -426,6 +432,18 @@ public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
 		}
 	}
 
+	/**
+	 * Returns Boolean that contains completion state of the command executed.
+	 * <p>
+	 * This method always returns immediately, whether or not the
+	 * data exists.
+	 *
+	 * @param  request  an instance of AAIRequiest representing
+	 * @param  resourceVersion  a resource version of the data instacne to be deleted.
+	 * 				the request made by DirectedGraph node.
+	 * @return      completion state of the command.
+	 * @see         String
+	 */
 	@Override
 	public Boolean delete(AAIRequest request, String resourceVersion) throws AAIServiceException {
 		Boolean response = null;
@@ -440,15 +458,6 @@ public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
             HttpURLConnection conn = getConfiguredConnection(requestUrl = request.getRequestUrl(HttpMethod.DELETE, resourceVersion), HttpMethod.DELETE);
             logMetricRequest("DELETE "+requestUrl.getPath(), "", requestUrl.getPath());
             conn.setDoOutput(true);
-//            if(request.isDeleteDataRequired()) {
-//				String json_text = request.toJSONString();
-//
-//				LOGwriteDateTrace("data", json_text);
-//				OutputStream os = con.getOutputStream();
-//	            OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-//	            osw.write(json_text);
-//	            osw.flush();
-//            }
 
             // Check for errors
             String responseMessage = conn.getResponseMessage();
@@ -502,6 +511,18 @@ public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
 		return response;
 	}
 
+	/**
+	 * Returns an String that contains JSON data returned from the AAI Server.
+	 * <p>
+	 * This method always returns immediately, whether or not the
+	 * data exists.
+	 *
+	 * @param  request  an instance of AAIRequiest representing
+	 * 				the request made by DirectedGraph node.
+	 * @param clas   an definition of the class for which data will be returned
+	 * @return      the instance of the class with data.
+	 * @see         String
+	 */
 	@Override
 	public Object query(AAIRequest request, Class clas) throws AAIServiceException {
 		Object response = null;
@@ -634,7 +655,7 @@ public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
 			}
 		}
 	}
-	
+
 	/**
 	 *
 	 * @param httpReqUrl
@@ -654,7 +675,6 @@ public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
 		con.setReadTimeout(read_timeout);
 		con.setRequestMethod(method);
 		con.setRequestProperty("Accept", "application/json");
-		// con.setRequestProperty( "Accept-Encoding", "gzip,compress" );
 		con.setRequestProperty("Transfer-Encoding","chunked");
 		con.setRequestProperty("Content-Type",
 				"PATCH".equalsIgnoreCase(method) ? "application/merge-patch+json" : "application/json");
@@ -679,9 +699,9 @@ public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
 		}
 		return con;
 	}
-	
+
 	private URL appendDepth(URL requestUrl, AAIRequest request) throws MalformedURLException {
-	
+
 		String depth = request.requestProperties.getProperty("depth", "1");
 		String path = requestUrl.toString();
 		if(path.contains("?depth=") || path.contains("&depth=")) {
@@ -711,7 +731,7 @@ public 	class AAIClientRESTExecutor implements AAIExecutorInterface {
 	public void logMetricResponse(int responseCode, String responseDescription){
 		ml.logResponse(responseCode < 400 ? "SUCCESS" : "FAILURE", Integer.toString(responseCode), responseDescription);
 	}
-	
+
 	protected void LOGwriteFirstTrace(String method, String url) {
 		String time = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(System.currentTimeMillis());
 		LOG.info("A&AI transaction :");
