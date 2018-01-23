@@ -26,6 +26,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -152,11 +153,25 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
     private AAIExecutorInterface executor;
 
-	public void setExecutor(AAIExecutorInterface executor) {
-		this.executor = executor;
-	}
+    public AAIService(final UtilsProvider configuration) {
+        this(configuration.getProperties());
+    }
 
-    public AAIService(URL propURL) {
+    public AAIService(final URL url) {
+        this(getProperties(url));
+    }
+
+    private static Properties getProperties(URL url) {
+        Properties properties = new Properties();
+        try {
+            properties.load(url.openStream());
+        } catch (IOException exc) {
+            LOG.error("getProperties", exc);
+        }
+        return properties;
+    }
+
+    public AAIService(Properties props) {
         LOG.info("Entered AAIService.ctor");
 
         String runtime = System.getProperty("aaiclient.runtime");
@@ -166,9 +181,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             runtimeOSGI = false;
         }
 
-        Properties props = null;
         try {
-            props = initialize(propURL);
             AAIRequest.setProperties(props, this);
 
         } catch(Exception exc){
@@ -198,7 +211,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
         String tmpApplicationId = props.getProperty(APPLICATION_ID);
         if(tmpApplicationId == null || tmpApplicationId.isEmpty()) {
-        	tmpApplicationId = "SDNC";
+            tmpApplicationId = "SDNC";
         }
         this.applicationId = tmpApplicationId;
 
@@ -327,6 +340,10 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
          e.printStackTrace();
         }
 
+    }
+
+    public void setExecutor(AAIExecutorInterface executor) {
+        this.executor = executor;
     }
 
     public void cleanUp() {
@@ -1373,7 +1390,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         String normResource = resource.split(":")[0];
 
         switch(normResource){
-		case "custom-query":
+        case "custom-query":
         case "formatted-query":
         case "generic-query":
         case "named-query":
@@ -1402,7 +1419,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         String normResource = resource.split(":")[0];
 
         switch(normResource){
-		case "custom-query":
+        case "custom-query":
         case "formatted-query":
         case "generic-query":
         case "named-query":
@@ -1431,7 +1448,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         String normResource = resource.split(":")[0];
 
         switch(normResource){
-		case "custom-query":
+        case "custom-query":
         case "formatted-query":
         case "generic-query":
         case "named-query":
