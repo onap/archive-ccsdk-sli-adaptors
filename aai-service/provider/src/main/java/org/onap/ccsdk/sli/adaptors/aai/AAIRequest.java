@@ -174,7 +174,7 @@ public abstract class AAIRequest {
         try
         {
             URL url = null;
-            Bundle bundle = FrameworkUtil.getBundle(AAIServiceActivator.class);
+            Bundle bundle = FrameworkUtil.getBundle(AAIService.class);
             if(bundle != null) {
                 BundleContext ctx = bundle.getBundleContext();
                 if(ctx == null)
