@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============LICENSE_START=======================================================
+  openECOMP : SDN-C
+  ================================================================================
+  Copyright (C) 2017 - 2018 AT&T Intellectual Property. All rights
+  						reserved.
+  ================================================================================
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  ============LICENSE_END=========================================================
+  -->
+
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
+           odl:use-default-for-reference-types="true">
+
+    <bean id="provider" class="org.openecomp.sdnc.sli.aai.AAIServiceProvider" />
+
+    <bean id="aaiService" class="org.openecomp.sdnc.sli.aai.AAIService">
+        <argument ref="provider" />
+    </bean>
+    <service ref="aaiService">
+        <interfaces>
+            <value>org.openecomp.sdnc.sli.aai.AAIService</value>
+            <value>org.openecomp.sdnc.sli.aai.AAIClient</value>
+        </interfaces>
+    </service>
+
+</blueprint>

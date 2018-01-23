@@ -38,6 +38,11 @@
 			<version>${sdnctl.sli.version}</version>
 			<scope>compile</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.onap.ccsdk.sli.core</groupId>
+            <artifactId>utils-provider</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>equinoxSDK381</groupId>
 			<artifactId>org.eclipse.osgi</artifactId>
@@ -130,14 +135,11 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>org.openecomp.sdnc.sli.aai</Bundle-SymbolicName>
-						<Bundle-Activator>org.onap.ccsdk.sli.adaptors.aai.AAIServiceActivator</Bundle-Activator>
 						<Export-Package>org.onap.ccsdk.sli.adaptors.aai.*,org.openecomp.aai.inventory.v11.*</Export-Package>
                         <Import-Package>org.openecomp.sdnc.sli.*,org.osgi.framework.*,org.slf4j.*,org.apache.commons.lang3.*,javax.xml.bind.annotation.*,javax.ws.rs.*,javax.ws.rs.core.*,com.fasterxml.jackson.module.jaxb.*,com.sun.jersey.client.urlconnection.*,com.sun.jersey.api.client.config.*,com.fasterxml.jackson.databind.type.*,com.fasterxml.jackson.module.jaxb.*,com.fasterxml.jackson.databind.introspect.*,com.fasterxml.jackson.annotation.*,com.fasterxml.jackson.databind.*</Import-Package>
 						<Import-Package>*</Import-Package>
 						<Embed-Transitive>true</Embed-Transitive>
 					</instructions>
-
-					<manifestLocation>${project.basedir}/src/main/resources/META-INF</manifestLocation>
 				</configuration>
 			</plugin>
 			<plugin>

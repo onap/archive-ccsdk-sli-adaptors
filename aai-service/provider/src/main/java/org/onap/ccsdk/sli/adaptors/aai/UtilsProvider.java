@@ -1,9 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * openECOMP : SDN-C
+ * onap
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights
- * 			reserved.
+ * Copyright (C) 2016 - 2017 ONAP
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +20,17 @@
 
 package org.onap.ccsdk.sli.adaptors.aai;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Properties;
 
-public class AAITrinityService extends AAIService {
-
-	private static final Logger LOG = LoggerFactory.getLogger(AAITrinityService.class);
-
-	public AAITrinityService(UtilsProvider configuration) {
-		super(configuration);
-		LOG.info("Entered AAITrinityService.ctor");
-	}
-
+/**
+ * @author Rich Tabedzki
+ *
+ */
+public interface UtilsProvider {
+	/**
+	 * Extract configuration properties.
+	 *
+	 * @return the configuration properties
+	 */
+	Properties getProperties();
 }
