@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 public interface AAIClient extends SvcLogicResource, SvcLogicJavaPlugin {
 
-	public SearchResults requestServiceInstanceURL(String svc_instanceId) throws AAIServiceException;
+    public SearchResults requestServiceInstanceURL(String svcInstanceId) throws AAIServiceException;
 
     // VServers
     public Vserver requestVServerData(String tenantId, String vserverId, String cloudOwner, String cloudRegionId) throws AAIServiceException;
@@ -69,7 +69,7 @@ public interface AAIClient extends SvcLogicResource, SvcLogicJavaPlugin {
     // Node Query - 1602
     public SearchResults requestNodeQuery(String type, String entityIdentifier, String entityName) throws AAIServiceException;
     public String requestDataByURL(URL url) throws AAIServiceException;
-	public GenericVnf requestGenericVnfeNodeQuery(String vnfName) throws AAIServiceException;
+    public GenericVnf requestGenericVnfeNodeQuery(String vnfName) throws AAIServiceException;
 
     public QueryStatus backup(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException;
     public QueryStatus restore(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException;
@@ -83,6 +83,6 @@ public interface AAIClient extends SvcLogicResource, SvcLogicJavaPlugin {
     String query(AAIRequest request) throws AAIServiceException;
     String save(AAIRequest request) throws AAIServiceException;
     boolean delete(AAIRequest request, String resourceVersion) throws AAIServiceException;
-	boolean update(AAIRequest request, String resourceVersion) throws AAIServiceException;
+    boolean update(AAIRequest request, String resourceVersion) throws AAIServiceException;
 
 }

@@ -81,28 +81,28 @@ public abstract class AAIRequest {
     public static AAIRequest createRequest(String resoourceName, Map<String, String> nameValues){
 
         String resoource = resoourceName;
-		String masterResource = null;
+        String masterResource = null;
 
         if(resoource == null)
             return null;
 
         if(resoource.contains(":")) {
             String[] tokens = resoource.split(":");
-			if(tokens != null && tokens.length == 2) {
-				resoource = tokens[1];
-				masterResource = tokens[0];
-				//
-				Class<? extends AAIDatum> clazz = null;
-				try {
-					clazz = getClassFromResource(resoource) ;
-				} catch (ClassNotFoundException e) {
-					LOG.warn("AAIRequest does not support class: " + e.getMessage());
-					return null;
-				}
+            if(tokens != null && tokens.length == 2) {
+                resoource = tokens[1];
+                masterResource = tokens[0];
+                //
+                Class<? extends AAIDatum> clazz = null;
+                try {
+                    clazz = getClassFromResource(resoource) ;
+                } catch (ClassNotFoundException e) {
+                    LOG.warn("AAIRequest does not support class: ()", e.getMessage());
+                    return null;
+                }
 
-				if(clazz == null) {
-					return null;
-				}
+                if(clazz == null) {
+                    return null;
+                }
             }
         }
 
@@ -139,13 +139,13 @@ public abstract class AAIRequest {
         case "l2-bridge-sbg":
         case "l2-bridge-bgf":
             {
-            	resoource = "l-interface";
+                resoource = "l-interface";
                 return getRequestFromResource("l-interface");
             }
-		case "relationship-list":
-			 return new RelationshipListRequest(AAIRequest.createRequest(masterResource, nameValues));
-		case "relationship":
-			 return new RelationshipRequest(AAIRequest.createRequest(masterResource, nameValues));
+        case "relationship-list":
+             return new RelationshipListRequest(AAIRequest.createRequest(masterResource, nameValues));
+        case "relationship":
+             return new RelationshipRequest(AAIRequest.createRequest(masterResource, nameValues));
         default:
                 return getRequestFromResource(resoource);
         }
@@ -251,7 +251,7 @@ public abstract class AAIRequest {
         aaiService.getLogger().warn("Could not deserialize object of type " + lInterfaceRequest.getClass().getSimpleName(), exc) ;
     }
 
-	public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException {
+    public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException {
 
         String request_url = null;
 
@@ -295,9 +295,9 @@ public abstract class AAIRequest {
     }
 
     protected String getRequestPath(String resource) throws MalformedURLException {
-		if(requestProperties.containsKey("resource-path")) {
-			return requestProperties.getProperty("resource-path");
-		}
+        if(requestProperties.containsKey("resource-path")) {
+            return requestProperties.getProperty("resource-path");
+        }
 
         Set<String> uniqueResources = extractUniqueResourceSetFromKeys(requestProperties.stringPropertyNames());
         if(resource != null) {
@@ -344,7 +344,7 @@ public abstract class AAIRequest {
         return path;
     }
 
-	public abstract URL getRequestQueryUrl(String method) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException;
+    public abstract URL getRequestQueryUrl(String method) throws UnsupportedEncodingException, MalformedURLException, URISyntaxException;
 
     public abstract String toJSONString();
 

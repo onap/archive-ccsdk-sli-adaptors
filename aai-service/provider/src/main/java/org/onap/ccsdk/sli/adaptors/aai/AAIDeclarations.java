@@ -47,11 +47,18 @@ import java.util.regex.Pattern;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
+import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
+import org.onap.ccsdk.sli.adaptors.aai.query.FormattedQueryResultList;
+import org.onap.ccsdk.sli.adaptors.aai.query.InstanceFilter;
+import org.onap.ccsdk.sli.adaptors.aai.query.InstanceFilters;
+import org.onap.ccsdk.sli.adaptors.aai.query.NamedQuery;
+import org.onap.ccsdk.sli.adaptors.aai.query.NamedQueryData;
+import org.onap.ccsdk.sli.adaptors.aai.query.QueryParameters;
+import org.onap.ccsdk.sli.adaptors.aai.query.Result;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
-import org.openecomp.aai.inventory.v11.Image;
 import org.openecomp.aai.inventory.v11.GenericVnf;
+import org.openecomp.aai.inventory.v11.Image;
 import org.openecomp.aai.inventory.v11.InventoryResponseItem;
 import org.openecomp.aai.inventory.v11.InventoryResponseItems;
 import org.openecomp.aai.inventory.v11.L3Network;
@@ -69,14 +76,6 @@ import org.openecomp.aai.inventory.v11.ServiceInstance;
 import org.openecomp.aai.inventory.v11.Vlan;
 import org.openecomp.aai.inventory.v11.Vlans;
 import org.openecomp.aai.inventory.v11.Vserver;
-import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
-import org.onap.ccsdk.sli.adaptors.aai.query.FormattedQueryResultList;
-import org.onap.ccsdk.sli.adaptors.aai.query.InstanceFilter;
-import org.onap.ccsdk.sli.adaptors.aai.query.InstanceFilters;
-import org.onap.ccsdk.sli.adaptors.aai.query.NamedQuery;
-import org.onap.ccsdk.sli.adaptors.aai.query.NamedQueryData;
-import org.onap.ccsdk.sli.adaptors.aai.query.QueryParameters;
-import org.onap.ccsdk.sli.adaptors.aai.query.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -392,8 +391,6 @@ public abstract class AAIDeclarations implements AAIClient {
             getLogger().warn("Failed query - returning FAILURE", exc);
             return QueryStatus.FAILURE;
         }
-
-//        return QueryStatus.SUCCESS;
     }
 
 
@@ -483,7 +480,6 @@ public abstract class AAIDeclarations implements AAIClient {
                     path = request.getRequestUrl("GET", null);
                     params.put("vserver-selflink", path.toString());
                 } catch (UnsupportedEncodingException | MalformedURLException | URISyntaxException e) {
-                    // TODO : Fix this
                     params.put("vserver-selflink", "/vserver");
                 }
             }
@@ -519,8 +515,8 @@ public abstract class AAIDeclarations implements AAIClient {
                     request.processRequestPathValues(nameValues);
 
                     getExecutor().post(request);
-                        getLogger().debug("Save relationship list - returning SUCCESS");
-                        return QueryStatus.SUCCESS;
+                    getLogger().debug("Save relationship list - returning SUCCESS");
+                    return QueryStatus.SUCCESS;
                 }
             } catch (Exception exc) {
                 ctx.setAttribute(prefix + ".error.message", exc.getMessage());
@@ -538,45 +534,9 @@ public abstract class AAIDeclarations implements AAIClient {
                 return QueryStatus.FAILURE;
             }
         } else {
-            String reSource = resource.toLowerCase().replace("-", "_");
-                String vnfId;
-
-            try {
-                switch(reSource) {
-                    case "generic_vnf":
-                    case "generic-vnf":
-                        vnfId = nameValues.get("vnf_id");
-                        if(vnfId == null) {
-                            getLogger().debug("Save(generic-vnf) with no vnf-id specified. Returning FAILURE");
-                            return QueryStatus.FAILURE;
-                        }
-                        vnfId = vnfId.trim().replace("'", "").replace("$", "").replace("'", "");
-                        GenericVnf vnf = this.requestGenericVnfData(vnfId);
-                        String status = params.get("prov-status");
-                        boolean updated = false;
-                        if(status != null && !status.isEmpty()) {
-                            vnf.setProvStatus(status);
-                        }
-                        if(updated) {
-                            this.postGenericVnfData(vnfId, vnf);
-                        }
-                        break;
-                    case "vpe":
-                        return update( resource,  key, params, prefix, ctx) ;
-
-                    default:
-                        getLogger().debug("Save() executing default path - returning FAILURE");
-                        return QueryStatus.FAILURE;
-                }
-            } catch (Exception exc) {
-                getLogger().warn("Failed save - returning FAILURE", exc);
-                ctx.setAttribute(prefix + ".error.message", exc.getMessage());
-                return QueryStatus.FAILURE;
-            }
+            getLogger().debug("Save() request for {} is not supported- returning FAILURE", resource);
+            return QueryStatus.FAILURE;
         }
-
-        getLogger().debug("Save - returning SUCCESS");
-        return QueryStatus.SUCCESS;
     }
 
     @Override
@@ -797,20 +757,17 @@ public abstract class AAIDeclarations implements AAIClient {
     @Override
     public QueryStatus isAvailable(String arg0, String arg1, String arg2, SvcLogicContext arg3)
             throws SvcLogicException {
-        // TODO Auto-generated method stub
         throw new SvcLogicException("Method AAIService.isAvailable() has not been implemented yet");
     }
 
     @Override
     public QueryStatus notify(String resource, String action, String key, SvcLogicContext ctx) throws SvcLogicException {
-        // TODO Auto-generated method stub
         throw new SvcLogicException("Method AAIService.notify() has not been implemented yet");
     }
 
 //    @Override
     public QueryStatus newModelQuery(String resource, boolean localOnly, String select, String key, String prefix, String orderBy, SvcLogicContext ctx) {
 
-        Object response = null;
         QueryStatus retval = QueryStatus.SUCCESS;
         String modifier = null;
 
@@ -1092,14 +1049,12 @@ public abstract class AAIDeclarations implements AAIClient {
 
     @Override
     public QueryStatus release(String arg0, String arg1, SvcLogicContext arg2) throws SvcLogicException {
-        // TODO Auto-generated method stub
         throw new SvcLogicException("Method AAIService.release() has not been implemented yet");
     }
 
     @Override
     public QueryStatus reserve(String arg0, String arg1, String arg2, String arg3, SvcLogicContext arg4)
             throws SvcLogicException {
-        // TODO Auto-generated method stub
         throw new SvcLogicException("Method AAIService.reserve() has not been implemented yet");
     }
 
@@ -1153,7 +1108,7 @@ public abstract class AAIDeclarations implements AAIClient {
                                                     arglist[0] = valueOf(type, params.get(id));
                                                 }
                                             }
-                                            Object o = setter.invoke(instance, arglist);
+                                            Object obj = setter.invoke(instance, arglist);
                                         }
                                         set.remove(id);
 
@@ -1161,7 +1116,7 @@ public abstract class AAIDeclarations implements AAIClient {
                                         Throwable cause = x.getCause();
                                         getLogger().warn("Failed process for " + resourceClass.getName(), x);
                                     }
-                                } else if(type.getName().equals("java.util.List")) {
+                                } else if("java.util.List".equals(type.getName())) {
                                     List<String> newValues = new ArrayList<>();
                                     String length = id+"_length";
                                     if(!params.isEmpty() && params.containsKey(length)) {
@@ -1443,10 +1398,6 @@ public abstract class AAIDeclarations implements AAIClient {
                             Throwable cause = x.getCause();
                         }
                     }
-                }
-
-                if(metadataList.getMetadatum() == null) {
-//                    metadataList.setMetadatum(new ArrayList<Metadatum>());
                 }
 
                 // process data
@@ -1758,10 +1709,7 @@ public abstract class AAIDeclarations implements AAIClient {
             try {
                 retval = newModelBackupRequest(resource, params, "tmpRestore", ctx);
                 if(retval == QueryStatus.SUCCESS) {
-                    String current_json = ctx.getAttribute("tmpRestore");
-                    ctx.  setAttribute("tmpRestore", null);
-
-                    String snapshot_json = ctx.getAttribute(prefix);
+                    ctx.setAttribute("tmpRestore", null);
                 }
             } catch (Exception exc) {
                 getLogger().warn("Failed restore - returning FAILURE", exc);
@@ -1821,8 +1769,8 @@ public abstract class AAIDeclarations implements AAIClient {
                     Object object = getResourceVersionMethod.invoke(instance);
                     if(object != null)
                         resourceVersion = object.toString();
-                } catch (InvocationTargetException x) {
-                    Throwable cause = x.getCause();
+                } catch (InvocationTargetException exc) {
+                    getLogger().warn("Retrieving resource version", exc);
                 }
             }
 
@@ -1926,7 +1874,7 @@ public abstract class AAIDeclarations implements AAIClient {
             request.processRequestPathValues(nameValues);
             URL url = request.getRequestUrl("GET", null);
 
-            Class resourceClass = request.getModelClass();
+            Class<?> resourceClass = request.getModelClass();
             Object instance = getResource(url.toString(), resourceClass);
 
             // get resource version
@@ -2017,7 +1965,7 @@ public abstract class AAIDeclarations implements AAIClient {
         Map<String, String> prefixMap = new HashMap<>();
         Pattern p = Pattern.compile(".*\\[\\d\\]");
 
-        SortedSet<String> keys = new TreeSet(tmpPrefixMap.keySet () );
+        SortedSet<String> keys = new TreeSet<String>(tmpPrefixMap.keySet () );
         for(String key : keys) {
             Matcher m = p.matcher(key);
             if(m.matches()) {
