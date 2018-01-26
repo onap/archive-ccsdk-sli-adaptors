@@ -96,7 +96,7 @@ public abstract class AAIRequest {
 				try {
 					clazz = getClassFromResource(resoource) ;
 				} catch (ClassNotFoundException e) {
-					LOG.warn("AAIRequest does not support class: " + e.getMessage());
+					LOG.warn("AAIRequest does not support class: ()", e.getMessage());
 					return null;
 				}
 

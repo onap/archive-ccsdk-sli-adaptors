@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 public interface AAIClient extends SvcLogicResource, SvcLogicJavaPlugin {
 
-	public SearchResults requestServiceInstanceURL(String svc_instanceId) throws AAIServiceException;
+	public SearchResults requestServiceInstanceURL(String svcInstanceId) throws AAIServiceException;
 
     // VServers
     public Vserver requestVServerData(String tenantId, String vserverId, String cloudOwner, String cloudRegionId) throws AAIServiceException;
