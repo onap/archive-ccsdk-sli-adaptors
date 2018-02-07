@@ -365,8 +365,8 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
                         Object object = getResourceVersionMethod.invoke(instance);
                         if(object != null)
                             resourceVersion = object.toString();
-                    } catch (InvocationTargetException x) {
-                        Throwable cause = x.getCause();
+                    } catch (InvocationTargetException exc) {
+                    	LOG.warn("", exc);
                     }
                 }
             } catch(Exception exc) {
@@ -625,7 +625,7 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
                 while( ( line = reader.readLine() ) != null ) {
                     stringBuilder.append( line );
                 }
-                LOGwriteEndingTrace(responseCode, responseMessage, (stringBuilder != null) ? stringBuilder.toString() : "{no-data}");
+                LOGwriteEndingTrace(responseCode, responseMessage, (stringBuilder.length() > 0) ? stringBuilder.toString() : "{no-data}");
                 return true;
             } else {
                 StringBuilder stringBuilder = new StringBuilder();
