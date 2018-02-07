@@ -332,7 +332,7 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
                 try {
                     inputStream.close();
                 } catch(Exception exc) {
-
+                	LOG.warn("", exc);
                 }
             }
         }
@@ -365,8 +365,8 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
                         Object object = getResourceVersionMethod.invoke(instance);
                         if(object != null)
                             resourceVersion = object.toString();
-                    } catch (InvocationTargetException x) {
-                        Throwable cause = x.getCause();
+                    } catch (InvocationTargetException exc) {
+                        LOG.warn("", exc);
                     }
                 }
             } catch(Exception exc) {
@@ -427,7 +427,7 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
                 if(inputStream != null)
                 inputStream.close();
             } catch (Exception exc) {
-
+            	LOG.warn("AAIRequestExecutor.post", exc);
             }
         }
     }
@@ -504,7 +504,7 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
                 try {
                     inputStream.close();
                 } catch(Exception exc) {
-
+                	LOG.warn("delete", exc);
                 }
             }
         }
@@ -571,7 +571,7 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
                 try {
                     inputStream.close();
                 } catch(Exception exc) {
-
+                	LOG.warn("GET", exc);
                 }
             }
             con = null;
@@ -625,7 +625,7 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
                 while( ( line = reader.readLine() ) != null ) {
                     stringBuilder.append( line );
                 }
-                LOGwriteEndingTrace(responseCode, responseMessage, (stringBuilder != null) ? stringBuilder.toString() : "{no-data}");
+                LOGwriteEndingTrace(responseCode, responseMessage, (stringBuilder.length() > 0) ? stringBuilder.toString() : "{no-data}");
                 return true;
             } else {
                 StringBuilder stringBuilder = new StringBuilder();
@@ -651,7 +651,7 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
                 if(inputStream != null)
                 inputStream.close();
             } catch (Exception exc) {
-
+            	LOG.warn("AAIRequestExecutor.patch", exc);
             }
         }
     }
