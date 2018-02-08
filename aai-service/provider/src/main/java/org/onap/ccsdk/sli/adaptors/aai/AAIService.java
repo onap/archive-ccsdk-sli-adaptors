@@ -1476,13 +1476,8 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         LOG.info("AAI Deprecation - the format of request key is no longer supported. Please rewrite this key : " + key);
 
         String normResource = resource.split(":")[0];
-        Class<? extends AAIDatum> clazz = null;
-        try {
-            clazz = AAIRequest.getClassFromResource(normResource) ;
-        } catch (ClassNotFoundException e) {
-            LOG.warn("AAIRequest does not support class: " + e.getMessage());
-            return key;
-        }
+        Class<? extends AAIDatum> clazz = AAIRequest.getClassFromResource(normResource) ;
+
         if(clazz == null)
             return key;
 

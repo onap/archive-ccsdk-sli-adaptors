@@ -91,14 +91,7 @@ public abstract class AAIRequest {
             if(tokens != null && tokens.length == 2) {
                 resoource = tokens[1];
                 masterResource = tokens[0];
-                //
-                Class<? extends AAIDatum> clazz = null;
-                try {
-                    clazz = getClassFromResource(resoource) ;
-                } catch (ClassNotFoundException e) {
-                    LOG.warn("AAIRequest does not support class: ()", e.getMessage());
-                    return null;
-                }
+				Class<? extends AAIDatum> clazz = getClassFromResource(resoource) ;
 
                 if(clazz == null) {
                     return null;
@@ -107,13 +100,7 @@ public abstract class AAIRequest {
         }
 
         if(nameValues.containsKey("selflink")){
-            Class<? extends AAIDatum> clazz = null;
-            try {
-                clazz = getClassFromResource(resoource) ;
-            } catch (ClassNotFoundException e) {
-                LOG.warn("AAIRequest does not support class: " + e.getMessage());
-                return null;
-            }
+            Class<? extends AAIDatum> clazz = getClassFromResource(resoource) ;
 
             if(clazz != null)
                 return new SelfLinkRequest(clazz);
@@ -419,7 +406,7 @@ public abstract class AAIRequest {
         return AAIService.getObjectMapper();
     }
 
-    public static Class<? extends AAIDatum> getClassFromResource(String resoourceName) throws ClassNotFoundException {
+    public static Class<? extends AAIDatum> getClassFromResource(String resoourceName) {
         String className = GenericVnf.class.getName();
         String[] split = resoourceName.split("-");
         for(int i = 0; i < split.length; i++) {
@@ -428,26 +415,18 @@ public abstract class AAIRequest {
 
         String caps = StringUtils.join(split);
         className = className.replace("GenericVnf", caps);
-        Class<? extends AAIDatum> clazz = null;
         try {
-            clazz = (Class<? extends AAIDatum>)Class.forName(className);
+            return (Class<? extends AAIDatum>)Class.forName(className);
         } catch (ClassNotFoundException e) {
             LOG.warn("AAIRequest does not support class: " + e.getMessage());
             return null;
         }
-
-        return clazz;
     }
 
     protected static AAIRequest getRequestFromResource(String resoourceName) {
 
-        Class<? extends AAIDatum> clazz = null;
-        try {
-            clazz = getClassFromResource(resoourceName);
-        } catch (ClassNotFoundException e) {
-            LOG.warn("AAIRequest does not support class: " + e.getMessage());
-            return null;
-        }
+        Class<? extends AAIDatum> clazz = getClassFromResource(resoourceName);
+
         if(clazz == null) {
             return null;
         }

@@ -24,7 +24,6 @@ package org.onap.ccsdk.sli.adaptors.aai;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -34,7 +33,7 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.openecomp.aai.inventory.v11.L3Network;
 import org.openecomp.aai.inventory.v11.L3Networks;
@@ -141,13 +140,7 @@ public class GenericRequest extends AAIRequest {
                     String encoded_region = encodeQuery(cloudRegionId);
                     request_url = request_url.replace(token, String.format("%s/%s/%s", splitKey[0], encoded_owner, encoded_region));
                 } else {
-                    Class<? extends AAIDatum> clazz = null;
-                    try {
-                        clazz = getClassFromResource(splitKey[0]);
-                    } catch (ClassNotFoundException exc) {
-                        LOG.warn("AAIRequest does not support class: " + exc.getMessage());
-                        return null;
-                    }
+                    Class<? extends AAIDatum> clazz = getClassFromResource(splitKey[0]);
 
                     if(clazz != null) {
                         if(clazz == this.model) {
