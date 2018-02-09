@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_9c58a18b",
+        "filename": "aai-service/provider/src/main/java/org/onap/ccsdk/sli/adaptors/aai/AAIRequest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 420,
+      "author": {
+        "id": 1517
+      },
+      "writtenOn": "2018-02-09T14:23:15Z",
+      "side": 1,
+      "message": "So if there is a LinkageError or an ExceptionInInitializerError then we just want the thread to blow up?  That is fine with me, but just want to make sure that we are considering these uncommon cases in using Class.forName(String).\n\nhttps://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#forName-java.lang.String-",
+      "range": {
+        "startLine": 420,
+        "startChar": 8,
+        "endLine": 420,
+        "endChar": 44
+      },
+      "revId": "4cfe66f196bc6d3734366d9957897d0a23e2be00",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_dcc94927",
+        "filename": "aai-service/provider/src/main/java/org/onap/ccsdk/sli/adaptors/aai/AAIServiceUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1517
+      },
+      "writtenOn": "2018-02-09T14:23:15Z",
+      "side": 1,
+      "message": "This is unnecessary.",
+      "range": {
+        "startLine": 55,
+        "startChar": 26,
+        "endLine": 55,
+        "endChar": 33
+      },
+      "revId": "4cfe66f196bc6d3734366d9957897d0a23e2be00",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_1c4c91c7",
+        "filename": "aai-service/provider/src/main/java/org/onap/ccsdk/sli/adaptors/aai/AAIServiceUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1517
+      },
+      "writtenOn": "2018-02-09T14:23:15Z",
+      "side": 1,
+      "message": "Probably deserves a Log message of some sort.",
+      "revId": "4cfe66f196bc6d3734366d9957897d0a23e2be00",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_9ccf4129",
+        "filename": "aai-service/provider/src/main/java/org/onap/ccsdk/sli/adaptors/aai/AAIServiceUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 1517
+      },
+      "writtenOn": "2018-02-09T14:23:15Z",
+      "side": 1,
+      "message": "This could be null.  It appears that getPrimaryIdFromClass does handle null values appropriately.  However, I would suggest we put all of this in a conditional of (clazz !\u003d null).",
+      "range": {
+        "startLine": 279,
+        "startChar": 77,
+        "endLine": 279,
+        "endChar": 82
+      },
+      "revId": "4cfe66f196bc6d3734366d9957897d0a23e2be00",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
