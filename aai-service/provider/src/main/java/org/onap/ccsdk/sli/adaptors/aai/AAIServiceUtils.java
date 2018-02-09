@@ -275,33 +275,28 @@ public class AAIServiceUtils {
                 if(AAIRequest.getResourceNames().contains(tag)){
                     LOG.info(tag);
                     // get the class from tag
-                    Class<? extends AAIDatum> clazz = null;
-                    try {
-                        clazz = AAIRequest.getClassFromResource(tag);
-                        String fieldName = AAIServiceUtils.getPrimaryIdFromClass(clazz);
+                    Class<? extends AAIDatum> clazz = AAIRequest.getClassFromResource(tag);
+                    String fieldName = AAIServiceUtils.getPrimaryIdFromClass(clazz);
 
-                        String value = it.next();
-                        if(!StringUtils.isEmpty(value)){
-                            nameValues.put(String.format("%s.%s", tag, fieldName), value);
-                            switch(tag) {
-                            case "cloud-region":
-                            case "entitlement":
-                            case "license":
-                            case "route-target":
-                            case "service-capability":
-                            case "ctag-pool":
-                                String secondaryFieldName = AAIServiceUtils.getSecondaryIdFromClass(clazz);
-                                if(secondaryFieldName != null) {
-                                    value = it.next();
-                                    nameValues.put(String.format("%s.%s", tag, secondaryFieldName), value);
-                                }
-                                break;
-                            default:
-                                break;
+                    String value = it.next();
+                    if(!StringUtils.isEmpty(value)){
+                        nameValues.put(String.format("%s.%s", tag, fieldName), value);
+                        switch(tag) {
+                        case "cloud-region":
+                        case "entitlement":
+                        case "license":
+                        case "route-target":
+                        case "service-capability":
+                        case "ctag-pool":
+                            String secondaryFieldName = AAIServiceUtils.getSecondaryIdFromClass(clazz);
+                            if(secondaryFieldName != null) {
+                                value = it.next();
+                                nameValues.put(String.format("%s.%s", tag, secondaryFieldName), value);
                             }
+                            break;
+                        default:
+                            break;
                         }
-                    } catch (ClassNotFoundException exc) {
-                        LOG.info("Caught exception", exc);
                     }
                 }
             }
