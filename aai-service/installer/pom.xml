@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
-        <artifactId>aai-service</artifactId>
-        <groupId>org.onap.ccsdk.sli.adaptors</groupId>
-        <version>0.2.0-SNAPSHOT</version>
+        <groupId>org.onap.ccsdk.parent</groupId>
+        <artifactId>odlparent-lite</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
+
+    <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>aai-service-installer</artifactId>
-    <name>AAI Adaptor - Karaf  Installer</name>
+    <version>0.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <name>ccsdk-sli-adaptors :: aai-service :: ${project.artifactId}</name>
+
     <properties>
-        <application.name>sdnc-aai-service</application.name>
-        <features.boot>sdnc-aai-service</features.boot>
-        <features.repositories>mvn:org.onap.ccsdk.sli.adaptors/aai-service-features/${project.version}/xml/features</features.repositories>
+        <application.name>ccsdk-aai-service</application.name>
+        <features.boot>${application.name}</features.boot>
+        <features.repositories>mvn:org.onap.ccsdk.sli.adaptors/${features.boot}/${project.version}/xml/features</features.repositories>
         <include.transitive.dependencies>false</include.transitive.dependencies>
     </properties>
 
@@ -21,10 +26,10 @@
 
         <dependency>
             <groupId>org.onap.ccsdk.sli.adaptors</groupId>
-            <artifactId>aai-service-features</artifactId>
+            <artifactId>${application.name}</artifactId>
             <version>${project.version}</version>
-            <classifier>features</classifier>
             <type>xml</type>
+            <classifier>features</classifier>
             <exclusions>
                 <exclusion>
                     <groupId>*</groupId>
@@ -39,11 +44,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.jvnet.jaxb2_commons</groupId>
-            <artifactId>jaxb2-basics-runtime</artifactId>
-            <version>${jvnet.jaxb2.version}</version>
-        </dependency>
 
     </dependencies>
 
@@ -104,8 +104,7 @@
                             <useRepositoryLayout>true</useRepositoryLayout>
                             <addParentPoms>false</addParentPoms>
                             <copyPom>false</copyPom>
-                            <includeGroupIds>org.onap.ccsdk,org.jvnet.jaxb2_commons</includeGroupIds>
-                            <excludeArtifactIds>sli-common,sli-provider,dblib-provider,dblib-common</excludeArtifactIds>
+                            <includeGroupIds>org.onap.ccsdk.sli.adaptors,org.jvnet.jaxb2_commons</includeGroupIds>
                             <scope>provided</scope>
                         </configuration>
                     </execution>
@@ -140,5 +139,4 @@
 
         </plugins>
     </build>
-
 </project>
