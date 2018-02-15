@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
-        <groupId>org.onap.ccsdk.sli.adaptors</groupId>
-        <artifactId>aai-service</artifactId>
-        <version>0.2.0-SNAPSHOT</version>
+        <groupId>org.onap.ccsdk.parent</groupId>
+        <artifactId>binding-parent</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
+
+    <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>aai-service-provider</artifactId>
+    <version>0.2.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
-    <name>AAI Interface Service - Provider</name>
+
+    <name>ccsdk-sli-adaptors :: aai-service :: ${project.artifactId}</name>
     <url>http://maven.apache.org</url>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -41,7 +48,7 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>utils-provider</artifactId>
-            <version>${project.version}</version>
+            <version>${sdnctl.sli.version}</version>
         </dependency>
         <dependency>
             <groupId>equinoxSDK381</groupId>
@@ -70,12 +77,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore-osgi</artifactId>
+            <artifactId>httpcore</artifactId>
             <version>${apache.httpcomponents.core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient-osgi</artifactId>
+            <artifactId>httpclient</artifactId>
             <version>${apache.httpcomponents.client.version}</version>
         </dependency>
         <dependency>
@@ -106,11 +113,7 @@
             <artifactId>commons-lang</artifactId>
             <version>${commons.lang.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.jvnet.jaxb2_commons</groupId>
-            <artifactId>jaxb2-basics-runtime</artifactId>
-            <version>0.6.4</version>
-        </dependency>
+
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
@@ -127,21 +130,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>${bundle.plugin.version}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-SymbolicName>org.openecomp.sdnc.sli.aai</Bundle-SymbolicName>
-                        <Export-Package>org.onap.ccsdk.sli.adaptors.aai.*,org.openecomp.aai.inventory.v11.*</Export-Package>
-                        <Import-Package>org.openecomp.sdnc.sli.*,org.osgi.framework.*,org.slf4j.*,org.apache.commons.lang3.*,javax.xml.bind.annotation.*,javax.ws.rs.*,javax.ws.rs.core.*,com.fasterxml.jackson.module.jaxb.*,com.sun.jersey.client.urlconnection.*,com.sun.jersey.api.client.config.*,com.fasterxml.jackson.databind.type.*,com.fasterxml.jackson.module.jaxb.*,com.fasterxml.jackson.databind.introspect.*,com.fasterxml.jackson.annotation.*,com.fasterxml.jackson.databind.*</Import-Package>
-                        <Import-Package>*</Import-Package>
-                        <Embed-Transitive>true</Embed-Transitive>
-                    </instructions>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
@@ -178,41 +166,5 @@
                 </configuration>
             </plugin>
         </plugins>
-        <pluginManagement>
-            <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings
-                    only. It has no influence on the Maven build itself. -->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>
-                                            com.brocade.developer
-                                        </groupId>
-                                        <artifactId>
-                                            providermodule-plugin
-                                        </artifactId>
-                                        <versionRange>
-                                            [1.2.0.100-SNAPSHOT,)
-                                        </versionRange>
-                                        <goals>
-                                            <goal>process</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
 </project>
