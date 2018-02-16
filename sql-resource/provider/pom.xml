@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
-		<groupId>org.onap.ccsdk.sli.adaptors</groupId>
-		<artifactId>sql-resource</artifactId>
-		<version>0.2.0-SNAPSHOT</version>
+		<groupId>org.onap.ccsdk.parent</groupId>
+		<artifactId>binding-parent</artifactId>
+		<version>1.0.1-SNAPSHOT</version>
 	</parent>
+
+    <groupId>org.onap.ccsdk.sli.adaptors</groupId>
 	<artifactId>sql-resource-provider</artifactId>
+    <version>0.2.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
-	<name>Sql Resource Adaptor - Provider</name>
+
+	<name>ccsdk-sli-adaptors :: sql-resource :: ${project.artifactId}</name>
 	<url>http://maven.apache.org</url>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -48,11 +55,7 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
@@ -67,45 +70,5 @@
 
 	</dependencies>
 
-	<build>
-		<plugins>
-<!-- 			<plugin>
-				<groupId>com.brocade.developer</groupId>
-				<artifactId>providermodule-plugin</artifactId>
-				<configuration>
-					<packageId>org.openecomp.sdnc</packageId>
-					<appName>sql-resource</appName>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>process-sources</phase>
-						<goals>
-							<goal>process</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin> -->
 
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>${bundle.plugin.version}</version>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>org.onap.ccsdk.sli.adaptors.resource.sql</Bundle-SymbolicName>
-						<Bundle-Activator>org.onap.ccsdk.sli.adaptors.resource.sql.SqlResourceActivator</Bundle-Activator>
-						<Export-Package>org.onap.ccsdk.sli.adaptors.resource.sql</Export-Package>
-						<Import-Package>*</Import-Package>
-						<DynamicImport-Package>*</DynamicImport-Package>
-					</instructions>
-
-
-				</configuration>
-
-			</plugin>
-
-
-		</plugins>
-	</build>
 </project>
