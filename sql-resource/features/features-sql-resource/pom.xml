@@ -5,18 +5,26 @@
 
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
-        <artifactId>odlparent-lite</artifactId>
+        <artifactId>feature-repo-parent</artifactId>
         <version>1.0.1-SNAPSHOT</version>
+        <relativePath />
     </parent>
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
-    <artifactId>sql-resource-features</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>features-sql-resource</artifactId>
+    <version>0.2.1-SNAPSHOT</version>
+    <packaging>feature</packaging>
 
     <name>ccsdk-sli-adaptors :: sql-resource :: ${project.artifactId}</name>
 
-    <modules>
-        <module>ccsdk-sql-resource</module>
-        <module>features-sql-resource</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccsdk-sql-resource</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+
+    </dependencies>
 </project>

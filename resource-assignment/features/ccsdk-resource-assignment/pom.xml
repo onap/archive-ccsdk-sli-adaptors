@@ -5,63 +5,46 @@
 
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
-        <artifactId>binding-parent</artifactId>
+        <artifactId>single-feature-parent</artifactId>
         <version>1.0.1-SNAPSHOT</version>
+        <relativePath />
     </parent>
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
-    <artifactId>resource-assignment-provider</artifactId>
+    <artifactId>ccsdk-resource-assignment</artifactId>
     <version>0.2.1-SNAPSHOT</version>
-    <packaging>bundle</packaging>
+    <packaging>feature</packaging>
 
     <name>ccsdk-sli-adaptors :: resource-assignment :: ${project.artifactId}</name>
-    <url>http://maven.apache.org</url>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>odl-mdsal-broker</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2database.version}</version>
-            <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
-            <artifactId>sli-common</artifactId>
-            <version>${sdnctl.sli.version}</version>
-            <scope>compile</scope>
+            <artifactId>ccsdk-sli</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
         </dependency>
+
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
-            <artifactId>sli-provider</artifactId>
-            <version>${sdnctl.sli.version}</version>
-            <scope>compile</scope>
+            <artifactId>ccsdk-dblib</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
         </dependency>
+
         <dependency>
-            <groupId>org.onap.ccsdk.sli.core</groupId>
-            <artifactId>dblib-provider</artifactId>
-            <version>${sdnctl.dblib.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>resource-assignment-provider</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -86,7 +69,10 @@
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
         </dependency>
+        <dependency>
+            <groupId>equinoxSDK381</groupId>
+            <artifactId>org.eclipse.osgi</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
-
-
 </project>
