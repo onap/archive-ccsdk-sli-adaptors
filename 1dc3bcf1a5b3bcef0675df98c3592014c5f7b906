@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_e9978a38",
+        "filename": "resource-assignment/provider/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1517
+      },
+      "writtenOn": "2018-02-20T14:02:57Z",
+      "side": 0,
+      "message": "Just want to make sure that we are pretty certain no other bundles import anything from this exported package?",
+      "range": {
+        "startLine": 96,
+        "startChar": 24,
+        "endLine": 96,
+        "endChar": 87
+      },
+      "revId": "1dc3bcf1a5b3bcef0675df98c3592014c5f7b906",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_69ab7a75",
+        "filename": "sql-resource/provider/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1517
+      },
+      "writtenOn": "2018-02-20T14:02:57Z",
+      "side": 0,
+      "message": "Again, want to make sure that nothing that is dependent on this package export that is being removed.",
+      "range": {
+        "startLine": 98,
+        "startChar": 22,
+        "endLine": 98,
+        "endChar": 62
+      },
+      "revId": "1dc3bcf1a5b3bcef0675df98c3592014c5f7b906",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}

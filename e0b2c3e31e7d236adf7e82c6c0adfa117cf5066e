@@ -1,0 +1,124 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_a97e6217",
+        "filename": "mdsal-resource/features/ccsdk-mdsal-resource/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1517
+      },
+      "writtenOn": "2018-02-20T14:02:57Z",
+      "side": 1,
+      "message": "This is inherited from odlparent here:\nhttps://github.com/opendaylight/odlparent/blob/v2.0.5/odlparent/pom.xml#L639-L643\n\nWe shouldn\u0027t need to explicitly list a version, and should also remove \"equinox.osgi.version\" in ccsdk/parent pom.xml.",
+      "range": {
+        "startLine": 44,
+        "startChar": 12,
+        "endLine": 44,
+        "endChar": 54
+      },
+      "revId": "e0b2c3e31e7d236adf7e82c6c0adfa117cf5066e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_c97bae26",
+        "filename": "mdsal-resource/features/features-mdsal-resource/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1517
+      },
+      "writtenOn": "2018-02-20T14:02:57Z",
+      "side": 1,
+      "message": "Can we settle on spaces instead of tabs?  I find tabs end up looking differently on different platforms/editors, so spaces are more portable.",
+      "revId": "e0b2c3e31e7d236adf7e82c6c0adfa117cf5066e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_6974da35",
+        "filename": "resource-assignment/features/ccsdk-resource-assignment/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1517
+      },
+      "writtenOn": "2018-02-20T14:02:57Z",
+      "side": 1,
+      "message": "Should be safe to remove this.",
+      "range": {
+        "startLine": 74,
+        "startChar": 12,
+        "endLine": 74,
+        "endChar": 54
+      },
+      "revId": "e0b2c3e31e7d236adf7e82c6c0adfa117cf5066e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_89712646",
+        "filename": "resource-assignment/features/features-resource-assignment/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1517
+      },
+      "writtenOn": "2018-02-20T14:02:57Z",
+      "side": 1,
+      "message": "Same comment about the tabs as earlier.",
+      "revId": "e0b2c3e31e7d236adf7e82c6c0adfa117cf5066e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_099d1659",
+        "filename": "sql-resource/features/ccsdk-sql-resource/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1517
+      },
+      "writtenOn": "2018-02-20T14:02:57Z",
+      "side": 1,
+      "message": "This should be able to be removed.",
+      "range": {
+        "startLine": 50,
+        "startChar": 12,
+        "endLine": 50,
+        "endChar": 54
+      },
+      "revId": "e0b2c3e31e7d236adf7e82c6c0adfa117cf5066e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_a9a502a3",
+        "filename": "sql-resource/features/features-sql-resource/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1517
+      },
+      "writtenOn": "2018-02-20T14:02:57Z",
+      "side": 1,
+      "message": "Convert tabs to spaces",
+      "revId": "e0b2c3e31e7d236adf7e82c6c0adfa117cf5066e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
