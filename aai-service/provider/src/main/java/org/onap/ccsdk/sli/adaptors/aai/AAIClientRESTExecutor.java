@@ -103,7 +103,6 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
         truststorePassword = props.getProperty(AAIService.TRUSTSTORE_PSSWD);
         keystorePath         = props.getProperty(AAIService.KEYSTORE_PATH);
         keystorePassword     = props.getProperty(AAIService.KEYSTORE_PSSWD);
-//        this.read_timeout = read_timeout;
 
         String tmpApplicationId =props.getProperty(AAIService.APPLICATION_ID);
         if(tmpApplicationId == null || tmpApplicationId.isEmpty()) {
@@ -310,14 +309,12 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
                 errorresponse.setRequestError(requestError);
                 throw new AAIServiceException(responseCode, errorresponse);
             } else {
-//                StringBuilder errorStringBuilder = new StringBuilder();
                 String line = null;
                 while( ( line = reader.readLine() ) != null ) {
                     errorStringBuilder.append("\n").append( line );
                 }
 
                 ErrorResponse errorresponse = mapper.readValue(errorStringBuilder.toString(), ErrorResponse.class);
-//                ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
                 LOGwriteEndingTrace(responseCode, responseMessage, mapper.writeValueAsString(errorresponse));
                 throw new AAIServiceException(responseCode, errorresponse);
             }
@@ -373,16 +370,16 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
                 LOG.error("", exc);
             }
 
-            URL requestUrl = null;
-            HttpURLConnection con = getConfiguredConnection(requestUrl = request.getRequestUrl(HttpMethod.PUT, resourceVersion), HttpMethod.PUT);
+            URL requestUrl = request.getRequestUrl(HttpMethod.PUT, resourceVersion);
+            HttpURLConnection con = getConfiguredConnection(requestUrl, HttpMethod.PUT);
             ObjectMapper mapper = AAIService.getObjectMapper();
-            String json_text = request.toJSONString();
+            String jsonText = request.toJSONString();
 
-            LOGwriteDateTrace("data", json_text);
-            logMetricRequest("PUT "+requestUrl.getPath(), json_text, requestUrl.getPath());
+            LOGwriteDateTrace("data", jsonText);
+            logMetricRequest("PUT "+requestUrl.getPath(), jsonText, requestUrl.getPath());
 
             OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-            osw.write(json_text);
+            osw.write(jsonText);
             osw.flush();
 
             // Check for errors
@@ -454,8 +451,8 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
         }
 
         try {
-            URL requestUrl = null;
-            HttpURLConnection conn = getConfiguredConnection(requestUrl = request.getRequestUrl(HttpMethod.DELETE, resourceVersion), HttpMethod.DELETE);
+            URL requestUrl = request.getRequestUrl(HttpMethod.DELETE, resourceVersion);
+            HttpURLConnection conn = getConfiguredConnection(requestUrl, HttpMethod.DELETE);
             logMetricRequest("DELETE "+requestUrl.getPath(), "", requestUrl.getPath());
             conn.setDoOutput(true);
 
@@ -527,11 +524,10 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
     public Object query(AAIRequest request, Class clas) throws AAIServiceException {
         Object response = null;
         InputStream inputStream = null;
-        HttpURLConnection con = null;
-        URL requestUrl = null;
 
         try {
-            con = getConfiguredConnection(requestUrl = request.getRequestQueryUrl(HttpMethod.GET), HttpMethod.GET);
+            URL requestUrl = request.getRequestQueryUrl(HttpMethod.GET);
+            HttpURLConnection con = getConfiguredConnection(requestUrl, HttpMethod.GET);
             logMetricRequest("GET "+requestUrl.getPath(), "", requestUrl.getPath());
 
             // Check for errors
@@ -574,7 +570,6 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
                     LOG.warn("GET", exc);
                 }
             }
-            con = null;
         }
         return response;
     }
@@ -592,13 +587,13 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
             URL requestUrl = null;
             HttpURLConnection con = getConfiguredConnection(requestUrl = request.getRequestUrl("PATCH", resourceVersion), "PATCH");
             ObjectMapper mapper = AAIService.getObjectMapper();
-            String json_text = request.toJSONString();
+            String jsonText = request.toJSONString();
 
-            LOGwriteDateTrace("data", json_text);
-            logMetricRequest("PATCH "+requestUrl.getPath(), json_text, requestUrl.getPath());
+            LOGwriteDateTrace("data", jsonText);
+            logMetricRequest("PATCH "+requestUrl.getPath(), jsonText, requestUrl.getPath());
 
             OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-            osw.write(json_text);
+            osw.write(jsonText);
             osw.flush();
 
             // Check for errors
@@ -722,8 +717,6 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
         String partnerName = null;
         String targetEntity = "A&AI";
         String targetVirtualEntity = null;
-
-        targetServiceName = "";
 
         ml.logRequest(svcInstanceId, svcName, partnerName, targetEntity, targetServiceName, targetVirtualEntity, msg);
     }

@@ -818,7 +818,7 @@ public abstract class AAIDeclarations implements AAIClient {
         return retval;
     }
 
-    public QueryStatus processResponseData(String rv, String resource, AAIRequest request, String prefix,  SvcLogicContext ctx, HashMap<String, String> nameValues, String modifier) throws JsonParseException, JsonMappingException, IOException, AAIServiceException
+    public QueryStatus processResponseData(String rv, String resource, AAIRequest request, String prefix,  SvcLogicContext ctx, Map<String, String> nameValues, String modifier) throws JsonParseException, JsonMappingException, IOException, AAIServiceException
     {
         Object response;
 
