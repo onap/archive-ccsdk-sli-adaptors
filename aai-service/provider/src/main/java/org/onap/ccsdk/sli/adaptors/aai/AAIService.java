@@ -1520,7 +1520,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     }
 
     @Override
-    public boolean isDeprecatedFormat(String resource, HashMap<String, String> nameValues) {
+    public boolean isDeprecatedFormat(String resource, Map<String, String> nameValues) {
         return !AAIServiceUtils.isValidFormat(resource, nameValues);
     }
 

@@ -28,6 +28,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -48,15 +49,15 @@ import org.slf4j.LoggerFactory;
 public class AAIServiceUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(AAIService.class);
+    
+    private AAIServiceUtils() {
+    }
 
     public static String getPrimaryIdFromClass(Class<? extends AAIDatum> resourceClass){
         // 1. find class
         getLogger().debug(resourceClass.getName());
-        AAIDatum instance = null;
 
         try {
-            instance = resourceClass.newInstance();
-
             Annotation[] annotations = resourceClass.getAnnotations();
             for(Annotation annotation : annotations) {
                 Class<? extends Annotation> anotationType = annotation.annotationType();
@@ -73,19 +74,15 @@ public class AAIServiceUtils {
                 }
             }
         } catch(Exception exc) {
-
+        	getLogger().warn("getPrimaryIdFromClass failed", exc);
         }
         return null;
     }
 
     public static String getSecondaryIdFromClass(Class<? extends AAIDatum> resourceClass){
-        // 1. find class
         getLogger().debug(resourceClass.getName());
-        AAIDatum instance = null;
 
         try {
-            instance = resourceClass.newInstance();
-
             Annotation[] annotations = resourceClass.getAnnotations();
             for(Annotation annotation : annotations) {
                 Class<? extends Annotation> anotationType = annotation.annotationType();
@@ -314,7 +311,7 @@ public class AAIServiceUtils {
         return request.getRequestPath();
     }
 
-    public static boolean isValidFormat(String resource, HashMap<String, String> nameValues) {
+    public static boolean isValidFormat(String resource, Map<String, String> nameValues) {
 
         switch(resource){
 	case "custom-query":

@@ -30,28 +30,37 @@ public class AAIServiceException extends Exception {
 	 */
 	private static final long serialVersionUID = -9039257722542999522L;
 	
-	protected ErrorResponse errorResponse = null;
-	protected int returnCode = -1;
+	protected final ErrorResponse errorResponse;
+	protected final int returnCode;
 
 	public AAIServiceException() {
-
+		returnCode = -1;
+		errorResponse = null;
 	}
 
 	public AAIServiceException(String message) {
 		super(message);
+		returnCode = -1;
+		errorResponse = null;
 	}
 
 	public AAIServiceException(Throwable cause) {
 		super(cause);
+		returnCode = -1;
+		errorResponse = null;
 	}
 
 	public AAIServiceException(String message, Throwable cause) {
 		super(message, cause);
+		returnCode = -1;
+		errorResponse = null;
 	}
 
 	public AAIServiceException(String message, Throwable cause,
 			boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
+		returnCode = -1;
+		errorResponse = null;
 	}
 
 	public AAIServiceException(int returnCode, ErrorResponse errorresponse) {
