@@ -28,6 +28,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -49,14 +50,14 @@ public class AAIServiceUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(AAIService.class);
 
+    private AAIServiceUtils() {
+    }
+
     public static String getPrimaryIdFromClass(Class<? extends AAIDatum> resourceClass){
         // 1. find class
         getLogger().debug(resourceClass.getName());
-        AAIDatum instance = null;
 
         try {
-            instance = resourceClass.newInstance();
-
             Annotation[] annotations = resourceClass.getAnnotations();
             for(Annotation annotation : annotations) {
                 Class<? extends Annotation> anotationType = annotation.annotationType();
@@ -73,19 +74,15 @@ public class AAIServiceUtils {
                 }
             }
         } catch(Exception exc) {
-
+            getLogger().warn("getPrimaryIdFromClass failed", exc);
         }
         return null;
     }
 
     public static String getSecondaryIdFromClass(Class<? extends AAIDatum> resourceClass){
-        // 1. find class
         getLogger().debug(resourceClass.getName());
-        AAIDatum instance = null;
 
         try {
-            instance = resourceClass.newInstance();
-
             Annotation[] annotations = resourceClass.getAnnotations();
             for(Annotation annotation : annotations) {
                 Class<? extends Annotation> anotationType = annotation.annotationType();
@@ -112,16 +109,16 @@ public class AAIServiceUtils {
         return null;
     }
 
-	public static Method getRelationshipListGetterMethodFromClassDefinition(Class resourceClass) {
-		Method getRelationshipListMethod = null;
-		
-		try {
-			 getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
-		} catch(Exception exc) {
-			getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
-		}
-		return getRelationshipListMethod;
-	}
+    public static Method getRelationshipListGetterMethodFromClassDefinition(Class resourceClass) {
+        Method getRelationshipListMethod = null;
+
+        try {
+             getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
+        } catch(Exception exc) {
+            getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
+        }
+        return getRelationshipListMethod;
+    }
 
     private static Logger getLogger() {
         return LOG;
@@ -314,10 +311,10 @@ public class AAIServiceUtils {
         return request.getRequestPath();
     }
 
-    public static boolean isValidFormat(String resource, HashMap<String, String> nameValues) {
+    public static boolean isValidFormat(String resource, Map<String, String> nameValues) {
 
         switch(resource){
-	case "custom-query":
+    case "custom-query":
         case "formatted-query":
         case "generic-query":
         case "named-query":
@@ -336,10 +333,10 @@ public class AAIServiceUtils {
         Set<String> keys = nameValues.keySet();
         for(String key : keys) {
             if(!key.contains(".")) {
-				if("depth".equals(key) || "related-to".equals(key) || "related_to".equals(key) || "related-link".equals(key) || "related_link".equals(key) || "selflink".equals(key) || "resource_path".equals(key))
+                if("depth".equals(key) || "related-to".equals(key) || "related_to".equals(key) || "related-link".equals(key) || "related_link".equals(key) || "selflink".equals(key) || "resource_path".equals(key))
                     continue;
                 else {
-					getLogger().warn(String.format("key '%s' is incompatible with resource type '%s'", key, resource));
+                    getLogger().warn(String.format("key '%s' is incompatible with resource type '%s'", key, resource));
                 }
             }
         }
