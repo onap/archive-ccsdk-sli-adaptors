@@ -24,7 +24,6 @@ package org.onap.ccsdk.sli.adaptors.aai;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.openecomp.aai.inventory.v11.*;
@@ -76,9 +75,9 @@ public interface AAIClient extends SvcLogicResource, SvcLogicJavaPlugin {
 
     public void logKeyError(String keys);
 
-    public QueryStatus processResponseData(String rv, String resource, AAIRequest request, String prefix,  SvcLogicContext ctx, HashMap<String, String> nameValues, String modifier) throws JsonParseException, JsonMappingException, IOException, AAIServiceException ;
+    public QueryStatus processResponseData(String rv, String resource, AAIRequest request, String prefix,  SvcLogicContext ctx, Map<String, String> nameValues, String modifier) throws JsonParseException, JsonMappingException, IOException, AAIServiceException ;
     public String getPathTemplateForResource(String resoourceName, String join, SvcLogicContext ctx) throws MalformedURLException;
-    public boolean isDeprecatedFormat(String resource, HashMap<String, String> nameValues);
+    public boolean isDeprecatedFormat(String resource, Map<String, String> nameValues);
 
     String query(AAIRequest request) throws AAIServiceException;
     String save(AAIRequest request) throws AAIServiceException;
