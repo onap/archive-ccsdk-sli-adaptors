@@ -49,12 +49,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore-osgi</artifactId>
+            <artifactId>httpcore</artifactId>
             <version>${apache.httpcomponents.core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient-osgi</artifactId>
+            <artifactId>httpclient</artifactId>
             <version>${apache.httpcomponents.client.version}</version>
         </dependency>
         <dependency>
