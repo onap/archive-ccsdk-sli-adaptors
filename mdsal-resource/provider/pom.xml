@@ -7,6 +7,7 @@
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
         <version>1.0.1-SNAPSHOT</version>
+        <relativePath />
     </parent>
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>

@@ -6,14 +6,15 @@
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>odlparent-lite</artifactId>
         <version>1.0.1-SNAPSHOT</version>
+        <relativePath />
     </parent>
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>aai-service</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>AAI Interface Service</name>
+    <name>ccsdk-sli-adaptors :: aai-service</name>
     <description>The AAI Interface service exposes an interface to AAI as an OSGi service</description>
 
     <modules>
