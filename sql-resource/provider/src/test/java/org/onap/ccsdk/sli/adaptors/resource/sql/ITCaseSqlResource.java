@@ -80,7 +80,7 @@ public class ITCaseSqlResource extends TestCase {
 			System.setProperty(propName, props.getProperty(propName));
 		}
 
-		SqlResource sqlResource = new SqlResource();
+		SqlResource sqlResource = new SqlResource(new SqlResourcePropertiesProviderImpl());
 
 
 
