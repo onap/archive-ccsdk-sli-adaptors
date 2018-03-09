@@ -21,8 +21,6 @@
 
 package org.onap.ccsdk.sli.adaptors.resource.sql;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -42,11 +40,6 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,9 +49,13 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
 
 	private static final String DBLIB_SERVICE = "org.onap.ccsdk.sli.core.dblib.DbLibService";
 
+	private SqlResourceProvider provider = null;
+
+	private DbLibService dblibService = null;
+
 	private static String CRYPT_KEY = "";
 
-	public SqlResource() {
+	public SqlResource() {	
 	}
 
 	// For sql-resource, is-available is the same as exists
@@ -324,69 +321,11 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
 	}
 
 	private DbLibService getDbLibService() {
-		// Try to get dblib as an OSGI service
-		DbLibService dblibSvc = null;
-		BundleContext bctx = null;
-		ServiceReference sref = null;
-
-		Bundle bundle = FrameworkUtil.getBundle(SqlResource.class);
-
-		if (bundle != null) {
-			bctx = bundle.getBundleContext();
-		}
-
-		if (bctx != null) {
-			sref = bctx.getServiceReference(DBLIB_SERVICE);
-		}
-
-		if (sref == null) {
-			LOG.warn("Could not find service reference for DBLIB service (" + DBLIB_SERVICE + ")");
-		} else {
-			dblibSvc = (DbLibService) bctx.getService(sref);
-			if (dblibSvc == null) {
-				LOG.warn("Could not find service reference for DBLIB service (" + DBLIB_SERVICE + ")");
-			}
-		}
-
-		if (dblibSvc == null) {
-			// Must not be running in an OSGI container. See if you can load it
-			// as a
-			// a POJO then.
-
-			// If $SDNC_CONFIG_DIR/dblib.properties exists, that should
-			// be the properties passed to DBResourceManager constructor.
-			// If not, as default just use system properties.
-			Properties dblibProps = System.getProperties();
-			String cfgDir = System.getenv("SDNC_CONFIG_DIR");
-
-			if ((cfgDir == null) || (cfgDir.length() == 0)) {
-				cfgDir = "/opt/sdnc/data/properties";
+		return dblibService;
 			}
 
-			File dblibPropFile = new File(cfgDir + "/dblib.properties");
-			if (dblibPropFile.exists()) {
-				try {
-					dblibProps = new Properties();
-					dblibProps.load(new FileInputStream(dblibPropFile));
-				} catch (Exception e) {
-					LOG.warn("Could not load properties file " + dblibPropFile.getAbsolutePath(), e);
-
-					dblibProps = System.getProperties();
-				}
-			}
-
-			try {
-				dblibSvc = new DBResourceManager(dblibProps);
-			} catch (Exception e) {
-				LOG.error("Caught exception trying to create dblib service", e);
-			}
-
-			if (dblibSvc == null) {
-				LOG.warn("Could not create new DBResourceManager");
-			}
-		}
-
-		return (dblibSvc);
+	public void setDblibService(DbLibService dblibService) {
+		this.dblibService = dblibService;
 	}
 
 	@Override
@@ -451,6 +390,15 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
 	public static String setCryptKey(String key) {
 		CRYPT_KEY = key;
 		return (CRYPT_KEY);
+	}
+
+	public void setProvider(SqlResourceProvider provider) {
+		this.provider = provider;
+		Properties sqlResourceProps = provider.getProperties();
+		if(sqlResourceProps != null && sqlResourceProps.containsKey("org.openecomp.sdnc.resource.sql.cryptkey")) {
+			String cryptKey = sqlResourceProps.getProperty("org.openecomp.sdnc.resource.sql.cryptkey");
+			setCryptKey(cryptKey);
+		}
 	}
 
 	public String parameterizedQuery(Map<String, String> parameters, SvcLogicContext ctx) throws SvcLogicException {
