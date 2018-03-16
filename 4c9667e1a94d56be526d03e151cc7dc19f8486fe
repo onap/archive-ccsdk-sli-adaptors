@@ -1,0 +1,7 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Dan Timoney <dt5972@att.com>
+Submitted-by: Dan Timoney <dt5972@att.com>
+Submitted-at: Fri, 16 Mar 2018 19:13:50 +0000
+Reviewed-on: https://gerrit.onap.org/r/34893
+Project: ccsdk/sli/adaptors
+Branch: refs/heads/master
