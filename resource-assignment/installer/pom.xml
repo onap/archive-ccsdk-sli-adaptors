@@ -120,7 +120,7 @@
                             <useRepositoryLayout>true</useRepositoryLayout>
                             <addParentPoms>false</addParentPoms>
                             <copyPom>false</copyPom>
-                            <includeGroupIds>org.onap.ccsdk.sli.adaptors</includeGroupIds>
+                            <excludeGroupIds>org.onap.ccsdk.sli.core,org.opendaylight</excludeGroupIds>
                             <scope>provided</scope>
                         </configuration>
                     </execution>
