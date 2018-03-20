@@ -111,33 +111,19 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     private final Boolean ignoreCertificateHostError;
 
     private final String targetUri;
-    private final String queryPath;
-
     private final String networkVserverPath;
 
-    private final String svcInstancePath;
     private final String svc_inst_qry_path;
-
-    private final String vnf_image_query_path;
-
-    private final String param_service_type;            //= "service-type";
 
     private final String ubb_notify_path;
     private final String selflinkAvpn;
     private final String selflinkFqdn;
-
-    private final String pInterfacePath;
-
-    private final String servicePath;
-    private final String sitePairSetPath;
 
     private final int connectionTimeout;
     private final int readTimeout;
 
     // 1602
     private final String queryNodesPath;
-    private final String updatePath;
-
     private final String applicationId;
 
     // authentication credentials
@@ -206,8 +192,8 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         keystorePassword     = props.getProperty(KEYSTORE_PSSWD);
 
         targetUri             = props.getProperty(TARGET_URI);
-        queryPath             = props.getProperty(QUERY_PATH);
-        updatePath         = props.getProperty(UPDATE_PATH);
+        props.getProperty(QUERY_PATH);
+        props.getProperty(UPDATE_PATH);
 
         String tmpApplicationId = props.getProperty(APPLICATION_ID);
         if(tmpApplicationId == null || tmpApplicationId.isEmpty()) {
@@ -235,22 +221,21 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
         networkVserverPath =props.getProperty(NETWORK_VSERVER_PATH);
 
-        svcInstancePath    = props.getProperty(SVC_INSTANCE_PATH);
+        props.getProperty(SVC_INSTANCE_PATH);
         svc_inst_qry_path    = props.getProperty(SVC_INST_QRY_PATH);
-        param_service_type     = props.getProperty(PARAM_SERVICE_TYPE, "service-type");
+        props.getProperty(PARAM_SERVICE_TYPE, "service-type");
 
-        // P-Interfaces
-        pInterfacePath   = props.getProperty(P_INTERFACE_PATH);
+        props.getProperty(P_INTERFACE_PATH);
 
-        vnf_image_query_path    = props.getProperty(VNF_IMAGE_QUERY_PATH);
+        props.getProperty(VNF_IMAGE_QUERY_PATH);
 
         ubb_notify_path = props.getProperty(UBB_NOTIFY_PATH);
         selflinkAvpn = props.getProperty(SELFLINK_AVPN);
         selflinkFqdn = props.getProperty(SELFLINK_FQDN);
 
-        servicePath  = props.getProperty(SERVICE_PATH);
+        props.getProperty(SERVICE_PATH);
 
-        sitePairSetPath  = props.getProperty(SITE_PAIR_SET_PATH);
+        props.getProperty(SITE_PAIR_SET_PATH);
 
         queryNodesPath = props.getProperty(QUERY_NODES_PATH);
 
