@@ -722,7 +722,7 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
     }
 
     public void logMetricResponse(int responseCode, String responseDescription){
-        ml.logResponse(responseCode < 400 ? "SUCCESS" : "FAILURE", Integer.toString(responseCode), responseDescription);
+        ml.logResponse(responseCode < 400 ? "COMPLETE" : "ERROR", Integer.toString(responseCode), responseDescription);
     }
 
     protected void LOGwriteFirstTrace(String method, String url) {

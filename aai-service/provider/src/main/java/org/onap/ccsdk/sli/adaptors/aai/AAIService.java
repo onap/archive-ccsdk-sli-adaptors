@@ -1344,7 +1344,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     }
 
     public void logMetricResponse(String requestId, int responseCode, String responseDescription){
-        ml.logResponse(responseCode < 400 ? "SUCCESS" : "FAILURE", Integer.toString(responseCode), responseDescription);
+        ml.logResponse(responseCode < 400 ? "COMPLETE" : "ERROR", Integer.toString(responseCode), responseDescription);
     }
 
     public void logKeyError(String keys){
