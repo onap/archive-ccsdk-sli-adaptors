@@ -721,17 +721,6 @@ public abstract class AAIDeclarations implements AAIClient {
 
                     if(!itemRemoved)
                         return QueryStatus.NOT_FOUND;
-
-//                    AAIRequest masterRequest = new GenericVnfRequest();
-//                    masterRequest.addRequestProperty(GenericVnfRequest.VNF_ID, vnfId);
-//                    relationshipRequest.addMasterRequest(masterRequest);
-//                    Map<String, String> attributes = objectToProperties(vnf);
-//                    try {
-//                        Boolean result = getExecutor().delete(relationshipRequest, attributes.get(AAIRequest.RESOURCE_VERSION));
-//                    } catch (AAIServiceException e) {
-//                        return QueryStatus.FAILURE;
-//                    }
-
                     try {
                         this.postGenericVnfData(vnf.getVnfId(), vnf);
                     } catch (AAIServiceException exc) {
