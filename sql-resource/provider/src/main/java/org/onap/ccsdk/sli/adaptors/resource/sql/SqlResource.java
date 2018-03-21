@@ -55,9 +55,13 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
 
     private static final String DBLIB_SERVICE = "org.onap.ccsdk.sli.core.dblib.DbLibService";
 
-    private static String CRYPT_KEY = "";
+    private static String CRYPT_KEY = "QtfJMKggVk";
 
     DbLibService dblibSvc = null;
+
+    public SqlResource() {
+        this(new SqlResourcePropertiesProviderImpl(), null);
+    }
 
     public SqlResource(SqlResourcePropertiesProvider propProvider) {
         this(propProvider, null);
