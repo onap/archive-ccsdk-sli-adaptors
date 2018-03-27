@@ -42,7 +42,7 @@ public class EchoRequestTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(EchoRequestTest.class);
 
-    private static AAIRequest request;
+    private static EchoRequest request;
     private static AAIService aaiService;
 
     @BeforeClass
@@ -67,7 +67,7 @@ public class EchoRequestTest {
         try {
             url = request.getRequestUrl("GET", null);
             assertNotNull(url);
-        } catch (UnsupportedEncodingException | MalformedURLException | URISyntaxException exc) {
+        } catch (UnsupportedEncodingException | MalformedURLException exc) {
             LOG.error("Failed test", exc);
 		}
 

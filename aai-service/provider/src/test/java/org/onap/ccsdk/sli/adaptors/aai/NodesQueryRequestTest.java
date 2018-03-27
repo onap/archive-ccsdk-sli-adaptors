@@ -15,7 +15,7 @@ public class NodesQueryRequestTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodesQueryRequestTest.class);
 
-    private static AAIRequest request;
+    private static NodesQueryRequest request;
 
     @BeforeClass
     public static void setUp() throws Exception {
