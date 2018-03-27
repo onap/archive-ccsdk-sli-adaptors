@@ -18,7 +18,7 @@ public class NamedQueryRequestTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(NamedQueryRequestTest.class);
 
-    private static AAIRequest request;
+    private static NamedQueryRequest request;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -41,7 +41,7 @@ public class NamedQueryRequestTest {
         try {
             url = request.getRequestUrl("GET", null);
             assertNotNull(url);
-        } catch (UnsupportedEncodingException | MalformedURLException | URISyntaxException exc) {
+        } catch (UnsupportedEncodingException | MalformedURLException exc) {
             LOG.error("Failed test", exc);
         }
 
