@@ -1,0 +1,103 @@
+'''
+/*-
+* ============LICENSE_START=======================================================
+* ONAP : APPC
+* ================================================================================
+* Copyright (C) 2017 AT&T Intellectual Property.  All rights reserved.
+* ================================================================================
+* Copyright (C) 2017 Amdocs
+* =============================================================================
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+* 
+* ECOMP is a trademark and service mark of AT&T Intellectual Property.
+* ============LICENSE_END=========================================================
+*/
+'''
+
+============
+INSTALLATION:
+============
+
+Python:
+-------
+sudo apt-get install python2.7
+sudo apt-get install python-pip
+pip install PyMySQL
+pip install requests
+
+Ansible:
+--------
+sudo apt-get install software-properties-common
+sudo apt-add-repository ppa:ansible/ansible
+sudo apt-get update
+sudo apt-get install ansible
+
+SQL db:
+-------
+
+sudo apt-get install mysql-server
+
+Set root passwd during installation (i.e. password_4_mysql_user_id)
+
+sudo service mysql restart
+
+Setup mysql:
+------------
+
+mysql -u [username]-p
+mysql -uroot -p
+
+Create user (i.e. id=mysql_user_id psswd=password_4_mysql_user_id)
+  CREATE USER 'appc'@'%' IDENTIFIED BY 'password_4_mysql_user_id';
+  GRANT ALL PRIVILEGES ON *.* TO 'mysql_user_id'@'%';
+  SET PASSWORD FOR 'mysql_user_id'@'%'=PASSWORD('password_4_mysql_user_id');
+
+Create schema
+  CREATE SCHEMA ansible;
+  show databases;
+  use ansible;
+  CREATE TABLE playbook (name VARCHAR(45) NOT NULL, value BLOB, type VARCHAR(60), version VARCHAR(60), PRIMARY KEY (name));
+  show tables;
+  CREATE TABLE inventory (hostname VARCHAR(45) NOT NULL, hostgroup VARCHAR(45), credentials VARCHAR(500), PRIMARY KEY (hostname));
+  SHOW COLUMNS FROM playbook;
+  SHOW COLUMNS FROM inventory;
+  GRANT ALL PRIVILEGES ON *.* TO 'mysql_user_id'@'%' IDENTIFIED BY 'password_4_mysql_user_id' WITH GRANT OPTION;
+  GRANT ALL PRIVILEGES ON *.* TO 'ansible'@'%' IDENTIFIED BY 'ansible_agent' WITH GRANT OPTION;
+  FLUSH PRIVILEGES;
+
+Load db:
+--------
+
+python LoadAnsibleMySql.py
+
+=============
+CODE TESTING:
+=============
+1. Start RestServer: python RestServer.py
+
+2. Try curl commands (case no secured REST: http & no authentication):
+
+- Request to execute playbook:
+curl -H "Content-type: application/json" -X POST -d '{"Id": "10", "PlaybookName": "ansible_sleep", "NodeList": ["host"], "Timeout": "60", "EnvParameters": {"Sleep": "10"}}' http://0.0.0.0:8000/Dispatch
+
+response: {"ExpectedDuration": "60sec", "StatusMessage": "PENDING", "StatusCode": 100}
+
+- Get results (blocked until test finished):
+curl --cacert ~/SshKey/fusion_eric-vm_cert.pem --user "appc:abc123" -H "Content-type: application/json" -X GET  "http://0.0.0.0:8000/Dispatch/?Id=10&Type=GetResult"
+
+response: {"Results": {"localhost": {"GroupName": "host", "StatusMessage": "SUCCESS", "StatusCode": 200}}, "PlaybookName": "ansible_sleep", "Version": "0.00", "Duration": "11.261794", "StatusMessage": "FINISHED", "StatusCode": 200}
+
+- Delete playbook execution information
+curl --cacert ~/SshKey/fusion_eric-vm_cert.pem --user "appc:abc123" -H "Content-type: application/json" -X DELETE  http://0.0.0.0:8000/Dispatch/?Id=10
+
+response: {"StatusMessage": "PLAYBOOK EXECUTION RECORDS DELETED", "StatusCode": 200}
