@@ -21,6 +21,7 @@
 
 package org.onap.ccsdk.sli.adaptors.lock.comp;
 
+import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -51,6 +52,7 @@ public abstract class SynchronizedFunction {
     }
 
     private static String generateLockRequester() {
-        return "SynchronizedFunction-" + (int) (Math.random() * 1000000);
+        SecureRandom rand = new SecureRandom();
+        return "SynchronizedFunction-" + (int) (rand.nextDouble() * 1000000);
     }
 }
