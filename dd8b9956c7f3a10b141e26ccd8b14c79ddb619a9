@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Shashikanth VH <shashikanth.vh@huawei.com>
+Code-Review+2: Dan Timoney <dt5972@att.com>
+Submitted-by: Dan Timoney <dt5972@att.com>
+Submitted-at: Thu, 12 Apr 2018 12:57:44 +0000
+Reviewed-on: https://gerrit.onap.org/r/42405
+Project: ccsdk/sli/adaptors
+Branch: refs/heads/master
