@@ -71,20 +71,20 @@ public class AAIServiceProvider implements UtilsProvider {
      * Set up the prioritized list of strategies for resolving dblib properties files.
      */
     public AAIServiceProvider() {
+        dblibPropertiesFileResolvers.add(new SdncConfigEnvVarFileResolver(
+                "Using property file (1) from environment variable"
+            ));
         dblibPropertiesFileResolvers.add(new JREFileResolver(
-            "Using property file (1) from JRE argument", AAIServiceProvider.class
+            "Using property file (2) from JRE argument", AAIServiceProvider.class
         ));
         dblibPropertiesFileResolvers.add(new BundleContextFileResolver(
-            "Using property file (1) from JRE argument", AAIServiceProvider.class
-        ));
-        dblibPropertiesFileResolvers.add(new SdncConfigEnvVarFileResolver(
-            "Using property file (2) from environment variable"
+            "Using property file (3) from JRE argument", AAIServiceProvider.class
         ));
         dblibPropertiesFileResolvers.add(new KarafRootFileResolver(
             "Using property file (4) from karaf root", this
         ));
         dblibPropertiesFileResolvers.add(new CoreDefaultFileResolver(
-            "Using property file (3) from default directory"
+            "Using property file (5) from default directory"
         ));
 
         // determines properties file as according to the priority described in the class header comment
