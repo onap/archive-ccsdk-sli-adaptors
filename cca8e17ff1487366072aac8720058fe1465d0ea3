@@ -1,0 +1,9 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Rich Tabedzki <richard.tabedzki@att.com>
+Code-Review+2: Dan Timoney <dt5972@att.com>
+Code-Review+2: Jun (Nicolas) Hu <jh245g@att.com>
+Submitted-by: Dan Timoney <dt5972@att.com>
+Submitted-at: Mon, 16 Apr 2018 21:58:42 +0000
+Reviewed-on: https://gerrit.onap.org/r/43095
+Project: ccsdk/sli/adaptors
+Branch: refs/heads/master
