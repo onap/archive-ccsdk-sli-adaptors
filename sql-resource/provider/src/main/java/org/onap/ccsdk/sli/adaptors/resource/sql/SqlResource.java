@@ -441,7 +441,7 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
             return (strValue);
         } else {
             ResultSet results = null;
-            try (Connection conn = ((DBResourceManager) dblibSvc).getConnection();
+            try (Connection conn =  dblibSvc.getConnection();
                PreparedStatement stmt = conn.prepareStatement("SELECT CAST(AES_DECRYPT(?, ?) AS CHAR(50)) FROM DUAL")) {
 
                 stmt.setBytes(1, colValue);
