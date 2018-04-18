@@ -51,9 +51,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
+    "resource-type",
+    "resource-link",
+    "url",
     "cloud-region",
     "complex",
-	"configuration",
+    "configuration",
     "generic-vnf",
     "l3-interface-ipv4-address-list",
     "l3-interface-ipv6-address-list",
@@ -68,12 +71,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @XmlRootElement(name = "result")
 public class Result {
 
+    @XmlElement(name = "resource-type")
+    private String resourceType;
+    @XmlElement(name = "resource-link")
+    private String resourceLink;
+    @XmlElement(name = "url")
+    private String url;
     @XmlElement(name = "cloud-region")
     private CloudRegion cloudRegion;
     @XmlElement(name = "complex")
     private Complex complex;
-	@XmlElement(name = "configuration")
-	private Configuration configuration;
+    @XmlElement(name = "configuration")
+    private Configuration configuration;
     @XmlElement(name = "generic-vnf")
     private GenericVnf genericVnf;
     @XmlElement(name = "l3-interface-ipv4-address-list")
@@ -84,8 +93,8 @@ public class Result {
     private L3Network l3Network;
     @XmlElement(name = "l-interface")
     private LInterface lInterface;
-//	@XmlElement(name = "owning-entity")
-//	private OwningEntity owningEntity;
+//    @XmlElement(name = "owning-entity")
+//    private OwningEntity owningEntity;
     @XmlElement(name = "pserver")
     private Pserver pserver;
     @XmlElement(name = "service-instance")
@@ -117,15 +126,15 @@ public class Result {
         this.complex = complex;
     }
 
-	@XmlElement(name = "configuration")
-	public Configuration getConfiguration() {
-		return configuration;
-	}
+    @XmlElement(name = "configuration")
+    public Configuration getConfiguration() {
+        return configuration;
+    }
 
-	@XmlElement(name = "configuration")
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
-	}
+    @XmlElement(name = "configuration")
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
 
     @XmlElement(name = "generic-vnf")
     public GenericVnf getGenericVnf ()
@@ -178,15 +187,15 @@ public class Result {
         this.lInterface = linterface;
     }
 
-//	@XmlElement(name = "owning-entity")
-//	public OwningEntity getOwningEntity() {
-//		return owningEntity;
-//	}
+//    @XmlElement(name = "owning-entity")
+//    public OwningEntity getOwningEntity() {
+//        return owningEntity;
+//    }
 
-//	@XmlElement(name = "owning-entity")
-//	public void setOwningEntity(OwningEntity owningEntity) {
-//		this.owningEntity = owningEntity;
-//	}
+//    @XmlElement(name = "owning-entity")
+//    public void setOwningEntity(OwningEntity owningEntity) {
+//        this.owningEntity = owningEntity;
+//    }
 
     @XmlElement(name = "pserver")
     public Pserver getPserver() {
@@ -241,5 +250,29 @@ public class Result {
     @JsonAnySetter
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
+    }
+    @XmlElement(name = "resource-type")
+    public String getResourceType() {
+        return resourceType;
+    }
+    @XmlElement(name = "resource-type")
+    public void setResourceType(String resourceType) {
+        this.resourceType = resourceType;
+    }
+    @XmlElement(name = "resource-link")
+    public String getResourceLink() {
+        return resourceLink;
+    }
+    @XmlElement(name = "resource-link")
+    public void setResourceLink(String resourceLink) {
+        this.resourceLink = resourceLink;
+    }
+    @XmlElement(name = "url")
+    public String getUrl() {
+        return url;
+    }
+    @XmlElement(name = "url")
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

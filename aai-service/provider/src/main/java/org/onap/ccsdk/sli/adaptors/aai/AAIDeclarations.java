@@ -1080,7 +1080,7 @@ public abstract class AAIDeclarations implements AAIClient {
                             Method setter = null;
                             try {
                                 setter = resourceClass.getMethod("set"+StringUtils.capitalize(value), type);
-                                if(type.getName().startsWith("java.lang") || "boolean".equals(type.getName()) || "long".equals(type.getName())) {
+                                if(type.getName().startsWith("java.lang") || "boolean".equals(type.getName()) || "long".equals(type.getName()) || "int".equals(type.getName())) {
                                     try {
                                         setter.setAccessible(true);
                                         Object arglist[] = new Object[1];
@@ -1091,6 +1091,8 @@ public abstract class AAIDeclarations implements AAIClient {
 //                                            getLogger().debug(String.format("Processing %s with parameter %s", types[0].getName(), value));
                                                 if("boolean".equals(type.getName())) {
                                                     arglist[0] = valueOf(Boolean.class, params.get(id));
+                                                } else if("int".equals(type.getName())) {
+                                                    arglist[0] = valueOf(Integer.class, params.get(id));
                                                 } else if("long".equals(type.getName())) {
                                                         arglist[0] = valueOf(Long.class, params.get(id));
                                                 } else {
@@ -1247,20 +1249,23 @@ public abstract class AAIDeclarations implements AAIClient {
                     Relationship relationship = new Relationship();
                     relationships.add(relationship);
                     relationship.setRelatedTo(relatedTo);
+                    getLogger().debug("About to process related link of {}", relatedLink);
                     if(relatedLink != null) {
+                        if(relatedLink.contains("v$"))
+                            relatedLink = relatedLink.replace("v$", "v13");
                         relationship.setRelatedLink(relatedLink);
                     } else {
                         Map<String, String> relParams = new HashMap<>();
 
-	                    while(true) {
-	                        String searchRelationshipKey = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-key";
-	                        String searchRelationshipValue = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-value";
-	                            if(!params.containsKey(searchRelationshipKey))
-	                            break;
+                        while(true) {
+                            String searchRelationshipKey = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-key";
+                            String searchRelationshipValue = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-value";
+                                if(!params.containsKey(searchRelationshipKey))
+                                break;
 
-	                            relParams.put(params.get(searchRelationshipKey), params.get(searchRelationshipValue));
-	                        j++;
-	                    }
+                                relParams.put(params.get(searchRelationshipKey), params.get(searchRelationshipValue));
+                            j++;
+                        }
                         AAIRequest rlRequest = AAIRequest.createRequest(relatedTo, relParams);
                         for(Map.Entry<String,String> entry : relParams.entrySet()) {
                             rlRequest.addRequestProperty(entry.getKey(), entry.getValue());
@@ -1268,26 +1273,26 @@ public abstract class AAIDeclarations implements AAIClient {
                         String path = rlRequest.updatePathDataValues(null);
                         relationship.setRelatedLink(path);
                     }
-    				{
-    					int k = 0;
-    					// process related to properties
-    					Map<String, String> relParams = new HashMap<String, String>();
+                    {
+                        int k = 0;
+                        // process related to properties
+                        Map<String, String> relParams = new HashMap<String, String>();
 
-    					while(true) {
-    						String searchRelatedToKey = "relationship-list.relationship[" + i + "].related-to-property[" + k + "].property-key";
-    						String searchRelatedToValue = "relationship-list.relationship[" + i + "].related-to-property[" + k + "].property-value";
-    						if(!params.containsKey(searchRelatedToKey))
-    							break;
+                        while(true) {
+                            String searchRelatedToKey = "relationship-list.relationship[" + i + "].related-to-property[" + k + "].property-key";
+                            String searchRelatedToValue = "relationship-list.relationship[" + i + "].related-to-property[" + k + "].property-value";
+                            if(!params.containsKey(searchRelatedToKey))
+                                break;
 
-    						RelatedToProperty relDatum = new RelatedToProperty();
-    						relDatum.setPropertyKey(params.get(searchRelatedToKey));
-    						relDatum.setPropertyValue(params.get(searchRelatedToValue));
-    						relationship.getRelatedToProperty().add(relDatum);
+                            RelatedToProperty relDatum = new RelatedToProperty();
+                            relDatum.setPropertyKey(params.get(searchRelatedToKey));
+                            relDatum.setPropertyValue(params.get(searchRelatedToValue));
+                            relationship.getRelatedToProperty().add(relDatum);
 
-    						relParams.put(params.get(searchRelatedToKey), params.get(searchRelatedToValue));
-    						k++;
-    					}
-    				}
+                            relParams.put(params.get(searchRelatedToKey), params.get(searchRelatedToValue));
+                            k++;
+                        }
+                    }
                     i++;
                 }
             }
@@ -1531,61 +1536,63 @@ public abstract class AAIDeclarations implements AAIClient {
                     relatedLink = params.get(relatedLinkKey);
                 }
 
-				Relationship relationship = new Relationship();
-				relationships.add(relationship);
-				relationship.setRelatedTo(relatedTo);
-				if (relatedLink != null) {
-					relationship.setRelatedLink(relatedLink);
-				} else {
-					Map<String, String> relParams = new HashMap<>();
-					int j = 0;
+                Relationship relationship = new Relationship();
+                relationships.add(relationship);
+                relationship.setRelatedTo(relatedTo);
+                if (relatedLink != null) {
+                    if(relatedLink.contains("v$"))
+                        relatedLink = relatedLink.replace("v$", "v13");
+                    relationship.setRelatedLink(relatedLink);
+                } else {
+                    Map<String, String> relParams = new HashMap<>();
+                    int j = 0;
 
-					while (true) {
-						String searchRelationshipKey = "relationship-list.relationship[" + i + "].relationship-data["
-								+ j + "].relationship-key";
-						String searchRelationshipValue = "relationship-list.relationship[" + i + "].relationship-data["
-								+ j + "].relationship-value";
-						if (!params.containsKey(searchRelationshipKey))
-							break;
+                    while (true) {
+                        String searchRelationshipKey = "relationship-list.relationship[" + i + "].relationship-data["
+                                + j + "].relationship-key";
+                        String searchRelationshipValue = "relationship-list.relationship[" + i + "].relationship-data["
+                                + j + "].relationship-value";
+                        if (!params.containsKey(searchRelationshipKey))
+                            break;
 
-						RelationshipData relDatum = new RelationshipData();
-						relDatum.setRelationshipKey(params.get(searchRelationshipKey));
-						relDatum.setRelationshipValue(params.get(searchRelationshipValue));
-						relationship.getRelationshipData().add(relDatum);
+                        RelationshipData relDatum = new RelationshipData();
+                        relDatum.setRelationshipKey(params.get(searchRelationshipKey));
+                        relDatum.setRelationshipValue(params.get(searchRelationshipValue));
+                        relationship.getRelationshipData().add(relDatum);
 
-						relParams.put(params.get(searchRelationshipKey), params.get(searchRelationshipValue));
-						j++;
-					}
-					AAIRequest rlRequest = AAIRequest.createRequest(relatedTo, relParams);
-					for (Map.Entry<String, String> entry : relParams.entrySet()) {
-						rlRequest.addRequestProperty(entry.getKey(), entry.getValue());
-					}
-					String path = rlRequest.updatePathDataValues(null);
-					relationship.setRelatedLink(path);
-				}
-				{
-					int k = 0;
-					// process related to properties
-					Map<String, String> relParams = new HashMap<String, String>();
+                        relParams.put(params.get(searchRelationshipKey), params.get(searchRelationshipValue));
+                        j++;
+                    }
+                    AAIRequest rlRequest = AAIRequest.createRequest(relatedTo, relParams);
+                    for (Map.Entry<String, String> entry : relParams.entrySet()) {
+                        rlRequest.addRequestProperty(entry.getKey(), entry.getValue());
+                    }
+                    String path = rlRequest.updatePathDataValues(null);
+                    relationship.setRelatedLink(path);
+                }
+                {
+                    int k = 0;
+                    // process related to properties
+                    Map<String, String> relParams = new HashMap<String, String>();
 
-					while(true) {
-						String searchRelatedToKey = "relationship-list.relationship[" + i + "].related-to-property[" + k + "].property-key";
-						String searchRelatedToValue = "relationship-list.relationship[" + i + "].related-to-property[" + k + "].property-value";
-						if(!params.containsKey(searchRelatedToKey))
-							break;
+                    while(true) {
+                        String searchRelatedToKey = "relationship-list.relationship[" + i + "].related-to-property[" + k + "].property-key";
+                        String searchRelatedToValue = "relationship-list.relationship[" + i + "].related-to-property[" + k + "].property-value";
+                        if(!params.containsKey(searchRelatedToKey))
+                            break;
 
-						RelatedToProperty relDatum = new RelatedToProperty();
-						relDatum.setPropertyKey(params.get(searchRelatedToKey));
-						relDatum.setPropertyValue(params.get(searchRelatedToValue));
-						relationship.getRelatedToProperty().add(relDatum);
+                        RelatedToProperty relDatum = new RelatedToProperty();
+                        relDatum.setPropertyKey(params.get(searchRelatedToKey));
+                        relDatum.setPropertyValue(params.get(searchRelatedToValue));
+                        relationship.getRelatedToProperty().add(relDatum);
 
-						relParams.put(params.get(searchRelatedToKey), params.get(searchRelatedToValue));
-						k++;
-					}
-				}
+                        relParams.put(params.get(searchRelatedToKey), params.get(searchRelatedToValue));
+                        k++;
+                    }
+                }
 
-				i++;
-			}
+                i++;
+            }
         }
 
         return QueryStatus.SUCCESS;
