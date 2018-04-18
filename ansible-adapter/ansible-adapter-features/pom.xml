@@ -18,6 +18,7 @@
         <artifactId>odlparent-lite</artifactId>
         <groupId>org.onap.ccsdk.parent</groupId>
         <version>1.0.1-SNAPSHOT</version>
+        <relativePath/>
     </parent>
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>ansible-adapter-features</artifactId>
