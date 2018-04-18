@@ -51,6 +51,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
+	"resource-type",
+	"resource-link",
+	"url",
     "cloud-region",
     "complex",
 	"configuration",
@@ -68,6 +71,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @XmlRootElement(name = "result")
 public class Result {
 
+    @XmlElement(name = "resource-type")
+    private String resourceType;
+    @XmlElement(name = "resource-link")
+    private String resourceLink;
+    @XmlElement(name = "url")
+    private String url;
     @XmlElement(name = "cloud-region")
     private CloudRegion cloudRegion;
     @XmlElement(name = "complex")
@@ -242,4 +251,28 @@ public class Result {
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
+    @XmlElement(name = "resource-type")
+	public String getResourceType() {
+		return resourceType;
+	}
+    @XmlElement(name = "resource-type")
+	public void setResourceType(String resourceType) {
+		this.resourceType = resourceType;
+	}
+    @XmlElement(name = "resource-link")
+	public String getResourceLink() {
+		return resourceLink;
+	}
+    @XmlElement(name = "resource-link")
+	public void setResourceLink(String resourceLink) {
+		this.resourceLink = resourceLink;
+	}
+    @XmlElement(name = "url")
+	public String getUrl() {
+		return url;
+	}
+    @XmlElement(name = "url")
+	public void setUrl(String url) {
+		this.url = url;
+	}
 }

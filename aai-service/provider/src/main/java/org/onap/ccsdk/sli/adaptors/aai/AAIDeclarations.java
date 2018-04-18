@@ -1080,7 +1080,7 @@ public abstract class AAIDeclarations implements AAIClient {
                             Method setter = null;
                             try {
                                 setter = resourceClass.getMethod("set"+StringUtils.capitalize(value), type);
-                                if(type.getName().startsWith("java.lang") || "boolean".equals(type.getName()) || "long".equals(type.getName())) {
+                                if(type.getName().startsWith("java.lang") || "boolean".equals(type.getName()) || "long".equals(type.getName()) || "int".equals(type.getName())) {
                                     try {
                                         setter.setAccessible(true);
                                         Object arglist[] = new Object[1];
@@ -1091,6 +1091,8 @@ public abstract class AAIDeclarations implements AAIClient {
 //                                            getLogger().debug(String.format("Processing %s with parameter %s", types[0].getName(), value));
                                                 if("boolean".equals(type.getName())) {
                                                     arglist[0] = valueOf(Boolean.class, params.get(id));
+												} else if("int".equals(type.getName())) {
+													arglist[0] = valueOf(Integer.class, params.get(id));
                                                 } else if("long".equals(type.getName())) {
                                                         arglist[0] = valueOf(Long.class, params.get(id));
                                                 } else {
@@ -1247,7 +1249,10 @@ public abstract class AAIDeclarations implements AAIClient {
                     Relationship relationship = new Relationship();
                     relationships.add(relationship);
                     relationship.setRelatedTo(relatedTo);
+    				getLogger().debug("About to process related link of {}", relatedLink);
                     if(relatedLink != null) {
+						if(relatedLink.contains("v$"))
+							relatedLink = relatedLink.replace("v$", "v13");
                         relationship.setRelatedLink(relatedLink);
                     } else {
                         Map<String, String> relParams = new HashMap<>();
@@ -1535,6 +1540,8 @@ public abstract class AAIDeclarations implements AAIClient {
 				relationships.add(relationship);
 				relationship.setRelatedTo(relatedTo);
 				if (relatedLink != null) {
+					if(relatedLink.contains("v$"))
+						relatedLink = relatedLink.replace("v$", "v13");
 					relationship.setRelatedLink(relatedLink);
 				} else {
 					Map<String, String> relParams = new HashMap<>();
