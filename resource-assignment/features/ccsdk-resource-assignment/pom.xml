@@ -28,7 +28,6 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>ccsdk-sli</artifactId>
-            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
@@ -36,7 +35,7 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>ccsdk-dblib</artifactId>
-            <version>${project.version}</version>
+            <version>${ccsdk.sli.core.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>

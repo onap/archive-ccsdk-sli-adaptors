@@ -31,6 +31,9 @@ out/
 .metadata
 provider/src/main/java/META-INF/
 provider/src/main/java/inventory/
+logs/
+debug-logs/
+*.log
 
 ## BlackDuck generated file
 ccsdk-adaptors_bdio.jsonld
