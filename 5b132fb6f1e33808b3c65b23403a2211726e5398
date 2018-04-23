@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_7fc0fe4f",
+        "filename": "aai-service/provider/src/main/resources/aaiclient.properties",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2018-04-23T21:31:18Z",
+      "side": 1,
+      "message": "should be onap/ccsdk,  not openecomp/sdnc",
+      "range": {
+        "startLine": 29,
+        "startChar": 47,
+        "endLine": 29,
+        "endChar": 61
+      },
+      "revId": "5b132fb6f1e33808b3c65b23403a2211726e5398",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_5fbbc2e4",
+        "filename": "aai-service/provider/src/test/resources/aaiclient.properties",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2018-04-23T21:31:18Z",
+      "side": 1,
+      "message": "should be onap/ccsdk, not openecomp/sdnc",
+      "range": {
+        "startLine": 29,
+        "startChar": 47,
+        "endLine": 29,
+        "endChar": 56
+      },
+      "revId": "5b132fb6f1e33808b3c65b23403a2211726e5398",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
