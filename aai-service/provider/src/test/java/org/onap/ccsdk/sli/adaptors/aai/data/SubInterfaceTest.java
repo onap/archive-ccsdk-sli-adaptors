@@ -11,8 +11,8 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openecomp.aai.inventory.v11.RelationshipList;
-import org.openecomp.aai.inventory.v11.Vlans;
+import org.openecomp.aai.inventory.v13.RelationshipList;
+import org.openecomp.aai.inventory.v13.Vlans;
 
 public class SubInterfaceTest {
 	

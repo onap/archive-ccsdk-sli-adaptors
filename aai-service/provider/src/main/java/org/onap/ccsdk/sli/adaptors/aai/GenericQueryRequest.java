@@ -27,7 +27,7 @@ import java.net.URL;
 import java.util.Properties;
 
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
-import org.openecomp.aai.inventory.v11.ResultData;
+import org.openecomp.aai.inventory.v13.ResultData;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

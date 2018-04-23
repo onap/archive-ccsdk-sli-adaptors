@@ -12,16 +12,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.openecomp.aai.inventory.v11.CloudRegion;
-import org.openecomp.aai.inventory.v11.GenericVnf;
-import org.openecomp.aai.inventory.v11.L3Network;
-import org.openecomp.aai.inventory.v11.Pnf;
-import org.openecomp.aai.inventory.v11.LogicalLink;
-import org.openecomp.aai.inventory.v11.PInterface;
-import org.openecomp.aai.inventory.v11.ServiceInstance;
-import org.openecomp.aai.inventory.v11.Tenant;
-import org.openecomp.aai.inventory.v11.Vnf;
-import org.openecomp.aai.inventory.v11.Vserver;
+import org.openecomp.aai.inventory.v13.CloudRegion;
+import org.openecomp.aai.inventory.v13.GenericVnf;
+import org.openecomp.aai.inventory.v13.L3Network;
+import org.openecomp.aai.inventory.v13.Pnf;
+import org.openecomp.aai.inventory.v13.LogicalLink;
+import org.openecomp.aai.inventory.v13.PInterface;
+import org.openecomp.aai.inventory.v13.ServiceInstance;
+import org.openecomp.aai.inventory.v13.Tenant;
+import org.openecomp.aai.inventory.v13.Vnf;
+import org.openecomp.aai.inventory.v13.Vserver;
 
 public class InstanceFilterTest {
 	

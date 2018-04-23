@@ -10,19 +10,19 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.openecomp.aai.inventory.v11.CloudRegion;
-import org.openecomp.aai.inventory.v11.Complex;
-import org.openecomp.aai.inventory.v11.Configuration;
-import org.openecomp.aai.inventory.v11.GenericVnf;
-import org.openecomp.aai.inventory.v11.L3InterfaceIpv4AddressList;
-import org.openecomp.aai.inventory.v11.L3InterfaceIpv6AddressList;
-import org.openecomp.aai.inventory.v11.L3Network;
-import org.openecomp.aai.inventory.v11.LInterface;
-//import org.openecomp.aai.inventory.v11.OwningEntity;
-import org.openecomp.aai.inventory.v11.Pserver;
-import org.openecomp.aai.inventory.v11.ServiceInstance;
-import org.openecomp.aai.inventory.v11.Vnfc;
-import org.openecomp.aai.inventory.v11.Vserver;
+import org.openecomp.aai.inventory.v13.CloudRegion;
+import org.openecomp.aai.inventory.v13.Complex;
+import org.openecomp.aai.inventory.v13.Configuration;
+import org.openecomp.aai.inventory.v13.GenericVnf;
+import org.openecomp.aai.inventory.v13.L3InterfaceIpv4AddressList;
+import org.openecomp.aai.inventory.v13.L3InterfaceIpv6AddressList;
+import org.openecomp.aai.inventory.v13.L3Network;
+import org.openecomp.aai.inventory.v13.LInterface;
+//import org.openecomp.aai.inventory.v13.OwningEntity;
+import org.openecomp.aai.inventory.v13.Pserver;
+import org.openecomp.aai.inventory.v13.ServiceInstance;
+import org.openecomp.aai.inventory.v13.Vnfc;
+import org.openecomp.aai.inventory.v13.Vserver;
 
 public class ResultTest {
 
