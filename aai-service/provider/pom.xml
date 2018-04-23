@@ -146,13 +146,13 @@
                 <configuration>
                 <schemaDirectory>${project.basedir}/src/main/resources</schemaDirectory>
                     <schemaIncludes>
-                        <value>aai_schema_v11.xsd</value>
+                        <value>aai_schema_v13.xsd</value>
                     </schemaIncludes>
                     <bindingIncludes>
                         <include>aai-schema-bindings.xjb</include>
                     </bindingIncludes>
                     <generateDirectory>${project.build.directory}/generated-sources/main/java</generateDirectory>
-                                        <generatePackage>org.openecomp.aai.inventory.v11</generatePackage>
+                                        <generatePackage>org.openecomp.aai.inventory.v13</generatePackage>
                     <extension>true</extension>
                 <args>
                     <arg>-Xannotate</arg>
