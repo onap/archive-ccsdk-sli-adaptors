@@ -29,6 +29,10 @@
     <name>ccsdk-sli-adaptors :: ansible-adapter :: ${project.artifactId}</name>
 
     <dependencies>
+    		<dependency>
+    			<groupId>com.att.eelf</groupId>
+    			<artifactId>eelf-core</artifactId>
+    		</dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
