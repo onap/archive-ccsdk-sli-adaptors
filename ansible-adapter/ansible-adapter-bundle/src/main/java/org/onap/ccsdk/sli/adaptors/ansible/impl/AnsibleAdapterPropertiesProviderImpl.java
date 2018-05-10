@@ -115,6 +115,11 @@ public class AnsibleAdapterPropertiesProviderImpl implements AnsibleAdapterPrope
         if (properties == null) {
             reportFailure("Missing configuration properties resource(3)", new ConfigurationException(
                     "Missing configuration properties resource(3): " + ANSIBLEADAPTER_PROP_FILE_NAME));
+
+            LOG.info("Defaulting org.onap.appc.adapter.ansible.clientType to TRUST_ALL");
+
+            properties = new Properties();
+            properties.setProperty("org.onap.appc.adapter.ansible.clientType", "TRUST_ALL");
         }
     }
 
