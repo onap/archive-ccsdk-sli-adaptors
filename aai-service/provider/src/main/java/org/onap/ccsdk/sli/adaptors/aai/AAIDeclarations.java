@@ -1089,12 +1089,24 @@ public abstract class AAIDeclarations implements AAIClient {
                                         if(arglist[0] != null) {
                                             if(!type.getName().equals("java.lang.String")) {
 //                                            getLogger().debug(String.format("Processing %s with parameter %s", types[0].getName(), value));
-                                                if("boolean".equals(type.getName())) {
+                                                if("java.lang.Long".equals(type.getName()) || "java.lang.Integer".equals(type.getName())) {
+                                                    String fv = params.get(id);
+                                                    if(fv == null || fv.isEmpty()) {
+                                                        arglist[0] = null;
+                                                    } else {
+                                                        arglist[0] = valueOf(type, params.get(id));
+                                                    }
+                                                } else if("boolean".equals(type.getName())) {
                                                     arglist[0] = valueOf(Boolean.class, params.get(id));
                                                 } else if("int".equals(type.getName())) {
                                                     arglist[0] = valueOf(Integer.class, params.get(id));
                                                 } else if("long".equals(type.getName())) {
+                                                    String fv = params.get(id);
+                                                    if(fv == null || fv.isEmpty()) {
+                                                        arglist[0] = null;
+                                                    } else {
                                                         arglist[0] = valueOf(Long.class, params.get(id));
+                                                    }
                                                 } else {
                                                     arglist[0] = valueOf(type, params.get(id));
                                                 }
@@ -1249,6 +1261,10 @@ public abstract class AAIDeclarations implements AAIClient {
                     Relationship relationship = new Relationship();
                     relationships.add(relationship);
                     relationship.setRelatedTo(relatedTo);
+                    String relationshipLabel = "relationship-list.relationship[" + i + "].relationship-label";
+                    if(params.containsKey(searchKey)) {
+                        relationship.setRelationshipLabel(params.get(relationshipLabel));
+                    }
                     getLogger().debug("About to process related link of {}", relatedLink);
                     if(relatedLink != null) {
                         if(relatedLink.contains("v$"))
@@ -1539,6 +1555,12 @@ public abstract class AAIDeclarations implements AAIClient {
                 Relationship relationship = new Relationship();
                 relationships.add(relationship);
                 relationship.setRelatedTo(relatedTo);
+
+                String relationshipLabel = "relationship-list.relationship[" + i + "].relationship-label";
+                if(params.containsKey(searchKey)) {
+                    relationship.setRelationshipLabel(params.get(relationshipLabel));
+                }
+
                 if (relatedLink != null) {
                     if(relatedLink.contains("v$"))
                         relatedLink = relatedLink.replace("v$", "v13");
