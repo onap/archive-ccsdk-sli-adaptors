@@ -4,7 +4,7 @@
   openECOMP : SDN-C
   ================================================================================
   Copyright (C) 2017 AT&T Intellectual Property. All rights
-                          reserved.
+  						reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -20,22 +20,23 @@
   ============LICENSE_END=========================================================
   -->
 
-<beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
     xmlns:context="http://www.springframework.org/schema/context"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-    http://www.springframework.org/schema/jdbc
-    http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
-    http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context-3.1.xsd
-                    ">
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/jdbc
+ 	http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+ 	http://www.springframework.org/schema/context
+ 	http://www.springframework.org/schema/context/spring-context-3.1.xsd
+ 					">
 
     <context:annotation-config />
 
-    <!-- JDBC setup -->
+	<!-- JDBC setup -->
 
-    <bean id="test.dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" lazy-init="false">
+    <bean id="test.dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+        lazy-init="false" primary="true">
         <property name="driverClassName" value="org.h2.Driver" />
         <property name="url" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;MODE=MySQL" />
     </bean>
@@ -45,8 +46,16 @@
         <jdbc:script location="sql/data.sql" />
     </jdbc:initialize-database>
 
-    <bean id="rm.jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <bean id="lock.dataSource" class="org.onap.ccsdk.sli.adaptors.util.db.CachedDataSourceWrap">
         <property name="dataSource" ref="test.dataSource" />
+    </bean>
+
+    <bean id="rm.jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" primary="true">
+        <property name="dataSource" ref="test.dataSource" />
+    </bean>
+
+    <bean id="lock.jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="lock.dataSource" />
     </bean>
 
     <bean id="testDb" class="jtest.util.org.onap.ccsdk.sli.adaptors.ra.TestDb">
@@ -57,17 +66,10 @@
         <property name="testDb" ref="testDb" />
     </bean>
 
-    <!-- Utils Configuration -->
-
-    <bean id="speedUtil" class="org.onap.ccsdk.sli.adaptors.util.speed.SpeedUtil">
-        <property name="unitFactor" value="1000" />
-    </bean>
-
-    <!-- Resource Lock Configuration -->
+	<!-- Resource Lock Configuration -->
 
     <bean id="resourceLockDao" class="org.onap.ccsdk.sli.adaptors.lock.dao.ResourceLockDaoImpl">
-        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
-        <property name="testing" value="true" />
+        <property name="jdbcTemplate" ref="lock.jdbcTemplate" />
     </bean>
 
     <bean id="lockHelper" class="org.onap.ccsdk.sli.adaptors.lock.comp.LockHelperImpl">
@@ -76,7 +78,7 @@
         <property name="lockWait" value="5" /> <!-- Seconds -->
     </bean>
 
-    <!-- RM Configuration -->
+	<!-- RM Configuration -->
 
     <bean id="resourceJdbcDao" class="org.onap.ccsdk.sli.adaptors.rm.dao.jdbc.ResourceJdbcDaoImpl">
         <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
@@ -99,35 +101,10 @@
     <bean id="resourceManager" class="org.onap.ccsdk.sli.adaptors.rm.comp.ResourceManagerImpl">
         <property name="lockHelper" ref="lockHelper" />
         <property name="resourceDao" ref="resourceDao" />
-        <property name="applicationId" value="SDNC" />
         <property name="lockTimeout" value="600" /> <!-- Seconds -->
     </bean>
 
-    <!-- Equipment DAO Configuration -->
-
-    <bean id="serverDao" class="org.onap.ccsdk.sli.adaptors.ra.equip.dao.ServerDaoImpl">
-        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
-    </bean>
-
-    <bean id="vpePortDao" class="org.onap.ccsdk.sli.adaptors.ra.equip.dao.VpePortDaoImpl">
-        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
-    </bean>
-
-    <bean id="vplspePortDao" class="org.onap.ccsdk.sli.adaptors.ra.equip.dao.VplspePortDaoImpl">
-        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
-    </bean>
-
-    <!-- Rule DAO Configuration -->
-
-    <bean id="maxPortSpeedDao" class="org.onap.ccsdk.sli.adaptors.ra.rule.dao.MaxPortSpeedDaoImpl">
-        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
-        <property name="speedUtil" ref="speedUtil" />
-    </bean>
-
-    <bean id="maxServerSpeedDao" class="org.onap.ccsdk.sli.adaptors.ra.rule.dao.MaxServerSpeedDaoImpl">
-        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
-        <property name="speedUtil" ref="speedUtil" />
-    </bean>
+	<!-- Rule DAO Configuration -->
 
     <bean id="resourceRuleDao" class="org.onap.ccsdk.sli.adaptors.ra.rule.dao.ResourceRuleDaoImpl">
         <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
@@ -137,161 +114,37 @@
         <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
     </bean>
 
-    <bean id="vpeLockDao" class="org.onap.ccsdk.sli.adaptors.ra.rule.dao.VpeLockDaoImpl">
-        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
-    </bean>
-
-    <bean id="parameterDao" class="org.onap.ccsdk.sli.adaptors.ra.rule.dao.ParameterDaoImpl">
-        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
-    </bean>
-
-    <!-- Service DAO Configuration -->
-
-    <bean id="serviceResourceDao" class="org.onap.ccsdk.sli.adaptors.ra.service.dao.ServiceResourceDaoImpl">
-        <property name="jdbcTemplate" ref="rm.jdbcTemplate" />
-    </bean>
-
-    <!-- ResourceAllocator Configuration -->
-
-    <bean id="allocationRequestBuilder" class="org.onap.ccsdk.sli.adaptors.ra.rule.comp.AllocationRequestBuilderImpl">
-        <property name="resourceRuleDao" ref="resourceRuleDao" />
-        <property name="rangeRuleDao" ref="rangeRuleDao" />
-    </bean>
+	<!-- ResourceAllocator Configuration -->
 
     <bean id="resourceAllocator" class="org.onap.ccsdk.sli.adaptors.ra.ResourceAllocator">
-        <property name="speedUtil" ref="speedUtil" />
-        <property name="parameterDao" ref="parameterDao" />
-        <property name="serverDao" ref="serverDao" />
-        <property name="vpePortDao" ref="vpePortDao" />
-        <property name="vplspePortDao" ref="vplspePortDao" />
-        <property name="maxPortSpeedDao" ref="maxPortSpeedDao" />
-        <property name="maxServerSpeedDao" ref="maxServerSpeedDao" />
-        <property name="serviceResourceDao" ref="serviceResourceDao" />
-        <property name="allocationRequestBuilder" ref="allocationRequestBuilder" />
         <property name="resourceManager" ref="resourceManager" />
         <property name="endPointAllocator" ref="endPointAllocator" />
+        <property name="speedUtil" ref="speedUtil" />
     </bean>
 
-    <!-- EndPointAllocator Configuration -->
+
+    <bean id="speedUtil" class="org.onap.ccsdk.sli.adaptors.util.speed.SpeedUtil" />
+
+	<!-- EndPointAllocator Configuration -->
 
     <bean id="endPointAllocator" class="org.onap.ccsdk.sli.adaptors.ra.comp.EndPointAllocatorImpl">
         <property name="resourceManager" ref="resourceManager" />
-        <property name="endPointAllocationDefinitionMap">
+        <property name="allocationRuleMap">
             <map>
-                <entry key="L3AVPN-PORT">
+                <entry key="DEFAULT">
                     <list>
-                        <bean class="org.onap.ccsdk.sli.adaptors.ra.comp.EndPointAllocationDefinition">
-                            <property name="serviceModel" value="L3AVPN-PORT" />
-                            <property name="endPointPosition" value="VPE-Cust" />
-                            <property name="equipmentReader" ref="vpePortReader" />
-                            <property name="equipmentCheckList">
-                                <list>
-                                    <ref bean="provStatusCheck" />
-                                    <ref bean="excludeVpeCheck" />
-                                    <ref bean="anyVrfPresentCheck" />
-                                </list>
-                            </property>
-                            <property name="preferenceRuleList">
-                                <list>
-                                    <ref bean="affinityLinkPref" />
-                                </list>
-                            </property>
-                            <property name="allocationRuleList">
-                                <list>
-                                    <ref bean="dbAllocationRule" />
-                                    <ref bean="affinityAllocationRule" />
-                                </list>
-                            </property>
-                        </bean>
-                    </list>
-                </entry>
-                <entry key="L3AVPN-EVC">
-                    <list>
-                        <bean class="org.onap.ccsdk.sli.adaptors.ra.comp.EndPointAllocationDefinition">
-                            <property name="serviceModel" value="L3AVPN-EVC" />
-                            <property name="endPointPosition" value="VPE-Cust" />
-                            <property name="equipmentReader" ref="vpePortReader" />
-                            <property name="equipmentCheckList">
-                                <list>
-                                    <ref bean="provStatusCheck" />
-                                    <ref bean="excludeVpeCheck" />
-                                    <ref bean="vpeLockCheck" />
-                                    <ref bean="anyVrfPresentCheck" />
-                                    <ref bean="oneMVrfCheck" />
-                                    <ref bean="hubWithRgCheck" />
-                                </list>
-                            </property>
-                            <property name="preferenceRuleList">
-                                <list>
-                                    <ref bean="affinityLinkPref" />
-                                </list>
-                            </property>
-                            <property name="allocationRuleList">
-                                <list>
-                                    <ref bean="dbAllocationRule" />
-                                    <ref bean="vrfAllocationRule" />
-                                    <ref bean="servingSiteAllocationRule" />
-                                    <ref bean="affinityAllocationRule" />
-                                </list>
-                            </property>
-                        </bean>
+                        <ref bean="dbAllocationRule" />
                     </list>
                 </entry>
             </map>
         </property>
     </bean>
 
-    <!-- Equipment Readers Configuration -->
-
-    <bean id="vpePortReader" class="org.onap.ccsdk.sli.adaptors.ra.reader.VpePortReader">
-        <property name="vpePortDao" ref="vpePortDao" />
-    </bean>
-
-    <!-- Equipment Checks Configuration -->
-
-    <bean id="provStatusCheck" class="org.onap.ccsdk.sli.adaptors.ra.check.ProvStatusCheck">
-    </bean>
-
-    <bean id="excludeVpeCheck" class="org.onap.ccsdk.sli.adaptors.ra.check.ExcludeVpeCheck">
-    </bean>
-
-    <bean id="vpeLockCheck" class="org.onap.ccsdk.sli.adaptors.ra.check.VpeLockCheck">
-        <property name="vpeLockDao" ref="vpeLockDao" />
-        <property name="resourceManager" ref="resourceManager" />
-    </bean>
-
-    <bean id="anyVrfPresentCheck" class="org.onap.ccsdk.sli.adaptors.ra.check.AnyVrfPresentCheck">
-        <property name="resourceManager" ref="resourceManager" />
-    </bean>
-
-    <bean id="oneMVrfCheck" class="org.onap.ccsdk.sli.adaptors.ra.check.OneMVrfCheck">
-        <property name="resourceManager" ref="resourceManager" />
-    </bean>
-
-    <bean id="hubWithRgCheck" class="org.onap.ccsdk.sli.adaptors.ra.check.HubWithRgCheck">
-        <property name="resourceManager" ref="resourceManager" />
-    </bean>
-
-    <!-- Preference Rule Configuration -->
-
-    <bean id="affinityLinkPref" class="org.onap.ccsdk.sli.adaptors.ra.pref.AffinityLinkPref">
-        <property name="resourceManager" ref="resourceManager" />
-    </bean>
-
-    <!-- Resource Allocation Rule Configuration -->
+	<!-- Resource Allocation Rule Configuration -->
 
     <bean id="dbAllocationRule" class="org.onap.ccsdk.sli.adaptors.ra.alloc.DbAllocationRule">
         <property name="resourceRuleDao" ref="resourceRuleDao" />
         <property name="rangeRuleDao" ref="rangeRuleDao" />
-    </bean>
-
-    <bean id="vrfAllocationRule" class="org.onap.ccsdk.sli.adaptors.ra.alloc.VrfAllocationRule">
-    </bean>
-
-    <bean id="servingSiteAllocationRule" class="org.onap.ccsdk.sli.adaptors.ra.alloc.ServingSiteAllocationRule">
-    </bean>
-
-    <bean id="affinityAllocationRule" class="org.onap.ccsdk.sli.adaptors.ra.alloc.AffinityAllocationRule">
     </bean>
 
 </beans>

@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,11 +26,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 import org.onap.ccsdk.sli.adaptors.lock.dao.ResourceLockDao;
 import org.onap.ccsdk.sli.adaptors.lock.data.ResourceLock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LockHelperImpl implements LockHelper {
+
+    private static final Logger log = LoggerFactory.getLogger(LockHelperImpl.class);
 
     private ResourceLockDao resourceLockDao;
     private int retryCount = 10;
@@ -51,10 +54,12 @@ public class LockHelperImpl implements LockHelper {
         for (int i = 0; true; i++) {
             try {
                 tryLock(resourceNameList, lockRequester, lockTimeout);
+                log.info("Resources locked: " + resourceNameList);
                 return;
             } catch (ResourceLockedException e) {
-                if (i > retryCount)
+                if (i > retryCount) {
                     throw e;
+                }
                 try {
                     Thread.sleep(lockWait * 1000);
                 } catch (InterruptedException ex) {
@@ -65,58 +70,64 @@ public class LockHelperImpl implements LockHelper {
 
     @Override
     public void unlock(Collection<String> lockNames, boolean force) {
-        if (lockNames == null || lockNames.size() == 0)
+        if (lockNames == null || lockNames.size() == 0) {
             return;
-
-        resourceLockDao.lockTable();
+        }
 
         try {
             for (String name : lockNames) {
                 ResourceLock l = resourceLockDao.getByResourceName(name);
-                if (l != null)
-                    if (force || l.lockCount == 1)
+                if (l != null) {
+                    if (force || l.lockCount == 1) {
                         resourceLockDao.delete(l.id);
-                    else
+                    } else {
                         resourceLockDao.decrementLockCount(l.id);
+                    }
+                }
             }
+
+            resourceLockDao.commit();
+
+            log.info("Resources unlocked: " + lockNames);
         } finally {
-            resourceLockDao.unlockTable();
+            resourceLockDao.rollback();
         }
     }
 
     public void tryLock(Collection<String> resourceNameList, String lockRequester, int lockTimeout /* Seconds */) {
-        if (resourceNameList == null || resourceNameList.size() == 0)
+        if (resourceNameList == null || resourceNameList.size() == 0) {
             return;
+        }
 
         lockRequester = generateLockRequester(lockRequester, 100);
 
-        resourceLockDao.lockTable();
+        // First check if all requested records are available to lock
+
+        Date now = new Date();
 
         try {
-            // First check if all requested records are available to lock
-
-            Date now = new Date();
-
-            List<ResourceLock> dbLockList = new ArrayList<ResourceLock>();
-            List<String> insertLockNameList = new ArrayList<String>();
+            List<ResourceLock> dbLockList = new ArrayList<>();
+            List<String> insertLockNameList = new ArrayList<>();
             for (String name : resourceNameList) {
                 ResourceLock l = resourceLockDao.getByResourceName(name);
 
-                boolean canLock =
-                        l == null || now.getTime() > l.expirationTime.getTime() || lockRequester != null &&
-                                lockRequester.equals(l.lockHolder) || l.lockCount <= 0;
-                if (!canLock)
+                boolean canLock = l == null || now.getTime() > l.expirationTime.getTime() ||
+                        lockRequester != null && lockRequester.equals(l.lockHolder) || l.lockCount <= 0;
+                if (!canLock) {
                     throw new ResourceLockedException(l.resourceName, l.lockHolder, lockRequester);
+                }
 
-                if (l != null)
+                if (l != null) {
                     dbLockList.add(l);
-                else
+                } else {
                     insertLockNameList.add(name);
+                }
             }
 
             // Update the lock info in DB
-            for (ResourceLock l : dbLockList)
+            for (ResourceLock l : dbLockList) {
                 resourceLockDao.update(l.id, now, new Date(now.getTime() + lockTimeout * 1000), l.lockCount + 1);
+            }
 
             // Insert records for those that are not yet there
             for (String lockName : insertLockNameList) {
@@ -126,16 +137,26 @@ public class LockHelperImpl implements LockHelper {
                 l.lockTime = now;
                 l.expirationTime = new Date(now.getTime() + lockTimeout * 1000);
                 l.lockCount = 1;
-                resourceLockDao.add(l);
+
+                try {
+                    resourceLockDao.add(l);
+                } catch (Exception e) {
+                    log.info("Failed to insert lock record: " + lockName);
+                    throw new ResourceLockedException(l.resourceName, "unknown", lockRequester);
+                }
             }
+
+            resourceLockDao.commit();
+
         } finally {
-            resourceLockDao.unlockTable();
+            resourceLockDao.rollback();
         }
     }
 
     private static String generateLockRequester(String name, int maxLength) {
-        if (name == null)
+        if (name == null) {
             name = "";
+        }
         int l1 = name.length();
         String tname = Thread.currentThread().getName();
         int l2 = tname.length();
@@ -146,8 +167,9 @@ public class LockHelperImpl implements LockHelper {
                 l1 = maxl1;
             }
             int maxl2 = maxLength - l1 - 1;
-            if (l2 > maxl2)
+            if (l2 > maxl2) {
                 tname = tname.substring(0, 6) + "..." + tname.substring(l2 - maxl2 + 9);
+            }
         }
         return tname + '-' + name;
     }
