@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.onap.ccsdk.sli.adaptors.rm.data.AllocationItem;
 import org.onap.ccsdk.sli.adaptors.rm.data.LimitAllocationItem;
 import org.onap.ccsdk.sli.adaptors.rm.data.LimitAllocationRequest;
@@ -42,26 +41,30 @@ public class LimitUtil {
     private static final Logger log = LoggerFactory.getLogger(LimitUtil.class);
 
     public static boolean checkLimit(LimitResource l, LimitAllocationRequest req) {
-        if (req.checkCount <= 0)
+        if (req.checkCount <= 0) {
             return true;
+        }
 
         long checkCount = req.checkCount;
         long currentUsage = 0;
         if (req.resourceSetId != null) {
             LimitAllocationItem lai = (LimitAllocationItem) ResourceUtil.getAllocationItem(l, req.resourceSetId);
-            if (lai != null)
+            if (lai != null) {
                 currentUsage = lai.used;
+            }
         }
-        if (!req.replace)
+        if (!req.replace) {
             checkCount += currentUsage;
+        }
 
         long used = calculateLimitUsage(l, 0, null, null);
         long wouldUse = calculateLimitUsage(l, checkCount, req.resourceUnionId, req.resourceShareGroupList);
 
         // If usage is not increasing by this request, only check the limit if
         // strictCheck is true.
-        if (wouldUse <= used && !req.strict)
+        if (wouldUse <= used && !req.strict) {
             return true;
+        }
 
         return wouldUse <= req.checkLimit;
     }
@@ -72,8 +75,9 @@ public class LimitUtil {
             String resourceUnionId,
             Set<String> resourceShareGroupList) {
         if ((l.allocationItems == null || l.allocationItems.isEmpty()) &&
-                (resourceUnionId == null || resourceUnionId.length() == 0))
+                (resourceUnionId == null || resourceUnionId.length() == 0)) {
             return 0;
+        }
 
         long t1 = System.currentTimeMillis();
         boolean logit = false;
@@ -127,48 +131,54 @@ public class LimitUtil {
 
         // First, group the allocation items by the first resource union, using the LimitUsage structure
         int regularChangeCount = 0;
-        Map<String/* resourceUnionId */, List<LimitUsage>> limitUsageMap = new HashMap<String, List<LimitUsage>>();
-        if (l.allocationItems != null)
+        Map<String/* resourceUnionId */, List<LimitUsage>> limitUsageMap = new HashMap<>();
+        if (l.allocationItems != null) {
             for (AllocationItem ai : l.allocationItems) {
                 LimitAllocationItem lai = (LimitAllocationItem) ai;
                 boolean regularChange =
                         addLimitUsage(limitUsageMap, lai.resourceUnionId, lai.resourceShareGroupList, lai.used);
-                if (regularChange)
+                if (regularChange) {
                     regularChangeCount++;
+                }
             }
+        }
         if (checkCount > 0 && resourceUnionId != null) {
             boolean regularChange = addLimitUsage(limitUsageMap, resourceUnionId, resourceShareGroupList, checkCount);
-            if (regularChange)
+            if (regularChange) {
                 regularChangeCount++;
+            }
         }
 
         // Generate all the combinations, containing one LimitUsage object for each firstResourceUnion
         int significantChangeCount = 0;
-        List<List<LimitUsage>> allCombinations = new ArrayList<List<LimitUsage>>();
+        List<List<LimitUsage>> allCombinations = new ArrayList<>();
         for (String firstResourceUnion : limitUsageMap.keySet()) {
             List<LimitUsage> limitUsageList = limitUsageMap.get(firstResourceUnion);
-            if (limitUsageList.size() > 1)
+            if (limitUsageList.size() > 1) {
                 significantChangeCount++;
+            }
             if (allCombinations.isEmpty()) {
                 for (LimitUsage limitUsage : limitUsageList) {
-                    List<LimitUsage> newCombination = new ArrayList<LimitUsage>();
+                    List<LimitUsage> newCombination = new ArrayList<>();
                     newCombination.add(limitUsage);
                     allCombinations.add(newCombination);
                 }
             } else {
                 if (limitUsageList.size() == 1) {
                     // No new combinations are generated - just add this one to all combinations we have until now
-                    for (List<LimitUsage> combination : allCombinations)
+                    for (List<LimitUsage> combination : allCombinations) {
                         combination.add(limitUsageList.get(0));
+                    }
                 } else {
                     // We have to duplicate each of the current combinations for each element of limitUsageList
-                    List<List<LimitUsage>> newAllCombinations = new ArrayList<List<LimitUsage>>();
-                    for (List<LimitUsage> combination : allCombinations)
+                    List<List<LimitUsage>> newAllCombinations = new ArrayList<>();
+                    for (List<LimitUsage> combination : allCombinations) {
                         for (LimitUsage limitUsage : limitUsageList) {
-                            List<LimitUsage> newCombination = new ArrayList<LimitUsage>(combination);
+                            List<LimitUsage> newCombination = new ArrayList<>(combination);
                             newCombination.add(limitUsage);
                             newAllCombinations.add(newCombination);
                         }
+                    }
                     allCombinations = newAllCombinations;
                 }
             }
@@ -178,8 +188,9 @@ public class LimitUtil {
         long maxUsage = 0;
         for (List<LimitUsage> combination : allCombinations) {
             long usage = calculateUsage(combination);
-            if (usage > maxUsage)
+            if (usage > maxUsage) {
                 maxUsage = usage;
+            }
         }
 
         long t2 = System.currentTimeMillis();
@@ -202,7 +213,7 @@ public class LimitUtil {
             long used) {
         List<LimitUsage> limitUsageList = limitUsageMap.get(resourceUnionId);
         if (limitUsageList == null) {
-            limitUsageList = new ArrayList<LimitUsage>();
+            limitUsageList = new ArrayList<>();
             limitUsageMap.put(resourceUnionId, limitUsageList);
         }
         // See if we already have the same shareResourceUnionSet in the list. In such case just update the usage
@@ -221,8 +232,9 @@ public class LimitUtil {
             }
         }
         if (limitUsage != null) {
-            if (limitUsage.usage < used)
+            if (limitUsage.usage < used) {
                 limitUsage.usage = used;
+            }
             return true;
         }
 
@@ -243,14 +255,18 @@ public class LimitUtil {
     }
 
     private static boolean hasCommonSharedResource(LimitUsage limitUsage1, LimitUsage limitUsage2) {
-        if (limitUsage1.resourceShareGroupList == null || limitUsage1.resourceShareGroupList.isEmpty())
+        if (limitUsage1.resourceShareGroupList == null || limitUsage1.resourceShareGroupList.isEmpty()) {
             return false;
-        if (limitUsage2.resourceShareGroupList == null || limitUsage2.resourceShareGroupList.isEmpty())
+        }
+        if (limitUsage2.resourceShareGroupList == null || limitUsage2.resourceShareGroupList.isEmpty()) {
             return false;
+        }
 
-        for (String resourceUnion : limitUsage1.resourceShareGroupList)
-            if (limitUsage2.resourceShareGroupList.contains(resourceUnion))
+        for (String resourceUnion : limitUsage1.resourceShareGroupList) {
+            if (limitUsage2.resourceShareGroupList.contains(resourceUnion)) {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -260,7 +276,7 @@ public class LimitUtil {
         // split the combination in sets that have common value. Then the usage of each set will be the maximum of
         // the usages of the LimitUsage objects in the set. The usage of the combination will be the sum of the usages
         // of all sets.
-        List<List<LimitUsage>> sharedSets = new ArrayList<List<LimitUsage>>();
+        List<List<LimitUsage>> sharedSets = new ArrayList<>();
         for (LimitUsage limitUsage : combination) {
             // See if we can put limitUsage in any of the existing sets - is it has a common resource union with
             // any of the LimitUsage objects in a set.
@@ -279,7 +295,7 @@ public class LimitUtil {
             }
             if (!found) {
                 // Start a new set
-                List<LimitUsage> newSharedSet = new ArrayList<LimitUsage>();
+                List<LimitUsage> newSharedSet = new ArrayList<>();
                 newSharedSet.add(limitUsage);
                 sharedSets.add(newSharedSet);
             }
@@ -288,18 +304,21 @@ public class LimitUtil {
         long sum = 0;
         for (List<LimitUsage> sharedSet : sharedSets) {
             float max = 0;
-            for (LimitUsage limitUsage : sharedSet)
-                if (max < limitUsage.usage)
+            for (LimitUsage limitUsage : sharedSet) {
+                if (max < limitUsage.usage) {
                     max = limitUsage.usage;
+                }
+            }
             sum += max;
         }
 
         return sum;
     }
 
-    public static long allocateLimit(LimitResource l, LimitAllocationRequest req, String applicationId) {
-        if (req.allocateCount <= 0)
+    public static long allocateLimit(LimitResource l, LimitAllocationRequest req) {
+        if (req.allocateCount <= 0) {
             return 0;
+        }
         long uu = l.used;
 
         LimitAllocationItem lai = (LimitAllocationItem) ResourceUtil.getAllocationItem(l, req.resourceSetId);
@@ -309,17 +328,19 @@ public class LimitUtil {
             lai.resourceKey = new ResourceKey();
             lai.resourceKey.assetId = req.assetId;
             lai.resourceKey.resourceName = req.resourceName;
-            lai.applicationId = applicationId;
+            lai.applicationId = req.applicationId;
             lai.resourceSetId = req.resourceSetId;
             lai.resourceUnionId = req.resourceUnionId;
             lai.resourceShareGroupList = req.resourceShareGroupList;
             lai.used = req.allocateCount;
 
-            if (l.allocationItems == null)
-                l.allocationItems = new ArrayList<AllocationItem>();
+            if (l.allocationItems == null) {
+                l.allocationItems = new ArrayList<>();
+            }
             l.allocationItems.add(lai);
-        } else
+        } else {
             lai.used = req.replace ? req.allocateCount : lai.used + req.allocateCount;
+        }
 
         lai.allocationTime = new Date();
 

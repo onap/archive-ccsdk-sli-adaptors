@@ -26,4 +26,6 @@
 
         <reference id="dblib.dataSource" interface="javax.sql.DataSource" filter="(objectClass=org.onap.ccsdk.sli.core.dblib.DbLibService)"/>
 
+        <service ref="resourceAllocator" interface="org.onap.ccsdk.sli.adaptors.ra.ResourceAllocator"/>
+
 </blueprint>

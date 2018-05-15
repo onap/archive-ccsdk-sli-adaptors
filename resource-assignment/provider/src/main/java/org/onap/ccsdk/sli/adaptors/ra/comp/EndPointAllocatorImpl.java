@@ -3,7 +3,7 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
- *                         reserved.
+ * 						reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,226 +22,237 @@
 package org.onap.ccsdk.sli.adaptors.ra.comp;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang.NotImplementedException;
-import org.onap.ccsdk.sli.adaptors.ra.equip.data.EquipmentData;
 import org.onap.ccsdk.sli.adaptors.rm.comp.ResourceManager;
 import org.onap.ccsdk.sli.adaptors.rm.data.AllocationItem;
 import org.onap.ccsdk.sli.adaptors.rm.data.AllocationOutcome;
 import org.onap.ccsdk.sli.adaptors.rm.data.AllocationRequest;
 import org.onap.ccsdk.sli.adaptors.rm.data.AllocationStatus;
 import org.onap.ccsdk.sli.adaptors.rm.data.LimitAllocationItem;
+import org.onap.ccsdk.sli.adaptors.rm.data.LimitAllocationOutcome;
 import org.onap.ccsdk.sli.adaptors.rm.data.LimitResource;
+import org.onap.ccsdk.sli.adaptors.rm.data.MultiResourceAllocationOutcome;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeAllocationItem;
+import org.onap.ccsdk.sli.adaptors.rm.data.RangeAllocationOutcome;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeResource;
 import org.onap.ccsdk.sli.adaptors.rm.data.Resource;
+import org.onap.ccsdk.sli.adaptors.util.str.StrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EndPointAllocatorImpl implements EndPointAllocator {
 
+    @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(EndPointAllocatorImpl.class);
-
-    private Map<String, List<EndPointAllocationDefinition>> endPointAllocationDefinitionMap;
 
     private ResourceManager resourceManager;
 
+    private Map<String, List<AllocationRule>> allocationRuleMap;
+
     @Override
-    public List<EndPointData> allocateEndPoints(
-            ServiceData serviceData,
-            Map<String, Object> equipmentConstraints,
-            boolean checkOnly,
-            boolean change,
-            int changeNumber) {
-        List<EndPointAllocationDefinition> defList = endPointAllocationDefinitionMap.get(serviceData.serviceModel);
-        if (defList == null)
-            throw new NotImplementedException("Service model: " + serviceData.serviceModel + " not supported");
+    public List<ResourceData> allocateResources(String serviceModel, ResourceEntity resourceEntity,
+            ResourceTarget resourceTarget, ResourceRequest resourceRequest, boolean checkOnly, boolean change) {
 
-        List<EndPointData> epList = new ArrayList<>();
-        for (EndPointAllocationDefinition def : defList) {
-            if (serviceData.endPointPosition != null && !serviceData.endPointPosition.equals(def.endPointPosition))
-                continue;
+        List<ResourceData> resourceList = new ArrayList<>();
 
-            log.info(
-                    "Starting allocation of end point: " + def.endPointPosition + ": " + serviceData.serviceInstanceId);
-
-            String resourceUnionId = serviceData.serviceInstanceId + '/' + def.endPointPosition;
-            String resourceSetId = resourceUnionId + '/' + changeNumber;
-
-            String equipmentId = (String) equipmentConstraints.get("equipment-id");
-            if (equipmentId == null) {
-                EndPointData epExisting = readEndPoint(resourceUnionId, resourceSetId);
-                if (epExisting != null && epExisting.equipmentId != null) {
-                    equipmentConstraints.put("equipment-id", epExisting.equipmentId);
-
-                    log.info("Trying assignment on the current equipment: " + epExisting.equipmentId);
-                }
+        if (allocationRuleMap != null) {
+            List<AllocationRule> allocationRuleList = allocationRuleMap.get(serviceModel);
+            if (allocationRuleList == null) {
+                allocationRuleList = allocationRuleMap.get("DEFAULT");
             }
 
-            List<EquipmentData> equipList = def.equipmentReader.readEquipment(equipmentConstraints);
-            if (equipList == null || equipList.isEmpty()) {
-                log.info("Equipment not found for " + def.endPointPosition);
-                break;
-            }
-
-            if (def.equipmentCheckList != null) {
-                for (EquipmentCheck filter : def.equipmentCheckList) {
-                    List<EquipmentData> newEquipList = new ArrayList<>();
-                    for (EquipmentData equipData : equipList)
-                        if (filter.checkEquipment(def.endPointPosition, serviceData, equipData, equipmentConstraints))
-                            newEquipList.add(equipData);
-                    equipList = newEquipList;
-                }
-                if (equipList.isEmpty()) {
-                    log.info("No equipment meets the requiremets for the service for: " + def.endPointPosition);
-                    break;
-                }
-            }
-
-            if (equipList.size() > 1 && def.preferenceRuleList != null && !def.preferenceRuleList.isEmpty()) {
-
-                List<PrefEquipment> prefEquipList = new ArrayList<>();
-                for (EquipmentData equipData : equipList) {
-                    PrefEquipment prefEquip = new PrefEquipment();
-                    prefEquip.equipData = equipData;
-                    prefEquip.prefNumbers = new long[def.preferenceRuleList.size()];
-                    prefEquipList.add(prefEquip);
-
-                    int i = 0;
-                    for (PreferenceRule prefRule : def.preferenceRuleList)
-                        prefEquip.prefNumbers[i++] =
-                                prefRule.assignOrderNumber(def.endPointPosition, serviceData, equipData);
-                }
-
-                Collections.sort(prefEquipList);
-
-                equipList = new ArrayList<>();
-                for (PrefEquipment prefEquip : prefEquipList)
-                    equipList.add(prefEquip.equipData);
-            }
-
-            for (EquipmentData equipData : equipList) {
+            if (allocationRuleList != null) {
                 boolean allgood = true;
-                if (def.allocationRuleList != null)
-                    for (AllocationRule allocationRule : def.allocationRuleList) {
-                        AllocationRequest ar = allocationRule.buildAllocationRequest(resourceUnionId, resourceSetId,
-                                def.endPointPosition, serviceData, equipData, checkOnly, change);
-                        if (ar != null) {
-                            AllocationOutcome ao = resourceManager.allocateResources(ar);
-                            if (ao.status != AllocationStatus.Success) {
-                                allgood = false;
-                                break;
-                            }
+                for (AllocationRule allocationRule : allocationRuleList) {
+                    AllocationRequest ar = allocationRule.buildAllocationRequest(serviceModel, resourceEntity,
+                            resourceTarget, resourceRequest, checkOnly, change);
+                    if (ar != null) {
+                        AllocationOutcome ao = resourceManager.allocateResources(ar);
+                        List<ResourceData> rr = getResourceData(ao);
+                        resourceList.addAll(rr);
+
+                        if (ao.status != AllocationStatus.Success) {
+                            allgood = false;
                         }
                     }
-                if (allgood) {
-                    EndPointData ep = readEndPoint(resourceUnionId, resourceSetId);
-                    epList.add(ep);
-                    break;
+                }
+
+                if (!allgood) {
+                    String resourceSetId = resourceEntity.resourceEntityType + "::" + resourceEntity.resourceEntityId
+                            + "::" + resourceEntity.resourceEntityVersion;
+                    resourceManager.releaseResourceSet(resourceSetId);
                 }
             }
         }
 
-        return epList;
+        return resourceList;
     }
 
-    private EndPointData readEndPoint(String resourceUnionId, String resourceSetId) {
-        EndPointData ep = new EndPointData();
-        ep.resourceUnionId = resourceUnionId;
-        ep.resourceSetId = resourceSetId;
+    private List<ResourceData> getResourceData(AllocationOutcome ao) {
+        if (ao instanceof MultiResourceAllocationOutcome) {
+            List<ResourceData> rr = new ArrayList<>();
+            for (AllocationOutcome ao1 : ((MultiResourceAllocationOutcome) ao).allocationOutcomeList) {
+                rr.addAll(getResourceData(ao1));
+            }
+            return rr;
+        }
 
-        int i1 = resourceUnionId.indexOf('/');
-        if (i1 > 0)
-            ep.endPointPosition = resourceUnionId.substring(i1 + 1);
+        ResourceData rd = new ResourceData();
+        rd.data = new HashMap<>();
 
-        ep.data = new HashMap<>();
+        AllocationRequest ar = ao.request;
+        rd.resourceName = ar.resourceName;
+        rd.endPointPosition = ar.endPointPosition;
+        int i1 = ar.assetId.indexOf("::");
+        if (i1 > 0) {
+            rd.resourceTargetType = ar.assetId.substring(0, i1);
+            rd.resourceTargetId = ar.assetId.substring(i1 + 2);
+        } else {
+            rd.resourceTargetType = "";
+            rd.resourceTargetId = ar.assetId;
+        }
+        rd.status = ao.status.toString();
 
+        if (ao instanceof LimitAllocationOutcome) {
+            LimitAllocationOutcome lao = (LimitAllocationOutcome) ao;
+            rd.data.put("allocated", String.valueOf(lao.allocatedCount));
+            rd.data.put("used", String.valueOf(lao.used));
+            rd.data.put("limit", String.valueOf(lao.limit));
+            rd.data.put("available", String.valueOf(lao.limit - lao.used));
+        } else if (ao instanceof RangeAllocationOutcome) {
+            RangeAllocationOutcome rao = (RangeAllocationOutcome) ao;
+            rd.data.put("allocated", String.valueOf(StrUtil.listInt(rao.allocated)));
+            rd.data.put("used", String.valueOf(StrUtil.listInt(rao.used)));
+        }
+
+        return Collections.singletonList(rd);
+    }
+
+    @Override
+    public List<ResourceData> getResourcesForEntity(String resourceEntityType, String resourceEntityId,
+            String resourceEntityVersion) {
+        List<ResourceData> rdlist = new ArrayList<>();
+
+        String resourceUnionId = resourceEntityType + "::" + resourceEntityId;
         List<Resource> rlist = resourceManager.getResourceUnion(resourceUnionId);
+
         for (Resource r : rlist) {
+
+            // Find the needed allocation item: if resourceEntityVersion is specified, use that,
+            // otherwise, find the latest allocation item
+            AllocationItem ai = null;
+            if (resourceEntityVersion != null) {
+                String resourceSetId = resourceUnionId + "::" + resourceEntityVersion;
+                for (AllocationItem ai1 : r.allocationItems) {
+                    if (ai1.resourceSetId.equals(resourceSetId)) {
+                        ai = ai1;
+                        break;
+                    }
+                }
+            } else {
+                Date aitime = null;
+                for (AllocationItem ai1 : r.allocationItems) {
+                    if (ai1.resourceUnionId.equals(resourceUnionId)) {
+                        if (aitime == null || ai1.allocationTime.after(aitime)) {
+                            ai = ai1;
+                            aitime = ai1.allocationTime;
+                        }
+                    }
+                }
+            }
+
+            if (ai != null) {
+                ResourceData rd = new ResourceData();
+                rdlist.add(rd);
+
+                rd.resourceName = r.resourceKey.resourceName;
+                int i1 = r.resourceKey.assetId.indexOf("::");
+                if (i1 > 0) {
+                    rd.resourceTargetType = r.resourceKey.assetId.substring(0, i1);
+                    rd.resourceTargetId = r.resourceKey.assetId.substring(i1 + 2);
+
+                    int i2 = r.resourceKey.assetId.lastIndexOf("::");
+                    if (i2 > i1) {
+                        rd.resourceTargetValue = r.resourceKey.assetId.substring(i2 + 2);
+                    }
+                } else {
+                    rd.resourceTargetType = "";
+                    rd.resourceTargetId = r.resourceKey.assetId;
+                }
+
+                rd.data = new HashMap<>();
+
+                if (ai instanceof RangeAllocationItem) {
+                    RangeAllocationItem rai = (RangeAllocationItem) ai;
+
+                    String ss = String.valueOf(rai.used);
+                    ss = ss.substring(1, ss.length() - 1);
+                    rd.data.put("allocated", ss);
+
+                } else if (ai instanceof LimitAllocationItem) {
+                    LimitAllocationItem lai = (LimitAllocationItem) ai;
+
+                    rd.data.put("allocated", String.valueOf(lai.used));
+                }
+            }
+        }
+
+        return rdlist;
+    }
+
+    @Override
+    public ResourceData getResource(String resourceTargetType, String resourceTargetId, String resourceName) {
+        ResourceData rd = new ResourceData();;
+        String assetId = resourceTargetType + "::" + resourceTargetId;
+        Resource r = resourceManager.getResource(resourceName, assetId);
+        if (r != null) {
+            log.info("ResourceName:" + r.resourceKey.resourceName + " assetId:" + r.resourceKey.assetId);
+
+            rd.resourceName = r.resourceKey.resourceName;
+            int i1 = r.resourceKey.assetId.indexOf("::");
+            if (i1 > 0) {
+                rd.resourceTargetType = r.resourceKey.assetId.substring(0, i1);
+                rd.resourceTargetId = r.resourceKey.assetId.substring(i1 + 2);
+
+                int i2 = r.resourceKey.assetId.lastIndexOf("::");
+                if (i2 > i1) {
+                    rd.resourceTargetValue = r.resourceKey.assetId.substring(i2 + 2);
+                }
+            } else {
+                rd.resourceTargetType = "";
+                rd.resourceTargetId = r.resourceKey.assetId;
+            }
+
+            rd.data = new HashMap<>();
+
             if (r instanceof RangeResource) {
                 RangeResource rr = (RangeResource) r;
-                for (AllocationItem ai : r.allocationItems)
-                    if (ai.resourceUnionId.equals(resourceUnionId)) {
-                        RangeAllocationItem rai = (RangeAllocationItem) ai;
-                        ep.data.put(ep.endPointPosition + '.' + rr.resourceKey.resourceName, rai.used.first());
-                    }
-            }
-            if (r instanceof LimitResource) {
-                LimitResource rr = (LimitResource) r;
-                for (AllocationItem ai : r.allocationItems)
-                    if (ai.resourceUnionId.equals(resourceUnionId)) {
-                        LimitAllocationItem rai = (LimitAllocationItem) ai;
-                        ep.data.put(ep.endPointPosition + '.' + rr.resourceKey.resourceName + ".allocated", rai.used);
-                        ep.data.put(ep.endPointPosition + '.' + rr.resourceKey.resourceName + ".used", rr.used);
-                        ep.data.put(ep.endPointPosition + '.' + rr.resourceKey.resourceName + ".assetId",
-                                r.resourceKey.assetId);
-                    }
+
+                log.info("rr.used: " + rr.used);
+                String ss = String.valueOf(rr.used);
+                ss = ss.substring(1, ss.length() - 1);
+                rd.data.put("allocated", ss);
+
+            } else if (r instanceof LimitResource) {
+                LimitResource lr = (LimitResource) r;
+
+                log.info("lr.used: " + lr.used);
+                rd.data.put("allocated", String.valueOf(lr.used));
             }
         }
 
-        return ep;
-    }
-
-    private static class PrefEquipment implements Comparable<PrefEquipment> {
-
-        public long[] prefNumbers;
-        public EquipmentData equipData;
-
-        @Override
-        public int compareTo(PrefEquipment o) {
-            for (int i = 0; i < prefNumbers.length; i++) {
-                if (prefNumbers[i] < o.prefNumbers[i])
-                    return -1;
-                if (prefNumbers[i] > o.prefNumbers[i])
-                    return 1;
-            }
-            return 0;
-        }
-
-        @Override
-        public boolean equals(Object object) {
-            if (this == object) {
-                return true;
-            }
-            if (!(object instanceof PrefEquipment)) {
-                return false;
-            }
-            if (!super.equals(object)) {
-                return false;
-            }
-
-            PrefEquipment that = (PrefEquipment) object;
-            if (equipData != null ? !equipData.equals(that.equipData) : that.equipData != null) {
-                return false;
-            }
-
-            if (!Arrays.equals(prefNumbers, that.prefNumbers)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = super.hashCode();
-            result = 31 * result + (equipData != null ? equipData.hashCode() : 0);
-            result = 31 * result + Arrays.hashCode(prefNumbers);
-            return result;
-        }
-    }
-
-    public void setEndPointAllocationDefinitionMap(
-            Map<String, List<EndPointAllocationDefinition>> endPointAllocationDefinitionMap) {
-        this.endPointAllocationDefinitionMap = endPointAllocationDefinitionMap;
+        return rd;
     }
 
     public void setResourceManager(ResourceManager resourceManager) {
         this.resourceManager = resourceManager;
+    }
+
+    public void setAllocationRuleMap(Map<String, List<AllocationRule>> allocationRuleMap) {
+        this.allocationRuleMap = allocationRuleMap;
     }
 }

@@ -3,14 +3,14 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
- *                         reserved.
+ * 						reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,13 +19,17 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.sli.adaptors.ra.equip.data;
+package org.onap.ccsdk.sli.adaptors.ra.comp;
 
 import java.util.Map;
 
-public class EquipmentData {
+public class ResourceData {
 
-    public String equipmentId;
-    public EquipmentLevel equipmentLevel;
-    public Map<String, Object> data;
+    public String resourceName;
+    public String resourceTargetId;
+    public String resourceTargetValue;
+    public String resourceTargetType;
+    public String status;
+    public Map<String, String> data;
+    public String endPointPosition;
 }
