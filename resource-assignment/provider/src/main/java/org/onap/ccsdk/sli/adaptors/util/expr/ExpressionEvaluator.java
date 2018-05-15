@@ -3,14 +3,14 @@
  * openECOMP : SDN-C
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
- *                         reserved.
+ *                      reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,36 +25,42 @@ import java.util.Map;
 
 public class ExpressionEvaluator {
 
-    public static long evalLong(String expr, Map<String, Object> vars) {
+    public static long evalLong(String expr, Map<String, String> vars) {
         return (long) evalFloat(expr, vars);
     }
 
-    public static float evalFloat(String expr, Map<String, Object> vars) {
+    public static float evalFloat(String expr, Map<String, String> vars) {
         expr = expr.trim();
         int sl = expr.length();
-        if (sl == 0)
+        if (sl == 0) {
             throw new IllegalArgumentException("Cannot interpret empty string.");
+        }
 
         // Remove parentheses if any
-        if (expr.charAt(0) == '(' && expr.charAt(sl - 1) == ')')
+        if (expr.charAt(0) == '(' && expr.charAt(sl - 1) == ')') {
             return evalFloat(expr.substring(1, sl - 1), vars);
+        }
 
         // Look for operators in the order of least priority
         String[] sss = findOperator(expr, "-", true);
-        if (sss != null)
+        if (sss != null) {
             return evalFloat(sss[0], vars) - evalFloat(sss[1], vars);
+        }
 
         sss = findOperator(expr, "+", true);
-        if (sss != null)
+        if (sss != null) {
             return evalFloat(sss[0], vars) + evalFloat(sss[1], vars);
+        }
 
         sss = findOperator(expr, "/", true);
-        if (sss != null)
+        if (sss != null) {
             return evalFloat(sss[0], vars) / evalFloat(sss[1], vars);
+        }
 
         sss = findOperator(expr, "*", true);
-        if (sss != null)
+        if (sss != null) {
             return evalFloat(sss[0], vars) * evalFloat(sss[1], vars);
+        }
 
         // Check if expr is a number
         try {
@@ -63,74 +69,122 @@ public class ExpressionEvaluator {
         }
 
         // Must be a variable
-        Object v = vars.get(expr);
-        if (v != null) {
-            if (v instanceof Float)
-                return (Float) v;
-            if (v instanceof Long)
-                return (Long) v;
-            if (v instanceof Integer)
-                return (Integer) v;
+        String v = vars.get(expr);
+        try {
+            return Float.valueOf(v);
+        } catch (Exception e) {
         }
         return 0;
     }
 
-    public static boolean evalBoolean(String expr, Map<String, Object> vars) {
+    public static String evalString(String expr, Map<String, String> vars) {
         expr = expr.trim();
         int sl = expr.length();
-        if (sl == 0)
+        if (sl == 0) {
             throw new IllegalArgumentException("Cannot interpret empty string.");
-
-        if (expr.equalsIgnoreCase("true"))
-            return true;
-
-        if (expr.equalsIgnoreCase("false"))
-            return false;
+        }
 
         // Remove parentheses if any
-        if (expr.charAt(0) == '(' && expr.charAt(sl - 1) == ')')
+        if (expr.charAt(0) == '(' && expr.charAt(sl - 1) == ')') {
+            return evalString(expr.substring(1, sl - 1), vars);
+        }
+
+        // Look for operators in the order of least priority
+        String[] sss = findOperator(expr, "+", true);
+        if (sss != null) {
+            return evalString(sss[0], vars) + evalString(sss[1], vars);
+        }
+
+        // Check if expr is a number
+        try {
+            return Float.valueOf(expr).toString();
+        } catch (Exception e) {
+        }
+
+        // Check for quotes
+        if (expr.charAt(0) == '"' && expr.charAt(sl - 1) == '"') {
+            return expr.substring(1, sl - 1);
+        }
+        if (expr.charAt(0) == '\'' && expr.charAt(sl - 1) == '\'') {
+            return expr.substring(1, sl - 1);
+        }
+
+        // Must be a variable
+        String v = vars.get(expr);
+        return v != null ? v : "";
+    }
+
+    public static boolean evalBoolean(String expr, Map<String, String> vars) {
+        expr = expr.trim();
+        int sl = expr.length();
+        if (sl == 0) {
+            throw new IllegalArgumentException("Cannot interpret empty string.");
+        }
+
+        if (expr.equalsIgnoreCase("true")) {
+            return true;
+        }
+
+        if (expr.equalsIgnoreCase("false")) {
+            return false;
+        }
+
+        // Remove parentheses if any
+        if (expr.charAt(0) == '(' && expr.charAt(sl - 1) == ')') {
             return evalBoolean(expr.substring(1, sl - 1), vars);
+        }
 
         // Look for operators in the order of least priority
         String[] sss = findOperator(expr, "or", true);
-        if (sss != null)
+        if (sss != null) {
             return evalBoolean(sss[0], vars) || evalBoolean(sss[1], vars);
+        }
 
         sss = findOperator(expr, "and", true);
-        if (sss != null)
+        if (sss != null) {
             return evalBoolean(sss[0], vars) && evalBoolean(sss[1], vars);
+        }
 
         sss = findOperator(expr, "not", true);
-        if (sss != null)
+        if (sss != null) {
             return !evalBoolean(sss[1], vars);
+        }
 
         sss = findOperator(expr, "!=", false);
-        if (sss == null)
+        if (sss == null) {
             sss = findOperator(expr, "<>", false);
-        if (sss != null)
-            return evalLong(sss[0], vars) != evalLong(sss[1], vars);
+        }
+        if (sss != null) {
+            return !evalString(sss[0], vars).equals(evalString(sss[1], vars));
+        }
 
         sss = findOperator(expr, "==", false);
-        if (sss == null)
+        if (sss == null) {
             sss = findOperator(expr, "=", false);
-        if (sss != null)
-            return evalLong(sss[0], vars) == evalLong(sss[1], vars);
+        }
+        if (sss != null) {
+            return evalString(sss[0], vars).equals(evalString(sss[1], vars));
+        }
 
         sss = findOperator(expr, ">=", false);
-        if (sss != null)
+        if (sss != null) {
             return evalLong(sss[0], vars) >= evalLong(sss[1], vars);
+        }
 
         sss = findOperator(expr, ">", false);
-        if (sss != null)
+        if (sss != null) {
             return evalLong(sss[0], vars) > evalLong(sss[1], vars);
+        }
 
         sss = findOperator(expr, "<=", false);
-        if (sss != null)
+        if (sss != null) {
             return evalLong(sss[0], vars) <= evalLong(sss[1], vars);
+        }
 
         sss = findOperator(expr, "<", false);
-        if (sss != null)
+        if (sss != null) {
             return evalLong(sss[0], vars) < evalLong(sss[1], vars);
+        }
 
         throw new IllegalArgumentException("Cannot interpret '" + expr + "': Invalid expression.");
     }
@@ -142,26 +196,29 @@ public class ExpressionEvaluator {
         int pcount = 0, qcount = 0;
         for (int i = 0; i < sl; i++) {
             char c = s.charAt(i);
-            if (c == '(' && qcount == 0)
+            if (c == '(' && qcount == 0) {
                 pcount++;
-            else if (c == ')' && qcount == 0) {
+            } else if (c == ')' && qcount == 0) {
                 pcount--;
-                if (pcount < 0)
+                if (pcount < 0) {
                     throw new IllegalArgumentException("Cannot interpret '" + s + "': Parentheses do not match.");
-            } else if (c == '\'')
+                }
+            } else if (c == '\'') {
                 qcount = (qcount + 1) % 2;
-            else if (i <= sl - opl && pcount == 0 && qcount == 0) {
+            } else if (i <= sl - opl && pcount == 0 && qcount == 0) {
                 String ss = s.substring(i, i + opl);
                 if (ss.equalsIgnoreCase(op)) {
                     boolean found = true;
                     if (delimiterRequired) {
                         // Check for delimiter before and after to make sure it is not part of another word
                         char chbefore = '\0';
-                        if (i > 0)
+                        if (i > 0) {
                             chbefore = s.charAt(i - 1);
+                        }
                         char chafter = '\0';
-                        if (i < sl - opl)
+                        if (i < sl - opl) {
                             chafter = s.charAt(i + opl);
+                        }
                         found = delimiters.indexOf(chbefore) >= 0 && delimiters.indexOf(chafter) >= 0;
                     }
                     if (found) {
@@ -174,23 +231,29 @@ public class ExpressionEvaluator {
                 }
             }
         }
-        if (pcount > 0)
+        if (pcount > 0) {
             throw new IllegalArgumentException("Cannot interpret '" + s + "': Parentheses do not match.");
-        if (qcount > 0)
+        }
+        if (qcount > 0) {
             throw new IllegalArgumentException("Cannot interpret '" + s + "': No closing '.");
+        }
         return null;
     }
 
+    @SuppressWarnings("unused")
     private static Object parseObject(String s) {
         s = s.trim();
         int sl = s.length();
-        if (sl == 0)
+        if (sl == 0) {
             throw new IllegalArgumentException("Cannot interpret empty string.");
-        if (s.equalsIgnoreCase("null"))
+        }
+        if (s.equalsIgnoreCase("null")) {
             return null;
+        }
         if (s.charAt(0) == '\'') {
-            if (sl < 2 || s.charAt(sl - 1) != '\'')
+            if (sl < 2 || s.charAt(sl - 1) != '\'') {
                 throw new IllegalArgumentException("Cannot interpret '" + s + "': No closing '.");
+            }
             return s.substring(1, sl - 1);
         }
         // Not in quotes - must be a number

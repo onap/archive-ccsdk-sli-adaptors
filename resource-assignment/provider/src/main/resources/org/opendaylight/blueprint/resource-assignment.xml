@@ -77,7 +77,6 @@
 	<bean id="resourceManager" class="org.onap.ccsdk.sli.adaptors.rm.comp.ResourceManagerImpl">
 		<property name="lockHelper" ref="lockHelper" />
 		<property name="resourceDao" ref="resourceDao" />
-		<property name="applicationId" value="SDNC" />
 		<property name="lockTimeout" value="600" /> <!-- Seconds -->
 	</bean>
 
@@ -105,28 +104,16 @@
 
 	<bean id="endPointAllocator" class="org.onap.ccsdk.sli.adaptors.ra.comp.EndPointAllocatorImpl">
 		<property name="resourceManager" ref="resourceManager" />
-		<property name="endPointAllocationDefinitionMap">
+		<property name="allocationRuleMap">
 			<map>
 				<entry key="DEFAULT">
 					<list>
-                        <bean class="org.onap.ccsdk.sli.adaptors.ra.comp.EndPointAllocationDefinition">
-                            <property name="serviceModel" value="DEFAULT" />
-                            <property name="endPointPosition" value="DEFAULT" />
-                            <property name="equipmentReader" ref="vnfReader" />
-                            <property name="allocationRuleList">
-                                <list>
-                                    <ref component-id="dbAllocationRule" />
-                                </list>
-                            </property>
-                        </bean>
+						<ref component-id="dbAllocationRule" />
 					</list>
 				</entry>
 			</map>
 		</property>
 	</bean>
-
-    <bean id="vnfReader" class="org.onap.ccsdk.sli.adaptors.ra.reader.VnfReader">
-    </bean>
 
 	<!-- Resource Allocation Rule Configuration -->
 

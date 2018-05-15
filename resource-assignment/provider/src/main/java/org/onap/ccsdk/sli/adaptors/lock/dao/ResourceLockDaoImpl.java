@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-
 import org.onap.ccsdk.sli.adaptors.lock.data.ResourceLock;
 import org.onap.ccsdk.sli.adaptors.util.db.CachedDataSourceWrap;
 import org.slf4j.Logger;
@@ -35,29 +34,10 @@ import org.springframework.jdbc.core.RowMapper;
 
 public class ResourceLockDaoImpl implements ResourceLockDao {
 
+    @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(ResourceLockDaoImpl.class);
 
     private JdbcTemplate jdbcTemplate;
-    private boolean testing = false;
-
-    @Override
-    public void lockTable() {
-        if (!testing) {
-            jdbcTemplate.update("LOCK TABLES RESOURCE_LOCK WRITE");
-        log.info("Table RESOURCE_LOCK locked.");
-    }
-    }
-
-    @Override
-    public void unlockTable() {
-        if (!testing) {
-            jdbcTemplate.update("UNLOCK TABLES");
-        log.info("Table RESOURCE_LOCK unlocked.");
-
-            CachedDataSourceWrap ds = (CachedDataSourceWrap) jdbcTemplate.getDataSource();
-            ds.releaseConnection();
-        }
-    }
 
     @Override
     public void add(ResourceLock l) {
@@ -109,7 +89,21 @@ public class ResourceLockDaoImpl implements ResourceLockDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void setTesting(boolean testing) {
-        this.testing = testing;
+    @Override
+    public void commit() {
+        if (jdbcTemplate.getDataSource() instanceof CachedDataSourceWrap) {
+            CachedDataSourceWrap ds = (CachedDataSourceWrap) jdbcTemplate.getDataSource();
+            ds.commit();
+            ds.releaseConnection();
+        }
+    }
+
+    @Override
+    public void rollback() {
+        if (jdbcTemplate.getDataSource() instanceof CachedDataSourceWrap) {
+            CachedDataSourceWrap ds = (CachedDataSourceWrap) jdbcTemplate.getDataSource();
+            ds.rollback();
+            ds.releaseConnection();
+        }
     }
 }

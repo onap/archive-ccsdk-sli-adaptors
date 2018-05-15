@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,8 +24,6 @@ package org.onap.ccsdk.sli.adaptors.ra.rule.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
-import org.onap.ccsdk.sli.adaptors.ra.equip.data.EquipmentLevel;
 import org.onap.ccsdk.sli.adaptors.ra.rule.data.ResourceRule;
 import org.onap.ccsdk.sli.adaptors.ra.rule.data.ResourceThreshold;
 import org.slf4j.Logger;
@@ -39,7 +37,7 @@ public class ResourceRuleDaoImpl implements ResourceRuleDao {
     private static final Logger log = LoggerFactory.getLogger(ResourceRuleDaoImpl.class);
 
     private static final String GET1_SQL =
-            "SELECT * FROM RESOURCE_RULE WHERE service_model = ? AND end_point_position = ? AND equipment_level = ?";
+            "SELECT * FROM RESOURCE_RULE WHERE service_model = ? AND equipment_level = ?";
     private static final String GET2_SQL =
             "SELECT * FROM RESOURCE_RULE WHERE service_model = ? AND end_point_position = ? AND equipment_level = ? AND resource_name = ?";
     private static final String THRESHOLD_SQL = "SELECT * FROM RESOURCE_THRESHOLD WHERE resource_rule_id = ?";
@@ -49,34 +47,29 @@ public class ResourceRuleDaoImpl implements ResourceRuleDao {
     ResourceThresholdRowMapper resourceThresholdRowMapper = new ResourceThresholdRowMapper();
 
     @Override
-    public List<ResourceRule> getResourceRules(
-            String serviceModel,
-            String endPointPosition,
-            EquipmentLevel equipLevel) {
-        List<ResourceRule> resourceRuleList = jdbcTemplate.query(GET1_SQL,
-                new Object[] { serviceModel, endPointPosition, equipLevel.toString() }, resourceRuleRowMapper);
+    public List<ResourceRule> getResourceRules(String serviceModel, String equipLevel) {
+        List<ResourceRule> resourceRuleList =
+                jdbcTemplate.query(GET1_SQL, new Object[] {serviceModel, equipLevel}, resourceRuleRowMapper);
 
-        for (ResourceRule rr : resourceRuleList)
-            rr.thresholdList = jdbcTemplate.query(THRESHOLD_SQL, new Object[] { rr.id }, resourceThresholdRowMapper);
+        for (ResourceRule rr : resourceRuleList) {
+            rr.thresholdList = jdbcTemplate.query(THRESHOLD_SQL, new Object[] {rr.id}, resourceThresholdRowMapper);
+        }
 
         return resourceRuleList;
     }
 
     @Override
-    public ResourceRule getResourceRule(
-            String serviceModel,
-            String endPointPosition,
-            EquipmentLevel equipLevel,
+    public ResourceRule getResourceRule(String serviceModel, String endPointPosition, String equipLevel,
             String resourceName) {
         List<ResourceRule> resourceRuleList = jdbcTemplate.query(GET2_SQL,
-                new Object[] { serviceModel, endPointPosition, equipLevel.toString(), resourceName },
-                resourceRuleRowMapper);
+                new Object[] {serviceModel, endPointPosition, equipLevel, resourceName}, resourceRuleRowMapper);
 
-        if (resourceRuleList == null || resourceRuleList.isEmpty())
+        if (resourceRuleList == null || resourceRuleList.isEmpty()) {
             return null;
+        }
 
         ResourceRule rr = resourceRuleList.get(0);
-        rr.thresholdList = jdbcTemplate.query(THRESHOLD_SQL, new Object[] { rr.id }, resourceThresholdRowMapper);
+        rr.thresholdList = jdbcTemplate.query(THRESHOLD_SQL, new Object[] {rr.id}, resourceThresholdRowMapper);
 
         return rr;
     }
