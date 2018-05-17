@@ -22,6 +22,7 @@
 package org.onap.ccsdk.sli.adaptors.resource.mdsal;
 
 import java.util.Map;
+import java.util.Properties;
 
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
@@ -37,6 +38,20 @@ public class ConfigResource implements SvcLogicResource {
 
     private RestService restService;
 
+    public ConfigResource(MdsalResourcePropertiesProvider propProvider) {
+    	LOG.info("Loading ConfigResource using property provider");
+    	Properties props = propProvider.getProperties();
+
+        String sdncUser = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-user", "admin");
+        String sdncPasswd = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-passwd", "admin");
+        String sdncHost = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-host", "localhost");
+        String sdncProtocol = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-protocol", "https");
+        String sdncPort = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-port", "8443");
+
+        restService = new RestService(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd, RestService.PayloadType.XML);
+
+    }
+    
     public ConfigResource(String sdncProtocol, String sdncHost, String sdncPort, String sdncUser, String sdncPasswd)
     {
         restService = new RestService(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd, RestService.PayloadType.XML);
