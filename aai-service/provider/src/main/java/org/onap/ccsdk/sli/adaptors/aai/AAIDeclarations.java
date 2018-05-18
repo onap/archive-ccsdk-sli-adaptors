@@ -1082,7 +1082,6 @@ public abstract class AAIDeclarations implements AAIClient {
                                 setter = resourceClass.getMethod("set"+StringUtils.capitalize(value), type);
                                 if(type.getName().startsWith("java.lang") || "boolean".equals(type.getName()) || "long".equals(type.getName()) || "int".equals(type.getName())) {
                                     try {
-                                        setter.setAccessible(true);
                                         Object arglist[] = new Object[1];
                                         arglist[0] = params.get(id);
 
@@ -1184,7 +1183,6 @@ public abstract class AAIDeclarations implements AAIClient {
                 Method method = getters.get(attribute);
                 if(method != null) {
                     try {
-                        method.setAccessible(true);
                         Object arglist[] = new Object[0];
 //                        arglist[0] = value;
                         Class<?>[] types = method.getParameterTypes();
@@ -1220,7 +1218,6 @@ public abstract class AAIDeclarations implements AAIClient {
 
                 if(getRelationshipListMethod != null){
                     try {
-                        getRelationshipListMethod.setAccessible(true);
                         obj = getRelationshipListMethod.invoke(instance);
                     } catch (InvocationTargetException x) {
                         Throwable cause = x.getCause();
@@ -1233,7 +1230,6 @@ public abstract class AAIDeclarations implements AAIClient {
                     Method setRelationshipListMethod = resourceClass.getMethod("setRelationshipList", RelationshipList.class);
                     if(setRelationshipListMethod != null){
                         try {
-                            setRelationshipListMethod.setAccessible(true);
                             Object arglist[] = new Object[1];
                             arglist[0] = relationshipList;
 
@@ -1320,7 +1316,6 @@ public abstract class AAIDeclarations implements AAIClient {
                 Method getVLansMethod = resourceClass.getMethod("getVlans");
                 if(getVLansMethod != null){
                     try {
-                        getVLansMethod.setAccessible(true);
                         obj = getVLansMethod.invoke(instance);
                     } catch (InvocationTargetException x) {
                         Throwable cause = x.getCause();
@@ -1333,7 +1328,6 @@ public abstract class AAIDeclarations implements AAIClient {
                     Method setVlansMethod = resourceClass.getMethod("setVlans", Vlans.class);
                     if(setVlansMethod != null){
                         try {
-                            setVlansMethod.setAccessible(true);
                             Object arglist[] = new Object[1];
                             arglist[0] = vlanList;
 
@@ -1386,7 +1380,6 @@ public abstract class AAIDeclarations implements AAIClient {
                 Method getMetadataMethod = resourceClass.getMethod("getMetadata");
                 if(getMetadataMethod != null){
                     try {
-                        getMetadataMethod.setAccessible(true);
                         obj = getMetadataMethod.invoke(instance);
                     } catch (InvocationTargetException x) {
                         Throwable cause = x.getCause();
@@ -1399,7 +1392,6 @@ public abstract class AAIDeclarations implements AAIClient {
                     Method setMetadataMethod = resourceClass.getMethod("setMetadata", Metadata.class);
                     if(setMetadataMethod != null){
                         try {
-                            setMetadataMethod.setAccessible(true);
                             Object arglist[] = new Object[1];
                             arglist[0] = metadataList;
 
@@ -1508,7 +1500,6 @@ public abstract class AAIDeclarations implements AAIClient {
             }
             if(getRelationshipListMethod != null){
                 try {
-                    getRelationshipListMethod.setAccessible(true);
                     obj = getRelationshipListMethod.invoke(instance);
                 } catch (InvocationTargetException x) {
                     Throwable cause = x.getCause();
@@ -1521,7 +1512,6 @@ public abstract class AAIDeclarations implements AAIClient {
                 Method setRelationshipListMethod = resourceClass.getMethod("setRelationshipList", RelationshipList.class);
                 if(setRelationshipListMethod != null){
                     try {
-                        setRelationshipListMethod.setAccessible(true);
                         Object arglist[] = new Object[1];
                         arglist[0] = relationshipList;
 
@@ -1643,7 +1633,6 @@ public abstract class AAIDeclarations implements AAIClient {
             Method getMetadataMethod = resourceClass.getMethod("getMetadata");
             if(getMetadataMethod != null){
                 try {
-                    getMetadataMethod.setAccessible(true);
                     obj = getMetadataMethod.invoke(instance);
                 } catch (InvocationTargetException x) {
                     Throwable cause = x.getCause();
@@ -1656,7 +1645,6 @@ public abstract class AAIDeclarations implements AAIClient {
                 Method setMetadataMethod = resourceClass.getMethod("setMetadata", Metadata.class);
                 if(setMetadataMethod != null){
                     try {
-                        setMetadataMethod.setAccessible(true);
                         setMetadataMethod.invoke(instance, metadata);
                     } catch (InvocationTargetException x) {
                     }
@@ -1783,7 +1771,6 @@ public abstract class AAIDeclarations implements AAIClient {
             Method getResourceVersionMethod = resourceClass.getMethod("getResourceVersion");
             if(getResourceVersionMethod != null){
                 try {
-                    getResourceVersionMethod.setAccessible(true);
                     Object object = getResourceVersionMethod.invoke(instance);
                     if(object != null)
                         resourceVersion = object.toString();
@@ -1802,7 +1789,6 @@ public abstract class AAIDeclarations implements AAIClient {
             }
             if(getRelationshipListMethod != null){
                 try {
-                    getRelationshipListMethod.setAccessible(true);
                     obj = getRelationshipListMethod.invoke(instance);
                 } catch (InvocationTargetException x) {
                     Throwable cause = x.getCause();
@@ -1900,7 +1886,6 @@ public abstract class AAIDeclarations implements AAIClient {
             Method getResourceVersionMethod = resourceClass.getMethod("getResourceVersion");
             if(getResourceVersionMethod != null){
                 try {
-                    getResourceVersionMethod.setAccessible(true);
                     resourceVersion = (String) getResourceVersionMethod.invoke(instance);
                 } catch (InvocationTargetException x) {
                 }
@@ -1911,7 +1896,6 @@ public abstract class AAIDeclarations implements AAIClient {
             Method getMetadataMethod = resourceClass.getMethod("getMetadata");
             if(getMetadataMethod != null){
                 try {
-                    getMetadataMethod.setAccessible(true);
                     obj = getMetadataMethod.invoke(instance);
                 } catch (InvocationTargetException x) {
                     Throwable cause = x.getCause();
