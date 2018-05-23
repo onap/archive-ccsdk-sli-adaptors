@@ -28,13 +28,13 @@
   <parent>
     <groupId>org.onap.ccsdk.parent</groupId>
     <artifactId>odlparent-lite</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
   <groupId>org.onap.ccsdk.sli.adaptors</groupId>
   <artifactId>ansible-adaptor</artifactId>
-  <version>0.2.2-SNAPSHOT</version>
+  <version>0.2.3-SNAPSHOT</version>
   <name>ccsdk-sli-adaptors :: ansible-adapter</name>
   <description>Abstractions to interact with Ansible server via REST</description>
   <packaging>pom</packaging>
