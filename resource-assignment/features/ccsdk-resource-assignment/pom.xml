@@ -16,14 +16,25 @@
     <packaging>feature</packaging>
 
     <name>ccsdk-sli-adaptors :: resource-assignment :: ${project.artifactId}</name>
-
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.opendaylight.controller</groupId>
+				<artifactId>mdsal-artifacts</artifactId>
+				<version>${odl.mdsal.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.opendaylight.mdsal.model</groupId>
+				<artifactId>mdsal-model-artifacts</artifactId>
+				<version>${odl.mdsal.model.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>odl-mdsal-broker</artifactId>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
 
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
@@ -46,32 +57,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
-            <version>${mariadb.connector.version}</version>
-            <type>jar</type>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>equinoxSDK381</groupId>
-            <artifactId>org.eclipse.osgi</artifactId>
-            <scope>provided</scope>
-        </dependency>
+
     </dependencies>
 </project>
