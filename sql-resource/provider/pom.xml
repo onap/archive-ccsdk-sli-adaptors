@@ -26,7 +26,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -38,40 +37,30 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-common</artifactId>
-            <version>${sdnctl.sli.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-provider</artifactId>
-            <version>${sdnctl.sli.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>equinoxSDK381</groupId>
-            <artifactId>org.eclipse.osgi</artifactId>
-			<version>${equinox.osgi.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
 		</dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>dblib-provider</artifactId>
-            <version>${sdnctl.dblib.version}</version>
         </dependency>
 
     </dependencies>
