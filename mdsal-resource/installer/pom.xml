@@ -61,12 +61,12 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                            <attach>false</attach>
+                            <attach>true</attach>
                             <finalName>stage/${application.name}-${project.version}</finalName>
                             <descriptors>
                                 <descriptor>src/assembly/assemble_mvnrepo_zip.xml</descriptor>
                             </descriptors>
-                            <appendAssemblyId>false</appendAssemblyId>
+                            <appendAssemblyId>true</appendAssemblyId>
                         </configuration>
                     </execution>
                     <execution>

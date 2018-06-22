@@ -111,6 +111,7 @@
         <module>mdsal-resource</module>
         <module>resource-assignment</module>
         <module>sql-resource</module>
+        <module>features</module>
     </modules>
     <organization>
         <name>ONAP</name>

@@ -79,8 +79,8 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                        	<appendAssemblyId>false</appendAssemblyId>
-                            <attach>false</attach>
+                        	<appendAssemblyId>true</appendAssemblyId>
+                            <attach>true</attach>
                             <finalName>stage/${application.name}-${project.version}</finalName>
                             <descriptors>
                                 <descriptor>src/assembly/assemble_mvnrepo_zip.xml</descriptor>
