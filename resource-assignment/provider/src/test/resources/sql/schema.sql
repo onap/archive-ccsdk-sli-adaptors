@@ -96,8 +96,8 @@ CREATE TABLE RANGE_RULE (
   service_model VARCHAR(50) NOT NULL,
   end_point_position VARCHAR(50) NOT NULL,
   equipment_level VARCHAR(50) NOT NULL,
-  min_value INT NOT NULL,
-  max_value INT NOT NULL
+  equipment_expression VARCHAR(2000) NOT NULL,
+  ranges VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE MAX_PORT_SPEED (

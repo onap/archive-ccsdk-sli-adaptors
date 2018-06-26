@@ -46,9 +46,8 @@ import org.slf4j.LoggerFactory;
 
 public class EndPointAllocatorImpl implements EndPointAllocator {
 
-    @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(EndPointAllocatorImpl.class);
-
+    
     private ResourceManager resourceManager;
 
     private Map<String, List<AllocationRule>> allocationRuleMap;

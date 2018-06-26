@@ -21,12 +21,12 @@
 
 package org.onap.ccsdk.sli.adaptors.rm.data;
 
+import java.util.List;
 import java.util.SortedSet;
 
 public class RangeAllocationRequest extends AllocationRequest {
 
-    public int checkMin = 0;
-    public int checkMax = 0;
+    public List<Range> rangeList = null;
     public boolean check = false;
     public boolean allocate = false;
     public boolean replace = false;

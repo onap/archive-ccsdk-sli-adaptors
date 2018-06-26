@@ -36,6 +36,7 @@ import org.onap.ccsdk.sli.adaptors.rm.data.AllocationAction;
 import org.onap.ccsdk.sli.adaptors.rm.data.AllocationRequest;
 import org.onap.ccsdk.sli.adaptors.rm.data.LimitAllocationRequest;
 import org.onap.ccsdk.sli.adaptors.rm.data.MultiResourceAllocationRequest;
+import org.onap.ccsdk.sli.adaptors.rm.data.Range;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeAllocationRequest;
 import org.onap.ccsdk.sli.adaptors.util.expr.ExpressionEvaluator;
 import org.onap.ccsdk.sli.adaptors.util.str.StrUtil;
@@ -44,127 +45,147 @@ import org.slf4j.LoggerFactory;
 
 public class DbAllocationRule implements AllocationRule {
 
-	private static final Logger log = LoggerFactory.getLogger(DbAllocationRule.class);
+    private static final Logger log = LoggerFactory.getLogger(DbAllocationRule.class);
 
-	private ResourceRuleDao resourceRuleDao;
-	private RangeRuleDao rangeRuleDao;
+    private ResourceRuleDao resourceRuleDao;
+    private RangeRuleDao rangeRuleDao;
 
-	@Override
-	public AllocationRequest buildAllocationRequest(String serviceModel, ResourceEntity resourceEntity,
-			ResourceTarget resourceTarget, ResourceRequest resourceRequest, boolean checkOnly, boolean change) {
-		List<ResourceRule> resourceRuleList = resourceRuleDao.getResourceRules(serviceModel,
-				resourceTarget.resourceTargetType);
-		List<RangeRule> rangeRuleList = rangeRuleDao.getRangeRules(serviceModel, resourceTarget.resourceTargetType);
+    @Override
+    public AllocationRequest buildAllocationRequest(String serviceModel, ResourceEntity resourceEntity,
+            ResourceTarget resourceTarget, ResourceRequest resourceRequest, boolean checkOnly, boolean change) {
+        List<ResourceRule> resourceRuleList = resourceRuleDao.getResourceRules(serviceModel,
+                resourceTarget.resourceTargetType);
+        List<RangeRule> rangeRuleList = rangeRuleDao.getRangeRules(serviceModel, resourceTarget.resourceTargetType);
 
-		List<AllocationRequest> arlist = new ArrayList<>();
+        List<AllocationRequest> arlist = new ArrayList<>();
 
-		for (ResourceRule rr : resourceRuleList) {
-			if (resourceRequest.resourceName != null && !resourceRequest.resourceName.equals(rr.resourceName)) {
-				continue;
-			}
+        for (ResourceRule rr : resourceRuleList) {
+            if (resourceRequest.resourceName != null && !resourceRequest.resourceName.equals(rr.resourceName)) {
+                continue;
+            }
 
-			boolean matches = ExpressionEvaluator.evalBoolean(rr.serviceExpression, resourceEntity.data);
-			matches = matches && ExpressionEvaluator.evalBoolean(rr.equipmentExpression, resourceTarget.data);
+            boolean matches = ExpressionEvaluator.evalBoolean(rr.serviceExpression, resourceEntity.data);
+            matches = matches && ExpressionEvaluator.evalBoolean(rr.equipmentExpression, resourceTarget.data);
 
-			if (matches) {
-				AllocationRequest ar1 = buildAllocationRequest(rr, resourceEntity, resourceTarget, resourceRequest,
-						checkOnly, change);
-				arlist.add(ar1);
-			}
-		}
+            if (matches) {
+                AllocationRequest ar1 = buildAllocationRequest(rr, resourceEntity, resourceTarget, resourceRequest,
+                        checkOnly, change);
+                arlist.add(ar1);
+            }
+        }
 
-		for (RangeRule rr : rangeRuleList) {
-			if (resourceRequest.resourceName != null && !resourceRequest.resourceName.equals(rr.rangeName)) {
-				continue;
-			}
-			if (resourceRequest.endPointPosition != null
-					&& !resourceRequest.endPointPosition.equals(rr.endPointPosition)) {
-				continue;
-			}
+        for (RangeRule rr : rangeRuleList) {
+            if (resourceRequest.resourceName != null && !resourceRequest.resourceName.equals(rr.rangeName)) {
+                continue;
+            }
+            if (resourceRequest.endPointPosition != null
+                    && !resourceRequest.endPointPosition.equals(rr.endPointPosition)) {
+                continue;
+            }
 
-			AllocationRequest ar1 = buildAllocationRequest(rr, resourceEntity, resourceTarget, resourceRequest,
-					checkOnly, change);
-			arlist.add(ar1);
-		}
+            if (!ExpressionEvaluator.evalBoolean(rr.equipmentExpression, resourceTarget.data)) {
+                continue;
+            }
 
-		if (arlist.isEmpty()) {
-			return null;
-		}
+            AllocationRequest ar1 = buildAllocationRequest(rr, resourceEntity, resourceTarget, resourceRequest,
+                    checkOnly, change);
+            arlist.add(ar1);
+        }
 
-		if (arlist.size() == 1) {
-			return arlist.get(0);
-		}
+        if (arlist.isEmpty()) {
+            return null;
+        }
 
-		MultiResourceAllocationRequest ar = new MultiResourceAllocationRequest();
-		ar.stopOnFirstFailure = false;
-		ar.allocationRequestList = arlist;
-		return ar;
-	}
+        if (arlist.size() == 1) {
+            return arlist.get(0);
+        }
 
-	private AllocationRequest buildAllocationRequest(ResourceRule resourceRule, ResourceEntity resourceEntity,
-			ResourceTarget resourceTarget, ResourceRequest resourceRequest, boolean checkOnly, boolean change) {
-		StrUtil.info(log, resourceRule);
+        MultiResourceAllocationRequest ar = new MultiResourceAllocationRequest();
+        ar.stopOnFirstFailure = false;
+        ar.allocationRequestList = arlist;
+        return ar;
+    }
 
-		LimitAllocationRequest ar = new LimitAllocationRequest();
-		ar.applicationId = resourceRequest.applicationId;
-		ar.resourceUnionId = resourceEntity.resourceEntityType + "::" + resourceEntity.resourceEntityId;
-		ar.resourceSetId = ar.resourceUnionId + "::" + resourceEntity.resourceEntityVersion;
-		ar.resourceName = resourceRule.resourceName;
-		if (resourceRequest.resourceShareGroup != null) {
-			ar.resourceShareGroupList = Collections.singleton(resourceRequest.resourceShareGroup);
-		}
-		ar.assetId = resourceTarget.resourceTargetType + "::" + resourceTarget.resourceTargetId;
-		ar.missingResourceAction = AllocationAction.Succeed_Allocate;
-		ar.expiredResourceAction = AllocationAction.Succeed_Allocate;
-		ar.replace = resourceRequest.replace;
-		ar.strict = false;
-		ar.checkLimit = ExpressionEvaluator.evalLong(
-				change ? resourceRule.hardLimitExpression : resourceRule.softLimitExpression, resourceTarget.data);
-		ar.checkCount = ExpressionEvaluator.evalLong(resourceRule.allocationExpression, resourceEntity.data);
-		ar.allocateCount = checkOnly ? 0 : ar.checkCount;
-		return ar;
-	}
+    private AllocationRequest buildAllocationRequest(ResourceRule resourceRule, ResourceEntity resourceEntity,
+            ResourceTarget resourceTarget, ResourceRequest resourceRequest, boolean checkOnly, boolean change) {
+        StrUtil.info(log, resourceRule);
 
-	private AllocationRequest buildAllocationRequest(RangeRule rangeRule, ResourceEntity resourceEntity,
-			ResourceTarget resourceTarget, ResourceRequest resourceRequest, boolean checkOnly, boolean change) {
-		StrUtil.info(log, rangeRule);
+        LimitAllocationRequest ar = new LimitAllocationRequest();
+        ar.applicationId = resourceRequest.applicationId;
+        ar.resourceUnionId = resourceEntity.resourceEntityType + "::" + resourceEntity.resourceEntityId;
+        ar.resourceSetId = ar.resourceUnionId + "::" + resourceEntity.resourceEntityVersion;
+        ar.resourceName = resourceRule.resourceName;
+        if (resourceRequest.resourceShareGroup != null) {
+            ar.resourceShareGroupList = Collections.singleton(resourceRequest.resourceShareGroup);
+        }
+        ar.assetId = resourceTarget.resourceTargetType + "::" + resourceTarget.resourceTargetId;
+        ar.missingResourceAction = AllocationAction.Succeed_Allocate;
+        ar.expiredResourceAction = AllocationAction.Succeed_Allocate;
+        ar.replace = resourceRequest.replace;
+        ar.strict = false;
+        ar.checkLimit = ExpressionEvaluator.evalLong(
+                change ? resourceRule.hardLimitExpression : resourceRule.softLimitExpression, resourceTarget.data);
+        ar.checkCount = ExpressionEvaluator.evalLong(resourceRule.allocationExpression, resourceEntity.data);
+        ar.allocateCount = checkOnly ? 0 : ar.checkCount;
+        return ar;
+    }
 
-		RangeAllocationRequest ar = new RangeAllocationRequest();
-		ar.applicationId = resourceRequest.applicationId;
-		if (resourceRequest.endPointPosition != null) {
-			ar.resourceUnionId = resourceEntity.resourceEntityType + "::" + resourceEntity.resourceEntityId + "::"
-					+ resourceRequest.endPointPosition;
-			ar.endPointPosition = resourceRequest.endPointPosition;
-		}else
-			ar.resourceUnionId = resourceEntity.resourceEntityType + "::" + resourceEntity.resourceEntityId;
-		ar.resourceSetId = ar.resourceUnionId + "::" + resourceEntity.resourceEntityVersion;
-		ar.resourceName = rangeRule.rangeName;
-		if (resourceRequest.resourceShareGroup != null) {
-			ar.resourceShareGroupList = Collections.singleton(resourceRequest.resourceShareGroup);
-		}
-		ar.assetId = resourceTarget.resourceTargetType + "::" + resourceTarget.resourceTargetId;
-		ar.requestedNumbers = StrUtil.listInt(resourceRequest.rangeRequestedNumbers,
-				"Invalid value for requested-numbers");
-		if (ar.requestedNumbers != null) {
-			ar.requestedCount = ar.requestedNumbers.size();
-		}
-		ar.excludeNumbers = StrUtil.listInt(resourceRequest.rangeExcludeNumbers, "Invalid value for exclude-numbers");
-		ar.reverseOrder = resourceRequest.rangeReverseOrder;
-		ar.missingResourceAction = AllocationAction.Succeed_Allocate;
-		ar.expiredResourceAction = AllocationAction.Succeed_Allocate;
-		ar.replace = resourceRequest.replace;
-		ar.check = true;
-		ar.allocate = !checkOnly;
-		ar.checkMin = resourceRequest.rangeMinOverride >= 0 ? resourceRequest.rangeMinOverride : rangeRule.minValue;
-		ar.checkMax = resourceRequest.rangeMaxOverride >= 0 ? resourceRequest.rangeMaxOverride : rangeRule.maxValue;
-		return ar;
-	}
+    private AllocationRequest buildAllocationRequest(RangeRule rangeRule, ResourceEntity resourceEntity,
+            ResourceTarget resourceTarget, ResourceRequest resourceRequest, boolean checkOnly, boolean change) {
+        StrUtil.info(log, rangeRule);
 
-	public void setResourceRuleDao(ResourceRuleDao resourceRuleDao) {
-		this.resourceRuleDao = resourceRuleDao;
-	}
+        RangeAllocationRequest ar = new RangeAllocationRequest();
+        ar.applicationId = resourceRequest.applicationId;
+        if (resourceRequest.endPointPosition != null) {
+            ar.resourceUnionId = resourceEntity.resourceEntityType + "::" + resourceEntity.resourceEntityId + "::"
+                    + resourceRequest.endPointPosition;
+            ar.endPointPosition = resourceRequest.endPointPosition;
+        } else {
+            ar.resourceUnionId = resourceEntity.resourceEntityType + "::" + resourceEntity.resourceEntityId;
+        }
+        ar.resourceSetId = ar.resourceUnionId + "::" + resourceEntity.resourceEntityVersion;
+        ar.resourceName = rangeRule.rangeName;
+        if (resourceRequest.resourceShareGroup != null) {
+            ar.resourceShareGroupList = Collections.singleton(resourceRequest.resourceShareGroup);
+        }
+        ar.assetId = resourceTarget.resourceTargetType + "::" + resourceTarget.resourceTargetId;
+        ar.requestedNumbers = StrUtil.listInt(resourceRequest.rangeRequestedNumbers,
+                "Invalid value for requested-numbers");
+        if (ar.requestedNumbers != null) {
+            ar.requestedCount = ar.requestedNumbers.size();
+        }
+        ar.excludeNumbers = StrUtil.listInt(resourceRequest.rangeExcludeNumbers, "Invalid value for exclude-numbers");
+        ar.reverseOrder = resourceRequest.rangeReverseOrder;
+        ar.missingResourceAction = AllocationAction.Succeed_Allocate;
+        ar.expiredResourceAction = AllocationAction.Succeed_Allocate;
+        ar.replace = resourceRequest.replace;
+        ar.check = true;
+        ar.allocate = !checkOnly;
+        ar.rangeList = rangeRule.rangeList;
+        if (ar.rangeList == null || ar.rangeList.isEmpty()) {
+            if (resourceRequest.rangeMinOverride >= 0 && resourceRequest.rangeMaxOverride >= resourceRequest.rangeMinOverride) {
+                ar.rangeList = new ArrayList<>();
+                Range range = new Range();
+                range.min = resourceRequest.rangeMinOverride;
+                range.max = resourceRequest.rangeMaxOverride;
+                ar.rangeList.add(range);
+            }
+        } else {
+            if (resourceRequest.rangeMinOverride >= 0) {
+                ar.rangeList.get(0).min = resourceRequest.rangeMinOverride;
+            }
+            if (resourceRequest.rangeMaxOverride >= 0) {
+                ar.rangeList.get(ar.rangeList.size() - 1).max = resourceRequest.rangeMaxOverride;
+            }
+        }
+        return ar;
+    }
 
-	public void setRangeRuleDao(RangeRuleDao rangeRuleDao) {
-		this.rangeRuleDao = rangeRuleDao;
-	}
+    public void setResourceRuleDao(ResourceRuleDao resourceRuleDao) {
+        this.resourceRuleDao = resourceRuleDao;
+    }
+
+    public void setRangeRuleDao(RangeRuleDao rangeRuleDao) {
+        this.rangeRuleDao = rangeRuleDao;
+    }
 }
