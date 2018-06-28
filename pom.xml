@@ -108,6 +108,7 @@
     <modules>
         <module>aai-service</module>
         <module>ansible-adapter</module>
+        <module>saltstack-adapter</module>
         <module>mdsal-resource</module>
         <module>resource-assignment</module>
         <module>sql-resource</module>
