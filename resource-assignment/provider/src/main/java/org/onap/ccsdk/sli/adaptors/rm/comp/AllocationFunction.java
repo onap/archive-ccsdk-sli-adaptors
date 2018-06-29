@@ -46,6 +46,7 @@ import org.onap.ccsdk.sli.adaptors.rm.data.MultiAssetAllocationOutcome;
 import org.onap.ccsdk.sli.adaptors.rm.data.MultiAssetAllocationRequest;
 import org.onap.ccsdk.sli.adaptors.rm.data.MultiResourceAllocationOutcome;
 import org.onap.ccsdk.sli.adaptors.rm.data.MultiResourceAllocationRequest;
+import org.onap.ccsdk.sli.adaptors.rm.data.Range;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeAllocationOutcome;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeAllocationRequest;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeResource;
@@ -283,24 +284,40 @@ class AllocationFunction extends SynchronizedFunction {
                         // alignBlockSize and alignModulus are ignored. It would be harder
                         // to take them into account, and currently it is not needed.
 
-                        int uumin = uu.first() - 1;
-                        int uumax = uu.last() + 1;
-                        foundNumbers.addAll(uu);
-                        foundCount = uu.size();
-                        for (int n = uumin; foundCount < req.requestedCount && n >= req.checkMin; n--) {
-                            if (RangeUtil.checkRange(rr, req, n)) {
-                                foundNumbers.add(n);
-                                foundCount++;
-                            } else if (req.sequential) {
-                                break;
+                        // Request may contain multiple ranges. We will find the range from the request
+                        // that contains the currently used numbers (the first one). We will only look
+                        // for additional numbers in that range.
+
+                        Range range = null;
+                        if (req.rangeList != null) {
+                            for (Range range1 : req.rangeList) {
+                                if (uu.first() >= range1.min && uu.first() <= range1.max) {
+                                    range = range1;
+                                    break;
+                                }
                             }
                         }
-                        for (int n = uumax; foundCount < req.requestedCount && n <= req.checkMax; n++) {
-                            if (RangeUtil.checkRange(rr, req, n)) {
-                                foundNumbers.add(n);
-                                foundCount++;
-                            } else if (req.sequential) {
-                                break;
+
+                        if (range != null) {
+                            int uumin = uu.first() - 1;
+                            int uumax = uu.last() + 1;
+                            foundNumbers.addAll(uu);
+                            foundCount = uu.size();
+                            for (int n = uumin; foundCount < req.requestedCount && n >= range.min; n--) {
+                                if (RangeUtil.checkRange(rr, req, n)) {
+                                    foundNumbers.add(n);
+                                    foundCount++;
+                                } else if (req.sequential) {
+                                    break;
+                                }
+                            }
+                            for (int n = uumax; foundCount < req.requestedCount && n <= range.max; n++) {
+                                if (RangeUtil.checkRange(rr, req, n)) {
+                                    foundNumbers.add(n);
+                                    foundCount++;
+                                } else if (req.sequential) {
+                                    break;
+                                }
                             }
                         }
 
@@ -314,22 +331,29 @@ class AllocationFunction extends SynchronizedFunction {
                     }
                 }
 
-                if (req.reverseOrder) {
-                    for (int n = req.checkMax; foundCount < req.requestedCount && n >= req.checkMin; n--) {
-                        if (RangeUtil.checkRange(rr, req, n)) {
-                            foundNumbers.add(n);
-                            foundCount++;
-                        } else if (req.sequential) {
-                            foundCount = 0;
+                if (req.rangeList != null) {
+                    if (req.reverseOrder) {
+                        for (int i = req.rangeList.size() - 1; i >= 0; i--) {
+                            Range range = req.rangeList.get(i);
+                            for (int n = range.max; foundCount < req.requestedCount && n >= range.min; n--) {
+                                if (RangeUtil.checkRange(rr, req, n)) {
+                                    foundNumbers.add(n);
+                                    foundCount++;
+                                } else if (req.sequential) {
+                                    foundCount = 0;
+                                }
+                            }
                         }
-                    }
-                } else {
-                    for (int n = req.checkMin; foundCount < req.requestedCount && n <= req.checkMax; n++) {
-                        if (RangeUtil.checkRange(rr, req, n)) {
-                            foundNumbers.add(n);
-                            foundCount++;
-                        } else if (req.sequential) {
-                            foundCount = 0;
+                    } else {
+                        for (Range range : req.rangeList) {
+                            for (int n = range.min; foundCount < req.requestedCount && n <= range.max; n++) {
+                                if (RangeUtil.checkRange(rr, req, n)) {
+                                    foundNumbers.add(n);
+                                    foundCount++;
+                                } else if (req.sequential) {
+                                    foundCount = 0;
+                                }
+                            }
                         }
                     }
                 }

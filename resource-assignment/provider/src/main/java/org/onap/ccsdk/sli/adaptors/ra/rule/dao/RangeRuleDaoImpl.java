@@ -21,10 +21,10 @@
 
 package org.onap.ccsdk.sli.adaptors.ra.rule.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import org.onap.ccsdk.sli.adaptors.ra.rule.data.RangeRule;
+import org.onap.ccsdk.sli.adaptors.rm.data.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -42,20 +42,42 @@ public class RangeRuleDaoImpl implements RangeRuleDao {
     @Override
     public List<RangeRule> getRangeRules(String serviceModel, String equipLevel) {
         List<RangeRule> rangeRuleList =
-                jdbcTemplate.query(GET_SQL, new Object[] {serviceModel, equipLevel}, new RowMapper<RangeRule>() {
+                jdbcTemplate.query(GET_SQL, new Object[] {serviceModel, equipLevel}, (RowMapper<RangeRule>) (rs, rowNum) -> {
+                    RangeRule rl = new RangeRule();
+                    rl.id = rs.getLong("range_rule_id");
+                    rl.rangeName = rs.getString("range_name");
+                    rl.serviceModel = rs.getString("service_model");
+                    rl.endPointPosition = rs.getString("end_point_position");
+                    rl.equipmentLevel = rs.getString("equipment_level");
+                    rl.equipmentExpression = rs.getString("equipment_expression");
 
-                    @Override
-                    public RangeRule mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        RangeRule rl = new RangeRule();
-                        rl.id = rs.getLong("range_rule_id");
-                        rl.rangeName = rs.getString("range_name");
-                        rl.serviceModel = rs.getString("service_model");
-                        rl.endPointPosition = rs.getString("end_point_position");
-                        rl.equipmentLevel = rs.getString("equipment_level");
-                        rl.minValue = rs.getInt("min_value");
-                        rl.maxValue = rs.getInt("max_value");
-                        return rl;
+                    String rangesStr = rs.getString("ranges");
+                    String[] ranges = rangesStr.split(",");
+                    rl.rangeList = new ArrayList<>();
+                    for (String rangeStr : ranges) {
+                        Range range = new Range();
+                        String[] nn = rangeStr.split("-");
+                        if (nn.length >= 1) {
+                            try {
+                                range.min = range.max = Integer.parseInt(nn[0]);
+                            } catch (NumberFormatException e) {
+                                log.warn("Invalid value found in DB for range: " + rangeStr, e);
+                            }
+                        }
+                        if (nn.length >= 2) {
+                            try {
+                                range.max = Integer.parseInt(nn[1]);
+                            } catch (NumberFormatException e) {
+                                log.warn("Invalid value found in DB for range: " + rangeStr, e);
+                            }
+                        }
+                        if (nn.length > 2) {
+                            log.warn("Invalid value found in DB for range: " + rangeStr);
+                        }
+                        rl.rangeList.add(range);
                     }
+
+                    return rl;
                 });
         return rangeRuleList;
     }

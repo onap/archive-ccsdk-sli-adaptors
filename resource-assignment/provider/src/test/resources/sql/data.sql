@@ -80,19 +80,19 @@ values (
     'The provisioned access bandwidth is at or exceeds 70% of the total server capacity.');
 
 INSERT INTO RANGE_RULE (
-  range_name, service_model, end_point_position, equipment_level, min_value, max_value)
+  range_name, service_model, end_point_position, equipment_level, equipment_expression, ranges)
 VALUES (
-  'subinterface-id', 'L3AVPN-EVC', 'VPE-Cust', 'Port', 100, 3999);
+  'subinterface-id', 'L3AVPN-EVC', 'VPE-Cust', 'Port', 'true', '100-3999');
 
 INSERT INTO RANGE_RULE (
-  range_name, service_model, end_point_position, equipment_level, min_value, max_value)
+  range_name, service_model, end_point_position, equipment_level, equipment_expression, ranges)
 VALUES (
-  'vlan-id-inner', 'L3AVPN-EVC', 'VPE-Cust', 'Port', 2, 4091);
+  'vlan-id-inner', 'L3AVPN-EVC', 'VPE-Cust', 'Port', 'true', '2-4091');
 
 INSERT INTO RANGE_RULE (
-  range_name, service_model, end_point_position, equipment_level, min_value, max_value)
+  range_name, service_model, end_point_position, equipment_level, equipment_expression, ranges)
 VALUES (
-  'bundle-id', 'L3AVPN-PORT', 'VPE-Cust', 'Port', 1, 99999);
+  'bundle-id', 'L3AVPN-PORT', 'VPE-Cust', 'Port', 'true', '1-99999');
 
 INSERT INTO MAX_PORT_SPEED (
      image_file_name, end_point_position, interface_name, max_speed, unit)
@@ -148,39 +148,33 @@ VALUES (
     '1', '200', '200');	
     
 INSERT INTO RANGE_RULE (
-     range_name, service_model, end_point_position, equipment_level, min_value,
-    max_value)
+     range_name, service_model, end_point_position, equipment_level, equipment_expression, ranges)
 VALUES (
-     'cust-vlan-id', 'ADIG', 'VPE', 'VNF', '2', '1000');
+     'cust-vlan-id', 'ADIG', 'VPE', 'VNF', 'true', '2-1000');
 	
 INSERT INTO RANGE_RULE (
-     range_name, service_model, end_point_position, equipment_level, min_value,
-    max_value)
+     range_name, service_model, end_point_position, equipment_level, equipment_expression, ranges)
 VALUES (
-     'vlan-id-inner', 'ADIG', 'VPE', 'VNF', '1002', '2000');	    
+     'vlan-id-inner', 'ADIG', 'VPE', 'VNF', 'true', '1002-2000');	    
 
      
 INSERT INTO RANGE_RULE (
-     range_name, service_model, end_point_position, equipment_level, min_value,
-    max_value)
+     range_name, service_model, end_point_position, equipment_level, equipment_expression, ranges)
 VALUES (
-     'vlan-id-outer', 'MY-SERV-MODEL', 'VPE-Cust', 'Site', '2', '1000');
+     'vlan-id-outer', 'MY-SERV-MODEL', 'VPE-Cust', 'Site', 'true', '2-1000');
 	
 INSERT INTO RANGE_RULE (
-     range_name, service_model, end_point_position, equipment_level, min_value,
-    max_value)
+     range_name, service_model, end_point_position, equipment_level, equipment_expression, ranges)
 VALUES (
-     'vlan-id-filter', 'MY-SERV-MODEL', 'VPE-Core1', 'Site', '1002', '2000');	 
+     'vlan-id-filter', 'MY-SERV-MODEL', 'VPE-Core1', 'Site', 'true', '1002-2000');	 
      
 INSERT INTO RANGE_RULE (
-     range_name, service_model, end_point_position, equipment_level, min_value,
-    max_value)
+     range_name, service_model, end_point_position, equipment_level, equipment_expression, ranges)
 VALUES (
-     'vlan-id-filter', 'MY-SERV-MODEL', 'VPE-Core2', 'Site', '1002', '2000');
+     'vlan-id-filter', 'MY-SERV-MODEL', 'VPE-Core2', 'Site', 'true', '1002-2000,2200-4000');
      
 INSERT INTO RANGE_RULE (
-     range_name, service_model, end_point_position, equipment_level, min_value,
-    max_value)
+     range_name, service_model, end_point_position, equipment_level, equipment_expression, ranges)
 VALUES (
-     'vlan-id-filter', 'MY-SERV-MODEL', 'VPE-Core3', 'Site', '400', '600');     
+     'vlan-id-filter', 'MY-SERV-MODEL', 'VPE-Core3', 'Site', 'true', '400-600');     
      

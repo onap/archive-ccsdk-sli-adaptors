@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import org.onap.ccsdk.sli.adaptors.rm.data.AllocationItem;
+import org.onap.ccsdk.sli.adaptors.rm.data.Range;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeAllocationItem;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeAllocationRequest;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeResource;
@@ -48,27 +49,43 @@ public class RangeUtil {
     }
 
     public static boolean checkRange(RangeResource r, RangeAllocationRequest req, int num) {
-        if (num < req.checkMin || num > req.checkMax) {
-            return false;
-        }
-
         if (req.excludeNumbers != null && req.excludeNumbers.contains(num)) {
             return false;
         }
 
-        if (r.allocationItems != null) {
-            for (AllocationItem ai : r.allocationItems) {
-                RangeAllocationItem rai = (RangeAllocationItem) ai;
-                if (!eq(req.resourceUnionId, rai.resourceUnionId) && rai.used != null && rai.used.contains(num)) {
-                    if (!overlap(rai.resourceShareGroupList, req.resourceShareGroupList)) {
-                        return false;
+        if (req.rangeList != null && !req.rangeList.isEmpty()) {
+            boolean good = false;
+            for (Range range : req.rangeList) {
+                if (num < range.min || num > range.min) {
+                    continue;
+                }
+
+                boolean found = false;
+                if (r.allocationItems != null) {
+                    for (AllocationItem ai : r.allocationItems) {
+                        RangeAllocationItem rai = (RangeAllocationItem) ai;
+                        if (!eq(req.resourceUnionId, rai.resourceUnionId) && rai.used != null
+                                && rai.used.contains(num)) {
+                            if (!overlap(rai.resourceShareGroupList, req.resourceShareGroupList)) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!req.replace && eq(req.resourceSetId, rai.resourceSetId) && rai.used != null
+                                && rai.used.contains(num)) {
+                            found = true;
+                            break;
+                        }
                     }
                 }
-                if (!req.replace && eq(req.resourceSetId, rai.resourceSetId) && rai.used != null
-                        && rai.used.contains(num)) {
-                    return false;
+                
+                if (!found) {
+                    good = true;
+                    break;
                 }
             }
+            
+            return good;
         }
 
         return true;
