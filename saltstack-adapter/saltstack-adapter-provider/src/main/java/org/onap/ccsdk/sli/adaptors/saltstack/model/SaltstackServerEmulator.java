@@ -83,7 +83,7 @@ public class SaltstackServerEmulator {
     /**
      * Method to emulate response from an Saltstack
      * Server when presented with a GET request
-     * Returns an ansibl object result. The response code is always the ssh code 200 (i.e connection successful)
+     * Returns an saltstack object result. The response code is always the ssh code 200 (i.e connection successful)
      * payload is json string as would be sent back by Saltstack Server
      *
      **/
