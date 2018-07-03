@@ -79,7 +79,7 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                        	<appendAssemblyId>false</appendAssemblyId>
+                        	<appendAssemblyId>true</appendAssemblyId>
                             <attach>false</attach>
                             <finalName>stage/${application.name}-${project.version}</finalName>
                             <descriptors>
