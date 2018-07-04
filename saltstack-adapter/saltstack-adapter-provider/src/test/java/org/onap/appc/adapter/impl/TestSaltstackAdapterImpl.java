@@ -71,26 +71,173 @@ public class TestSaltstackAdapterImpl {
         svcContext = null;
     }
 
-    @Test
-    public void reqExecCommand_shouldSetPending() throws IllegalStateException, IllegalArgumentException {
+    @Test(expected = SvcLogicException.class)
+    public void reqExecCommand_shouldSetFailed() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "fail");
+            adapter.reqExecCommand(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+            assertEquals("101", status);
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecCommand_shouldSetUserFailed() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("Password", "test");
+        params.put("Test", "fail");
+        adapter.reqExecCommand(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+        assertEquals("101", status);
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecCommand_shouldSetHostFailed() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "fail");
+        adapter.reqExecCommand(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+        assertEquals("101", status);
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecCommand_shouldSetPortFailed() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "fail");
+        adapter.reqExecCommand(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+        assertEquals("101", status);
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecCommand_shouldSetPasswordFailed() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Test", "fail");
+        adapter.reqExecCommand(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+        assertEquals("101", status);
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecCommand_shouldSetMandatoryFailed() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("Test", "fail");
+        adapter.reqExecCommand(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+        assertEquals("101", status);
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecCommand_shouldSetSuccess() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
 
         params.put("PlaybookName", "test_playbook.yaml");
-
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
         try {
             adapter.reqExecCommand(params, svcContext);
             String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
             TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
-           // System.out.println("Comparing " + PENDING + " and " + status);
-            //assertEquals(PENDING, status);
-            assertEquals(null, status);
-        } catch (SvcLogicException e) {
-            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
-            fail(e.getMessage() + " Code = " + status);
-        } catch (Exception e) {
+            assertEquals("400", status);
+        } catch (NullPointerException e) {
             fail(e.getMessage() + " Unknown exception encountered ");
         }
     }
 
+    @Test(expected = SvcLogicException.class)
+    public void reqExecCommand_shouldSetSuccessWithRetry() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("PlaybookName", "test_playbook.yaml");
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("retryDelay", "10");
+        params.put("retryCount", "10");
+        try {
+            adapter.reqExecCommand(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+            assertEquals("400", status);
+        } catch (NullPointerException e) {
+            fail(e.getMessage() + " Unknown exception encountered ");
+        }
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecCommand_shouldSetSuccessWithRetryZero() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("PlaybookName", "test_playbook.yaml");
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("retryDelay", "0");
+        params.put("retryCount", "0");
+        try {
+            adapter.reqExecCommand(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+            assertEquals("400", status);
+        } catch (NullPointerException e) {
+            fail(e.getMessage() + " Unknown exception encountered ");
+        }
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecCommand_shouldSetSuccessWithNoRetry() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("PlaybookName", "test_playbook.yaml");
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("retryDelay", "-1");
+        params.put("retryCount", "-1");
+        try {
+            adapter.reqExecCommand(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+            assertEquals("400", status);
+        } catch (NullPointerException e) {
+            fail(e.getMessage() + " Unknown exception encountered ");
+        }
+    }
     @Test
     public void reqExecSLS_shouldSetSuccess() throws IllegalStateException, IllegalArgumentException {
 
