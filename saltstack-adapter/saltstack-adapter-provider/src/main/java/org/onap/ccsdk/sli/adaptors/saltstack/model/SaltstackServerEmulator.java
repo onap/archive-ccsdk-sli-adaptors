@@ -32,6 +32,7 @@
 
 package org.onap.ccsdk.sli.adaptors.saltstack.model;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
@@ -56,14 +57,36 @@ public class SaltstackServerEmulator {
      * Returns an saltstack object result. The response code is always the ssh code 200 (i.e connection successful)
      * payload is json string as would be sent back by Saltstack Server
      **/
+    public SaltstackResult MockReqExec(Map<String, String> params) {
+        SaltstackResult result = new SaltstackResult();
+
+        try {
+            if (params.get("Test") == "fail") {
+                result = rejectRequest(result, "Must provide a valid Id");
+            } else {
+                result = acceptRequest(result);
+            }
+        } catch (Exception e) {
+            logger.error("JSONException caught", e);
+            rejectRequest(result, e.getMessage());
+        }
+        return result;
+    }
+
+    /**
+     * Method that emulates the response from an Saltstack Server
+     * when presented with a request to execute a saltState
+     * Returns an saltstack object result. The response code is always the ssh code 200 (i.e connection successful)
+     * payload is json string as would be sent back by Saltstack Server
+     **/
     //TODO: This class is to be altered completely based on the SALTSTACK server communicaiton.
-    public SaltstackResult Connect(String agentUrl, String payload) {
+    public SaltstackResult Connect(Map<String, String> params) {
         SaltstackResult result = new SaltstackResult();
 
         try {
             // Request must be a JSON object
 
-            JSONObject message = new JSONObject(payload);
+            JSONObject message = new JSONObject();
             if (message.isNull("Id")) {
                 rejectRequest(result, "Must provide a valid Id");
             } else if (message.isNull(SALTSTATE_NAME)) {
@@ -120,19 +143,15 @@ public class SaltstackServerEmulator {
         return getResult;
     }
 
-    private void rejectRequest(SaltstackResult result, String Message) {
-        result.setStatusCode(200);
-        JSONObject response = new JSONObject();
-        response.put(STATUS_CODE, SaltstackResultCodes.REJECTED.getValue());
-        response.put(STATUS_MESSAGE, Message);
-        result.setStatusMessage(response.toString());
+    private SaltstackResult rejectRequest(SaltstackResult result, String Message) {
+        result.setStatusCode(SaltstackResultCodes.REJECTED.getValue());
+        result.setStatusMessage("Rejected");
+        return result;
     }
 
-    private void acceptRequest(SaltstackResult result) {
-        result.setStatusCode(200);
-        JSONObject response = new JSONObject();
-        response.put(STATUS_CODE, SaltstackResultCodes.PENDING.getValue());
-        response.put(STATUS_MESSAGE, "PENDING");
-        result.setStatusMessage(response.toString());
+    private SaltstackResult acceptRequest(SaltstackResult result) {
+        result.setStatusCode(SaltstackResultCodes.SUCCESS.getValue());
+        result.setStatusMessage("Success");
+        return result;
     }
 }

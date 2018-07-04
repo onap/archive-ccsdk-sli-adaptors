@@ -79,7 +79,12 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     private static final String ID_ATTRIBUTE_NAME = "org.onap.appc.adapter.saltstack.Id";
     private static final String LOG_ATTRIBUTE_NAME = "org.onap.appc.adapter.saltstack.log";
 
+    public static final String CONNECTION_RETRY_DELAY = "retryDelay";
+    public static final String CONNECTION_RETRY_COUNT = "retryCount";
+
     private static final String CLIENT_TYPE_PROPERTY_NAME = "org.onap.appc.adapter.saltstack.clientType";
+    private static final String SS_SERVER_HOSTNAME = "org.onap.appc.adapter.saltstack.host";
+    private static final String SS_SERVER_PORT = "org.onap.appc.adapter.saltstack.port";
     private static final String SS_SERVER_USERNAME = "org.onap.appc.adapter.saltstack.userName";
     private static final String SS_SERVER_PASSWORD = "org.onap.appc.adapter.saltstack.userPasswd";
     private static final String SS_SERVER_SSH_KEY = "org.onap.appc.adapter.saltstack.sshKey";
@@ -134,7 +139,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
      * Returns the symbolic name of the adapter
      *
      * @return The adapter name
-     * @see org.onap.appc.adapter.rest.SaltstackAdapter#getAdapterName()
+     * @see SaltstackAdapter#getAdapterName()
      */
     @Override
     public String getAdapterName() {
@@ -146,7 +151,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
         this.timeout = timeout;
     }
     /**
-     * @param rc Method posts info to Context memory in case of an error and throws a
+     *  Method posts info to Context memory in case of an error and throws a
      *        SvcLogicException causing SLI to register this as a failure
      */
     @SuppressWarnings("static-method")
@@ -182,22 +187,32 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             String clientType = props.getProperty(CLIENT_TYPE_PROPERTY_NAME);
             logger.info("Saltstack ssh client type set to " + clientType);
 
-            if ("BASIC".equals(clientType)) {
+            if ("BASIC".equalsIgnoreCase(clientType)) {
                 logger.info("Creating ssh client connection");
                 // set path to keystore file
-                String trustStoreFile = props.getProperty(SS_SERVER_USERNAME);
-                String key = props.getProperty(SS_SERVER_PASSWORD);
-                //TODO: Connect to SSH Saltstack server (using username and password) and return client to execute command
-                sshClient = null;
-            } else if ("SSH_CERT".equals(clientType)) {
+                String sshHost = props.getProperty(SS_SERVER_HOSTNAME);
+                String sshPort = props.getProperty(SS_SERVER_PORT);
+                String sshUserName = props.getProperty(SS_SERVER_USERNAME);
+                String sshPassword = props.getProperty(SS_SERVER_PASSWORD);
+                sshClient = new ConnectionBuilder(sshHost, sshPort, sshUserName, sshPassword);
+            } else if ("SSH_CERT".equalsIgnoreCase(clientType)) {
                 // set path to keystore file
-                String key = props.getProperty(SS_SERVER_SSH_KEY);
-                logger.info("Creating ssh client with ssh KEY from " + key);
-                //TODO: Connect to SSH Saltstack server (using SSH Key) and return client to execute command
-                sshClient = null;
+                String sshKey = props.getProperty(SS_SERVER_SSH_KEY);
+                String sshHost = props.getProperty(SS_SERVER_HOSTNAME);
+                String sshPort = props.getProperty(SS_SERVER_PORT);
+                logger.info("Creating ssh client with ssh KEY from " + sshKey);
+                sshClient = new ConnectionBuilder(sshHost, sshPort, sshKey);
+            } else if ("BOTH".equalsIgnoreCase(clientType)) {
+                // set path to keystore file
+                String sshKey = props.getProperty(SS_SERVER_SSH_KEY);
+                String sshHost = props.getProperty(SS_SERVER_HOSTNAME);
+                String sshUserName = props.getProperty(SS_SERVER_USERNAME);
+                String sshPassword = props.getProperty(SS_SERVER_PASSWORD);
+                String sshPort = props.getProperty(SS_SERVER_PORT);
+                logger.info("Creating ssh client with ssh KEY from " + sshKey);
+                sshClient = new ConnectionBuilder(sshHost, sshPort, sshUserName, sshPassword, sshKey);
             } else {
-                logger.info("Creating ssh client without any Auth");
-                //TODO: Connect to SSH Saltstack server without any Auth
+                logger.info("No saltstack-adapter.properties defined so reading from DG props");
                 sshClient = null;
             }
         } catch (Exception e) {
@@ -214,7 +229,49 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     //  org.onap.appc.adapter.saltstack.req.Id : a unique uuid to reference the request
     @Override
     public void reqExecCommand(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException {
-        //TODO: to implement
+        String reqID;
+        SaltstackResult testResult;
+        if (sshClient == null){
+            logger.info("saltstack-adapter.properties not defined so reading saltstack host and " +
+                                "auth details from DG's parameters");
+            String sshHost = messageProcessor.reqHostNameResult(params);
+            String sshPort = messageProcessor.reqPortResult(params);
+            String sshUserName = messageProcessor.reqUserNameResult(params);
+            String sshPassword = messageProcessor.reqPasswordResult(params);
+            logger.info("Creating ssh client with BASIC Auth");
+            if(!testMode)
+                sshClient = new ConnectionBuilder(sshHost, sshPort, sshUserName, sshPassword);
+        }
+        try {
+            reqID = params.get("Id");
+            String commandToExecute = params.get("cmd");
+            testResult = execCommand(params, commandToExecute);
+            testResult = messageProcessor.parseResponse(ctx, reqID, testResult);
+
+            // Check status of test request returned by Agent
+            if (testResult.getStatusCode() == SaltstackResultCodes.FINAL_SUCCESS.getValue()) {
+                logger.info(String.format("Execution of request-ID : %s successful.", reqID));
+                testResult.setResults("Success");
+            } else {
+                doFailure(ctx, testResult.getStatusCode(), "Request for execution of command failed. Reason = " + testResult.getStatusMessage());
+                return;
+            }
+        } catch (SvcLogicException e) {
+            logger.error(APPC_EXCEPTION_CAUGHT, e);
+            doFailure(ctx, SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue(),
+                      "Request for execution of command failed. Reason = "
+                              + e.getMessage());
+            return;
+        } catch (Exception e) {
+            logger.error("Exception caught", e);
+            doFailure(ctx, SaltstackResultCodes.INVALID_COMMAND.getValue(),
+                      "Request for execution of command failed. Reason = "
+                              + e.getMessage());
+            return;
+        }
+        ctx.setAttribute(RESULT_CODE_ATTRIBUTE_NAME, Integer.toString(testResult.getStatusCode()));
+        ctx.setAttribute(MESSAGE_ATTRIBUTE_NAME, testResult.getResults());
+        ctx.setAttribute(ID_ATTRIBUTE_NAME, reqID);
     }
 
     /**
@@ -242,5 +299,25 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     public void reqExecLog(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException {
         //TODO: to implement
 
+    }
+
+    public SaltstackResult execCommand(Map<String, String> params, String commandToExecute){
+        SaltstackResult testResult;
+        if (params.get(CONNECTION_RETRY_DELAY) != null && params.get(CONNECTION_RETRY_COUNT) != null) {
+            int retryDelay = Integer.parseInt(params.get(CONNECTION_RETRY_DELAY));
+            int retryCount = Integer.parseInt(params.get(CONNECTION_RETRY_COUNT));
+            if(!testMode)
+                testResult = sshClient.connectNExecute(commandToExecute, retryCount, retryDelay);
+            else {
+                testResult = testServer.MockReqExec(params);
+            }
+        } else {
+            if(!testMode)
+                testResult = sshClient.connectNExecute(commandToExecute);
+            else {
+                testResult = testServer.MockReqExec(params);
+            }
+        }
+        return testResult;
     }
 }
