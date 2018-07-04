@@ -32,3 +32,31 @@ Create an Adaptor to communicate with the SaltStack server:
 ***Requirements and benefits of the chosen SSH method:***
 1) The SaltStack server should have it’s SSH enabled.
 2) Such execution method will give the DGs and adaptor with more refined control on the SaltStack server.
+==================================================================================================================
+
+
+***Defining Saltstack server properties:*** Can be done with 2 different methods. 
+1) Saltstack server details are found in the property file named saltstack-adapter.properties. Param has to be given with following types. 
+    "org.onap.appc.adapter.saltstack.clientType"; -> Supported types are (BASIC || SSH_CERT || BOTH).
+    "org.onap.appc.adapter.saltstack.host"; ->  Saltstack server's host name IP address.
+    "org.onap.appc.adapter.saltstack.port"; ->  Saltstack server's port to make SSH connection to.
+    "org.onap.appc.adapter.saltstack.userName"; ->  Saltstack server's SSH UserName.
+    "org.onap.appc.adapter.saltstack.userPasswd"; ->  Saltstack server's SSH Password.
+    "org.onap.appc.adapter.saltstack.sshKey"; ->  Saltstack server's SSH KEY file location.
+2) All the server related details can also be passed as param to the adaptor from the Directed Graphs. Param has to be given with following types. 
+    "HostName";  ->  Saltstack server's host name IP address.
+    "Port"; ->  Saltstack server's port to make SSH connection to.
+    "Password"; ->  Saltstack server's SSH UserName.
+    "User"; ->  Saltstack server's SSH Password.
+  Note: SSH_CERT based Auth is not supported in this method.
+  
+***Using Saltstack Adaptor Commands and params to pass in:*** reqExecCommand:
+Method to execute a single command on SaltState server. The command entered should request the output in JSON format, this can be done by appending json-out outputter as specified in https://docs.saltstack.com/en/latest/ref/output/all/salt.output.json_out.html#module-salt.output.json_out and https://docs.saltstack.com/en/2017.7/ref/cli/salt-call.html The response from Saltstack comes in json format and it is automatically put to context for DGs access, with a certain request-ID as prefix.
+Example command will look like: 
+1) Command to test if all VNFC are running: "salt * test.ping --out=json --static"
+2) To check Network interfaces on your minions: "salt '*' network.interfaces --out=json --static"
+3) Restart Minion service after upgrade process: "salt minion1 service.restart salt-minion --out=json --static"
+Note: If using --out=json, you will probably want --static as well. Without the static option, you will get a separate JSON string per minion which makes JSON output invalid as a whole. This is due to using an iterative outputter. So if you want to feed it to a JSON parser, use --static as well.
+
+This "reqExecCommand" method gives the Operator/Directed Graphs to execute commands in a fine-tuned manner, which also means the operator/DG-creator should know what to expect as output as a result of command execution. By this way using DGs, the operator can check for success/failure of the executed comment. 
+If the output is not in JSON format, then the adaptor still tries to convert it into properties, in addition "reqID.completeResult" param will have the whole result for DG access. 
