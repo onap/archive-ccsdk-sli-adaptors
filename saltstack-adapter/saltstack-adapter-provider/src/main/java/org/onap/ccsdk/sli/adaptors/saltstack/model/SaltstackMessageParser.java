@@ -28,15 +28,21 @@ package org.onap.ccsdk.sli.adaptors.saltstack.model;
  * This module implements the APP-C/Saltstack Server interface
  * based on the REST API specifications
  */
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import com.google.common.base.Strings;
 import org.slf4j.Logger;
@@ -53,10 +59,10 @@ public class SaltstackMessageParser {
     private static final String STATUS_CODE_KEY = "StatusCode";
 
     private static final String SALTSTATE_NAME_KEY = "SaltStateName";
-    private static final String AGENT_URL_KEY = "AgentUrl";
+    private static final String SS_AGENT_HOSTNAME_KEY = "HostName";
+    private static final String SS_AGENT_PORT_KEY = "Port";
     private static final String PASS_KEY = "Password";
     private static final String USER_KEY = "User";
-    private static final String ID_KEY = "Id";
 
     private static final String LOCAL_PARAMETERS_OPT_KEY = "LocalParameters";
     private static final String FILE_PARAMETERS_OPT_KEY = "FileParameters";
@@ -80,7 +86,7 @@ public class SaltstackMessageParser {
      *
      */
     public JSONObject reqMessage(Map<String, String> params) throws SvcLogicException {
-        final String[] mandatoryTestParams = {AGENT_URL_KEY, SALTSTATE_NAME_KEY, USER_KEY, PASS_KEY};
+        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SALTSTATE_NAME_KEY, USER_KEY, PASS_KEY};
         final String[] optionalTestParams = {ENV_PARAMETERS_OPT_KEY, NODE_LIST_OPT_KEY, LOCAL_PARAMETERS_OPT_KEY,
                 TIMEOUT_OPT_KEY, VERSION_OPT_KEY, FILE_PARAMETERS_OPT_KEY, ACTION_OPT_KEY};
 
@@ -95,7 +101,7 @@ public class SaltstackMessageParser {
 
         // Generate a unique uuid for the test
         String reqId = UUID.randomUUID().toString();
-        jsonPayload.put(ID_KEY, reqId);
+        jsonPayload.put(SS_AGENT_HOSTNAME_KEY, reqId);
 
         return jsonPayload;
     }
@@ -103,60 +109,121 @@ public class SaltstackMessageParser {
     /**
      * Method that validates that the Map has enough information
      * to query Saltstack server for a result. If so, it returns
-     * the appropriate url, else an empty string.
+     * the appropriate PORT number.
      */
-    public String reqUriResult(Map<String, String> params) throws SvcLogicException {
+    public String reqPortResult(Map<String, String> params) throws SvcLogicException {
 
-        final String[] mandatoryTestParams = {AGENT_URL_KEY, ID_KEY, USER_KEY, PASS_KEY};
+        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY, PASS_KEY};
 
         for (String key : mandatoryTestParams) {
             throwIfMissingMandatoryParam(params, key);
         }
-        return params.get(AGENT_URL_KEY) + "?Id=" + params.get(ID_KEY) + "&Type=GetResult";
+        return params.get(SS_AGENT_PORT_KEY);
     }
 
     /**
      * Method that validates that the Map has enough information
-     * to query Saltstack server for logs. If so, it populates the appropriate
-     * returns the appropriate url, else an empty string.
+     * to query Saltstack server for a result. If so, it returns
+     * the appropriate HOST name.
      */
-    public String reqUriLog(Map<String, String> params) throws SvcLogicException {
+    public String reqHostNameResult(Map<String, String> params) throws SvcLogicException {
 
-        final String[] mandatoryTestParams = {AGENT_URL_KEY, ID_KEY, USER_KEY, PASS_KEY};
+        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY, PASS_KEY};
 
-        for (String mandatoryParam : mandatoryTestParams) {
-            throwIfMissingMandatoryParam(params, mandatoryParam);
+        for (String key : mandatoryTestParams) {
+            throwIfMissingMandatoryParam(params, key);
         }
-        return params.get(AGENT_URL_KEY) + "?Id=" + params.get(ID_KEY) + "&Type=GetLog";
+        return params.get(SS_AGENT_HOSTNAME_KEY);
+    }
+
+    /**
+     * Method that validates that the Map has enough information
+     * to query Saltstack server for a result. If so, it returns
+     * the appropriate Saltstack server login user name.
+     */
+    public String reqUserNameResult(Map<String, String> params) throws SvcLogicException {
+
+        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY, PASS_KEY};
+
+        for (String key : mandatoryTestParams) {
+            throwIfMissingMandatoryParam(params, key);
+        }
+        return params.get(USER_KEY);
+    }
+
+    /**
+     * Method that validates that the Map has enough information
+     * to query Saltstack server for a result. If so, it returns
+     * the appropriate Saltstack server login password.
+     */
+    public String reqPasswordResult(Map<String, String> params) throws SvcLogicException {
+
+        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY, PASS_KEY};
+
+        for (String key : mandatoryTestParams) {
+            throwIfMissingMandatoryParam(params, key);
+        }
+        return params.get(PASS_KEY);
     }
 
     /**
      * This method parses response from the Saltstack Server when we do a post
      * and returns an SaltstackResult object.
      */
-    public SaltstackResult parsePostResponse(String input) throws SvcLogicException {
-        SaltstackResult saltstackResult;
-        try {
-            JSONObject postResponse = new JSONObject(input);
-
-            int code = postResponse.getInt(STATUS_CODE_KEY);
-            String msg = postResponse.getString(STATUS_MESSAGE_KEY);
-
-            int initResponseValue = SaltstackResultCodes.INITRESPONSE.getValue();
-            boolean validCode = SaltstackResultCodes.CODE.checkValidCode(initResponseValue, code);
-            if (!validCode) {
-                throw new SvcLogicException("Invalid InitResponse code  = " + code + " received. MUST be one of "
-                        + SaltstackResultCodes.CODE.getValidCodes(initResponseValue));
-            }
-
-            saltstackResult = new SaltstackResult(code, msg);
-
-        } catch (JSONException e) {
-            saltstackResult = new SaltstackResult(600, "Error parsing response = " + input + ". Error = " + e.getMessage());
+    public SaltstackResult parseResponse(SvcLogicContext ctx, String pfx, SaltstackResult saltstackResult) {
+        int code = saltstackResult.getStatusCode();
+        if (code != SaltstackResultCodes.SUCCESS.getValue()) {
+            return saltstackResult;
         }
+        try {
+            File file = new File(saltstackResult.getOutputFileName());
+            InputStream in = new FileInputStream(file);
+            byte[] data = new byte[(int) file.length()];
+            in.read(data);
+            String str = new String(data, "UTF-8");
+            in.close();
+            Map<String, String> mm = JsonParser.convertToProperties(str);
+            if (mm != null) {
+                for (Map.Entry<String,String> entry : mm.entrySet()) {
+                    ctx.setAttribute(pfx + entry.getKey(), entry.getValue());
+                    LOGGER.info("+++ " + pfx + entry.getKey() + ": [" + entry.getValue() + "]");
+                }
+            }
+        } catch (FileNotFoundException e){
+            return new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "Error parsing response file = "
+                    + saltstackResult.getOutputFileName() + ". Error = " + e.getMessage());
+        } catch (JSONException e) {
+            LOGGER.info("Output not in JSON format");
+            return putToProperties(ctx, pfx, saltstackResult);
+        } catch (Exception e) {
+            return new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "Error parsing response file = "
+                    + saltstackResult.getOutputFileName() + ". Error = " + e.getMessage());
+        }
+        saltstackResult.setStatusCode(SaltstackResultCodes.FINAL_SUCCESS.getValue());
         return saltstackResult;
     }
 
+    public SaltstackResult putToProperties(SvcLogicContext ctx, String pfx, SaltstackResult saltstackResult) {
+        try {
+            File file = new File(saltstackResult.getOutputFileName());
+            InputStream in = new FileInputStream(file);
+            Properties prop = new Properties();
+            prop.load(in);
+            ctx.setAttribute(pfx + "completeResult", prop.toString());
+            for (Object key : prop.keySet()) {
+                String name = (String) key;
+                String value = prop.getProperty(name);
+                if (value != null && value.trim().length() > 0) {
+                    ctx.setAttribute(pfx + name, value.trim());
+                    LOGGER.info("+++ " + pfx + name + ": [" + value + "]");
+                }
+            }
+        } catch (Exception e) {
+            saltstackResult = new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "Error parsing response file = "
+                    + saltstackResult.getOutputFileName() + ". Error = " + e.getMessage());
+        }
+        return saltstackResult;
+    }
     /**
      * This method parses response from an Saltstack server when we do a GET for a result
      * and returns an SaltstackResult object.
@@ -169,8 +236,8 @@ public class SaltstackMessageParser {
             JSONObject postResponse = new JSONObject(input);
             saltstackResult = parseGetResponseNested(saltstackResult, postResponse);
         } catch (JSONException e) {
-            saltstackResult = new SaltstackResult(SaltstackResultCodes.INVALID_PAYLOAD.getValue(),
-                    "Error parsing response = " + input + ". Error = " + e.getMessage(), "");
+            saltstackResult = new SaltstackResult(SaltstackResultCodes.INVALID_COMMAND.getValue(),
+                    "Error parsing response = " + input + ". Error = " + e.getMessage(), "", -1);
         }
         return saltstackResult;
     }
