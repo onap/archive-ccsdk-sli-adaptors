@@ -44,6 +44,20 @@
 			<version>1.2</version>
 		</dependency>
 
+		<!-- Needed to run SSH -->
+		<dependency>
+			<groupId>org.apache.sshd</groupId>
+			<artifactId>sshd-core</artifactId>
+			<version>0.12.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.onap.appc</groupId>
+			<artifactId>appc-common</artifactId>
+			<version>1.4.0-SNAPSHOT</version>
+		</dependency>
+
 		<!-- Needed to run test cases -->
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
@@ -57,6 +71,18 @@
 			<artifactId>jackson-jaxrs</artifactId>
 			<version>1.9.13</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jettison</groupId>
+			<artifactId>jettison</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -108,5 +134,22 @@
 
 	</dependencies>
 
-
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Export-Service>org.onap.appc.adapter.ssh.SshAdapter</Export-Service>
+						<Private-Package>org.onap.appc.adapter.ssh.impl.*</Private-Package>
+						<Import-Package>!org.apache.log,!org.apache.commons.logging,!groovy.lang,!javax.jms,!org.codehaus.commons.compiler,!org.codehaus.groovy.*,!org.codehaus.janino,!com.ibm.icu.*,!com.sun.faces.*,!org.jasypt.*,*</Import-Package>
+						<Embed-Dependency>!dblib-provider,jasypt,eelf-core,logback-core,logback-classic;scope=compile|runtime;inline=false</Embed-Dependency>
+						<Embed-Transitive>true</Embed-Transitive>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
