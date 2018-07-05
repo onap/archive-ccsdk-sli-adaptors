@@ -139,13 +139,15 @@ public class ConnectionBuilder {
 
     public SaltstackResult sortExitStatus (int exitStatus, String errFilePath, String cmd)  {
         SaltstackResult result = new SaltstackResult();
-        String err;
+        String err = "";
         StringWriter writer = new StringWriter();
         try {
             IOUtils.copy(new FileInputStream(new File(errFilePath)), writer, "UTF-8");
             err = writer.toString();
-        } catch (Exception e){
-            err = "";
+        } catch (FileNotFoundException e){
+            logger.info("Error stream file doesn't exist");
+        } catch (IOException e){
+            logger.info("Error stream file doesn't exist");
         }
         if (exitStatus == 255 || exitStatus == 1) {
             String errMessage = "Error executing command [" + cmd + "] over SSH [" + sshConnection.toString()
@@ -170,7 +172,7 @@ public class ConnectionBuilder {
             result.setStatusMessage(errMessage);
         } else {
             String errMessage = "Error executing command [" + cmd + "] over SSH [" + sshConnection.toString()
-                    + "]. Exit Code " + exitStatus + " and Error message : "+ err;
+                    + "]. SSH Exit status Code " + exitStatus;
             logger.error(errMessage);
             result.setStatusCode(SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue());
             result.setStatusMessage(errMessage);
@@ -203,29 +205,13 @@ public class ConnectionBuilder {
     }
 
     /**
-     * Disconnect from SSH server.
-     */
-    public SaltstackResult disConnect(){
-
-        SaltstackResult result = new SaltstackResult();
-        try {
-            //TODO: to implement SSH connected client to Saltstack Server
-        } catch (Exception io) {
-            logger.error("Caught Exception", io);
-            result.setStatusCode(SaltstackResultCodes.IO_EXCEPTION.getValue());
-            result.setStatusMessage(io.getMessage());
-        }
-        return result;
-    }
-
-    /**
      * Exec remote command over SSH. Return command execution status.
      * Command output is written to out or err stream.
      *
      * @param cmd command to execute
      * @return command execution status
      */
-    public SaltstackResult execute(String cmd) {
+    public SaltstackResult connectNExecuteLog(String cmd) {
 
         SaltstackResult result = new SaltstackResult();
 

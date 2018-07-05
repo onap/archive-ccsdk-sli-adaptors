@@ -39,8 +39,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+
+import org.codehaus.jettison.json.JSONException;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
@@ -63,6 +64,7 @@ public class SaltstackMessageParser {
     private static final String SS_AGENT_PORT_KEY = "Port";
     private static final String PASS_KEY = "Password";
     private static final String USER_KEY = "User";
+    private static final String SS_REQUEST_ID = "Id";
 
     private static final String LOCAL_PARAMETERS_OPT_KEY = "LocalParameters";
     private static final String FILE_PARAMETERS_OPT_KEY = "FileParameters";
@@ -113,7 +115,7 @@ public class SaltstackMessageParser {
      */
     public String reqPortResult(Map<String, String> params) throws SvcLogicException {
 
-        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY, PASS_KEY};
+        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY, PASS_KEY, SS_REQUEST_ID};
 
         for (String key : mandatoryTestParams) {
             throwIfMissingMandatoryParam(params, key);
@@ -128,7 +130,7 @@ public class SaltstackMessageParser {
      */
     public String reqHostNameResult(Map<String, String> params) throws SvcLogicException {
 
-        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY, PASS_KEY};
+        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY, PASS_KEY, SS_REQUEST_ID};
 
         for (String key : mandatoryTestParams) {
             throwIfMissingMandatoryParam(params, key);
@@ -143,7 +145,7 @@ public class SaltstackMessageParser {
      */
     public String reqUserNameResult(Map<String, String> params) throws SvcLogicException {
 
-        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY, PASS_KEY};
+        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY, PASS_KEY, SS_REQUEST_ID};
 
         for (String key : mandatoryTestParams) {
             throwIfMissingMandatoryParam(params, key);
@@ -158,7 +160,7 @@ public class SaltstackMessageParser {
      */
     public String reqPasswordResult(Map<String, String> params) throws SvcLogicException {
 
-        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY, PASS_KEY};
+        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY, PASS_KEY, SS_REQUEST_ID};
 
         for (String key : mandatoryTestParams) {
             throwIfMissingMandatoryParam(params, key);
@@ -185,8 +187,8 @@ public class SaltstackMessageParser {
             Map<String, String> mm = JsonParser.convertToProperties(str);
             if (mm != null) {
                 for (Map.Entry<String,String> entry : mm.entrySet()) {
-                    ctx.setAttribute(pfx + entry.getKey(), entry.getValue());
-                    LOGGER.info("+++ " + pfx + entry.getKey() + ": [" + entry.getValue() + "]");
+                    ctx.setAttribute(pfx + "." + entry.getKey(), entry.getValue());
+                    LOGGER.info("+++ " + pfx + "." + entry.getKey() + ": [" + entry.getValue() + "]");
                 }
             }
         } catch (FileNotFoundException e){
@@ -222,6 +224,7 @@ public class SaltstackMessageParser {
             saltstackResult = new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "Error parsing response file = "
                     + saltstackResult.getOutputFileName() + ". Error = " + e.getMessage());
         }
+        saltstackResult.setStatusCode(SaltstackResultCodes.FINAL_SUCCESS.getValue());
         return saltstackResult;
     }
     /**
@@ -235,7 +238,7 @@ public class SaltstackMessageParser {
         try {
             JSONObject postResponse = new JSONObject(input);
             saltstackResult = parseGetResponseNested(saltstackResult, postResponse);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             saltstackResult = new SaltstackResult(SaltstackResultCodes.INVALID_COMMAND.getValue(),
                     "Error parsing response = " + input + ". Error = " + e.getMessage(), "", -1);
         }
@@ -285,7 +288,7 @@ public class SaltstackMessageParser {
                     if (subCode != 200 || !message.equals("SUCCESS")) {
                         finalCode = SaltstackResultCodes.REQ_FAILURE.getValue();
                     }
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     saltstackResult.setStatusCode(SaltstackResultCodes.INVALID_RESPONSE.getValue());
                     saltstackResult.setStatusMessage(String.format(
                             "Error processing response message = %s from host %s", results.getString(host), host));
