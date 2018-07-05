@@ -64,39 +64,13 @@ public class SaltstackServerEmulator {
             if (params.get("Test") == "fail") {
                 result = rejectRequest(result, "Must provide a valid Id");
             } else {
-                result = acceptRequest(result);
+                String fileName = params.get("fileName");
+                if (fileName == null)
+                    result = acceptRequest(result, "");
+                else
+                    result = acceptRequest(result, fileName);
             }
         } catch (Exception e) {
-            logger.error("JSONException caught", e);
-            rejectRequest(result, e.getMessage());
-        }
-        return result;
-    }
-
-    /**
-     * Method that emulates the response from an Saltstack Server
-     * when presented with a request to execute a saltState
-     * Returns an saltstack object result. The response code is always the ssh code 200 (i.e connection successful)
-     * payload is json string as would be sent back by Saltstack Server
-     **/
-    //TODO: This class is to be altered completely based on the SALTSTACK server communicaiton.
-    public SaltstackResult Connect(Map<String, String> params) {
-        SaltstackResult result = new SaltstackResult();
-
-        try {
-            // Request must be a JSON object
-
-            JSONObject message = new JSONObject();
-            if (message.isNull("Id")) {
-                rejectRequest(result, "Must provide a valid Id");
-            } else if (message.isNull(SALTSTATE_NAME)) {
-                rejectRequest(result, "Must provide a saltState Name");
-            } else if (!message.getString(SALTSTATE_NAME).equals(saltStateName)) {
-                rejectRequest(result, "SaltState " + message.getString(SALTSTATE_NAME) + "  not found in catalog");
-            } else {
-                acceptRequest(result);
-            }
-        } catch (JSONException e) {
             logger.error("JSONException caught", e);
             rejectRequest(result, e.getMessage());
         }
@@ -149,9 +123,10 @@ public class SaltstackServerEmulator {
         return result;
     }
 
-    private SaltstackResult acceptRequest(SaltstackResult result) {
+    private SaltstackResult acceptRequest(SaltstackResult result, String fileName) {
         result.setStatusCode(SaltstackResultCodes.SUCCESS.getValue());
         result.setStatusMessage("Success");
+        result.setOutputFileName(fileName);
         return result;
     }
 }
