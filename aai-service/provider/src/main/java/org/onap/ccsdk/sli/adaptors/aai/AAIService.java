@@ -996,8 +996,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
         try {
             for (ResultData datum : resultDataList) {
-                String data_type = datum.getResourceType();
-                URL url = new URL(datum.getResourceLink());
+                URI url = new URI(datum.getResourceLink());
                 entity = this.getResource(url.toString(), GenericVnf.class);
             }
         }
