@@ -52,6 +52,8 @@ public enum SaltstackResultCodes {
     PENDING(100),
     REJECTED(101),
     FINAL_SUCCESS(200),
+    CHECK_CTX_FOR_CMD_SUCCESS(250),
+    COMMAND_EXEC_FAILED_STATUS(670),
     REQ_FAILURE(401),
     MESSAGE(1),
     CODE(0),
@@ -67,7 +69,9 @@ public enum SaltstackResultCodes {
 
     SaltstackResultCodes(int value) {
         this.value = value;
-    };
+    }
+
+    ;
 
     public int getValue() {
         return value;

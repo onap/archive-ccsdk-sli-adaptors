@@ -82,7 +82,7 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "fail");
             adapter.reqExecCommand(params, svcContext);
             String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
-            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
             assertEquals("101", status);
     }
 
@@ -96,7 +96,7 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "fail");
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
-        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals("101", status);
     }
 
@@ -110,7 +110,7 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "fail");
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
-        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals("101", status);
     }
 
@@ -124,7 +124,7 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "fail");
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
-        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals("101", status);
     }
 
@@ -138,7 +138,7 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "fail");
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
-        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals("101", status);
     }
 
@@ -149,24 +149,25 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "fail");
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
-        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals("101", status);
     }
 
     @Test(expected = SvcLogicException.class)
-    public void reqExecCommand_shouldSetSuccess() throws SvcLogicException,
+    public void reqExecCommand_NoResponseFile() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
 
-        params.put("PlaybookName", "test_playbook.yaml");
         params.put("HostName", "test");
         params.put("Port", "10");
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
+        params.put("cmd", "test");
+        params.put("slsExec", "false");
         try {
             adapter.reqExecCommand(params, svcContext);
             String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
-            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
             assertEquals("400", status);
         } catch (NullPointerException e) {
             fail(e.getMessage() + " Unknown exception encountered ");
@@ -174,10 +175,9 @@ public class TestSaltstackAdapterImpl {
     }
 
     @Test(expected = SvcLogicException.class)
-    public void reqExecCommand_shouldSetSuccessWithRetry() throws SvcLogicException,
+    public void reqExecCommand_NoResponseFileWithRetry() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
 
-        params.put("PlaybookName", "test_playbook.yaml");
         params.put("HostName", "test");
         params.put("Port", "10");
         params.put("User", "test");
@@ -185,10 +185,12 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "success");
         params.put("retryDelay", "10");
         params.put("retryCount", "10");
+        params.put("cmd", "test");
+        params.put("slsExec", "false");
         try {
             adapter.reqExecCommand(params, svcContext);
             String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
-            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
             assertEquals("400", status);
         } catch (NullPointerException e) {
             fail(e.getMessage() + " Unknown exception encountered ");
@@ -196,10 +198,9 @@ public class TestSaltstackAdapterImpl {
     }
 
     @Test(expected = SvcLogicException.class)
-    public void reqExecCommand_shouldSetSuccessWithRetryZero() throws SvcLogicException,
+    public void reqExecCommand_NoResponseFileWithRetryZero() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
 
-        params.put("PlaybookName", "test_playbook.yaml");
         params.put("HostName", "test");
         params.put("Port", "10");
         params.put("User", "test");
@@ -207,10 +208,12 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "success");
         params.put("retryDelay", "0");
         params.put("retryCount", "0");
+        params.put("cmd", "test");
+        params.put("slsExec", "false");
         try {
             adapter.reqExecCommand(params, svcContext);
             String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
-            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
             assertEquals("400", status);
         } catch (NullPointerException e) {
             fail(e.getMessage() + " Unknown exception encountered ");
@@ -218,10 +221,9 @@ public class TestSaltstackAdapterImpl {
     }
 
     @Test(expected = SvcLogicException.class)
-    public void reqExecCommand_shouldSetSuccessWithNoRetry() throws SvcLogicException,
+    public void reqExecCommand_NoResponseFileWithNoRetry() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
 
-        params.put("PlaybookName", "test_playbook.yaml");
         params.put("HostName", "test");
         params.put("Port", "10");
         params.put("User", "test");
@@ -229,35 +231,379 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "success");
         params.put("retryDelay", "-1");
         params.put("retryCount", "-1");
+        params.put("cmd", "test");
+        params.put("slsExec", "false");
+
         try {
             adapter.reqExecCommand(params, svcContext);
             String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
-            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.Id");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
             assertEquals("400", status);
         } catch (NullPointerException e) {
             fail(e.getMessage() + " Unknown exception encountered ");
         }
     }
-    @Test
-    public void reqExecSLS_shouldSetSuccess() throws IllegalStateException, IllegalArgumentException {
 
-        params.put("Id", "100");
+    @Test(expected = SvcLogicException.class)
+    public void reqExecCommand_shouldSetFailure() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
 
-        for (String ukey : params.keySet()) {
-            System.out.println(String.format("Saltstack Parameter %s = %s", ukey, params.get(ukey)));
-        }
-
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("cmd", "test");
+        params.put("slsExec", "test");
+        params.put("Test", "fail");
         try {
-            adapter.reqExecSLS(params, svcContext);
+            adapter.reqExecCommand(params, svcContext);
             String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
-            //assertEquals(SUCCESS, status);
-            assertEquals(null, status);
-        } catch (SvcLogicException e) {
-            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
-            fail(e.getMessage() + " Code = " + status);
-        } catch (Exception e) {
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+            assertEquals("400", status);
+        } catch (NullPointerException e) {
             fail(e.getMessage() + " Unknown exception encountered ");
         }
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessNoSLS() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("fileName", "src/test/resources/test.json");
+        params.put("Id", "test1");
+        params.put("cmd", "test");
+        params.put("slsExec", "false");
+
+        adapter.reqExecCommand(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals("250", status);
+        assertEquals(TestId, "test1");
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessExecSLS() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("fileName", "src/test/resources/test-sls.json");
+        params.put("Id", "test1");
+        params.put("cmd", "test");
+        params.put("slsExec", "true");
+
+        adapter.reqExecCommand(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals("200", status);
+        assertEquals(TestId, "test1");
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecCommand_shouldSetFailExecSLS() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("fileName", "src/test/resources/test.json");
+        params.put("Id", "test1");
+        params.put("cmd", "test");
+        params.put("slsExec", "true");
+
+        adapter.reqExecCommand(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals(TestId, "test1");
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessFileTxt() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("fileName", "src/test/resources/test.txt");
+        params.put("Id", "txt");
+        params.put("cmd", "test");
+        params.put("slsExec", "false");
+
+        adapter.reqExecCommand(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals("250", status);
+        assertEquals(TestId, "txt");
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessFileNoExtension() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("fileName", "src/test/resources/test");
+        params.put("Id", "txt");
+        params.put("cmd", "test");
+        params.put("slsExec", "false");
+
+        adapter.reqExecCommand(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals("250", status);
+        assertEquals(TestId, "txt");
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessFileInvalidJson() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("fileName", "src/test/resources/test-invalid.json");
+        params.put("Id", "test1");
+        params.put("cmd", "test");
+        params.put("slsExec", "false");
+
+        adapter.reqExecCommand(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals("250", status);
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecCommand_shouldSetFailFileInvalidFile() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("fileName", "src/test/resources/test-none.json");
+        params.put("Id", "test1");
+
+        adapter.reqExecCommand(params, svcContext);
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessFileJsonNoReqID() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("fileName", "src/test/resources/test.json");
+        params.put("cmd", "test");
+        params.put("slsExec", "false");
+
+        adapter.reqExecCommand(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals("250", status);
+    }
+
+    @Test
+    public void reqExecSLSFile_shouldSetSuccessJson() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("slsFile", "src/test/resources/test.json");
+        params.put("fileName", "src/test/resources/test-sls.json");
+        params.put("Id", "test1");
+        params.put("cmd", "test");
+
+        adapter.reqExecSLSFile(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals("200", status);
+        assertEquals(TestId, "test1");
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecSLSFile_NoSLSfile() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("slsFile", "src/test/resources/test-none.json");
+        params.put("fileName", "src/test/resources/test-sls.json");
+        params.put("Id", "test1");
+
+        adapter.reqExecSLSFile(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals(TestId, "test1");
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecSLSFile_NoResponsefile() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("slsFile", "src/test/resources/test.json");
+        params.put("fileName", "src/test/resources/test-none.json");
+        params.put("Id", "test1");
+
+        adapter.reqExecSLSFile(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals(TestId, "test1");
+    }
+
+    @Test
+    public void reqExecSLSFile_WithMinionSetSuccessJson() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("slsFile", "src/test/resources/test.json");
+        params.put("fileName", "src/test/resources/test-sls.json");
+        params.put("Id", "test1");
+        params.put("cmd", "test");
+        params.put("applyTo", "minion1");
+
+        adapter.reqExecSLSFile(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals("200", status);
+        assertEquals(TestId, "test1");
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecSLSFile_WithMinionNoSLSfile() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("slsFile", "src/test/resources/test-none.json");
+        params.put("fileName", "src/test/resources/test-sls.json");
+        params.put("Id", "test1");
+        params.put("applyTo", "minion1");
+
+        adapter.reqExecSLSFile(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals(TestId, "test1");
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecSLSFile_WithMinionNoResponsefile() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("slsFile", "src/test/resources/test.json");
+        params.put("fileName", "src/test/resources/test-none.json");
+        params.put("Id", "test1");
+        params.put("applyTo", "minion1");
+
+        adapter.reqExecSLSFile(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals(TestId, "test1");
+    }
+
+    @Test
+    public void reqExecSLSFile_WithAllMinionSetSuccessJson() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("slsFile", "src/test/resources/test.json");
+        params.put("fileName", "src/test/resources/test-sls.json");
+        params.put("Id", "test1");
+        params.put("cmd", "test");
+        params.put("applyTo", "*");
+
+        adapter.reqExecSLSFile(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals("200", status);
+        assertEquals(TestId, "test1");
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecSLSFile_WithAllMinionNoSLSfile() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("slsFile", "src/test/resources/test-none.json");
+        params.put("fileName", "src/test/resources/test-sls.json");
+        params.put("Id", "test1");
+        params.put("applyTo", "*");
+
+        adapter.reqExecSLSFile(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals(TestId, "test1");
+    }
+
+    @Test(expected = SvcLogicException.class)
+    public void reqExecSLSFile_WithAllMinionNoResponsefile() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "test");
+        params.put("Port", "10");
+        params.put("User", "test");
+        params.put("Password", "test");
+        params.put("Test", "success");
+        params.put("slsFile", "src/test/resources/test.json");
+        params.put("fileName", "src/test/resources/test-none.json");
+        params.put("Id", "test1");
+        params.put("applyTo", "*");
+
+        adapter.reqExecSLSFile(params, svcContext);
+        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+        TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+        assertEquals(TestId, "test1");
     }
 
     @Test

@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,46 +44,46 @@ public final class JsonParser {
 
     @SuppressWarnings("unchecked")
     public static Map<String, String> convertToProperties(String s)
-        throws JSONException {
+            throws JSONException {
 
         checkNotNull(s, "Input should not be null.");
 
-            JSONObject json = new JSONObject(s);
-            Map<String, Object> wm = new HashMap<>();
-            Iterator<String> ii = json.keys();
-            while (ii.hasNext()) {
-                String key1 = ii.next();
-                wm.put(key1, json.get(key1));
-            }
+        JSONObject json = new JSONObject(s);
+        Map<String, Object> wm = new HashMap<>();
+        Iterator<String> ii = json.keys();
+        while (ii.hasNext()) {
+            String key1 = ii.next();
+            wm.put(key1, json.get(key1));
+        }
 
-            Map<String, String> mm = new HashMap<>();
+        Map<String, String> mm = new HashMap<>();
 
-            while (!wm.isEmpty())
-                for (String key : new ArrayList<>(wm.keySet())) {
-                    Object o = wm.get(key);
-                    wm.remove(key);
+        while (!wm.isEmpty())
+            for (String key : new ArrayList<>(wm.keySet())) {
+                Object o = wm.get(key);
+                wm.remove(key);
 
-                    if (o instanceof Boolean || o instanceof Number || o instanceof String) {
-                        mm.put(key, o.toString());
+                if (o instanceof Boolean || o instanceof Number || o instanceof String) {
+                    mm.put(key, o.toString());
 
-                        log.info("Added property: {} : {}", key, o.toString());
-                    } else if (o instanceof JSONObject) {
-                        JSONObject jo = (JSONObject) o;
-                        Iterator<String> i = jo.keys();
-                        while (i.hasNext()) {
-                            String key1 = i.next();
-                            wm.put(key + "." + key1, jo.get(key1));
-                        }
-                    } else if (o instanceof JSONArray) {
-                        JSONArray ja = (JSONArray) o;
-                        mm.put(key + "_length", String.valueOf(ja.length()));
-
-                        log.info("Added property: {}_length: {}", key, String.valueOf(ja.length()));
-
-                        for (int i = 0; i < ja.length(); i++)
-                            wm.put(key + '[' + i + ']', ja.get(i));
+                    log.info("Added property: {} : {}", key, o.toString());
+                } else if (o instanceof JSONObject) {
+                    JSONObject jo = (JSONObject) o;
+                    Iterator<String> i = jo.keys();
+                    while (i.hasNext()) {
+                        String key1 = i.next();
+                        wm.put(key + "." + key1, jo.get(key1));
                     }
+                } else if (o instanceof JSONArray) {
+                    JSONArray ja = (JSONArray) o;
+                    mm.put(key + "_length", String.valueOf(ja.length()));
+
+                    log.info("Added property: {}_length: {}", key, String.valueOf(ja.length()));
+
+                    for (int i = 0; i < ja.length(); i++)
+                        wm.put(key + '[' + i + ']', ja.get(i));
                 }
-            return mm;
+            }
+        return mm;
     }
 }

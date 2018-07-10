@@ -1,0 +1,35 @@
+{
+  "minion1": {
+    "retcode": 0,
+    "pkg_|-install_network_packages_|-install_network_packages_|-installed": {
+      "comment": "The following packages were installed/updated: lftp\nThe following packages were already installed: rsync, curl",
+      "name": "install_network_packages",
+      "start_time": "08:47:16.061765",
+      "result": true,
+      "duration": 11086.334,
+      "__run_num__": 0,
+      "__sls__": "nettools",
+      "changes": {
+        "lftp": {
+          "new": "4.6.3a-1build2",
+          "old": ""
+        }
+      },
+      "__id__": "install_network_packages"
+    }
+  },
+  "minion2": {
+    "retcode": 0,
+    "pkg_|-install_network_packages_|-install_network_packages_|-installed": {
+      "comment": "All specified packages are already installed",
+      "name": "curl",
+      "start_time": "08:47:16.152099",
+      "result": true,
+      "duration": 426.493,
+      "__run_num__": 0,
+      "__sls__": "nettools",
+      "changes": {},
+      "__id__": "install_network_packages"
+    }
+  }
+}

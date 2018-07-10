@@ -24,7 +24,13 @@
 
 package org.onap.ccsdk.sli.adaptors.saltstack.impl;
 
-import java.io.BufferedOutputStream;
+import com.att.eelf.configuration.EELFLogger;
+import com.att.eelf.configuration.EELFManager;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.RandomStringUtils;
+import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResult;
+import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResultCodes;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,15 +38,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
-import java.util.List;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.RandomStringUtils;
-import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResult;
-import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResultCodes;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
 
 /**
  * Returns a custom SSH client
@@ -88,7 +85,7 @@ public class ConnectionBuilder {
      * @return command execution status
      */
     public SaltstackResult connectNExecute(String cmd) {
-        return connectNExecute(cmd,-1,-1);
+        return connectNExecute(cmd, -1, -1);
     }
 
     /**
@@ -96,7 +93,7 @@ public class ConnectionBuilder {
      * 2. Exec remote command over SSH. Return command execution status.
      * Command output is written to out or err stream.
      *
-     * @param cmd Commands to execute
+     * @param cmd        Commands to execute
      * @param retryDelay delay between retry to make a SSH connection.
      * @param retryCount number of count retry to make a SSH connection.
      * @return command execution status
@@ -113,8 +110,8 @@ public class ConnectionBuilder {
             if (result.getStatusCode() != SaltstackResultCodes.SUCCESS.getValue()) {
                 return result;
             }
-            String outFilePath = "/tmp/"+ RandomStringUtils.random(5,true,true);
-            String errFilePath = "/tmp/"+ RandomStringUtils.random(5,true,true);
+            String outFilePath = "/tmp/" + RandomStringUtils.random(5, true, true);
+            String errFilePath = "/tmp/" + RandomStringUtils.random(5, true, true);
             OutputStream out = new FileOutputStream(outFilePath);
             OutputStream errs = new FileOutputStream(errFilePath);
             result = sshConnection.execCommand(cmd, out, errs);
@@ -137,40 +134,42 @@ public class ConnectionBuilder {
         return result;
     }
 
-    public SaltstackResult sortExitStatus (int exitStatus, String errFilePath, String cmd)  {
+    public SaltstackResult sortExitStatus(int exitStatus, String errFilePath, String cmd) {
         SaltstackResult result = new SaltstackResult();
-        String err;
+        String err = "";
         StringWriter writer = new StringWriter();
         try {
             IOUtils.copy(new FileInputStream(new File(errFilePath)), writer, "UTF-8");
             err = writer.toString();
-        } catch (Exception e){
-            err = "";
+        } catch (FileNotFoundException e){
+            logger.info("Error stream file doesn't exist");
+        } catch (IOException e){
+            logger.info("Error stream file doesn't exist");
         }
         if (exitStatus == 255 || exitStatus == 1) {
             String errMessage = "Error executing command [" + cmd + "] over SSH [" + sshConnection.toString()
                     + "]. Exit Code " + exitStatus + " and Error message : " +
-                    "Malformed configuration. "+ err;
+                    "Malformed configuration. " + err;
             logger.error(errMessage);
             result.setStatusCode(SaltstackResultCodes.INVALID_COMMAND.getValue());
             result.setStatusMessage(errMessage);
         } else if (exitStatus == 5 || exitStatus == 65) {
             String errMessage = "Error executing command [" + cmd + "] over SSH [" + sshConnection.toString()
                     + "]. Exit Code " + exitStatus + " and Error message : " +
-                    "Host not allowed to connect. "+ err;
+                    "Host not allowed to connect. " + err;
             logger.error(errMessage);
             result.setStatusCode(SaltstackResultCodes.USER_UNAUTHORIZED.getValue());
             result.setStatusMessage(errMessage);
         } else if (exitStatus == 67 || exitStatus == 73) {
             String errMessage = "Error executing command [" + cmd + "] over SSH [" + sshConnection.toString()
                     + "]. Exit Code " + exitStatus + " and Error message : " +
-                    "Key exchange failed. "+ err;
+                    "Key exchange failed. " + err;
             logger.error(errMessage);
             result.setStatusCode(SaltstackResultCodes.CERTIFICATE_ERROR.getValue());
             result.setStatusMessage(errMessage);
         } else {
             String errMessage = "Error executing command [" + cmd + "] over SSH [" + sshConnection.toString()
-                    + "]. Exit Code " + exitStatus + " and Error message : "+ err;
+                    + "]. Exit Code " + exitStatus + " and Error message : " + err;
             logger.error(errMessage);
             result.setStatusCode(SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue());
             result.setStatusMessage(errMessage);
@@ -183,7 +182,7 @@ public class ConnectionBuilder {
      * 2. Exec remote command over SSH. Return command execution status.
      * Command output is written to out or err stream.
      *
-     * @param commands list of commands to execute
+     * @param commands   list of commands to execute
      * @param payloadSLS has the SLS file location that is to be sent to server
      * @param retryDelay delay between retry to make a SSH connection.
      * @param retryCount number of count retry to make a SSH connection.
@@ -205,7 +204,7 @@ public class ConnectionBuilder {
     /**
      * Disconnect from SSH server.
      */
-    public SaltstackResult disConnect(){
+    public SaltstackResult disConnect() {
 
         SaltstackResult result = new SaltstackResult();
         try {
@@ -225,7 +224,7 @@ public class ConnectionBuilder {
      * @param cmd command to execute
      * @return command execution status
      */
-    public SaltstackResult execute(String cmd) {
+    public SaltstackResult connectNExecuteLog(String cmd) {
 
         SaltstackResult result = new SaltstackResult();
 

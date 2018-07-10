@@ -24,11 +24,8 @@
 
 package org.onap.ccsdk.sli.adaptors.saltstack.impl;
 
-import java.util.Map;
-import java.util.Properties;
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.att.eelf.configuration.EELFLogger;
+import com.att.eelf.configuration.EELFManager;
 import org.onap.ccsdk.sli.adaptors.saltstack.SaltstackAdapter;
 import org.onap.ccsdk.sli.adaptors.saltstack.SaltstackAdapterPropertiesProvider;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackMessageParser;
@@ -37,8 +34,14 @@ import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResultCodes;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackServerEmulator;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * This class implements the {@link SaltstackAdapter} interface. This interface defines the behaviors
@@ -46,56 +49,45 @@ import com.att.eelf.configuration.EELFManager;
  */
 public class SaltstackAdapterImpl implements SaltstackAdapter {
 
-    private static final long EXEC_TIMEOUT = 120000;
-    private long timeout = EXEC_TIMEOUT;
-
     /**
      * The constant used to define the service name in the mapped diagnostic context
      */
     @SuppressWarnings("nls")
     public static final String MDC_SERVICE = "service";
-
     /**
      * The constant for the status code for a failed outcome
      */
     @SuppressWarnings("nls")
     public static final String OUTCOME_FAILURE = "failure";
-
     /**
      * The constant for the status code for a successful outcome
      */
     @SuppressWarnings("nls")
     public static final String OUTCOME_SUCCESS = "success";
-
+    public static final String CONNECTION_RETRY_DELAY = "retryDelay";
+    public static final String CONNECTION_RETRY_COUNT = "retryCount";
+    private static final long EXEC_TIMEOUT = 120000;
     /**
      * Adapter Name
      */
     private static final String ADAPTER_NAME = "Saltstack Adapter";
     private static final String APPC_EXCEPTION_CAUGHT = "APPCException caught";
-
     private static final String RESULT_CODE_ATTRIBUTE_NAME = "org.onap.appc.adapter.saltstack.result.code";
     private static final String MESSAGE_ATTRIBUTE_NAME = "org.onap.appc.adapter.saltstack.message";
     private static final String RESULTS_ATTRIBUTE_NAME = "org.onap.appc.adapter.saltstack.results";
     private static final String ID_ATTRIBUTE_NAME = "org.onap.appc.adapter.saltstack.Id";
     private static final String LOG_ATTRIBUTE_NAME = "org.onap.appc.adapter.saltstack.log";
-
-    public static final String CONNECTION_RETRY_DELAY = "retryDelay";
-    public static final String CONNECTION_RETRY_COUNT = "retryCount";
-
     private static final String CLIENT_TYPE_PROPERTY_NAME = "org.onap.appc.adapter.saltstack.clientType";
     private static final String SS_SERVER_HOSTNAME = "org.onap.appc.adapter.saltstack.host";
     private static final String SS_SERVER_PORT = "org.onap.appc.adapter.saltstack.port";
     private static final String SS_SERVER_USERNAME = "org.onap.appc.adapter.saltstack.userName";
     private static final String SS_SERVER_PASSWORD = "org.onap.appc.adapter.saltstack.userPasswd";
     private static final String SS_SERVER_SSH_KEY = "org.onap.appc.adapter.saltstack.sshKey";
-
-
     /**
      * The logger to be used
      */
     private static final EELFLogger logger = EELFManager.getInstance().getLogger(SaltstackAdapterImpl.class);
-
-
+    private long timeout = EXEC_TIMEOUT;
     /**
      * Connection object
      **/
@@ -122,6 +114,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     public SaltstackAdapterImpl() {
         initialize(new SaltstackAdapterPropertiesProviderImpl());
     }
+
     public SaltstackAdapterImpl(SaltstackAdapterPropertiesProvider propProvider) {
         initialize(propProvider);
     }
@@ -150,9 +143,10 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     public void setExecTimeout(long timeout) {
         this.timeout = timeout;
     }
+
     /**
-     *  Method posts info to Context memory in case of an error and throws a
-     *        SvcLogicException causing SLI to register this as a failure
+     * Method posts info to Context memory in case of an error and throws a
+     * SvcLogicException causing SLI to register this as a failure
      */
     @SuppressWarnings("static-method")
     private void doFailure(SvcLogicContext svcLogic, int code, String message) throws SvcLogicException {
@@ -160,7 +154,6 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
         svcLogic.setStatus(OUTCOME_FAILURE);
         svcLogic.setAttribute(RESULT_CODE_ATTRIBUTE_NAME, Integer.toString(code));
         svcLogic.setAttribute(MESSAGE_ATTRIBUTE_NAME, message);
-
         throw new SvcLogicException("Saltstack Adapter Error = " + message);
     }
 
@@ -222,6 +215,72 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
         logger.info("Initialized Saltstack Adapter");
     }
 
+    private void setSSHClient(Map<String, String> params) throws SvcLogicException {
+        if (sshClient == null) {
+            logger.info("saltstack-adapter.properties not defined so reading saltstack host and " +
+                                "auth details from DG's parameters");
+            String sshHost = messageProcessor.reqHostNameResult(params);
+            String sshPort = messageProcessor.reqPortResult(params);
+            String sshUserName = messageProcessor.reqUserNameResult(params);
+            String sshPassword = messageProcessor.reqPasswordResult(params);
+            logger.info("Creating ssh client with BASIC Auth");
+            if (!testMode) {
+                sshClient = new ConnectionBuilder(sshHost, sshPort, sshUserName, sshPassword);
+            }
+        }
+    }
+
+    private String putToCommands(SvcLogicContext ctx, String slsFileName,
+                                 String reqID, String applyTo) throws SvcLogicException {
+        String constructedCommand = "";
+        try {
+            File file = new File(slsFileName);
+            InputStream in = new FileInputStream(file);
+            byte[] data = new byte[(int) file.length()];
+            in.read(data);
+            String str = new String(data, "UTF-8");
+            in.close();
+            constructedCommand = "echo "+str+" > /srv/salt/"+reqID+".sls; salt '"+applyTo+"' state.apply "+reqID+" --out=json --static";
+        } catch (FileNotFoundException e) {
+            doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(), "Input SLS file " +
+                    "not found in path : " + slsFileName+". "+ e.getMessage());
+        } catch (IOException e) {
+            doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(), "Input SLS file " +
+                    "error in path : " + slsFileName +". "+ e.getMessage());
+        }
+        logger.info("Command to be executed on server : " + constructedCommand);
+        return constructedCommand;
+    }
+
+    private String putToCommands(String slsName, String applyTo) {
+        String
+            constructedCommand = "cd /srv/salt/; salt '"+applyTo+"' state.apply "+slsName+" --out=json --static";
+
+        logger.info("Command to be executed on server : " + constructedCommand);
+        return constructedCommand;
+    }
+
+    private void checkResponseStatus(SaltstackResult testResult, SvcLogicContext ctx, String reqID, boolean slsExec)
+            throws SvcLogicException {
+
+        // Check status of test request returned by Agent
+        if (testResult.getStatusCode() != SaltstackResultCodes.FINAL_SUCCESS.getValue()) {
+            doFailure(ctx, testResult.getStatusCode(), "Request for execution of command failed. Reason = " + testResult.getStatusMessage());
+            ctx.setAttribute(ID_ATTRIBUTE_NAME, reqID);
+            return;
+        } else {
+            logger.info(String.format("Execution of request : successful."));
+            if (slsExec) {
+                ctx.setAttribute(RESULT_CODE_ATTRIBUTE_NAME, Integer.toString(testResult.getStatusCode()));
+                ctx.setAttribute(MESSAGE_ATTRIBUTE_NAME, "success");
+            } else {
+                ctx.setAttribute(RESULT_CODE_ATTRIBUTE_NAME, Integer.toString(SaltstackResultCodes.CHECK_CTX_FOR_CMD_SUCCESS.getValue()));
+                ctx.setAttribute(MESSAGE_ATTRIBUTE_NAME, "check context for execution status");
+            }
+            ctx.setAttribute(ID_ATTRIBUTE_NAME, reqID);
+        }
+    }
+
     // Public Method to post single command request to execute saltState. Posts the following back
     // to Svc context memory
     //  org.onap.appc.adapter.saltstack.req.code : 100 if successful
@@ -230,68 +289,65 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     @Override
     public void reqExecCommand(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException {
         String reqID;
+        boolean slsExec;
         SaltstackResult testResult;
-        if (sshClient == null){
-            logger.info("saltstack-adapter.properties not defined so reading saltstack host and " +
-                                "auth details from DG's parameters");
-            String sshHost = messageProcessor.reqHostNameResult(params);
-            String sshPort = messageProcessor.reqPortResult(params);
-            String sshUserName = messageProcessor.reqUserNameResult(params);
-            String sshPassword = messageProcessor.reqPasswordResult(params);
-            logger.info("Creating ssh client with BASIC Auth");
-            if(!testMode)
-                sshClient = new ConnectionBuilder(sshHost, sshPort, sshUserName, sshPassword);
-        }
-        try {
-            reqID = params.get("Id");
-            String commandToExecute = params.get("cmd");
-            testResult = execCommand(params, commandToExecute);
-            testResult = messageProcessor.parseResponse(ctx, reqID, testResult);
-
-            // Check status of test request returned by Agent
-            if (testResult.getStatusCode() == SaltstackResultCodes.FINAL_SUCCESS.getValue()) {
-                logger.info(String.format("Execution of request-ID : %s successful.", reqID));
-                testResult.setResults("Success");
-            } else {
-                doFailure(ctx, testResult.getStatusCode(), "Request for execution of command failed. Reason = " + testResult.getStatusMessage());
-                return;
-            }
-        } catch (SvcLogicException e) {
-            logger.error(APPC_EXCEPTION_CAUGHT, e);
-            doFailure(ctx, SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue(),
-                      "Request for execution of command failed. Reason = "
-                              + e.getMessage());
-            return;
-        } catch (Exception e) {
-            logger.error("Exception caught", e);
-            doFailure(ctx, SaltstackResultCodes.INVALID_COMMAND.getValue(),
-                      "Request for execution of command failed. Reason = "
-                              + e.getMessage());
-            return;
-        }
-        ctx.setAttribute(RESULT_CODE_ATTRIBUTE_NAME, Integer.toString(testResult.getStatusCode()));
-        ctx.setAttribute(MESSAGE_ATTRIBUTE_NAME, testResult.getResults());
-        ctx.setAttribute(ID_ATTRIBUTE_NAME, reqID);
+        setSSHClient(params);
+        reqID = messageProcessor.reqId(params);
+        String commandToExecute = messageProcessor.reqCmd(params);
+        slsExec = messageProcessor.reqIsSLSExec(params);
+        testResult = execCommand(params, commandToExecute);
+        testResult = messageProcessor.parseResponse(ctx, reqID, testResult, slsExec);
+        checkResponseStatus(testResult, ctx, reqID, slsExec);
     }
 
     /**
-     * Public Method to post SLS file request to execute saltState. Posts the following back
+     * Public Method to post SLS command request to execute saltState on server. Posts the following back
      * to Svc context memory
-     *
-     * org.onap.appc.adapter.saltstack.req.code : 100 if successful
+     * <p>
+     * org.onap.appc.adapter.saltstack.req.code : 200 if successful
      * org.onap.appc.adapter.saltstack.req.messge : any message
      * org.onap.appc.adapter.saltstack.req.Id : a unique uuid to reference the request
      */
     @Override
     public void reqExecSLS(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException {
-        //TODO: to implement
+        String reqID;
+        SaltstackResult testResult;
+        setSSHClient(params);
+        reqID = messageProcessor.reqId(params);
+        String slsName = messageProcessor.reqSlsName(params);
+        String applyTo = messageProcessor.reqApplyToDevices(params);
+        String commandToExecute = putToCommands(slsName, applyTo);
+        testResult = execCommand(params, commandToExecute);
+        testResult = messageProcessor.parseResponse(ctx, reqID, testResult, true);
+        checkResponseStatus(testResult, ctx, reqID, true);
+    }
 
+    /**
+     * Public Method to post SLS file request to execute saltState. Posts the following back
+     * to Svc context memory
+     * <p>
+     * org.onap.appc.adapter.saltstack.req.code : 100 if successful
+     * org.onap.appc.adapter.saltstack.req.messge : any message
+     * org.onap.appc.adapter.saltstack.req.Id : a unique uuid to reference the request
+     */
+    @Override
+    public void reqExecSLSFile(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException {
+        String reqID;
+        SaltstackResult testResult;
+        setSSHClient(params);
+        reqID = messageProcessor.reqId(params);
+        String slsFile = messageProcessor.reqSlsFile(params);
+        String applyTo = messageProcessor.reqApplyToDevices(params);
+        String commandToExecute = putToCommands(ctx, slsFile, reqID, applyTo);
+        testResult = execCommand(params, commandToExecute);
+        testResult = messageProcessor.parseResponse(ctx, reqID, testResult, true);
+        checkResponseStatus(testResult, ctx, reqID, true);
     }
 
     /**
      * Public method to get logs from saltState execution for a specific request Posts the following back
      * to Svc context memory
-     *
+     * <p>
      * It blocks till the Saltstack Server responds or the session times out very similar to
      * reqExecResult logs are returned in the DG context variable org.onap.appc.adapter.saltstack.log
      */
@@ -301,20 +357,20 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
 
     }
 
-    public SaltstackResult execCommand(Map<String, String> params, String commandToExecute){
+    public SaltstackResult execCommand(Map<String, String> params, String commandToExecute) {
         SaltstackResult testResult;
         if (params.get(CONNECTION_RETRY_DELAY) != null && params.get(CONNECTION_RETRY_COUNT) != null) {
             int retryDelay = Integer.parseInt(params.get(CONNECTION_RETRY_DELAY));
             int retryCount = Integer.parseInt(params.get(CONNECTION_RETRY_COUNT));
-            if(!testMode)
+            if (!testMode) {
                 testResult = sshClient.connectNExecute(commandToExecute, retryCount, retryDelay);
-            else {
+            } else {
                 testResult = testServer.MockReqExec(params);
             }
         } else {
-            if(!testMode)
+            if (!testMode) {
                 testResult = sshClient.connectNExecute(commandToExecute);
-            else {
+            } else {
                 testResult = testServer.MockReqExec(params);
             }
         }
