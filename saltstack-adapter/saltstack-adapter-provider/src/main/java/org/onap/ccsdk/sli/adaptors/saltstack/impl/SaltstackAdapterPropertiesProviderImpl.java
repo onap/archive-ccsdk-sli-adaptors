@@ -20,13 +20,6 @@
 
 package org.onap.ccsdk.sli.adaptors.saltstack.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Vector;
 import org.onap.ccsdk.sli.adaptors.saltstack.SaltstackAdapterPropertiesProvider;
 import org.onap.ccsdk.sli.core.sli.ConfigurationException;
 import org.onap.ccsdk.sli.core.utils.JREFileResolver;
@@ -37,11 +30,19 @@ import org.onap.ccsdk.sli.core.utils.common.SdncConfigEnvVarFileResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Vector;
+
 /**
  * Responsible for determining the properties file to use and instantiating the
  * <code>SqlResource</code> Service. The priority for properties file
  * resolution is as follows:
- *
+ * <p>
  * <ol>
  * <li>A directory identified by the system environment variable
  * <code>SDNC_CONFIG_DIR</code></li>
@@ -93,8 +94,8 @@ public class SaltstackAdapterPropertiesProviderImpl implements SaltstackAdapterP
                 properties.load(fileInputStream);
             } catch (final IOException e) {
                 LOG.error("Failed to load properties for file: {}", propertiesFile.toString(),
-                        new ConfigurationException("Failed to load properties for file: " + propertiesFile.toString(),
-                                e));
+                          new ConfigurationException("Failed to load properties for file: " + propertiesFile.toString(),
+                                                     e));
             }
         } else {
             // Try to read properties as resource
@@ -124,22 +125,11 @@ public class SaltstackAdapterPropertiesProviderImpl implements SaltstackAdapterP
     }
 
     /**
-     * Extract svclogic config properties.
-     *
-     * @return the svclogic config properties
-     */
-    public Properties getProperties() {
-        return properties;
-    }
-
-    /**
      * Reports the method chosen for properties resolution to the
      * <code>Logger</code>.
      *
-     * @param message
-     *            Some user friendly message
-     * @param fileOptional
-     *            The file location of the chosen properties file
+     * @param message      Some user friendly message
+     * @param fileOptional The file location of the chosen properties file
      * @return the file location of the chosen properties file
      */
     private static File reportSuccess(final String message, final Optional<File> fileOptional) {
@@ -155,14 +145,21 @@ public class SaltstackAdapterPropertiesProviderImpl implements SaltstackAdapterP
      * Reports fatal errors. This is the case in which no properties file could be
      * found.
      *
-     * @param message
-     *            An appropriate fatal error message
-     * @param configurationException
-     *            An exception describing what went wrong during resolution
+     * @param message                An appropriate fatal error message
+     * @param configurationException An exception describing what went wrong during resolution
      */
     private static void reportFailure(final String message, final ConfigurationException configurationException) {
 
         LOG.error("{}", message, configurationException);
+    }
+
+    /**
+     * Extract svclogic config properties.
+     *
+     * @return the svclogic config properties
+     */
+    public Properties getProperties() {
+        return properties;
     }
 
     /**

@@ -33,18 +33,18 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
- <!--   <dependencies>
-        <dependency>
-            <groupId>org.onap.ccsdk.sli.core</groupId>
-            <artifactId>ccsdk-sli</artifactId>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>saltstack-adapter-provider</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
-    -->
+    <!--   <dependencies>
+           <dependency>
+               <groupId>org.onap.ccsdk.sli.core</groupId>
+               <artifactId>ccsdk-sli</artifactId>
+               <type>xml</type>
+               <classifier>features</classifier>
+           </dependency>
+           <dependency>
+               <groupId>${project.groupId}</groupId>
+               <artifactId>saltstack-adapter-provider</artifactId>
+               <version>${project.version}</version>
+           </dependency>
+       </dependencies>
+       -->
 </project>

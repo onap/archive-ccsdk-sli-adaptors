@@ -24,14 +24,14 @@
 
 package org.onap.ccsdk.sli.adaptors.saltstack;
 
-import java.util.Map;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 
+import java.util.Map;
+
 /**
  * This interface defines the operations that the Saltstack adapter exposes.
- *
  */
 public interface SaltstackAdapter extends SvcLogicJavaPlugin {
     /**
@@ -46,11 +46,16 @@ public interface SaltstackAdapter extends SvcLogicJavaPlugin {
      *  to context for DGs access, with a certain prefix*/
     void reqExecCommand(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException;
 
+    /* Method for execution of saltstack SLS command on SaltState server
+     *  The response from Saltstack comes in json format and it is automatically put
+     *  to context for DGs access, with a certain prefix*/
+    void reqExecSLS(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException;
+
     /* When SLS file is created/available then this Method can be used to post
      *  the file to saltstack server and execute the SLS file on SaltState server
      *  The response from Saltstack comes in json format and it is automatically put
      *  to context for DGs access, with a certain prefix*/
-    void reqExecSLS(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException;
+    void reqExecSLSFile(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException;
 
     /* Method to get log of a saltState execution request
      *  The response from Saltstack comes in json format and it is automatically put
@@ -59,6 +64,7 @@ public interface SaltstackAdapter extends SvcLogicJavaPlugin {
 
     /**
      * Set the command execution timeout
+     *
      * @param timeout time in milliseconds
      */
     void setExecTimeout(long timeout);

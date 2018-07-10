@@ -32,23 +32,21 @@
 
 package org.onap.ccsdk.sli.adaptors.saltstack.model;
 
+import com.att.eelf.configuration.EELFLogger;
+import com.att.eelf.configuration.EELFManager;
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
+
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
 
 public class SaltstackServerEmulator {
 
-    private final EELFLogger logger = EELFManager.getInstance().getLogger(SaltstackServerEmulator.class);
-
-    private static final String SALTSTATE_NAME = "SaltStateName";
+    private static final String SALTSTATE_FILE_NAME = "fileName";
     private static final String STATUS_CODE = "StatusCode";
     private static final String STATUS_MESSAGE = "StatusMessage";
-
+    private final EELFLogger logger = EELFManager.getInstance().getLogger(SaltstackServerEmulator.class);
     private String saltStateName = "test_saltState.yaml";
 
     /**
@@ -62,41 +60,15 @@ public class SaltstackServerEmulator {
 
         try {
             if (params.get("Test") == "fail") {
-                result = rejectRequest(result, "Must provide a valid Id");
+                result = rejectRequest(result, "Mocked: Fail");
             } else {
-                result = acceptRequest(result);
+                String fileName = params.get(SALTSTATE_FILE_NAME);
+                if (fileName == null)
+                    result = acceptRequest(result, "");
+                else
+                    result = acceptRequest(result, fileName);
             }
         } catch (Exception e) {
-            logger.error("JSONException caught", e);
-            rejectRequest(result, e.getMessage());
-        }
-        return result;
-    }
-
-    /**
-     * Method that emulates the response from an Saltstack Server
-     * when presented with a request to execute a saltState
-     * Returns an saltstack object result. The response code is always the ssh code 200 (i.e connection successful)
-     * payload is json string as would be sent back by Saltstack Server
-     **/
-    //TODO: This class is to be altered completely based on the SALTSTACK server communicaiton.
-    public SaltstackResult Connect(Map<String, String> params) {
-        SaltstackResult result = new SaltstackResult();
-
-        try {
-            // Request must be a JSON object
-
-            JSONObject message = new JSONObject();
-            if (message.isNull("Id")) {
-                rejectRequest(result, "Must provide a valid Id");
-            } else if (message.isNull(SALTSTATE_NAME)) {
-                rejectRequest(result, "Must provide a saltState Name");
-            } else if (!message.getString(SALTSTATE_NAME).equals(saltStateName)) {
-                rejectRequest(result, "SaltState " + message.getString(SALTSTATE_NAME) + "  not found in catalog");
-            } else {
-                acceptRequest(result);
-            }
-        } catch (JSONException e) {
             logger.error("JSONException caught", e);
             rejectRequest(result, e.getMessage());
         }
@@ -108,7 +80,6 @@ public class SaltstackServerEmulator {
      * Server when presented with a GET request
      * Returns an saltstack object result. The response code is always the ssh code 200 (i.e connection successful)
      * payload is json string as would be sent back by Saltstack Server
-     *
      **/
     public SaltstackResult Execute(String agentUrl) {
 
@@ -149,9 +120,10 @@ public class SaltstackServerEmulator {
         return result;
     }
 
-    private SaltstackResult acceptRequest(SaltstackResult result) {
+    private SaltstackResult acceptRequest(SaltstackResult result, String fileName) {
         result.setStatusCode(SaltstackResultCodes.SUCCESS.getValue());
         result.setStatusMessage("Success");
+        result.setOutputFileName(fileName);
         return result;
     }
 }

@@ -51,12 +51,45 @@ Create an Adaptor to communicate with the SaltStack server:
   Note: SSH_CERT based Auth is not supported in this method.
   
 ***Using Saltstack Adaptor Commands and params to pass in:*** reqExecCommand:
-Method to execute a single command on SaltState server. The command entered should request the output in JSON format, this can be done by appending json-out outputter as specified in https://docs.saltstack.com/en/latest/ref/output/all/salt.output.json_out.html#module-salt.output.json_out and https://docs.saltstack.com/en/2017.7/ref/cli/salt-call.html The response from Saltstack comes in json format and it is automatically put to context for DGs access, with a certain request-ID as prefix.
-Example command will look like: 
-1) Command to test if all VNFC are running: "salt * test.ping --out=json --static"
-2) To check Network interfaces on your minions: "salt '*' network.interfaces --out=json --static"
-3) Restart Minion service after upgrade process: "salt minion1 service.restart salt-minion --out=json --static"
+Method to execute a single command on SaltState server and execute a SLS file located on the server. The command entered should request the output in JSON format, this can be done by appending json-out outputter as specified in https://docs.saltstack.com/en/latest/ref/output/all/salt.output.json_out.html#module-salt.output.json_out and https://docs.saltstack.com/en/2017.7/ref/cli/salt-call.html 
+The response from Saltstack comes in json format and it is automatically put to context for DGs access, with a certain request-ID as prefix.
+If Id is not passed as part of input param, then a random Id will be generated and put to properties in "org.onap.appc.adapter.saltstack.Id" field. All the output message from the execution will be appended with reqId. 
+1) Execute a single command on SaltState server : Example command will look like: 
+1.1) Command to test if all VNFC are running: "salt '*' test.ping --out=json --static"
+1.2) To check Network interfaces on your minions: "salt '*' network.interfaces --out=json --static"
+1.3) Restart Minion service after upgrade process: "salt minion1 service.restart salt-minion --out=json --static"
 Note: If using --out=json, you will probably want --static as well. Without the static option, you will get a separate JSON string per minion which makes JSON output invalid as a whole. This is due to using an iterative outputter. So if you want to feed it to a JSON parser, use --static as well.
 
-This "reqExecCommand" method gives the Operator/Directed Graphs to execute commands in a fine-tuned manner, which also means the operator/DG-creator should know what to expect as output as a result of command execution. By this way using DGs, the operator can check for success/failure of the executed comment. 
-If the output is not in JSON format, then the adaptor still tries to convert it into properties, in addition "reqID.completeResult" param will have the whole result for DG access. 
+This "reqExecCommand" method gives the Operator/Directed Graphs to execute commands in a fine-tuned manner, which also means the operator/DG-creator should know what to expect as output as a result of command execution (for both success/failure case). 
+By this way using DGs, the operator can check for success/failure of the executed comment. 
+If the output is not in JSON format, then the adaptor still tries to convert it into properties, in addition, params that will hold the command execution result for DG access are (note: this is just to check if the command was executed successfully on the server, this doesn't check the status of the command on saltstack server): 
+Result code at: org.onap.appc.adapter.saltstack.result.code (On success: This will be always be 250, means command execution was success but the result of the execution is unknown and is to be checked from ctx using DGs)
+Message at: org.onap.appc.adapter.saltstack.message
+Both user inputted/auto generated req Id at:  org.onap.appc.adapter.saltstack.Id
+To check the status of the command configuration on saltstack server: the user should exactly know what to look for in the context 
+so the user can identify if the configuration execution on the saltstack server succeded or not. 
+here for instance, in 1.1) the user should check if $reqId.<minion-name> is set to true in the context memory using DGs. 
+
+2) Execute a SLS file located on the server : Example command will look like:
+Knowing the saltstack server has vim.sls file located at "/srv/salt" directory then user can execute the following commands:
+1.1) Command to run the vim.sls file on saltstack server: "salt '*' state.apply vim --out=json --static"
+1.2) Command to run the nettools.sls file on saltstack server: "salt '*' state.apply nettools --out=json --static"
+Important thing to note: If the reqExecCommand is used to execute sls file then along with following, 
+    "HostName";  ->  Saltstack server's host name IP address.
+    "Port"; ->  Saltstack server's port to make SSH connection to.
+    "Password"; ->  Saltstack server's SSH UserName.
+    "User"; ->  Saltstack server's SSH Password.
+the param should contain,
+    "slsExec"; ->  this variable should be set to true.
+
+In this case, params that will hold the command execution result for DG access are
+Result code at: org.onap.appc.adapter.saltstack.result.code (On success: This will be 200, this means the command was executed successfully and also configuration change made using the SLS file was also successful) 
+Message at: org.onap.appc.adapter.saltstack.message
+Both user inputted/auto generated req Id at:  org.onap.appc.adapter.saltstack.Id
+The result code here will be the execution of configuration SLS file on the server. 
+NOTE: It would be better to use reqExecSLS, where you will only have to specify SLS file name on server.
+***Using Saltstack Adaptor Commands and params to pass in:*** reqExecSLS:
+Method to execute a single sls on SaltState server and execute a SLS file located on the server. The command entered should request the output in JSON format, this can be done by appending json-out outputter as specified in https://docs.saltstack.com/en/latest/ref/output/all/salt.output.json_out.html#module-salt.output.json_out and https://docs.saltstack.com/en/2017.7/ref/cli/salt-call.html 
+The response from Saltstack comes in json format and it is automatically put to context for DGs access, with a certain request-ID as prefix.
+If Id is not passed as part of input param, then a random Id will be generated and put to properties in "org.onap.appc.adapter.saltstack.Id" field. All the output message from the execution will be appended with reqId. 
+1) Execute a single command on SaltState server : Example command will look like: 

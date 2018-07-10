@@ -9,22 +9,23 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ECOMP is a trademark and service mark of AT&T Intellectual Property.
  * ============LICENSE_END=========================================================
  */
 
 package org.onap.ccsdk.sli.adaptors.saltstack.impl;
 
-import org.onap.appc.encryption.EncryptionTool;
+import com.att.eelf.configuration.EELFLogger;
+import com.att.eelf.configuration.EELFManager;
 import org.apache.sshd.ClientChannel;
 import org.apache.sshd.ClientSession;
 import org.apache.sshd.SshClient;
@@ -33,12 +34,9 @@ import org.apache.sshd.client.future.AuthFuture;
 import org.apache.sshd.client.future.OpenFuture;
 import org.apache.sshd.common.KeyPairProvider;
 import org.apache.sshd.common.keyprovider.FileKeyPairProvider;
-
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.onap.appc.encryption.EncryptionTool;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResult;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResultCodes;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 
 import java.io.OutputStream;
 import java.security.KeyPair;
@@ -48,11 +46,11 @@ import java.security.KeyPair;
  */
 class SshConnection {
 
+    public static final int DEFAULT_CONNECTION_RETRY_DELAY = 60;
+    public static final int DEFAULT_CONNECTION_RETRY_COUNT = 5;
     private static final EELFLogger logger = EELFManager.getInstance().getApplicationLogger();
-
     private static final long AUTH_TIMEOUT = 60000;
     private static final long EXEC_TIMEOUT = 120000;
-
     private String host;
     private int port;
     private String username;
@@ -61,9 +59,6 @@ class SshConnection {
     private String keyFile;
     private SshClient sshClient;
     private ClientSession clientSession;
-
-    public static final int DEFAULT_CONNECTION_RETRY_DELAY = 60;
-    public static final int DEFAULT_CONNECTION_RETRY_COUNT = 5;
 
     public SshConnection(String host, int port, String username, String password, String keyFile) {
         this.host = host;
@@ -87,13 +82,13 @@ class SshConnection {
         sshClient.start();
         try {
             clientSession =
-                sshClient.connect(EncryptionTool.getInstance().decrypt(username), host, port).await().getSession();
+                    sshClient.connect(EncryptionTool.getInstance().decrypt(username), host, port).await().getSession();
             if (password != null) {
                 clientSession.addPasswordIdentity(EncryptionTool.getInstance().decrypt(password));
             }
             if (keyFile != null) {
-                KeyPairProvider keyPairProvider = new FileKeyPairProvider(new String[] {
-                    keyFile
+                KeyPairProvider keyPairProvider = new FileKeyPairProvider(new String[]{
+                        keyFile
                 });
                 KeyPair keyPair = keyPairProvider.loadKeys().iterator().next();
                 clientSession.addPublicKeyIdentity(keyPair);
@@ -102,18 +97,18 @@ class SshConnection {
             authFuture.await(AUTH_TIMEOUT);
             if (!authFuture.isSuccess()) {
                 String errMessage = "Error establishing ssh connection to [" + username + "@" + host + ":" + port
-                    + "]. Authentication failed.";
+                        + "]. Authentication failed.";
                 result.setStatusCode(SaltstackResultCodes.USER_UNAUTHORIZED.getValue());
                 result.setStatusMessage(errMessage);
             }
         } catch (RuntimeException e) {
             String errMessage = "Error establishing ssh connection to [" + username + "@" + host + ":" + port + "]." +
-                                                "Runtime Exception : "+ e.getMessage();
+                    "Runtime Exception : " + e.getMessage();
             result.setStatusCode(SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue());
             result.setStatusMessage(errMessage);
         } catch (Exception e) {
             String errMessage = "Error establishing ssh connection to [" + username + "@" + host + ":" + port + "]." +
-                                                "Host Unknown : " + e.getMessage();
+                    "Host Unknown : " + e.getMessage();
             result.setStatusCode(SaltstackResultCodes.HOST_UNKNOWN.getValue());
             result.setStatusMessage(errMessage);
         }
@@ -127,10 +122,12 @@ class SshConnection {
     public SaltstackResult connectWithRetry(int retryCount, int retryDelay) {
         int retriesLeft;
         SaltstackResult result = new SaltstackResult();
-        if(retryCount == 0)
-        retryCount = DEFAULT_CONNECTION_RETRY_COUNT;
-        if(retryDelay == 0)
-        retryDelay = DEFAULT_CONNECTION_RETRY_DELAY;
+        if (retryCount == 0) {
+            retryCount = DEFAULT_CONNECTION_RETRY_COUNT;
+        }
+        if (retryDelay == 0) {
+            retryDelay = DEFAULT_CONNECTION_RETRY_DELAY;
+        }
         retriesLeft = retryCount + 1;
         do {
             try {
@@ -142,11 +139,11 @@ class SshConnection {
                     waitForConnection(retryDelay);
                     retriesLeft--;
                     logger.debug("Retrying SSH connection. Attempt [" + Integer.toString(retryCount - retriesLeft + 1)
-                        + "] out of [" + retryCount + "]");
+                                         + "] out of [" + retryCount + "]");
                 } else {
                     throw e;
                 }
-          }
+            }
         } while (retriesLeft > 0);
         return result;
     }
@@ -207,12 +204,12 @@ class SshConnection {
             return result;
         } catch (RuntimeException e) {
             String errMessage = "Error establishing ssh connection to [" + username + "@" + host + ":" + port + "]." +
-                    "Runtime Exception : "+ e.getMessage();
+                    "Runtime Exception : " + e.getMessage();
             result.setStatusCode(SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue());
             result.setStatusMessage(errMessage);
         } catch (Exception e1) {
             String errMessage = "Error executing command [" + cmd + "] over SSH [" + username + "@" + host + ":" +
-                    port + "]"+ e1.getMessage();
+                    port + "]" + e1.getMessage();
             result.setStatusCode(SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue());
             result.setStatusMessage(errMessage);
         }

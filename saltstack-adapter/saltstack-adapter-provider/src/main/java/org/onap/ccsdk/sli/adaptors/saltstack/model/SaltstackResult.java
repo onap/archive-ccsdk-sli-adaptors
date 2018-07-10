@@ -24,10 +24,8 @@
 
 package org.onap.ccsdk.sli.adaptors.saltstack.model;
 
-import java.io.OutputStream;
-
 /**
- *  Simple class to store code and message returned by POST/GET to an Saltstack Server
+ * Simple class to store code and message returned by POST/GET to an Saltstack Server
  */
 public class SaltstackResult {
 
@@ -54,42 +52,42 @@ public class SaltstackResult {
         sshExitStatus = sshCode;
     }
 
-    public void setStatusCode(int code) {
-        this.statusCode = code;
-    }
-
-    public void setStatusMessage(String message) {
-        this.statusMessage = message;
-    }
-
-    public void setResults(String results) {
-        this.results = results;
-    }
-
     void set(int code, String message, String results) {
         this.statusCode = code;
         this.statusMessage = message;
         this.results = results;
     }
 
-    public void setOutputFileName (String out) {
-        this.out = out;
-    }
-
     public String getOutputFileName() {
         return out;
+    }
+
+    public void setOutputFileName(String out) {
+        this.out = out;
     }
 
     public int getStatusCode() {
         return this.statusCode;
     }
 
+    public void setStatusCode(int code) {
+        this.statusCode = code;
+    }
+
     public String getStatusMessage() {
         return this.statusMessage;
     }
 
+    public void setStatusMessage(String message) {
+        this.statusMessage = message;
+    }
+
     public String getResults() {
         return this.results;
+    }
+
+    public void setResults(String results) {
+        this.results = results;
     }
 
     public int getSshExitStatus() {
