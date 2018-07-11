@@ -111,11 +111,11 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     /**
      * This default constructor is used as a work around because the activator wasn't getting called
      */
-    public SaltstackAdapterImpl() {
+    public SaltstackAdapterImpl() throws SvcLogicException{
         initialize(new SaltstackAdapterPropertiesProviderImpl());
     }
 
-    public SaltstackAdapterImpl(SaltstackAdapterPropertiesProvider propProvider) {
+    public SaltstackAdapterImpl(SaltstackAdapterPropertiesProvider propProvider) throws SvcLogicException{
         initialize(propProvider);
     }
 
@@ -160,7 +160,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     /**
      * initialize the Saltstack adapter based on default and over-ride configuration data
      */
-    private void initialize(SaltstackAdapterPropertiesProvider propProvider) {
+    private void initialize(SaltstackAdapterPropertiesProvider propProvider) throws SvcLogicException{
 
 
         Properties props = propProvider.getProperties();
@@ -204,12 +204,19 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
                 String sshPort = props.getProperty(SS_SERVER_PORT);
                 logger.info("Creating ssh client with ssh KEY from " + sshKey);
                 sshClient = new ConnectionBuilder(sshHost, sshPort, sshUserName, sshPassword, sshKey);
+            } else if ("NONE".equalsIgnoreCase(clientType)) {
+                logger.info("No saltstack-adapter.properties defined so reading from DG props");
+                sshClient = null;
             } else {
                 logger.info("No saltstack-adapter.properties defined so reading from DG props");
                 sshClient = null;
             }
+        } catch (NumberFormatException e) {
+            logger.error("Error Initializing Saltstack Adapter due to Unknown Exception", e);
+            throw new SvcLogicException("Saltstack Adapter Property file parsing Error = port in property file has to be an integer.");
         } catch (Exception e) {
             logger.error("Error Initializing Saltstack Adapter due to Unknown Exception", e);
+            throw new SvcLogicException("Saltstack Adapter Property file parsing Error = " + e.getMessage());
         }
 
         logger.info("Initialized Saltstack Adapter");
@@ -231,25 +238,43 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     }
 
     private String putToCommands(SvcLogicContext ctx, String slsFileName,
-                                 String reqID, String applyTo) throws SvcLogicException {
+                                    String applyTo) throws SvcLogicException {
         String constructedCommand = "";
         try {
             File file = new File(slsFileName);
+            String slsFile = file.getName();
+            if (!slsFile.substring(slsFile.lastIndexOf("."),
+                                   slsFile.length()).equalsIgnoreCase(".sls")) {
+                doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(), "Input file " +
+                        "is not of type .sls");
+            }
             InputStream in = new FileInputStream(file);
             byte[] data = new byte[(int) file.length()];
             in.read(data);
             String str = new String(data, "UTF-8");
             in.close();
-            constructedCommand = "echo "+str+" > /srv/salt/"+reqID+".sls; salt '"+applyTo+"' state.apply "+reqID+" --out=json --static";
+            String slsWithoutExtn = stripExtension(slsFile);
+            constructedCommand = "echo -e \""+str+"\" > /srv/salt/"+slsFile+"; cd /srv/salt/; salt '"+
+                    applyTo+"' state.apply "+slsWithoutExtn+" --out=json --static";
         } catch (FileNotFoundException e) {
             doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(), "Input SLS file " +
                     "not found in path : " + slsFileName+". "+ e.getMessage());
         } catch (IOException e) {
             doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(), "Input SLS file " +
                     "error in path : " + slsFileName +". "+ e.getMessage());
+        } catch (StringIndexOutOfBoundsException e) {
+            doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(), "Input file " +
+                    "is not of type .sls");
         }
         logger.info("Command to be executed on server : " + constructedCommand);
         return constructedCommand;
+    }
+
+    private String stripExtension (String str) {
+        if (str == null) return null;
+        int pos = str.lastIndexOf(".");
+        if (pos == -1) return str;
+        return str.substring(0, pos);
     }
 
     private String putToCommands(String slsName, String applyTo) {
@@ -265,8 +290,8 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
 
         // Check status of test request returned by Agent
         if (testResult.getStatusCode() != SaltstackResultCodes.FINAL_SUCCESS.getValue()) {
-            doFailure(ctx, testResult.getStatusCode(), "Request for execution of command failed. Reason = " + testResult.getStatusMessage());
             ctx.setAttribute(ID_ATTRIBUTE_NAME, reqID);
+            doFailure(ctx, testResult.getStatusCode(), "Request for execution of command failed. Reason = " + testResult.getStatusMessage());
             return;
         } else {
             logger.info(String.format("Execution of request : successful."));
@@ -338,7 +363,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
         reqID = messageProcessor.reqId(params);
         String slsFile = messageProcessor.reqSlsFile(params);
         String applyTo = messageProcessor.reqApplyToDevices(params);
-        String commandToExecute = putToCommands(ctx, slsFile, reqID, applyTo);
+        String commandToExecute = putToCommands(ctx, slsFile, applyTo);
         testResult = execCommand(params, commandToExecute);
         testResult = messageProcessor.parseResponse(ctx, reqID, testResult, true);
         checkResponseStatus(testResult, ctx, reqID, true);

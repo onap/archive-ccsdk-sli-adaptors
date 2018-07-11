@@ -205,8 +205,12 @@ public class SaltstackMessageParser {
             throwIfMissingMandatoryParam(params, key);
         }
         String slsName = params.get(SaltstackMessageParser.SLS_NAME);
-        if(slsName.substring(slsName.lastIndexOf("."), slsName.length()).equalsIgnoreCase(".sls"))
-            return stripExtension(slsName);
+        try {
+            if(slsName.substring(slsName.lastIndexOf("."), slsName.length()).equalsIgnoreCase(".sls"))
+                return stripExtension(slsName);
+        } catch (StringIndexOutOfBoundsException e) {
+            return slsName;
+        }
         return slsName;
     }
 
