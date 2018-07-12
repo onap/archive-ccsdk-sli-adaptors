@@ -138,11 +138,10 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
                 ctx = SSLContext.getInstance("TLS");
 
                 KeyManagerFactory kmf = null;
-                try {
+                try (FileInputStream fin = new FileInputStream(keystorePath)){
                     String storeType = "PKCS12";
                     String def = KeyStore.getDefaultType();
                     kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-                    FileInputStream fin = new FileInputStream(keystorePath);
 
                     String extension = keystorePath.substring(keystorePath.lastIndexOf(".") + 1);
 
