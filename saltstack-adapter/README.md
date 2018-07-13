@@ -50,7 +50,8 @@ Create an Adaptor to communicate with the SaltStack server:
     "User"; ->  Saltstack server's SSH Password.
   Note: SSH_CERT based Auth is not supported in this method.
   
-***Using Saltstack Adaptor Commands and params to pass in:*** reqExecCommand:
+***Using Saltstack Adaptor Commands and params to pass in: reqExecCommand API:*** 
+
 Method to execute a single command on SaltState server and execute a SLS file located on the server. The command entered should request the output in JSON format, this can be done by appending json-out outputter as specified in https://docs.saltstack.com/en/latest/ref/output/all/salt.output.json_out.html#module-salt.output.json_out and https://docs.saltstack.com/en/2017.7/ref/cli/salt-call.html 
 The response from Saltstack comes in json format and it is automatically put to context for DGs access, with a certain request-ID as prefix.
 If Id is not passed as part of input param, then a random Id will be generated and put to properties in "org.onap.appc.adapter.saltstack.Id" field. All the output message from the execution will be appended with reqId. 
@@ -72,8 +73,8 @@ here for instance, in 1.1) the user should check if $reqId.<minion-name> is set 
 
 2) Execute a SLS file located on the server : Example command will look like:
 Knowing the saltstack server has vim.sls file located at "/srv/salt" directory then user can execute the following commands:
-1.1) Command to run the vim.sls file on saltstack server: "salt '*' state.apply vim --out=json --static"
-1.2) Command to run the nettools.sls file on saltstack server: "salt '*' state.apply nettools --out=json --static"
+1.1) Command to run the vim.sls file on saltstack server: cmd = "salt '*' state.apply vim --out=json --static"
+1.2) Command to run the nettools.sls file on saltstack server: cmd = "salt '*' state.apply nettools --out=json --static"
 Important thing to note: If the reqExecCommand is used to execute sls file then along with following, 
     "HostName";  ->  Saltstack server's host name IP address.
     "Port"; ->  Saltstack server's port to make SSH connection to.
@@ -82,14 +83,42 @@ Important thing to note: If the reqExecCommand is used to execute sls file then 
 the param should contain,
     "slsExec"; ->  this variable should be set to true.
 
-In this case, params that will hold the command execution result for DG access are
+In this case, params that will hold the command execution result for DG access in Key:
 Result code at: org.onap.appc.adapter.saltstack.result.code (On success: This will be 200, this means the command was executed successfully and also configuration change made using the SLS file was also successful) 
 Message at: org.onap.appc.adapter.saltstack.message
 Both user inputted/auto generated req Id at:  org.onap.appc.adapter.saltstack.Id
 The result code here will be the execution of configuration SLS file on the server. 
-NOTE: It would be better to use reqExecSLS, where you will only have to specify SLS file name on server.
-***Using Saltstack Adaptor Commands and params to pass in:*** reqExecSLS:
-Method to execute a single sls on SaltState server and execute a SLS file located on the server. The command entered should request the output in JSON format, this can be done by appending json-out outputter as specified in https://docs.saltstack.com/en/latest/ref/output/all/salt.output.json_out.html#module-salt.output.json_out and https://docs.saltstack.com/en/2017.7/ref/cli/salt-call.html 
+NOTE: It would be better to use reqExecSLS, where you will only have to specify SLS file name on server to execute it.
+
+
+***Using Saltstack Adaptor Commands and params to pass in: reqExecSLS API:***
+
+Method to execute a single sls on SaltState server (Where the SLS file already located on the server). The command entered will only be the SLS file name and the output will be in JSON format automatically. 
 The response from Saltstack comes in json format and it is automatically put to context for DGs access, with a certain request-ID as prefix.
-If Id is not passed as part of input param, then a random Id will be generated and put to properties in "org.onap.appc.adapter.saltstack.Id" field. All the output message from the execution will be appended with reqId. 
+If request Id (Id) is not passed as part of input param, then a random Id will be generated and put to properties in "org.onap.appc.adapter.saltstack.Id" field. All the output message from the execution will be appended with reqId. 
 1) Execute a single command on SaltState server : Example command will look like: 
+    In the context set the "slsName" to "test.sls"
+    In the context set the "applyTo" to "minion1" //to the minions or VNFCs you want to apply the SLS file to.
+    "applyTo" can be empty or set to "*" is the SLS has to be applied to all the minions or VNFCs. 
+In this case, params that will hold the command execution result for DG access in Key:
+Result code at: org.onap.appc.adapter.saltstack.result.code (On success: This will be 200, this means the command was executed successfully and also configuration change made using the SLS file was also successful) 
+Message at: org.onap.appc.adapter.saltstack.message
+Both user inputted/auto generated req Id at:  org.onap.appc.adapter.saltstack.Id
+The result code here will be the execution of configuration SLS file on the server. 
+
+***Using Saltstack Adaptor Commands and params to pass in: reqExecSLSFile API:***
+
+Method to execute a single sls on SaltState server (Where the SLS file in the adaptor). The command entered will only be the SLS file location on the APPC/ODL container and the output from server will be in JSON format automatically. 
+The response from Saltstack comes in json format and it is automatically put to context for DGs access, with a certain request-ID as prefix.
+If request Id (Id) is not passed as part of input param, then a random Id will be generated and put to properties in "org.onap.appc.adapter.saltstack.Id" field. All the output message from the execution will be appended with reqId. 
+1) Execute a single command on SaltState server : Example command will look like: 
+    In the context set the "slsFile" to "/path/to/test.sls" //mention the path of the SLS file in ODL container.
+    In the context set the "applyTo" to "minion1" //to the minions or VNFCs you want to apply the SLS file to.
+    "applyTo" can be empty or set to "*" is the SLS has to be applied to all the minions or VNFCs. 
+In this case, params that will hold the command execution result for DG access in Key:
+Result code at: org.onap.appc.adapter.saltstack.result.code (On success: This will be 200, this means the command was executed successfully and also configuration change made using the SLS file was also successful) 
+Message at: org.onap.appc.adapter.saltstack.message
+Both user inputted/auto generated req Id at:  org.onap.appc.adapter.saltstack.Id
+The result code here will be the execution of configuration SLS file on the server. 
+
+

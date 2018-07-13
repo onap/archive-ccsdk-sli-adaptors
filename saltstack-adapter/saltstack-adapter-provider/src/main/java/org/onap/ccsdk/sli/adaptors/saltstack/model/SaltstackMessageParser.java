@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
@@ -289,15 +290,16 @@ public class SaltstackMessageParser {
      * and returns an SaltstackResult object.
      */
     public SaltstackResult parseResponse(SvcLogicContext ctx, String pfx,
-                                         SaltstackResult saltstackResult, boolean slsExec) {
+                                         SaltstackResult saltstackResult, boolean slsExec) throws IOException{
         int code = saltstackResult.getStatusCode();
+        InputStream in = null;
         boolean executionStatus = true, retCodeFound = false;
         if (code != SaltstackResultCodes.SUCCESS.getValue()) {
             return saltstackResult;
         }
         try {
             File file = new File(saltstackResult.getOutputFileName());
-            InputStream in = new FileInputStream(file);
+            in = new FileInputStream(file);
             byte[] data = new byte[(int) file.length()];
             in.read(data);
             String str = new String(data, "UTF-8");
@@ -324,6 +326,9 @@ public class SaltstackMessageParser {
         } catch (Exception e) {
             return new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "error parsing response file "
                     + saltstackResult.getOutputFileName() + " : " + e.getMessage());
+        } finally {
+            if( in != null )
+                in.close();
         }
         if (slsExec) {
             if (!retCodeFound)
@@ -337,10 +342,12 @@ public class SaltstackMessageParser {
         return saltstackResult;
     }
 
-    public SaltstackResult putToProperties(SvcLogicContext ctx, String pfx, SaltstackResult saltstackResult) {
+    public SaltstackResult putToProperties(SvcLogicContext ctx, String pfx,
+                                           SaltstackResult saltstackResult) throws IOException{
+        InputStream in = null;
         try {
             File file = new File(saltstackResult.getOutputFileName());
-            InputStream in = new FileInputStream(file);
+            in = new FileInputStream(file);
             Properties prop = new Properties();
             prop.load(in);
             ctx.setAttribute(pfx + "completeResult", prop.toString());
@@ -355,6 +362,9 @@ public class SaltstackMessageParser {
         } catch (Exception e) {
             saltstackResult = new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "Error parsing response file = "
                     + saltstackResult.getOutputFileName() + ". Error = " + e.getMessage());
+        } finally {
+            if( in != null )
+                in.close();
         }
         saltstackResult.setStatusCode(SaltstackResultCodes.FINAL_SUCCESS.getValue());
         return saltstackResult;
