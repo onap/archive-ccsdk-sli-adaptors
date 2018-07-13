@@ -22,7 +22,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.appc.adapter.impl;
+package org.onap.ccsdk.adapter.impl;
 
 import org.junit.After;
 import org.junit.Before;
@@ -39,10 +39,6 @@ import static org.junit.Assert.fail;
 
 
 public class TestSaltstackAdapterImpl {
-
-    private final String PENDING = "100";
-    private final String SUCCESS = "400";
-    private String message = "{\"Results\":{\"192.168.1.10\":{\"Id\":\"101\",\"StatusCode\":200,\"StatusMessage\":\"SUCCESS\"}},\"StatusCode\":200,\"StatusMessage\":\"FINISHED\"}";
 
     private SaltstackAdapterImpl adapter;
     private String TestId;
@@ -457,7 +453,6 @@ public class TestSaltstackAdapterImpl {
         params.put("Id", "test1");
 
         adapter.reqExecSLSFile(params, svcContext);
-        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals(TestId, "test1");
     }
@@ -476,7 +471,6 @@ public class TestSaltstackAdapterImpl {
         params.put("Id", "test1");
 
         adapter.reqExecSLSFile(params, svcContext);
-        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals(TestId, "test1");
     }
@@ -495,7 +489,6 @@ public class TestSaltstackAdapterImpl {
         params.put("Id", "test1");
 
         adapter.reqExecSLSFile(params, svcContext);
-        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals(TestId, "test1");
     }
@@ -559,7 +552,6 @@ public class TestSaltstackAdapterImpl {
         params.put("applyTo", "minion1");
 
         adapter.reqExecSLSFile(params, svcContext);
-        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals(TestId, "test1");
     }
@@ -579,7 +571,6 @@ public class TestSaltstackAdapterImpl {
         params.put("applyTo", "minion1");
 
         adapter.reqExecSLSFile(params, svcContext);
-        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals(TestId, "test1");
     }
@@ -621,7 +612,6 @@ public class TestSaltstackAdapterImpl {
         params.put("applyTo", "*");
 
         adapter.reqExecSLSFile(params, svcContext);
-        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals(TestId, "test1");
     }
@@ -641,7 +631,6 @@ public class TestSaltstackAdapterImpl {
         params.put("applyTo", "*");
 
         adapter.reqExecSLSFile(params, svcContext);
-        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals(TestId, "test1");
     }
@@ -703,7 +692,6 @@ public class TestSaltstackAdapterImpl {
         params.put("Id", "test1");
 
         adapter.reqExecSLS(params, svcContext);
-        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals(TestId, "test1");
     }
@@ -747,7 +735,6 @@ public class TestSaltstackAdapterImpl {
         params.put("applyTo", "minion1");
 
         adapter.reqExecSLS(params, svcContext);
-        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals(TestId, "test1");
     }
@@ -790,7 +777,6 @@ public class TestSaltstackAdapterImpl {
         params.put("applyTo", "*");
 
         adapter.reqExecSLS(params, svcContext);
-        String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
         assertEquals(TestId, "test1");
     }

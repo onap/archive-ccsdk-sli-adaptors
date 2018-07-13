@@ -22,7 +22,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.appc.adapter.impl;
+package org.onap.ccsdk.adapter.impl;
 
 import org.junit.After;
 import org.junit.Before;
@@ -41,21 +41,12 @@ import static org.junit.Assert.fail;
 
 public class TestConnectionBuilder {
 
-    private final String PENDING = "100";
-    private final String SUCCESS = "400";
-    private String message = "{\"Results\":{\"192.168.1.10\":{\"Id\":\"101\",\"StatusCode\":200,\"StatusMessage\":\"SUCCESS\"}},\"StatusCode\":200,\"StatusMessage\":\"FINISHED\"}";
-
     private ConnectionBuilder connBuilder;
-    private String TestId;
-    private boolean testMode = true;
     private Map<String, String> params;
-    private SvcLogicContext svcContext;
 
 
     @Before
     public void setup() throws IllegalArgumentException {
-        testMode = true;
-        svcContext = new SvcLogicContext();
         String HostName = "test";
         String Port = "10";
         String User = "test";
@@ -70,10 +61,8 @@ public class TestConnectionBuilder {
 
     @After
     public void tearDown() {
-        testMode = false;
         connBuilder = null;
         params = null;
-        svcContext = null;
     }
 
     @Test

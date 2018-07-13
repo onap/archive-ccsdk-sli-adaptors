@@ -22,7 +22,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.appc.adapter.ansible.impl;
+package org.onap.ccsdk.adapter.ansible.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

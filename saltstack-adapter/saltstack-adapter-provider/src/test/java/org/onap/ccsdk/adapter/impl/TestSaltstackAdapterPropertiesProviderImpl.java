@@ -22,7 +22,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.appc.adapter.impl;
+package org.onap.ccsdk.adapter.impl;
 
 import org.junit.After;
 import org.junit.Before;
@@ -37,13 +37,9 @@ import java.util.Properties;
 import static org.junit.Assert.assertEquals;
 
 public class TestSaltstackAdapterPropertiesProviderImpl {
-    private final String PENDING = "100";
-    private final String SUCCESS = "400";
-    private String message = "{\"Results\":{\"192.168.1.10\":{\"Id\":\"101\",\"StatusCode\":200,\"StatusMessage\":\"SUCCESS\"}},\"StatusCode\":200,\"StatusMessage\":\"FINISHED\"}";
 
     private SaltstackAdapterImpl adapter;
     private Properties params;
-    private SvcLogicContext svcContext;
 
 
     @Before
@@ -55,7 +51,6 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
     public void tearDown() {
         adapter = null;
         params = null;
-        svcContext = null;
     }
 
     @Test(expected = SvcLogicException.class)

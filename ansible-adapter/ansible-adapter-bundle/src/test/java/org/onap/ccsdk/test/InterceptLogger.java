@@ -23,7 +23,7 @@
  */
 
 
-package org.onap.appc.test;
+package org.onap.ccsdk.test;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
