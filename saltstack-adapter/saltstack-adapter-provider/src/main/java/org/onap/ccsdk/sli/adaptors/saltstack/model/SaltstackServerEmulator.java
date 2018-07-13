@@ -55,7 +55,7 @@ public class SaltstackServerEmulator {
      * Returns an saltstack object result. The response code is always the ssh code 200 (i.e connection successful)
      * payload is json string as would be sent back by Saltstack Server
      **/
-    public SaltstackResult MockReqExec(Map<String, String> params) {
+    public SaltstackResult mockReqExec(Map<String, String> params) {
         SaltstackResult result = new SaltstackResult();
 
         try {
@@ -73,45 +73,6 @@ public class SaltstackServerEmulator {
             rejectRequest(result, e.getMessage());
         }
         return result;
-    }
-
-    /**
-     * Method to emulate response from an Saltstack
-     * Server when presented with a GET request
-     * Returns an saltstack object result. The response code is always the ssh code 200 (i.e connection successful)
-     * payload is json string as would be sent back by Saltstack Server
-     **/
-    public SaltstackResult Execute(String agentUrl) {
-
-        Pattern pattern = Pattern.compile(".*?\\?Id=(.*?)&Type.*");
-        Matcher matcher = pattern.matcher(agentUrl);
-        String id = StringUtils.EMPTY;
-        String vmAddress = "192.168.1.10";
-
-        if (matcher.find()) {
-            id = matcher.group(1);
-        }
-
-        SaltstackResult getResult = new SaltstackResult();
-
-        JSONObject response = new JSONObject();
-        response.put(STATUS_CODE, 200);
-        response.put(STATUS_MESSAGE, "FINISHED");
-
-        JSONObject results = new JSONObject();
-
-        JSONObject vmResults = new JSONObject();
-        vmResults.put(STATUS_CODE, 200);
-        vmResults.put(STATUS_MESSAGE, "SUCCESS");
-        vmResults.put("Id", id);
-        results.put(vmAddress, vmResults);
-
-        response.put("Results", results);
-
-        getResult.setStatusCode(200);
-        getResult.setStatusMessage(response.toString());
-
-        return getResult;
     }
 
     private SaltstackResult rejectRequest(SaltstackResult result, String Message) {

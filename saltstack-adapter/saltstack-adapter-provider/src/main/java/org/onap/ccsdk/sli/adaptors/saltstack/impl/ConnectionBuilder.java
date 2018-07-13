@@ -84,7 +84,7 @@ public class ConnectionBuilder {
      * @param cmd Commands to execute
      * @return command execution status
      */
-    public SaltstackResult connectNExecute(String cmd) {
+    public SaltstackResult connectNExecute(String cmd) throws IOException {
         return connectNExecute(cmd, -1, -1);
     }
 
@@ -98,9 +98,12 @@ public class ConnectionBuilder {
      * @param retryCount number of count retry to make a SSH connection.
      * @return command execution status
      */
-    public SaltstackResult connectNExecute(String cmd, int retryCount, int retryDelay) {
+    public SaltstackResult connectNExecute(String cmd, int retryCount, int retryDelay)
+                            throws IOException{
 
         SaltstackResult result = new SaltstackResult();
+        OutputStream out = null;
+        OutputStream errs = null;
         try {
             if (retryCount != -1) {
                 result = sshConnection.connectWithRetry(retryCount, retryDelay);
@@ -112,12 +115,10 @@ public class ConnectionBuilder {
             }
             String outFilePath = "/tmp/" + RandomStringUtils.random(5, true, true);
             String errFilePath = "/tmp/" + RandomStringUtils.random(5, true, true);
-            OutputStream out = new FileOutputStream(outFilePath);
-            OutputStream errs = new FileOutputStream(errFilePath);
+            out = new FileOutputStream(outFilePath);
+            errs = new FileOutputStream(errFilePath);
             result = sshConnection.execCommand(cmd, out, errs);
             sshConnection.disconnect();
-            out.close();
-            errs.close();
             if (result.getSshExitStatus() != 0) {
                 return sortExitStatus(result.getSshExitStatus(), errFilePath, cmd);
             }
@@ -130,6 +131,11 @@ public class ConnectionBuilder {
             logger.error("Caught Exception", io);
             result.setStatusCode(SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue());
             result.setStatusMessage(io.getMessage());
+        } finally {
+            if( out != null )
+                out.close();
+            if( errs != null )
+                errs.close();
         }
         return result;
     }
