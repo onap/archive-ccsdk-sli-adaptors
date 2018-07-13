@@ -19,7 +19,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.appc.adapter.model;
+package org.onap.ccsdk.adapter.model;
 
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;

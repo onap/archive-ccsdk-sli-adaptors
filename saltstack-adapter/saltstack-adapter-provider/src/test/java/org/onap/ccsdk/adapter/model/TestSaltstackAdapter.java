@@ -21,7 +21,7 @@
  * ECOMP is a trademark and service mark of AT&T Intellectual Property.
  * ============LICENSE_END=========================================================
  */
-package org.onap.appc.adapter.model;
+package org.onap.ccsdk.adapter.model;
 
 import org.junit.Test;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackMessageParser;
@@ -39,7 +39,6 @@ public class TestSaltstackAdapter {
     private Class[] parameterTypes;
     private SaltstackMessageParser saltstackMessageParser;
     private Method m;
-    private String name;
 
     @Test
     public void callPrivateConstructorsMethodsForCodeCoverage() throws SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
@@ -48,21 +47,18 @@ public class TestSaltstackAdapter {
           Class<?>[] classesOne = {SaltstackMessageParser.class};
           for(Class<?> clazz : classesOne) {
                 Constructor<?> constructor = clazz.getDeclaredConstructor();
-                name = constructor.getName();
                 constructor.setAccessible(true);
                 assertNotNull(constructor.newInstance());
           }
           Class<?>[] classesTwo = {SaltstackServerEmulator.class};
           for(Class<?> clazz : classesTwo) {
                 Constructor<?> constructor = clazz.getDeclaredConstructor();
-                name = constructor.getName();
                 constructor.setAccessible(true);
                 assertNotNull(constructor.newInstance());
           }
           Class<?>[] classesThree = {SaltstackResult.class};
           for(Class<?> clazz : classesThree) {
                 Constructor<?> constructor = clazz.getDeclaredConstructor();
-                name = constructor.getName();
                 constructor.setAccessible(true);
                 assertNotNull(constructor.newInstance());
           }

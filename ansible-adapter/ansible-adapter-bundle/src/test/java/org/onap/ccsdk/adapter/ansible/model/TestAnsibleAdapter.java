@@ -21,7 +21,7 @@
  * ECOMP is a trademark and service mark of AT&T Intellectual Property.
  * ============LICENSE_END=========================================================
  */
-package org.onap.appc.adapter.ansible.model;
+package org.onap.ccsdk.adapter.ansible.model;
 
 import static org.junit.Assert.assertNotNull;
 

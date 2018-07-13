@@ -23,7 +23,7 @@
  */
 
 
-package org.onap.appc.test;
+package org.onap.ccsdk.test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.onap.appc.test.InterceptLogger;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 

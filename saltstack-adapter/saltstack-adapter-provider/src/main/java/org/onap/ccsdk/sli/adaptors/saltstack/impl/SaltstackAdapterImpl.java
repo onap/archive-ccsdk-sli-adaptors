@@ -81,7 +81,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     private static final String SS_SERVER_HOSTNAME = "org.onap.appc.adapter.saltstack.host";
     private static final String SS_SERVER_PORT = "org.onap.appc.adapter.saltstack.port";
     private static final String SS_SERVER_USERNAME = "org.onap.appc.adapter.saltstack.userName";
-    private static final String SS_SERVER_PASSWORD = "org.onap.appc.adapter.saltstack.userPasswd";
+    private static final String SS_SERVER_PASSWD = "org.onap.appc.adapter.saltstack.userPasswd";
     private static final String SS_SERVER_SSH_KEY = "org.onap.appc.adapter.saltstack.sshKey";
     /**
      * The logger to be used
@@ -186,7 +186,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
                 String sshHost = props.getProperty(SS_SERVER_HOSTNAME);
                 String sshPort = props.getProperty(SS_SERVER_PORT);
                 String sshUserName = props.getProperty(SS_SERVER_USERNAME);
-                String sshPassword = props.getProperty(SS_SERVER_PASSWORD);
+                String sshPassword = props.getProperty(SS_SERVER_PASSWD);
                 sshClient = new ConnectionBuilder(sshHost, sshPort, sshUserName, sshPassword);
             } else if ("SSH_CERT".equalsIgnoreCase(clientType)) {
                 // set path to keystore file
@@ -200,13 +200,10 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
                 String sshKey = props.getProperty(SS_SERVER_SSH_KEY);
                 String sshHost = props.getProperty(SS_SERVER_HOSTNAME);
                 String sshUserName = props.getProperty(SS_SERVER_USERNAME);
-                String sshPassword = props.getProperty(SS_SERVER_PASSWORD);
+                String sshPassword = props.getProperty(SS_SERVER_PASSWD);
                 String sshPort = props.getProperty(SS_SERVER_PORT);
                 logger.info("Creating ssh client with ssh KEY from " + sshKey);
                 sshClient = new ConnectionBuilder(sshHost, sshPort, sshUserName, sshPassword, sshKey);
-            } else if ("NONE".equalsIgnoreCase(clientType)) {
-                logger.info("No saltstack-adapter.properties defined so reading from DG props");
-                sshClient = null;
             } else {
                 logger.info("No saltstack-adapter.properties defined so reading from DG props");
                 sshClient = null;
@@ -317,12 +314,17 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
         boolean slsExec;
         SaltstackResult testResult;
         setSSHClient(params);
-        reqID = messageProcessor.reqId(params);
-        String commandToExecute = messageProcessor.reqCmd(params);
-        slsExec = messageProcessor.reqIsSLSExec(params);
-        testResult = execCommand(params, commandToExecute);
-        testResult = messageProcessor.parseResponse(ctx, reqID, testResult, slsExec);
-        checkResponseStatus(testResult, ctx, reqID, slsExec);
+        try {
+            reqID = messageProcessor.reqId(params);
+            String commandToExecute = messageProcessor.reqCmd(params);
+            slsExec = messageProcessor.reqIsSLSExec(params);
+            testResult = execCommand(ctx, params, commandToExecute);
+            testResult = messageProcessor.parseResponse(ctx, reqID, testResult, slsExec);
+            checkResponseStatus(testResult, ctx, reqID, slsExec);
+        } catch (IOException e) {
+            doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(),
+                      "IOException in file stream : "+ e.getMessage());
+        }
     }
 
     /**
@@ -338,13 +340,18 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
         String reqID;
         SaltstackResult testResult;
         setSSHClient(params);
-        reqID = messageProcessor.reqId(params);
-        String slsName = messageProcessor.reqSlsName(params);
-        String applyTo = messageProcessor.reqApplyToDevices(params);
-        String commandToExecute = putToCommands(slsName, applyTo);
-        testResult = execCommand(params, commandToExecute);
-        testResult = messageProcessor.parseResponse(ctx, reqID, testResult, true);
-        checkResponseStatus(testResult, ctx, reqID, true);
+        try {
+            reqID = messageProcessor.reqId(params);
+            String slsName = messageProcessor.reqSlsName(params);
+            String applyTo = messageProcessor.reqApplyToDevices(params);
+            String commandToExecute = putToCommands(slsName, applyTo);
+            testResult = execCommand(ctx, params, commandToExecute);
+            testResult = messageProcessor.parseResponse(ctx, reqID, testResult, true);
+            checkResponseStatus(testResult, ctx, reqID, true);
+        } catch (IOException e) {
+            doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(),
+                      "IOException in file stream : "+ e.getMessage());
+        }
     }
 
     /**
@@ -360,13 +367,18 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
         String reqID;
         SaltstackResult testResult;
         setSSHClient(params);
-        reqID = messageProcessor.reqId(params);
-        String slsFile = messageProcessor.reqSlsFile(params);
-        String applyTo = messageProcessor.reqApplyToDevices(params);
-        String commandToExecute = putToCommands(ctx, slsFile, applyTo);
-        testResult = execCommand(params, commandToExecute);
-        testResult = messageProcessor.parseResponse(ctx, reqID, testResult, true);
-        checkResponseStatus(testResult, ctx, reqID, true);
+        try {
+            reqID = messageProcessor.reqId(params);
+            String slsFile = messageProcessor.reqSlsFile(params);
+            String applyTo = messageProcessor.reqApplyToDevices(params);
+            String commandToExecute = putToCommands(ctx, slsFile, applyTo);
+            testResult = execCommand(ctx, params, commandToExecute);
+            testResult = messageProcessor.parseResponse(ctx, reqID, testResult, true);
+            checkResponseStatus(testResult, ctx, reqID, true);
+        } catch (IOException e) {
+            doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(),
+                      "IOException in file stream : "+ e.getMessage());
+        }
     }
 
     /**
@@ -382,22 +394,29 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
 
     }
 
-    public SaltstackResult execCommand(Map<String, String> params, String commandToExecute) {
-        SaltstackResult testResult;
-        if (params.get(CONNECTION_RETRY_DELAY) != null && params.get(CONNECTION_RETRY_COUNT) != null) {
-            int retryDelay = Integer.parseInt(params.get(CONNECTION_RETRY_DELAY));
-            int retryCount = Integer.parseInt(params.get(CONNECTION_RETRY_COUNT));
-            if (!testMode) {
-                testResult = sshClient.connectNExecute(commandToExecute, retryCount, retryDelay);
+    public SaltstackResult execCommand(SvcLogicContext ctx, Map<String, String> params, String commandToExecute)
+                                    throws SvcLogicException{
+
+        SaltstackResult testResult = new SaltstackResult();
+        try {
+            if (params.get(CONNECTION_RETRY_DELAY) != null && params.get(CONNECTION_RETRY_COUNT) != null) {
+                int retryDelay = Integer.parseInt(params.get(CONNECTION_RETRY_DELAY));
+                int retryCount = Integer.parseInt(params.get(CONNECTION_RETRY_COUNT));
+                if (!testMode) {
+                    testResult = sshClient.connectNExecute(commandToExecute, retryCount, retryDelay);
+                } else {
+                    testResult = testServer.mockReqExec(params);
+                }
             } else {
-                testResult = testServer.MockReqExec(params);
+                if (!testMode) {
+                    testResult = sshClient.connectNExecute(commandToExecute);
+                } else {
+                    testResult = testServer.mockReqExec(params);
+                }
             }
-        } else {
-            if (!testMode) {
-                testResult = sshClient.connectNExecute(commandToExecute);
-            } else {
-                testResult = testServer.MockReqExec(params);
-            }
+        } catch (IOException e) {
+            doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(),
+                      "IOException in file stream : "+ e.getMessage());
         }
         return testResult;
     }
