@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a9dcd25_0ac12380",
+        "filename": "sql-resource/provider/src/main/java/org/onap/ccsdk/sli/adaptors/resource/sql/SqlResource.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 3201
+      },
+      "writtenOn": "2018-07-16T07:17:54Z",
+      "side": 1,
+      "message": "why is this still here: \nif (results !\u003d null) {\n                    try {\n                        results.close();\n                    } catch (SQLException se) {\n                    \tLOG.error(\"Caught exception trying to close ResultSet\",se);\n                    }\n\nThis is moved to finally block...",
+      "revId": "a2b08a958f37177da9f38775746a02ab086199e3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
