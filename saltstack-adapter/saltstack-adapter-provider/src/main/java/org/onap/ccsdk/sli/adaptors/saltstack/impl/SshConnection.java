@@ -50,6 +50,7 @@ class SshConnection {
     public static final int DEFAULT_CONNECTION_RETRY_COUNT = 5;
     private static final EELFLogger logger = EELFManager.getInstance().getApplicationLogger();
     private static final long AUTH_TIMEOUT = 60000;
+    //TODO : change back to 120000
     private static final long EXEC_TIMEOUT = 120000;
     private String host;
     private int port;
@@ -165,16 +166,17 @@ class SshConnection {
         this.timeout = timeout;
     }
 
-    public SaltstackResult execCommand(String cmd, OutputStream out, OutputStream err) {
-        return execCommand(cmd, out, err, false);
+    public SaltstackResult execCommand(String cmd, OutputStream out, OutputStream err, SaltstackResult result ) {
+        return execCommand(cmd, out, err, false, result);
     }
 
-    public SaltstackResult execCommandWithPty(String cmd, OutputStream out) {
-        return execCommand(cmd, out, out, true);
+    public SaltstackResult execCommandWithPty(String cmd, OutputStream out, SaltstackResult result ) {
+        return execCommand(cmd, out, out, true, result);
     }
 
-    private SaltstackResult execCommand(String cmd, OutputStream out, OutputStream err, boolean usePty) {
-        SaltstackResult result = new SaltstackResult();
+    private SaltstackResult execCommand(String cmd, OutputStream out, OutputStream err,
+                                        boolean usePty, SaltstackResult result ) {
+
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("SSH: executing command");

@@ -318,7 +318,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             reqID = messageProcessor.reqId(params);
             String commandToExecute = messageProcessor.reqCmd(params);
             slsExec = messageProcessor.reqIsSLSExec(params);
-            testResult = execCommand(ctx, params, commandToExecute);
+            testResult = execCommand(ctx, params, commandToExecute, -1);
             testResult = messageProcessor.parseResponse(ctx, reqID, testResult, slsExec);
             checkResponseStatus(testResult, ctx, reqID, slsExec);
         } catch (IOException e) {
@@ -344,8 +344,9 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             reqID = messageProcessor.reqId(params);
             String slsName = messageProcessor.reqSlsName(params);
             String applyTo = messageProcessor.reqApplyToDevices(params);
+            long execTimeout = messageProcessor.reqExecTimeout(params);
             String commandToExecute = putToCommands(slsName, applyTo);
-            testResult = execCommand(ctx, params, commandToExecute);
+            testResult = execCommand(ctx, params, commandToExecute, execTimeout);
             testResult = messageProcessor.parseResponse(ctx, reqID, testResult, true);
             checkResponseStatus(testResult, ctx, reqID, true);
         } catch (IOException e) {
@@ -371,8 +372,9 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             reqID = messageProcessor.reqId(params);
             String slsFile = messageProcessor.reqSlsFile(params);
             String applyTo = messageProcessor.reqApplyToDevices(params);
+            long execTimeout = messageProcessor.reqExecTimeout(params);
             String commandToExecute = putToCommands(ctx, slsFile, applyTo);
-            testResult = execCommand(ctx, params, commandToExecute);
+            testResult = execCommand(ctx, params, commandToExecute, execTimeout);
             testResult = messageProcessor.parseResponse(ctx, reqID, testResult, true);
             checkResponseStatus(testResult, ctx, reqID, true);
         } catch (IOException e) {
@@ -394,7 +396,8 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
 
     }
 
-    public SaltstackResult execCommand(SvcLogicContext ctx, Map<String, String> params, String commandToExecute)
+    public SaltstackResult execCommand(SvcLogicContext ctx, Map<String, String> params, String commandToExecute,
+                                       long execTimeout)
                                     throws SvcLogicException{
 
         SaltstackResult testResult = new SaltstackResult();
@@ -403,13 +406,13 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
                 int retryDelay = Integer.parseInt(params.get(CONNECTION_RETRY_DELAY));
                 int retryCount = Integer.parseInt(params.get(CONNECTION_RETRY_COUNT));
                 if (!testMode) {
-                    testResult = sshClient.connectNExecute(commandToExecute, retryCount, retryDelay);
+                    testResult = sshClient.connectNExecute(commandToExecute, retryCount, retryDelay, execTimeout);
                 } else {
                     testResult = testServer.mockReqExec(params);
                 }
             } else {
                 if (!testMode) {
-                    testResult = sshClient.connectNExecute(commandToExecute);
+                    testResult = sshClient.connectNExecute(commandToExecute, execTimeout);
                 } else {
                     testResult = testServer.mockReqExec(params);
                 }

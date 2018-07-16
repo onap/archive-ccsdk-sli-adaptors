@@ -72,6 +72,7 @@ public class SaltstackMessageParser {
     private static final String SLS_FILE_LOCATION = "slsFile";
     private static final String SLS_NAME = "slsName";
     private static final String MINION_TO_APPLY = "applyTo";
+    private static final String EXEC_TIMEOUT_TO_APPLY = "execTimeout";
 
     private static final String LOCAL_PARAMETERS_OPT_KEY = "LocalParameters";
     private static final String FILE_PARAMETERS_OPT_KEY = "FileParameters";
@@ -240,6 +241,21 @@ public class SaltstackMessageParser {
     /**
      * Method that validates that the Map has enough information
      * to query Saltstack server for a result. If so, it returns
+     * the appropriate minions/vnfc to execute the SLS file to.
+     */
+    public long reqExecTimeout(Map<String, String> params) {
+
+        if (params.get(SaltstackMessageParser.EXEC_TIMEOUT_TO_APPLY) == null) {
+            return -1;
+        } else if (params.get(SaltstackMessageParser.EXEC_TIMEOUT_TO_APPLY).equalsIgnoreCase("")) {
+            return -1;
+        }
+        return Long.parseLong(params.get(SaltstackMessageParser.EXEC_TIMEOUT_TO_APPLY));
+    }
+
+    /**
+     * Method that validates that the Map has enough information
+     * to query Saltstack server for a result. If so, it returns
      * the appropriate IsSLSExec true or false.
      */
     public boolean reqIsSLSExec(Map<String, String> params) throws SvcLogicException {
@@ -333,10 +349,10 @@ public class SaltstackMessageParser {
         if (slsExec) {
             if (!retCodeFound)
                 return new SaltstackResult(SaltstackResultCodes.COMMAND_EXEC_FAILED_STATUS.getValue(),
-                                           "error in parsing response Json after SLS file execution in server");
+                                           "error in executing configuration at the server");
             if (!executionStatus)
                 return new SaltstackResult(SaltstackResultCodes.COMMAND_EXEC_FAILED_STATUS.getValue(),
-                                           "error in parsing response Json after SLS file execution in server");
+                                           "error in executing configuration at the server");
         }
         saltstackResult.setStatusCode(SaltstackResultCodes.FINAL_SUCCESS.getValue());
         return saltstackResult;
@@ -355,8 +371,8 @@ public class SaltstackMessageParser {
                 String name = (String) key;
                 String value = prop.getProperty(name);
                 if (value != null && value.trim().length() > 0) {
-                    ctx.setAttribute(pfx + name, value.trim());
-                    LOGGER.info("+++ " + pfx + name + ": [" + value + "]");
+                    ctx.setAttribute(pfx + "." + name, value.trim());
+                    LOGGER.info("+++ " + pfx + "." + name + ": [" + value + "]");
                 }
             }
         } catch (Exception e) {

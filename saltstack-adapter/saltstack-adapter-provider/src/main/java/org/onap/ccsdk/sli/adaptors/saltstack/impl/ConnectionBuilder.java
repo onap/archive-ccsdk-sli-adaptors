@@ -84,8 +84,8 @@ public class ConnectionBuilder {
      * @param cmd Commands to execute
      * @return command execution status
      */
-    public SaltstackResult connectNExecute(String cmd) throws IOException {
-        return connectNExecute(cmd, -1, -1);
+    public SaltstackResult connectNExecute(String cmd, long execTimeout) throws IOException {
+        return connectNExecute(cmd, -1, -1, execTimeout);
     }
 
     /**
@@ -98,12 +98,16 @@ public class ConnectionBuilder {
      * @param retryCount number of count retry to make a SSH connection.
      * @return command execution status
      */
-    public SaltstackResult connectNExecute(String cmd, int retryCount, int retryDelay)
+    public SaltstackResult connectNExecute(String cmd, int retryCount, int retryDelay, long execTimeout)
                             throws IOException{
 
         SaltstackResult result = new SaltstackResult();
         OutputStream out = null;
         OutputStream errs = null;
+        if (execTimeout >= 0) {
+            sshConnection.setExecTimeout(execTimeout);
+        }
+
         try {
             if (retryCount != -1) {
                 result = sshConnection.connectWithRetry(retryCount, retryDelay);
@@ -117,7 +121,7 @@ public class ConnectionBuilder {
             String errFilePath = "/tmp/" + RandomStringUtils.random(5, true, true);
             out = new FileOutputStream(outFilePath);
             errs = new FileOutputStream(errFilePath);
-            result = sshConnection.execCommand(cmd, out, errs);
+            result = sshConnection.execCommand(cmd, out, errs, result);
             sshConnection.disconnect();
             if (result.getSshExitStatus() != 0) {
                 return sortExitStatus(result.getSshExitStatus(), errFilePath, cmd);
