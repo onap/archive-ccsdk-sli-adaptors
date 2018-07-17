@@ -292,13 +292,8 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             return;
         } else {
             logger.info(String.format("Execution of request : successful."));
-            if (slsExec) {
-                ctx.setAttribute(RESULT_CODE_ATTRIBUTE_NAME, Integer.toString(testResult.getStatusCode()));
-                ctx.setAttribute(MESSAGE_ATTRIBUTE_NAME, "success");
-            } else {
-                ctx.setAttribute(RESULT_CODE_ATTRIBUTE_NAME, Integer.toString(SaltstackResultCodes.CHECK_CTX_FOR_CMD_SUCCESS.getValue()));
-                ctx.setAttribute(MESSAGE_ATTRIBUTE_NAME, "check context for execution status");
-            }
+            ctx.setAttribute(RESULT_CODE_ATTRIBUTE_NAME, Integer.toString(testResult.getStatusCode()));
+            ctx.setAttribute(MESSAGE_ATTRIBUTE_NAME, "success");
             ctx.setAttribute(ID_ATTRIBUTE_NAME, reqID);
         }
     }
@@ -318,7 +313,8 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             reqID = messageProcessor.reqId(params);
             String commandToExecute = messageProcessor.reqCmd(params);
             slsExec = messageProcessor.reqIsSLSExec(params);
-            testResult = execCommand(ctx, params, commandToExecute, -1);
+            long execTimeout = messageProcessor.reqExecTimeout(params);
+            testResult = execCommand(ctx, params, commandToExecute, execTimeout);
             testResult = messageProcessor.parseResponse(ctx, reqID, testResult, slsExec);
             checkResponseStatus(testResult, ctx, reqID, slsExec);
         } catch (IOException e) {
