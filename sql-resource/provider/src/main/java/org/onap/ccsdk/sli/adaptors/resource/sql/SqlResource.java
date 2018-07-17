@@ -455,14 +455,15 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
                     LOG.warn("Cannot decrypt " + tableName + "." + colName);
                 }
             } catch (Exception e) {
-                if (results != null) {
+                LOG.error("Caught exception trying to decrypt " + tableName + "." + colName, e);
+            }finally {
+            	if (results != null) {
                     try {
                         results.close();
-                    } catch (SQLException ignored) {
-
+                    } catch (SQLException se) {
+                    	LOG.error("Caught exception trying to close ResultSet",se);
                     }
                 }
-                LOG.error("Caught exception trying to decrypt " + tableName + "." + colName, e);
             }
         }
         return (strValue);
