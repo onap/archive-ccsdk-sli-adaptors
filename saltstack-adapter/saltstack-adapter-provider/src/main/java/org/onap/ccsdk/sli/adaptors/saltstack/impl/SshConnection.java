@@ -50,7 +50,6 @@ class SshConnection {
     public static final int DEFAULT_CONNECTION_RETRY_COUNT = 5;
     private static final EELFLogger logger = EELFManager.getInstance().getApplicationLogger();
     private static final long AUTH_TIMEOUT = 60000;
-    //TODO : change back to 120000
     private static final long EXEC_TIMEOUT = 120000;
     private String host;
     private int port;

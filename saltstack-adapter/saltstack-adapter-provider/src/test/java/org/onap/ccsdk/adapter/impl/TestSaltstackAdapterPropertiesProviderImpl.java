@@ -307,7 +307,6 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
         adapter = new SaltstackAdapterImpl(propProvider);
         String adaptorName = adapter.getAdapterName();
         assertEquals("Saltstack Adapter", adaptorName);
-        adapter.setExecTimeout(10);
     }
 
     @Test
