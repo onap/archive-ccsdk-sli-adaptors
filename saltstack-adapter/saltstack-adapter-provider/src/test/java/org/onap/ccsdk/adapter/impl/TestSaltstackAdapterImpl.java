@@ -278,7 +278,7 @@ public class TestSaltstackAdapterImpl {
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
-        assertEquals("250", status);
+        assertEquals("200", status);
         assertEquals(TestId, "test1");
     }
 
@@ -339,7 +339,7 @@ public class TestSaltstackAdapterImpl {
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
-        assertEquals("250", status);
+        assertEquals("200", status);
         assertEquals(TestId, "txt");
     }
 
@@ -360,7 +360,7 @@ public class TestSaltstackAdapterImpl {
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
-        assertEquals("250", status);
+        assertEquals("200", status);
         assertEquals(TestId, "txt");
     }
 
@@ -381,7 +381,7 @@ public class TestSaltstackAdapterImpl {
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
-        assertEquals("250", status);
+        assertEquals("200", status);
     }
 
     @Test(expected = SvcLogicException.class)
@@ -415,7 +415,7 @@ public class TestSaltstackAdapterImpl {
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
-        assertEquals("250", status);
+        assertEquals("200", status);
     }
 
     @Test
@@ -817,10 +817,38 @@ public class TestSaltstackAdapterImpl {
             adapter.reqExecCommand(params, svcContext);
             String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
             TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
-            assertEquals("250", status);
+            assertEquals("200", status);
             assertEquals(TestId, "test1");
         } catch (Exception e){
             //if local ssh is not enabled
+            return;
+        }
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessRealSLSCommand() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "<IP>");
+        params.put("Port", "2222");
+        params.put("User", "root");
+        params.put("Password", "vagrant");
+        params.put("Id", "test1");
+        params.put("cmd", "salt '*' test.ping --out=json --static");
+        params.put("slsExec", "false");
+        params.put("execTimeout", "12000");
+
+        adapter = new SaltstackAdapterImpl();
+        try {
+            adapter.reqExecCommand(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+            assertEquals("200", status);
+            assertEquals(TestId, "test1");
+            TestId = svcContext.getAttribute("test1.minion1");
+            assertEquals(TestId, "true");
+        } catch (Exception e){
+            //if saltstack ssh IP is not enabled
             return;
         }
     }
@@ -855,7 +883,7 @@ public class TestSaltstackAdapterImpl {
     public void reqExecCommand_shouldSetSuccessRealSSL() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
 
-        params.put("HostName", "10.251.92.17");
+        params.put("HostName", "<IP>");
         params.put("Port", "2222");
         params.put("User", "root");
         params.put("Password", "vagrant");
@@ -881,7 +909,7 @@ public class TestSaltstackAdapterImpl {
     public void reqExecCommand_shouldSetSuccessSSLFile() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
 
-        params.put("HostName", "10.251.92.17");
+        params.put("HostName", "<IP>");
         params.put("Port", "2222");
         params.put("User", "root");
         params.put("Password", "vagrant");
