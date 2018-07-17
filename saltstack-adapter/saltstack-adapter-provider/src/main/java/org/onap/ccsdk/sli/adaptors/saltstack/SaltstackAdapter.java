@@ -56,16 +56,4 @@ public interface SaltstackAdapter extends SvcLogicJavaPlugin {
      *  The response from Saltstack comes in json format and it is automatically put
      *  to context for DGs access, with a certain prefix*/
     void reqExecSLSFile(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException;
-
-    /* Method to get log of a saltState execution request
-     *  The response from Saltstack comes in json format and it is automatically put
-     *  to context for DGs access, with a certain prefix*/
-    void reqExecLog(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException;
-
-    /**
-     * Set the command execution timeout
-     *
-     * @param timeout time in milliseconds
-     */
-    void setExecTimeout(long timeout);
 }

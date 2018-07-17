@@ -47,7 +47,6 @@ import java.io.StringWriter;
  * - return default sshclient (which only trusts known CAs from default cacerts file for process) this is the default
  * option
  **/
-//TODO: This class is to be altered completely based on the SALTSTACK server communication.
 public class ConnectionBuilder {
 
     private static final EELFLogger logger = EELFManager.getInstance().getLogger(ConnectionBuilder.class);
@@ -183,67 +182,6 @@ public class ConnectionBuilder {
             logger.error(errMessage);
             result.setStatusCode(SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue());
             result.setStatusMessage(errMessage);
-        }
-        return result;
-    }
-
-    /**
-     * 1. Connect to SSH server.
-     * 2. Exec remote command over SSH. Return command execution status.
-     * Command output is written to out or err stream.
-     *
-     * @param commands   list of commands to execute
-     * @param payloadSLS has the SLS file location that is to be sent to server
-     * @param retryDelay delay between retry to make a SSH connection.
-     * @param retryCount number of count retry to make a SSH connection.
-     * @return command execution status
-     */
-    public SaltstackResult connectNExecuteSLS(String commands, String payloadSLS, int retryDelay, int retryCount) {
-
-        SaltstackResult result = new SaltstackResult();
-        try {
-            //TODO: to implement SSH connected client to Saltstack Server
-        } catch (Exception io) {
-            logger.error("Caught Exception", io);
-            result.setStatusCode(SaltstackResultCodes.IO_EXCEPTION.getValue());
-            result.setStatusMessage(io.getMessage());
-        }
-        return result;
-    }
-
-    /**
-     * Disconnect from SSH server.
-     */
-    public SaltstackResult disConnect() {
-
-        SaltstackResult result = new SaltstackResult();
-        try {
-            //TODO: to implement SSH connected client to Saltstack Server
-        } catch (Exception io) {
-            logger.error("Caught Exception", io);
-            result.setStatusCode(SaltstackResultCodes.IO_EXCEPTION.getValue());
-            result.setStatusMessage(io.getMessage());
-        }
-        return result;
-    }
-
-    /**
-     * Exec remote command over SSH. Return command execution status.
-     * Command output is written to out or err stream.
-     *
-     * @param cmd command to execute
-     * @return command execution status
-     */
-    public SaltstackResult connectNExecuteLog(String cmd) {
-
-        SaltstackResult result = new SaltstackResult();
-
-        try {
-            //TODO: to implement SSH command execute
-        } catch (Exception io) {
-            result.setStatusCode(SaltstackResultCodes.IO_EXCEPTION.getValue());
-            result.setStatusMessage(io.getMessage());
-            logger.error("Caught IOException", io);
         }
         return result;
     }

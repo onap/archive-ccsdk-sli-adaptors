@@ -50,11 +50,6 @@ import java.util.Properties;
 public class SaltstackAdapterImpl implements SaltstackAdapter {
 
     /**
-     * The constant used to define the service name in the mapped diagnostic context
-     */
-    @SuppressWarnings("nls")
-    public static final String MDC_SERVICE = "service";
-    /**
      * The constant for the status code for a failed outcome
      */
     @SuppressWarnings("nls")
@@ -66,17 +61,13 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     public static final String OUTCOME_SUCCESS = "success";
     public static final String CONNECTION_RETRY_DELAY = "retryDelay";
     public static final String CONNECTION_RETRY_COUNT = "retryCount";
-    private static final long EXEC_TIMEOUT = 120000;
     /**
      * Adapter Name
      */
     private static final String ADAPTER_NAME = "Saltstack Adapter";
-    private static final String APPC_EXCEPTION_CAUGHT = "APPCException caught";
     private static final String RESULT_CODE_ATTRIBUTE_NAME = "org.onap.appc.adapter.saltstack.result.code";
     private static final String MESSAGE_ATTRIBUTE_NAME = "org.onap.appc.adapter.saltstack.message";
-    private static final String RESULTS_ATTRIBUTE_NAME = "org.onap.appc.adapter.saltstack.results";
     private static final String ID_ATTRIBUTE_NAME = "org.onap.appc.adapter.saltstack.Id";
-    private static final String LOG_ATTRIBUTE_NAME = "org.onap.appc.adapter.saltstack.log";
     private static final String CLIENT_TYPE_PROPERTY_NAME = "org.onap.appc.adapter.saltstack.clientType";
     private static final String SS_SERVER_HOSTNAME = "org.onap.appc.adapter.saltstack.host";
     private static final String SS_SERVER_PORT = "org.onap.appc.adapter.saltstack.port";
@@ -87,7 +78,6 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
      * The logger to be used
      */
     private static final EELFLogger logger = EELFManager.getInstance().getLogger(SaltstackAdapterImpl.class);
-    private long timeout = EXEC_TIMEOUT;
     /**
      * Connection object
      **/
@@ -137,11 +127,6 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     @Override
     public String getAdapterName() {
         return ADAPTER_NAME;
-    }
-
-    @Override
-    public void setExecTimeout(long timeout) {
-        this.timeout = timeout;
     }
 
     /**
@@ -293,7 +278,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
         } else {
             logger.info(String.format("Execution of request : successful."));
             ctx.setAttribute(RESULT_CODE_ATTRIBUTE_NAME, Integer.toString(testResult.getStatusCode()));
-            ctx.setAttribute(MESSAGE_ATTRIBUTE_NAME, "success");
+            ctx.setAttribute(MESSAGE_ATTRIBUTE_NAME, OUTCOME_SUCCESS);
             ctx.setAttribute(ID_ATTRIBUTE_NAME, reqID);
         }
     }
@@ -377,19 +362,6 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(),
                       "IOException in file stream : "+ e.getMessage());
         }
-    }
-
-    /**
-     * Public method to get logs from saltState execution for a specific request Posts the following back
-     * to Svc context memory
-     * <p>
-     * It blocks till the Saltstack Server responds or the session times out very similar to
-     * reqExecResult logs are returned in the DG context variable org.onap.appc.adapter.saltstack.log
-     */
-    @Override
-    public void reqExecLog(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException {
-        //TODO: to implement
-
     }
 
     public SaltstackResult execCommand(SvcLogicContext ctx, Map<String, String> params, String commandToExecute,

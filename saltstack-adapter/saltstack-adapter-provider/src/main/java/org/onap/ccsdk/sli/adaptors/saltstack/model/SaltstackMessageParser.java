@@ -30,9 +30,7 @@ package org.onap.ccsdk.sli.adaptors.saltstack.model;
  */
 
 import com.google.common.base.Strings;
-import org.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
-import org.json.JSONObject;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.slf4j.Logger;
@@ -43,25 +41,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.UUID;
 
 /**
  * Class that validates and constructs requests sent/received from
  * Saltstack Server
  */
-//TODO: This class is to be altered completely based on the SALTSTACK server communicaiton.
 public class SaltstackMessageParser {
 
-    private static final String STATUS_MESSAGE_KEY = "StatusMessage";
-    private static final String STATUS_CODE_KEY = "StatusCode";
-
-    private static final String SALTSTATE_NAME_KEY = "SaltStateName";
     private static final String SS_AGENT_HOSTNAME_KEY = "HostName";
     private static final String SS_AGENT_PORT_KEY = "Port";
     private static final String PASS_KEY = "Password";
@@ -74,46 +63,7 @@ public class SaltstackMessageParser {
     private static final String MINION_TO_APPLY = "applyTo";
     private static final String EXEC_TIMEOUT_TO_APPLY = "execTimeout";
 
-    private static final String LOCAL_PARAMETERS_OPT_KEY = "LocalParameters";
-    private static final String FILE_PARAMETERS_OPT_KEY = "FileParameters";
-    private static final String ENV_PARAMETERS_OPT_KEY = "EnvParameters";
-    private static final String NODE_LIST_OPT_KEY = "NodeList";
-    private static final String TIMEOUT_OPT_KEY = "Timeout";
-    private static final String VERSION_OPT_KEY = "Version";
-    private static final String ACTION_OPT_KEY = "Action";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SaltstackMessageParser.class);
-
-    /**
-     * Accepts a map of strings and
-     * a) validates if all parameters are appropriate (else, throws an exception) and
-     * b) if correct returns a JSON object with appropriate key-value pairs to send to the server.
-     * <p>
-     * Mandatory parameters, that must be in the supplied information to the Saltstack Adapter
-     * 1. URL to connect to
-     * 2. credentials for URL (assume username password for now)
-     * 3. SaltState name
-     */
-    public JSONObject reqMessage(Map<String, String> params) throws SvcLogicException {
-        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SALTSTATE_NAME_KEY, USER_KEY, PASS_KEY};
-        final String[] optionalTestParams = {ENV_PARAMETERS_OPT_KEY, NODE_LIST_OPT_KEY, LOCAL_PARAMETERS_OPT_KEY,
-                TIMEOUT_OPT_KEY, VERSION_OPT_KEY, FILE_PARAMETERS_OPT_KEY, ACTION_OPT_KEY};
-
-        JSONObject jsonPayload = new JSONObject();
-
-        for (String key : mandatoryTestParams) {
-            throwIfMissingMandatoryParam(params, key);
-            jsonPayload.put(key, params.get(key));
-        }
-
-        parseOptionalParams(params, optionalTestParams, jsonPayload);
-
-        // Generate a unique uuid for the test
-        String reqId = UUID.randomUUID().toString();
-        jsonPayload.put(SS_AGENT_HOSTNAME_KEY, reqId);
-
-        return jsonPayload;
-    }
 
     /**
      * Method that validates that the Map has enough information
@@ -208,18 +158,23 @@ public class SaltstackMessageParser {
         }
         String slsName = params.get(SaltstackMessageParser.SLS_NAME);
         try {
-            if(slsName.substring(slsName.lastIndexOf("."), slsName.length()).equalsIgnoreCase(".sls"))
+            if (slsName.substring(slsName.lastIndexOf("."), slsName.length()).equalsIgnoreCase(".sls")) {
                 return stripExtension(slsName);
+            }
         } catch (StringIndexOutOfBoundsException e) {
             return slsName;
         }
         return slsName;
     }
 
-    private String stripExtension (String str) {
-        if (str == null) return null;
+    private String stripExtension(String str) {
+        if (str == null) {
+            return null;
+        }
         int pos = str.lastIndexOf(".");
-        if (pos == -1) return str;
+        if (pos == -1) {
+            return str;
+        }
         return str.substring(0, pos);
     }
 
@@ -306,7 +261,7 @@ public class SaltstackMessageParser {
      * and returns an SaltstackResult object.
      */
     public SaltstackResult parseResponse(SvcLogicContext ctx, String pfx,
-                                         SaltstackResult saltstackResult, boolean slsExec) throws IOException{
+                                         SaltstackResult saltstackResult, boolean slsExec) throws IOException {
         int code = saltstackResult.getStatusCode();
         InputStream in = null;
         boolean executionStatus = true, retCodeFound = false;
@@ -343,23 +298,26 @@ public class SaltstackMessageParser {
             return new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "error parsing response file "
                     + saltstackResult.getOutputFileName() + " : " + e.getMessage());
         } finally {
-            if( in != null )
+            if (in != null) {
                 in.close();
+            }
         }
         if (slsExec) {
-            if (!retCodeFound)
+            if (!retCodeFound) {
                 return new SaltstackResult(SaltstackResultCodes.COMMAND_EXEC_FAILED_STATUS.getValue(),
                                            "error in executing configuration at the server");
-            if (!executionStatus)
+            }
+            if (!executionStatus) {
                 return new SaltstackResult(SaltstackResultCodes.COMMAND_EXEC_FAILED_STATUS.getValue(),
                                            "error in executing configuration at the server");
+            }
         }
         saltstackResult.setStatusCode(SaltstackResultCodes.FINAL_SUCCESS.getValue());
         return saltstackResult;
     }
 
     public SaltstackResult putToProperties(SvcLogicContext ctx, String pfx,
-                                           SaltstackResult saltstackResult) throws IOException{
+                                           SaltstackResult saltstackResult) throws IOException {
         InputStream in = null;
         try {
             File file = new File(saltstackResult.getOutputFileName());
@@ -379,151 +337,12 @@ public class SaltstackMessageParser {
             saltstackResult = new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "Error parsing response file = "
                     + saltstackResult.getOutputFileName() + ". Error = " + e.getMessage());
         } finally {
-            if( in != null )
+            if (in != null) {
                 in.close();
+            }
         }
         saltstackResult.setStatusCode(SaltstackResultCodes.FINAL_SUCCESS.getValue());
         return saltstackResult;
-    }
-
-    /**
-     * This method parses response from an Saltstack server when we do a GET for a result
-     * and returns an SaltstackResult object.
-     **/
-    public SaltstackResult parseGetResponse(String input) throws SvcLogicException {
-
-        SaltstackResult saltstackResult = new SaltstackResult();
-
-        try {
-            JSONObject postResponse = new JSONObject(input);
-            saltstackResult = parseGetResponseNested(saltstackResult, postResponse);
-        } catch (Exception e) {
-            saltstackResult = new SaltstackResult(SaltstackResultCodes.INVALID_COMMAND.getValue(),
-                                                  "Error parsing response = " + input + ". Error = " + e.getMessage(), "", -1);
-        }
-        return saltstackResult;
-    }
-
-    private SaltstackResult parseGetResponseNested(SaltstackResult saltstackResult, JSONObject postRsp) throws SvcLogicException {
-
-        int codeStatus = postRsp.getInt(STATUS_CODE_KEY);
-        String messageStatus = postRsp.getString(STATUS_MESSAGE_KEY);
-        int finalCode = SaltstackResultCodes.FINAL_SUCCESS.getValue();
-
-        boolean valCode =
-                SaltstackResultCodes.CODE.checkValidCode(SaltstackResultCodes.FINALRESPONSE.getValue(), codeStatus);
-
-        if (!valCode) {
-            throw new SvcLogicException("Invalid FinalResponse code  = " + codeStatus + " received. MUST be one of "
-                                                + SaltstackResultCodes.CODE.getValidCodes(SaltstackResultCodes.FINALRESPONSE.getValue()));
-        }
-
-        saltstackResult.setStatusCode(codeStatus);
-        saltstackResult.setStatusMessage(messageStatus);
-        LOGGER.info("Received response with code = {}, Message = {}", codeStatus, messageStatus);
-
-        if (!postRsp.isNull("Results")) {
-
-            // Results are available. process them
-            // Results is a dictionary of the form
-            // {host :{status:s, group:g, message:m, hostname:h}, ...}
-            LOGGER.info("Processing results in response");
-            JSONObject results = postRsp.getJSONObject("Results");
-            LOGGER.info("Get JSON dictionary from Results ..");
-            Iterator<String> hosts = results.keys();
-            LOGGER.info("Iterating through hosts");
-
-            while (hosts.hasNext()) {
-                String host = hosts.next();
-                LOGGER.info("Processing host = {}", host);
-
-                try {
-                    JSONObject hostResponse = results.getJSONObject(host);
-                    int subCode = hostResponse.getInt(STATUS_CODE_KEY);
-                    String message = hostResponse.getString(STATUS_MESSAGE_KEY);
-
-                    LOGGER.info("Code = {}, Message = {}", subCode, message);
-
-                    if (subCode != 200 || !message.equals("SUCCESS")) {
-                        finalCode = SaltstackResultCodes.REQ_FAILURE.getValue();
-                    }
-                } catch (Exception e) {
-                    saltstackResult.setStatusCode(SaltstackResultCodes.INVALID_RESPONSE.getValue());
-                    saltstackResult.setStatusMessage(String.format(
-                            "Error processing response message = %s from host %s", results.getString(host), host));
-                    break;
-                }
-            }
-
-            saltstackResult.setStatusCode(finalCode);
-
-            // We return entire Results object as message
-            saltstackResult.setResults(results.toString());
-
-        } else {
-            saltstackResult.setStatusCode(SaltstackResultCodes.INVALID_RESPONSE.getValue());
-            saltstackResult.setStatusMessage("Results not found in GET for response");
-        }
-        return saltstackResult;
-    }
-
-    private void parseOptionalParams(Map<String, String> params, String[] optionalTestParams, JSONObject jsonPayload) {
-
-        Set<String> optionalParamsSet = new HashSet<>();
-        Collections.addAll(optionalParamsSet, optionalTestParams);
-
-        //@formatter:off
-        params.entrySet()
-                .stream()
-                .filter(entry -> optionalParamsSet.contains(entry.getKey()))
-                .filter(entry -> !Strings.isNullOrEmpty(entry.getValue()))
-                .forEach(entry -> parseOptionalParam(entry, jsonPayload));
-        //@formatter:on
-    }
-
-    private void parseOptionalParam(Map.Entry<String, String> params, JSONObject jsonPayload) {
-        String key = params.getKey();
-        String payload = params.getValue();
-
-        switch (key) {
-            case TIMEOUT_OPT_KEY:
-                int timeout = Integer.parseInt(payload);
-                if (timeout < 0) {
-                    throw new NumberFormatException(" : specified negative integer for timeout = " + payload);
-                }
-                jsonPayload.put(key, payload);
-                break;
-
-            case VERSION_OPT_KEY:
-                jsonPayload.put(key, payload);
-                break;
-
-            case LOCAL_PARAMETERS_OPT_KEY:
-            case ENV_PARAMETERS_OPT_KEY:
-                JSONObject paramsJson = new JSONObject(payload);
-                jsonPayload.put(key, paramsJson);
-                break;
-
-            case NODE_LIST_OPT_KEY:
-                JSONArray paramsArray = new JSONArray(payload);
-                jsonPayload.put(key, paramsArray);
-                break;
-
-            case FILE_PARAMETERS_OPT_KEY:
-                jsonPayload.put(key, getFilePayload(payload));
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    /**
-     * Return payload with escaped newlines
-     */
-    private JSONObject getFilePayload(String payload) {
-        String formattedPayload = payload.replace("\n", "\\n").replace("\r", "\\r");
-        return new JSONObject(formattedPayload);
     }
 
     private void throwIfMissingMandatoryParam(Map<String, String> params, String key) throws SvcLogicException {

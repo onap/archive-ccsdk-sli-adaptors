@@ -44,10 +44,7 @@ import java.util.regex.Pattern;
 public class SaltstackServerEmulator {
 
     private static final String SALTSTATE_FILE_NAME = "fileName";
-    private static final String STATUS_CODE = "StatusCode";
-    private static final String STATUS_MESSAGE = "StatusMessage";
     private final EELFLogger logger = EELFManager.getInstance().getLogger(SaltstackServerEmulator.class);
-    private String saltStateName = "test_saltState.yaml";
 
     /**
      * Method that emulates the response from an Saltstack Server

@@ -783,24 +783,6 @@ public class TestSaltstackAdapterImpl {
 
 
     @Test
-    public void reqExecLog_shouldSetMessage() throws IllegalStateException, IllegalArgumentException {
-
-        params.put("Id", "101");
-
-        try {
-            adapter.reqExecLog(params, svcContext);
-            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.log");
-            //assertEquals(message, status);
-            assertEquals(null, status);
-        } catch (SvcLogicException e) {
-            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.log");
-            fail(e.getMessage() + " Code = " + status);
-        } catch (Exception e) {
-            fail(e.getMessage() + " Unknown exception encountered ");
-        }
-    }
-
-    @Test
     public void reqExecCommand_shouldSetSuccessReal() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
 
