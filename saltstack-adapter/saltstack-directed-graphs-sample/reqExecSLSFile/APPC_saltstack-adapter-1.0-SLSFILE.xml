@@ -1,26 +1,48 @@
-<service-logic xmlns='http://www.onap.org/sdnc/svclogic' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='APPC' version='2.0.1'><method rpc='saltstack-adapter-1.0-SLSFILE' mode='sync'>
-<execute plugin='org.openecomp.appc.adapter.ansible.AnsibleAdapter' method='reqExecCommand' >
-                        <parameter name='HostName' value='`$AgentUrl`'/>
-                        <parameter name='Port' value='`$Port`'/>
-                        <parameter name='User' value='`$User`'/>
-                        <parameter name='Password' value='`$Password`'/>
-                        <parameter name='Id' value='test2'/>
-                        <parameter name='slsFile' value='file/location/test-file.sls'/>
-<outcome value='failure'>
-<return status='failure'>
-<parameter name='error-code' value='200' />
-<parameter name='error-message' value='`$org.openecomp.appc.adapter.ansible.message`' />
-<parameter name='output.status.results' value='`$org.openecomp.appc.adapter.ansible.results`' />
-</return></outcome><outcome value='Other'>
-<switch test="`$org.onap.appc.adapter.saltstack.result.code`">
-<outcome value='200'>
-<return status='success'>
-<parameter name='output.status.code' value='`$org.openecomp.appc.adapter.ansible.result.code`' />
-<parameter name='output.status.message' value='`$org.openecomp.appc.adapter.ansible.message`'/>
-<parameter name='output.status.results' value = '`$org.openecomp.appc.adapter.ansible.results`'/>
-</return></outcome><outcome value='Other'>
-<return status='failure'>
-<parameter name='error-code' value='200' />
-<parameter name='error-message' value='`$org.openecomp.appc.adapter.ansible.message`' />
-<parameter name='output.status.results' value='`$org.openecomp.appc.adapter.ansible.results`' />
-</return></outcome></switch></outcome></execute></method></service-logic>
+<service-logic xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+               xmlns='http://www.onap.org/sdnc/svclogic'
+               xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd'
+               module='APPC' version='2.0.1'>
+    <method rpc='saltstack-adapter-1.0-SLSFILE' mode='sync'>
+        <execute plugin='org.openecomp.appc.adapter.saltstack.SaltstackAdapter'
+                 method='reqExecCommand'>
+            <parameter name='HostName' value='`$AgentUrl`'/>
+            <parameter name='Port' value='`$Port`'/>
+            <parameter name='User' value='`$User`'/>
+            <parameter name='Password' value='`$Password`'/>
+            <parameter name='Id' value='test2'/>
+            <parameter name='SlsFile' value='file/location/test-file.sls'/>
+            <outcome value='failure'>
+                <return status='failure'>
+                    <parameter name='error-code' value='200'/>
+                    <parameter name='error-message'
+                               value='`$org.openecomp.appc.adapter.saltstack.message`'/>
+                    <parameter name='output.status.results'
+                               value='`$org.openecomp.appc.adapter.saltstack.results`'/>
+                </return>
+            </outcome>
+            <outcome value='Other'>
+                <switch test="`$org.onap.appc.adapter.saltstack.result.code`">
+                    <outcome value='200'>
+                        <return status='success'>
+                            <parameter name='output.status.code'
+                                       value='`$org.openecomp.appc.adapter.saltstack.result.code`'/>
+                            <parameter name='output.status.message'
+                                       value='`$org.openecomp.appc.adapter.saltstack.message`'/>
+                            <parameter name='output.status.results'
+                                       value='`$org.openecomp.appc.adapter.saltstack.results`'/>
+                        </return>
+                    </outcome>
+                    <outcome value='Other'>
+                        <return status='failure'>
+                            <parameter name='error-code' value='200'/>
+                            <parameter name='error-message'
+                                       value='`$org.openecomp.appc.adapter.saltstack.message`'/>
+                            <parameter name='output.status.results'
+                                       value='`$org.openecomp.appc.adapter.saltstack.results`'/>
+                        </return>
+                    </outcome>
+                </switch>
+            </outcome>
+        </execute>
+    </method>
+</service-logic>

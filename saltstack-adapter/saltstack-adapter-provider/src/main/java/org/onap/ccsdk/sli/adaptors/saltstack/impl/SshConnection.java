@@ -50,7 +50,7 @@ class SshConnection {
     public static final int DEFAULT_CONNECTION_RETRY_COUNT = 5;
     private static final EELFLogger logger = EELFManager.getInstance().getApplicationLogger();
     private static final long AUTH_TIMEOUT = 60000;
-    private static final long EXEC_TIMEOUT = 120000;
+    private static final long EXEC_TIMEOUT = 120;
     private String host;
     private int port;
     private String username;
@@ -162,7 +162,8 @@ class SshConnection {
     }
 
     public void setExecTimeout(long timeout) {
-        this.timeout = timeout;
+        //convert seconds to milliseconds
+        this.timeout = timeout*1000;
     }
 
     public SaltstackResult execCommand(String cmd, OutputStream out, OutputStream err, SaltstackResult result ) {
