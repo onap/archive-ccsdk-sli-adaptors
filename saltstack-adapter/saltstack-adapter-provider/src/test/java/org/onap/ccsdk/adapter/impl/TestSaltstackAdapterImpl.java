@@ -158,8 +158,8 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("cmd", "test");
-        params.put("slsExec", "false");
+        params.put("Cmd", "test");
+        params.put("SlsExec", "false");
         try {
             adapter.reqExecCommand(params, svcContext);
             String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -181,8 +181,8 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "success");
         params.put("retryDelay", "10");
         params.put("retryCount", "10");
-        params.put("cmd", "test");
-        params.put("slsExec", "false");
+        params.put("Cmd", "test");
+        params.put("SlsExec", "false");
         try {
             adapter.reqExecCommand(params, svcContext);
             String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -204,8 +204,8 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "success");
         params.put("retryDelay", "0");
         params.put("retryCount", "0");
-        params.put("cmd", "test");
-        params.put("slsExec", "false");
+        params.put("Cmd", "test");
+        params.put("SlsExec", "false");
         try {
             adapter.reqExecCommand(params, svcContext);
             String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -227,8 +227,8 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "success");
         params.put("retryDelay", "-1");
         params.put("retryCount", "-1");
-        params.put("cmd", "test");
-        params.put("slsExec", "false");
+        params.put("Cmd", "test");
+        params.put("SlsExec", "false");
 
         try {
             adapter.reqExecCommand(params, svcContext);
@@ -248,8 +248,8 @@ public class TestSaltstackAdapterImpl {
         params.put("Port", "10");
         params.put("User", "test");
         params.put("Password", "test");
-        params.put("cmd", "test");
-        params.put("slsExec", "test");
+        params.put("Cmd", "test");
+        params.put("SlsExec", "test");
         params.put("Test", "fail");
         try {
             adapter.reqExecCommand(params, svcContext);
@@ -272,8 +272,8 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "success");
         params.put("fileName", "src/test/resources/test.json");
         params.put("Id", "test1");
-        params.put("cmd", "test");
-        params.put("slsExec", "false");
+        params.put("Cmd", "test");
+        params.put("SlsExec", "false");
 
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -293,8 +293,8 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "success");
         params.put("fileName", "src/test/resources/test-sls.json");
         params.put("Id", "test1");
-        params.put("cmd", "test");
-        params.put("slsExec", "true");
+        params.put("Cmd", "test");
+        params.put("SlsExec", "true");
 
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -314,8 +314,8 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "success");
         params.put("fileName", "src/test/resources/test.json");
         params.put("Id", "test1");
-        params.put("cmd", "test");
-        params.put("slsExec", "true");
+        params.put("Cmd", "test");
+        params.put("SlsExec", "true");
 
         adapter.reqExecCommand(params, svcContext);
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
@@ -333,8 +333,8 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "success");
         params.put("fileName", "src/test/resources/test.txt");
         params.put("Id", "txt");
-        params.put("cmd", "test");
-        params.put("slsExec", "false");
+        params.put("Cmd", "test");
+        params.put("SlsExec", "false");
 
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -354,8 +354,8 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "success");
         params.put("fileName", "src/test/resources/test");
         params.put("Id", "txt");
-        params.put("cmd", "test");
-        params.put("slsExec", "false");
+        params.put("Cmd", "test");
+        params.put("SlsExec", "false");
 
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -375,8 +375,8 @@ public class TestSaltstackAdapterImpl {
         params.put("Test", "success");
         params.put("fileName", "src/test/resources/test-invalid.json");
         params.put("Id", "test1");
-        params.put("cmd", "test");
-        params.put("slsExec", "false");
+        params.put("Cmd", "test");
+        params.put("SlsExec", "false");
 
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -409,8 +409,8 @@ public class TestSaltstackAdapterImpl {
         params.put("Password", "test");
         params.put("Test", "success");
         params.put("fileName", "src/test/resources/test.json");
-        params.put("cmd", "test");
-        params.put("slsExec", "false");
+        params.put("Cmd", "test");
+        params.put("SlsExec", "false");
 
         adapter.reqExecCommand(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -427,10 +427,10 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsFile", "src/test/resources/test.sls");
+        params.put("SlsFile", "src/test/resources/test.sls");
         params.put("fileName", "src/test/resources/test-sls.json");
         params.put("Id", "test1");
-        params.put("cmd", "test");
+        params.put("Cmd", "test");
 
         adapter.reqExecSLSFile(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -448,7 +448,7 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsFile", "src/test/resources/test-none.sls");
+        params.put("SlsFile", "src/test/resources/test-none.sls");
         params.put("fileName", "src/test/resources/test-sls.json");
         params.put("Id", "test1");
 
@@ -466,7 +466,7 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsFile", "src/test/resources/test-none");
+        params.put("SlsFile", "src/test/resources/test-none");
         params.put("fileName", "src/test/resources/test-sls.json");
         params.put("Id", "test1");
 
@@ -484,7 +484,7 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsFile", "src/test/resources/test.json");
+        params.put("SlsFile", "src/test/resources/test.json");
         params.put("fileName", "src/test/resources/test-none.json");
         params.put("Id", "test1");
 
@@ -502,11 +502,11 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsFile", "src/test/resources/test.json");
+        params.put("SlsFile", "src/test/resources/test.json");
         params.put("fileName", "src/test/resources/test-sls.json");
         params.put("Id", "test1");
-        params.put("cmd", "test");
-        params.put("applyTo", "minion1");
+        params.put("Cmd", "test");
+        params.put("NodeList", "minion1");
 
         adapter.reqExecSLSFile(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -524,11 +524,11 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsFile", "src/test/resources/test.sls");
+        params.put("SlsFile", "src/test/resources/test.sls");
         params.put("fileName", "src/test/resources/test-sls.json");
         params.put("Id", "test1");
-        params.put("cmd", "test");
-        params.put("applyTo", "minion1");
+        params.put("Cmd", "test");
+        params.put("NodeList", "minion1");
 
         adapter.reqExecSLSFile(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -546,10 +546,10 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsFile", "src/test/resources/test-none.json");
+        params.put("SlsFile", "src/test/resources/test-none.json");
         params.put("fileName", "src/test/resources/test-sls.json");
         params.put("Id", "test1");
-        params.put("applyTo", "minion1");
+        params.put("NodeList", "minion1");
 
         adapter.reqExecSLSFile(params, svcContext);
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
@@ -565,10 +565,10 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsFile", "src/test/resources/test.json");
+        params.put("SlsFile", "src/test/resources/test.json");
         params.put("fileName", "src/test/resources/test-none.json");
         params.put("Id", "test1");
-        params.put("applyTo", "minion1");
+        params.put("NodeList", "minion1");
 
         adapter.reqExecSLSFile(params, svcContext);
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
@@ -584,11 +584,11 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsFile", "src/test/resources/test.sls");
+        params.put("SlsFile", "src/test/resources/test.sls");
         params.put("fileName", "src/test/resources/test-sls.json");
         params.put("Id", "test1");
-        params.put("cmd", "test");
-        params.put("applyTo", "*");
+        params.put("Cmd", "test");
+        params.put("NodeList", "*");
 
         adapter.reqExecSLSFile(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -606,10 +606,10 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsFile", "src/test/resources/test-none.json");
+        params.put("SlsFile", "src/test/resources/test-none.json");
         params.put("fileName", "src/test/resources/test-sls.json");
         params.put("Id", "test1");
-        params.put("applyTo", "*");
+        params.put("NodeList", "*");
 
         adapter.reqExecSLSFile(params, svcContext);
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
@@ -625,10 +625,10 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsFile", "src/test/resources/test.json");
+        params.put("SlsFile", "src/test/resources/test.json");
         params.put("fileName", "src/test/resources/test-none.json");
         params.put("Id", "test1");
-        params.put("applyTo", "*");
+        params.put("NodeList", "*");
 
         adapter.reqExecSLSFile(params, svcContext);
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
@@ -645,10 +645,10 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsName", "src/test.sls");
+        params.put("SlsName", "src/test.sls");
         params.put("fileName", "src/test/resources/test-sls.json");
         params.put("Id", "test1");
-        params.put("cmd", "test");
+        params.put("Cmd", "test");
 
         adapter.reqExecSLS(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -666,10 +666,10 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsName", "src/test");
+        params.put("SlsName", "src/test");
         params.put("fileName", "src/test/resources/test-sls.json");
         params.put("Id", "test1");
-        params.put("cmd", "test");
+        params.put("Cmd", "test");
 
         adapter.reqExecSLS(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -687,7 +687,7 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsName", "src/test/resources/test.json");
+        params.put("SlsName", "src/test/resources/test.json");
         params.put("fileName", "src/test/resources/test-none.json");
         params.put("Id", "test1");
 
@@ -706,11 +706,11 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsName", "src/test/resources/test.sls");
+        params.put("SlsName", "src/test/resources/test.sls");
         params.put("fileName", "src/test/resources/test-sls.json");
         params.put("Id", "test1");
-        params.put("cmd", "test");
-        params.put("applyTo", "minion1");
+        params.put("Cmd", "test");
+        params.put("NodeList", "minion1");
 
         adapter.reqExecSLS(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -729,10 +729,10 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsName", "src/test/resources/test.json");
+        params.put("SlsName", "src/test/resources/test.json");
         params.put("fileName", "src/test/resources/test-none.json");
         params.put("Id", "test1");
-        params.put("applyTo", "minion1");
+        params.put("NodeList", "minion1");
 
         adapter.reqExecSLS(params, svcContext);
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
@@ -748,11 +748,11 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsName", "src/test/resources/test.sls");
+        params.put("SlsName", "src/test/resources/test.sls");
         params.put("fileName", "src/test/resources/test-sls.json");
         params.put("Id", "test1");
-        params.put("cmd", "test");
-        params.put("applyTo", "*");
+        params.put("Cmd", "test");
+        params.put("NodeList", "*");
 
         adapter.reqExecSLS(params, svcContext);
         String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
@@ -771,10 +771,10 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("slsName", "src/test/resources/test.json");
+        params.put("SlsName", "src/test/resources/test.json");
         params.put("fileName", "src/test/resources/test-none.json");
         params.put("Id", "test1");
-        params.put("applyTo", "*");
+        params.put("NodeList", "*");
 
         adapter.reqExecSLS(params, svcContext);
         TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
@@ -791,9 +791,9 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "sdn");
         params.put("Password", "foo");
         params.put("Id", "test1");
-        params.put("cmd", "ls -l");
-        params.put("slsExec", "false");
-        params.put("execTimeout", "12000");
+        params.put("Cmd", "ls -l");
+        params.put("SlsExec", "false");
+        params.put("Timeout", "12000");
         adapter = new SaltstackAdapterImpl();
         try {
             adapter.reqExecCommand(params, svcContext);
@@ -803,7 +803,7 @@ public class TestSaltstackAdapterImpl {
             assertEquals(TestId, "test1");
         } catch (Exception e){
             //if local ssh is not enabled
-            return;
+            System.out.print(e.getMessage());
         }
     }
 
@@ -816,9 +816,9 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "root");
         params.put("Password", "vagrant");
         params.put("Id", "test1");
-        params.put("cmd", "salt '*' test.ping --out=json --static");
-        params.put("slsExec", "false");
-        params.put("execTimeout", "12000");
+        params.put("Cmd", "salt '*' test.ping --out=json --static");
+        params.put("SlsExec", "false");
+        params.put("Timeout", "12000");
 
         adapter = new SaltstackAdapterImpl();
         try {
@@ -831,7 +831,7 @@ public class TestSaltstackAdapterImpl {
             assertEquals(TestId, "true");
         } catch (Exception e){
             //if saltstack ssh IP is not enabled
-            return;
+            System.out.print(e.getMessage());
         }
     }
 
@@ -844,9 +844,9 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "root");
         params.put("Password", "vagrant");
         params.put("Id", "test1");
-        params.put("cmd", "cd /srv/salt/; salt '*' state.apply vim --out=json --static");
-        params.put("slsExec", "true");
-        params.put("execTimeout", "12000");
+        params.put("Cmd", "cd /srv/salt/; salt '*' state.apply vim --out=json --static");
+        params.put("SlsExec", "true");
+        params.put("Timeout", "12000");
 
         adapter = new SaltstackAdapterImpl();
         try {
@@ -857,7 +857,7 @@ public class TestSaltstackAdapterImpl {
             assertEquals(TestId, "test1");
         } catch (Exception e){
             //if saltstack ssh IP is not enabled
-            return;
+            System.out.print(e.getMessage());
         }
     }
 
@@ -870,9 +870,9 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "root");
         params.put("Password", "vagrant");
         params.put("Id", "test1");
-        params.put("slsName", "vim");
-        params.put("execTimeout", "12000");
-        params.put("applyTo", "minion1");
+        params.put("SlsName", "vim");
+        params.put("Timeout", "12000");
+        params.put("NodeList", "minion1");
 
         adapter = new SaltstackAdapterImpl();
         try {
@@ -883,7 +883,118 @@ public class TestSaltstackAdapterImpl {
             assertEquals(TestId, "test1");
         } catch (Exception e){
             //if saltstack ssh IP is not enabled
-            return;
+            System.out.print(e.getMessage());
+        }
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessEnvParam() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "<IP>");
+        params.put("Port", "2222");
+        params.put("User", "root");
+        params.put("Password", "vagrant");
+        params.put("Id", "test1");
+        params.put("SlsName", "vim");
+        params.put("Timeout", "12000");
+        params.put("NodeList", "minion1");
+        params.put("EnvParameters", "{\"exclude\": bar*}");
+
+        adapter = new SaltstackAdapterImpl();
+        try {
+            adapter.reqExecSLS(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+            assertEquals("200", status);
+            assertEquals(TestId, "test1");
+        } catch (Exception e){
+            //if saltstack ssh IP is not enabled
+            System.out.print(e.getMessage());
+        }
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessFileParam() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "<IP>");
+        params.put("Port", "2222");
+        params.put("User", "root");
+        params.put("Password", "vagrant");
+        params.put("Id", "test1");
+        params.put("SlsName", "vim");
+        params.put("Timeout", "12000");
+        params.put("NodeList", "minion1");
+        params.put("EnvParameters", "{\"exclude\": \"bar,baz\"}");
+        params.put("FileParameters", "{\"config.txt\":\"db_ip=10.1.1.1, sip_timer=10000\"}");
+
+        adapter = new SaltstackAdapterImpl();
+        try {
+            adapter.reqExecSLS(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+            assertEquals("200", status);
+            assertEquals(TestId, "test1");
+        } catch (Exception e){
+            //if saltstack ssh IP is not enabled
+            System.out.print(e.getMessage());
+        }
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessPillarParam() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "<IP>");
+        params.put("Port", "2222");
+        params.put("User", "root");
+        params.put("Password", "vagrant");
+        params.put("Id", "test1");
+        params.put("SlsName", "vim");
+        params.put("Timeout", "12000");
+        params.put("NodeList", "minion1");
+        params.put("EnvParameters", "{\"exclude\": \"bar,baz\", \"pillar\":\"'{\\\"foo\\\": \\\"bar\\\"}'\"}");
+        params.put("FileParameters", "{\"config.txt\":\"db_ip=10.1.1.1, sip_timer=10000\"}");
+
+        adapter = new SaltstackAdapterImpl();
+        try {
+            adapter.reqExecSLS(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+            assertEquals("200", status);
+            assertEquals(TestId, "test1");
+        } catch (Exception e){
+            //if saltstack ssh IP is not enabled
+            System.out.print(e.getMessage());
+        }
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessMultiFileParam() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "<IP>");
+        params.put("Port", "2222");
+        params.put("User", "root");
+        params.put("Password", "vagrant");
+        params.put("Id", "test1");
+        params.put("SlsName", "vim");
+        params.put("Timeout", "12000");
+        params.put("NodeList", "minion1");
+        params.put("EnvParameters", "{\"exclude\": bar*}");
+        params.put("FileParameters", "{\"config.txt\":\"db_ip=10.1.1.1, sip_timer=10000\" , \"config-tep.txt\":\"db_ip=10.1.1.1, sip_timer=10000\"}");
+
+        adapter = new SaltstackAdapterImpl();
+        try {
+            adapter.reqExecSLS(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+            assertEquals("200", status);
+            assertEquals(TestId, "test1");
+        } catch (Exception e){
+            //if saltstack ssh IP is not enabled
+            System.out.print(e.getMessage());
         }
     }
 
@@ -896,9 +1007,9 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "root");
         params.put("Password", "vagrant");
         params.put("Id", "test1");
-        params.put("execTimeout", "12000");
-        params.put("applyTo", "minion1");
-        params.put("slsFile", "src/test/resources/config.sls");
+        params.put("Timeout", "12000");
+        params.put("NodeList", "minion1");
+        params.put("SlsFile", "src/test/resources/config.sls");
 
         adapter = new SaltstackAdapterImpl();
         try {
@@ -909,7 +1020,35 @@ public class TestSaltstackAdapterImpl {
             assertEquals(TestId, "test1");
         } catch (Exception e){
             //if saltstack ssh IP is not enabled
-            return;
+            System.out.print(e.getMessage());
+        }
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessSSLFileMultiFileParam() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "<IP>");
+        params.put("Port", "2222");
+        params.put("User", "root");
+        params.put("Password", "vagrant");
+        params.put("Id", "test1");
+        params.put("Timeout", "12000");
+        params.put("NodeList", "minion1");
+        params.put("SlsFile", "src/test/resources/config.sls");
+        params.put("EnvParameters", "{\"exclude\": bar, \"pillar\":\"'{\\\"foo\\\": \\\"bar\\\"}'\"}");
+        params.put("FileParameters", "{\"config.txt\":\"db_ip=10.1.1.1, sip_timer=10000\" , \"config-tep.txt\":\"db_ip=10.1.1.1, sip_timer=10000\"}");
+
+        adapter = new SaltstackAdapterImpl();
+        try {
+            adapter.reqExecSLSFile(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+            assertEquals("200", status);
+            assertEquals(TestId, "test1");
+        } catch (Exception e){
+            //if saltstack ssh IP is not enabled
+            System.out.print(e.getMessage());
         }
     }
 }

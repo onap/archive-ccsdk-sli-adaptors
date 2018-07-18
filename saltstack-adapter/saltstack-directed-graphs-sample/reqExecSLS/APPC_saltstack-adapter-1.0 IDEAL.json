@@ -1,1 +1,214 @@
-[{"id":"b9234075.7e20b","type":"method","name":"saltstack-adapter-1.0","xml":"<method rpc='saltstack-adapter-1.0' mode='sync'>\n","comments":"","outputs":1,"x":589,"y":221,"z":"8c500c8b.91561","wires":[["a9f084e0.590cc8"]]},{"id":"159aca46.2fdf66","type":"service-logic","name":"APPC 2.0.1","module":"APPC","version":"2.0.1","comments":"","xml":"<service-logic xmlns='http://www.onap.org/sdnc/svclogic' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='APPC' version='2.0.1'>","outputs":1,"x":366,"y":220,"z":"8c500c8b.91561","wires":[["b9234075.7e20b"]]},{"id":"f809843e.12d3b8","type":"returnSuccess","name":"return success","xml":"<return status='success'>\n<parameter name='output.status.code' value='`$org.openecomp.appc.adapter.ansible.result.code`' />\n<parameter name='output.status.message' value='`$org.openecomp.appc.adapter.ansible.message`'/>\n<parameter name='output.status.results' value = '`$org.openecomp.appc.adapter.ansible.results`'/>\n","comments":"","x":968,"y":313,"z":"8c500c8b.91561","wires":[]},{"id":"cad8db4d.3d8978","type":"dgstart","name":"DGSTART","outputs":1,"x":197,"y":219,"z":"8c500c8b.91561","wires":[["159aca46.2fdf66"]]},{"id":"96da3695.f3ade8","type":"comment","name":"SaltStack Adaptor DG","info":"","comments":"","x":574,"y":98,"z":"8c500c8b.91561","wires":[]},{"id":"f3c2409c.90b75","type":"comment","name":"request-method = reqExecSLS, req-action = \"execute SLS\"","info":"This would be the ideal adaptor the orchestrator DG will call, this just takes in slsName.","comments":"","x":585,"y":183,"z":"8c500c8b.91561","wires":[]},{"id":"206ad453.90dcdc","type":"comment","name":"Assumptions for this DG (example-server)","info":"Here we assume, the saltstack server is the example-vagrant based server. Where, the master saltstact controllers minion1 and minion2. ","comments":"","x":577,"y":139,"z":"8c500c8b.91561","wires":[]},{"id":"a9f084e0.590cc8","type":"execute","name":"execute","xml":"<execute plugin='org.openecomp.appc.adapter.ansible.AnsibleAdapter' method='reqExecCommand' >\n                        <parameter name='HostName' value='`$AgentUrl`'/>\n                        <parameter name='Port' value='`$Port`'/>\n                        <parameter name='User' value='`$User`'/>\n                        <parameter name='Password' value='`$Password`'/>\n                        <parameter name='Id' value='test2'/>\n                        <parameter name='slsName' value='test-file.sls'/>\n","comments":"","outputs":1,"x":279,"y":350,"z":"8c500c8b.91561","wires":[["953d6f9.633bc9","2b0177ad.6a0c88"]]},{"id":"953d6f9.633bc9","type":"failure","name":"failure","xml":"<outcome value='failure'>\n","comments":"","outputs":1,"x":472,"y":311,"z":"8c500c8b.91561","wires":[["56ac40b9.ab7d9"]]},{"id":"2b0177ad.6a0c88","type":"other","name":"other","xml":"<outcome value='Other'>\n","comments":"","outputs":1,"x":470,"y":383,"z":"8c500c8b.91561","wires":[["245f2c0b.5f8894"]]},{"id":"245f2c0b.5f8894","type":"switchNode","name":"switch","xml":"<switch test=\"`$org.onap.appc.adapter.saltstack.result.code`\">\n","comments":"","outputs":1,"x":622,"y":371,"z":"8c500c8b.91561","wires":[["9cb78c41.7c1fc","a2c5d59b.172848"]]},{"id":"a2c5d59b.172848","type":"success","name":"success","xml":"<outcome value='200'>\n","comments":"","outputs":1,"x":785,"y":317,"z":"8c500c8b.91561","wires":[["f809843e.12d3b8"]]},{"id":"9cb78c41.7c1fc","type":"other","name":"other","xml":"<outcome value='Other'>\n","comments":"","outputs":1,"x":782,"y":386,"z":"8c500c8b.91561","wires":[["2ca5c925.6ee136"]]},{"id":"56ac40b9.ab7d9","type":"returnFailure","name":"return failure","xml":"<return status='failure'>\n<parameter name='error-code' value='200' />\n<parameter name='error-message' value='`$org.openecomp.appc.adapter.ansible.message`' />\n<parameter name='output.status.results' value='`$org.openecomp.appc.adapter.ansible.results`' />\n","comments":"","x":632,"y":295,"z":"8c500c8b.91561","wires":[]},{"id":"2ca5c925.6ee136","type":"returnFailure","name":"return failure","xml":"<return status='failure'>\n<parameter name='error-code' value='200' />\n<parameter name='error-message' value='`$org.openecomp.appc.adapter.ansible.message`' />\n<parameter name='output.status.results' value='`$org.openecomp.appc.adapter.ansible.results`' />\n","comments":"","x":952,"y":383,"z":"8c500c8b.91561","wires":[]}]
+[
+  {
+    "id": "80b83851.e527b8",
+    "type": "method",
+    "name": "saltstack-adapter-1.0",
+    "xml": "<method rpc='saltstack-adapter-1.0' mode='sync'>\n",
+    "comments": "",
+    "outputs": 1,
+    "x": 676,
+    "y": 277,
+    "z": "1f6661d7.1ebd2e",
+    "wires": [
+      [
+        "83c8d47e.cb9c98"
+      ]
+    ]
+  },
+  {
+    "id": "41231c44.5d1324",
+    "type": "service-logic",
+    "name": "APPC 2.0.1",
+    "module": "APPC",
+    "version": "2.0.1",
+    "comments": "",
+    "xml": "<service-logic xmlns='http://www.onap.org/sdnc/svclogic' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='APPC' version='2.0.1'>",
+    "outputs": 1,
+    "x": 453,
+    "y": 276,
+    "z": "1f6661d7.1ebd2e",
+    "wires": [
+      [
+        "80b83851.e527b8"
+      ]
+    ]
+  },
+  {
+    "id": "1f4a794d.fb3be7",
+    "type": "returnSuccess",
+    "name": "return success",
+    "xml": "<return status='success'>\n<parameter name='output.status.code' value='`$org.openecomp.appc.adapter.ansible.result.code`' />\n<parameter name='output.status.message' value='`$org.openecomp.appc.adapter.ansible.message`'/>\n<parameter name='output.status.results' value = '`$org.openecomp.appc.adapter.ansible.results`'/>\n",
+    "comments": "",
+    "x": 1055,
+    "y": 369,
+    "z": "1f6661d7.1ebd2e",
+    "wires": []
+  },
+  {
+    "id": "5a85036.5a9e2fc",
+    "type": "dgstart",
+    "name": "DGSTART",
+    "outputs": 1,
+    "x": 284,
+    "y": 275,
+    "z": "1f6661d7.1ebd2e",
+    "wires": [
+      [
+        "41231c44.5d1324"
+      ]
+    ]
+  },
+  {
+    "id": "b38fc61c.a23438",
+    "type": "comment",
+    "name": "SaltStack Adaptor DG",
+    "info": "",
+    "comments": "",
+    "x": 661,
+    "y": 154,
+    "z": "1f6661d7.1ebd2e",
+    "wires": []
+  },
+  {
+    "id": "6a821d83.4070e4",
+    "type": "comment",
+    "name": "request-method = reqExecSLS, req-action = \"execute SLS\"",
+    "info": "This would be the ideal adaptor the orchestrator DG will call, this just takes in SlsName.",
+    "comments": "",
+    "x": 672,
+    "y": 239,
+    "z": "1f6661d7.1ebd2e",
+    "wires": []
+  },
+  {
+    "id": "ba16960c.36bad8",
+    "type": "comment",
+    "name": "Assumptions for this DG (example-server)",
+    "info": "Here we assume, the saltstack server is the example-vagrant based server. Where, the master saltstact controllers minion1 and minion2. ",
+    "comments": "",
+    "x": 664,
+    "y": 195,
+    "z": "1f6661d7.1ebd2e",
+    "wires": []
+  },
+  {
+    "id": "83c8d47e.cb9c98",
+    "type": "execute",
+    "name": "execute",
+    "xml": "<execute plugin='org.openecomp.appc.adapter.ansible.AnsibleAdapter' method='reqExecCommand' >\n                        <parameter name='HostName' value='`$AgentUrl`'/>\n                        <parameter name='Port' value='`$Port`'/>\n                        <parameter name='User' value='`$User`'/>\n                        <parameter name='Password' value='`$Password`'/>\n                        <parameter name='Id' value='test2'/>\n                        <parameter name='SlsName' value='test-file.sls'/>\n                        <parameter name='NodeList' value='`$NodeList`'/>\n                        <parameter name='Timeout' value='`$Timeout`'/>\n                        <parameter name='FileParameters' value='`$FileParameters`'/>\n                        <parameter name='EnvParameters' value='`$EnvParameters`'/>\n",
+    "comments": "",
+    "outputs": 1,
+    "x": 366,
+    "y": 406,
+    "z": "1f6661d7.1ebd2e",
+    "wires": [
+      [
+        "b83f5a23.33f938",
+        "3354190.eb450e8"
+      ]
+    ]
+  },
+  {
+    "id": "b83f5a23.33f938",
+    "type": "failure",
+    "name": "failure",
+    "xml": "<outcome value='failure'>\n",
+    "comments": "",
+    "outputs": 1,
+    "x": 559,
+    "y": 367,
+    "z": "1f6661d7.1ebd2e",
+    "wires": [
+      [
+        "efc02e73.0cf1d"
+      ]
+    ]
+  },
+  {
+    "id": "3354190.eb450e8",
+    "type": "other",
+    "name": "other",
+    "xml": "<outcome value='Other'>\n",
+    "comments": "",
+    "outputs": 1,
+    "x": 557,
+    "y": 439,
+    "z": "1f6661d7.1ebd2e",
+    "wires": [
+      [
+        "88b53985.e42758"
+      ]
+    ]
+  },
+  {
+    "id": "88b53985.e42758",
+    "type": "switchNode",
+    "name": "switch",
+    "xml": "<switch test=\"`$org.onap.appc.adapter.saltstack.result.code`\">\n",
+    "comments": "",
+    "outputs": 1,
+    "x": 709,
+    "y": 427,
+    "z": "1f6661d7.1ebd2e",
+    "wires": [
+      [
+        "195a294e.61efb7",
+        "bc1bfd78.146bc"
+      ]
+    ]
+  },
+  {
+    "id": "bc1bfd78.146bc",
+    "type": "success",
+    "name": "success",
+    "xml": "<outcome value='200'>\n",
+    "comments": "",
+    "outputs": 1,
+    "x": 872,
+    "y": 373,
+    "z": "1f6661d7.1ebd2e",
+    "wires": [
+      [
+        "1f4a794d.fb3be7"
+      ]
+    ]
+  },
+  {
+    "id": "195a294e.61efb7",
+    "type": "other",
+    "name": "other",
+    "xml": "<outcome value='Other'>\n",
+    "comments": "",
+    "outputs": 1,
+    "x": 869,
+    "y": 442,
+    "z": "1f6661d7.1ebd2e",
+    "wires": [
+      [
+        "81ddc2e0.dce24"
+      ]
+    ]
+  },
+  {
+    "id": "efc02e73.0cf1d",
+    "type": "returnFailure",
+    "name": "return failure",
+    "xml": "<return status='failure'>\n<parameter name='error-code' value='200' />\n<parameter name='error-message' value='`$org.openecomp.appc.adapter.ansible.message`' />\n<parameter name='output.status.results' value='`$org.openecomp.appc.adapter.ansible.results`' />\n",
+    "comments": "",
+    "x": 719,
+    "y": 351,
+    "z": "1f6661d7.1ebd2e",
+    "wires": []
+  },
+  {
+    "id": "81ddc2e0.dce24",
+    "type": "returnFailure",
+    "name": "return failure",
+    "xml": "<return status='failure'>\n<parameter name='error-code' value='200' />\n<parameter name='error-message' value='`$org.openecomp.appc.adapter.ansible.message`' />\n<parameter name='output.status.results' value='`$org.openecomp.appc.adapter.ansible.results`' />\n",
+    "comments": "",
+    "x": 1039,
+    "y": 439,
+    "z": "1f6661d7.1ebd2e",
+    "wires": []
+  }
+]

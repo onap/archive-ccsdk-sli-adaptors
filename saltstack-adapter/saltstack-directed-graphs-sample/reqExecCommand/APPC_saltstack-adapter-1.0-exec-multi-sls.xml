@@ -10,10 +10,10 @@
             <parameter name='User' value='`$User`'/>
             <parameter name='Password' value='`$Password`'/>
             <parameter name='Id' value='test1'/>
-            <parameter name='cmd'
+            <parameter name='Cmd'
                        value='salt &apos;*&apos; test.ping --out=json --static'/>
-            <parameter name='slsExec' value='false'/>
-            <parameter name='execTimeout' value='`$Timeout`'/>
+            <parameter name='SlsExec' value='false'/>
+            <parameter name='Timeout' value='`$Timeout`'/>
             <outcome value='failure'>
                 <return status='failure'>
                     <parameter name='error-code' value='200'/>
@@ -56,10 +56,10 @@
                                     <parameter name='Password'
                                                value='`$Password`'/>
                                     <parameter name='Id' value='test2'/>
-                                    <parameter name='cmd'
+                                    <parameter name='Cmd'
                                                value='salt &apos;minion1&apos; pkg.install vim --out=json --static'/>
-                                    <parameter name='slsExec' value='false'/>
-                                    <parameter name='execTimeout'
+                                    <parameter name='SlsExec' value='false'/>
+                                    <parameter name='Timeout'
                                                value='`$Timeout`'/>
                                     <outcome value='failure'>
                                         <return status='failure'>
