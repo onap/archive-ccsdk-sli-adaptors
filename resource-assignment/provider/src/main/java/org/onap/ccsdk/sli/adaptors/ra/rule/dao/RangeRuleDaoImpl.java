@@ -32,7 +32,6 @@ import org.springframework.jdbc.core.RowMapper;
 
 public class RangeRuleDaoImpl implements RangeRuleDao {
 
-    @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(RangeRuleDaoImpl.class);
 
     private static final String GET_SQL = "SELECT * FROM RANGE_RULE WHERE service_model = ? AND equipment_level = ?";
