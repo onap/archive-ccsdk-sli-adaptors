@@ -48,7 +48,7 @@
     "id": "f4e59dd0.ee45f",
     "type": "execute",
     "name": "execute",
-    "xml": "<execute plugin='org.openecomp.appc.adapter.ansible.AnsibleAdapter' method='reqExecCommand' >\n                        <parameter name='HostName' value='`$AgentUrl`'/>\n                        <parameter name='Port' value='`$Port`'/>\n                        <parameter name='User' value='`$User`'/>\n                        <parameter name='Password' value='`$Password`'/>\n                        <parameter name='Id' value='test1'/>\n                        <parameter name='cmd' value='salt &apos;*&apos; test.ping --out=json --static'/>\n                        <parameter name='slsExec' value='false'/>\n                        <parameter name='execTimeout' value='`$Timeout`'/>\n",
+    "xml": "<execute plugin='org.openecomp.appc.adapter.ansible.SaltstackAdapter' method='reqExecCommand' >\n                        <parameter name='HostName' value='`$AgentUrl`'/>\n                        <parameter name='Port' value='`$Port`'/>\n                        <parameter name='User' value='`$User`'/>\n                        <parameter name='Password' value='`$Password`'/>\n                        <parameter name='Id' value='test1'/>\n                        <parameter name='Cmd' value='salt &apos;*&apos; test.ping --out=json --static'/>\n                        <parameter name='SlsExec' value='false'/>\n                        <parameter name='Timeout' value='`$Timeout`'/>\n",
     "comments": "",
     "outputs": 1,
     "x": 735,

@@ -1,10 +1,10 @@
 /*-
  * ============LICENSE_START=======================================================
- * ONAP : APPC
+ * ONAP : CCSDK
  * ================================================================================
  * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
- * Copyright (C) 2017 Amdocs
+ *
  * =============================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,9 @@ package org.onap.ccsdk.sli.adaptors.saltstack.model;
  */
 
 import com.google.common.base.Strings;
-import org.codehaus.jettison.json.JSONException;
+import org.json.JSONException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.slf4j.Logger;
@@ -41,8 +43,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -55,13 +60,15 @@ public class SaltstackMessageParser {
     private static final String SS_AGENT_PORT_KEY = "Port";
     private static final String PASS_KEY = "Password";
     private static final String USER_KEY = "User";
-    private static final String CMD_EXEC = "cmd";
-    private static final String IS_SLS_EXEC = "slsExec";
+    private static final String CMD_EXEC = "Cmd"; //cmd
+    private static final String IS_SLS_EXEC = "SlsExec"; //slsExec
     private static final String SS_REQ_ID = "Id";
-    private static final String SLS_FILE_LOCATION = "slsFile";
-    private static final String SLS_NAME = "slsName";
-    private static final String MINION_TO_APPLY = "applyTo";
-    private static final String EXEC_TIMEOUT_TO_APPLY = "execTimeout";
+    private static final String SLS_FILE_LOCATION = "SlsFile"; //slsFile
+    private static final String SLS_NAME = "SlsName"; //slsName
+    private static final String MINION_TO_APPLY = "NodeList"; //applyTo
+    private static final String EXEC_TIMEOUT_TO_APPLY = "Timeout"; //execTimeout
+    private static final String FILE_PARAMETERS_OPT_KEY = "FileParameters";
+    private static final String ENV_PARAMETERS_OPT_KEY = "EnvParameters";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SaltstackMessageParser.class);
 
@@ -181,7 +188,7 @@ public class SaltstackMessageParser {
     /**
      * Method that validates that the Map has enough information
      * to query Saltstack server for a result. If so, it returns
-     * the appropriate minions/vnfc to execute the SLS file to.
+     * the appropriate minions/vnfc to execute the SLS file.
      */
     public String reqApplyToDevices(Map<String, String> params) {
 
@@ -196,7 +203,7 @@ public class SaltstackMessageParser {
     /**
      * Method that validates that the Map has enough information
      * to query Saltstack server for a result. If so, it returns
-     * the appropriate minions/vnfc to execute the SLS file to.
+     * the appropriate minions/vnfc to execute the SLS file.
      */
     public long reqExecTimeout(Map<String, String> params) {
 
@@ -206,6 +213,77 @@ public class SaltstackMessageParser {
             return -1;
         }
         return Long.parseLong(params.get(SaltstackMessageParser.EXEC_TIMEOUT_TO_APPLY));
+    }
+
+    /**
+     * Method that validates that the Map has enough information
+     * to query Saltstack server for a result. If so, it returns
+     * the appropriate EnvParameters to execute the SLS file.
+     */
+    public JSONObject reqEnvParameters(Map<String, String> params) throws JSONException {
+
+        JSONObject jsonPayload = new JSONObject();
+        final String[] optionalTestParam = { SaltstackMessageParser.ENV_PARAMETERS_OPT_KEY };
+        parseParam(params, optionalTestParam, jsonPayload);
+
+        return (JSONObject) jsonPayload.remove(SaltstackMessageParser.ENV_PARAMETERS_OPT_KEY);
+    }
+
+    /**
+     * Method that validates that the Map has enough information
+     * to query Saltstack server for a result. If so, it returns
+     * the appropriate EnvParameters to execute the SLS file.
+     */
+    public JSONObject reqFileParameters(Map<String, String> params) throws JSONException {
+
+        JSONObject jsonPayload = new JSONObject();
+        final String[] optionalTestParam = { SaltstackMessageParser.FILE_PARAMETERS_OPT_KEY };
+        parseParam(params, optionalTestParam, jsonPayload);
+
+        return (JSONObject) jsonPayload.remove(SaltstackMessageParser.FILE_PARAMETERS_OPT_KEY);
+    }
+
+    private void parseParam(Map<String, String> params, String[] optionalTestParams, JSONObject jsonPayload)
+            throws JSONException {
+
+        Set<String> optionalParamsSet = new HashSet<>();
+        Collections.addAll(optionalParamsSet, optionalTestParams);
+
+        //@formatter:off
+        params.entrySet()
+                .stream()
+                .filter(entry -> optionalParamsSet.contains(entry.getKey()))
+                .filter(entry -> !Strings.isNullOrEmpty(entry.getValue()))
+                .forEach(entry -> parseParam(entry, jsonPayload));
+        //@formatter:on
+    }
+
+    private void parseParam(Map.Entry<String, String> params, JSONObject jsonPayload)
+            throws JSONException {
+        String key = params.getKey();
+        String payload = params.getValue();
+
+        switch (key) {
+            case ENV_PARAMETERS_OPT_KEY:
+                JSONObject paramsJson = new JSONObject(payload);
+                jsonPayload.put(key, paramsJson);
+                break;
+
+            case FILE_PARAMETERS_OPT_KEY:
+                jsonPayload.put(key, getFilePayload(payload));
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Return payload with escaped newlines
+     */
+    private JSONObject getFilePayload(String payload) {
+        String formattedPayload = payload.replace("\n", "\\n").replace("\r", "\\r");
+        return new JSONObject(formattedPayload);
     }
 
     /**
@@ -291,7 +369,7 @@ public class SaltstackMessageParser {
         } catch (FileNotFoundException e) {
             return new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "error parsing response file "
                     + saltstackResult.getOutputFileName() + " : " + e.getMessage());
-        } catch (JSONException e) {
+        } catch (org.codehaus.jettison.json.JSONException e) {
             LOGGER.info("Output not in JSON format");
             return putToProperties(ctx, pfx, saltstackResult);
         } catch (Exception e) {
@@ -305,11 +383,11 @@ public class SaltstackMessageParser {
         if (slsExec) {
             if (!retCodeFound) {
                 return new SaltstackResult(SaltstackResultCodes.COMMAND_EXEC_FAILED_STATUS.getValue(),
-                                           "error in executing configuration at the server");
+                                           "error in executing configuration at the server, check your command input");
             }
             if (!executionStatus) {
                 return new SaltstackResult(SaltstackResultCodes.COMMAND_EXEC_FAILED_STATUS.getValue(),
-                                           "error in executing configuration at the server");
+                                           "error in executing configuration at the server, check your command input");
             }
         }
         saltstackResult.setStatusCode(SaltstackResultCodes.FINAL_SUCCESS.getValue());
