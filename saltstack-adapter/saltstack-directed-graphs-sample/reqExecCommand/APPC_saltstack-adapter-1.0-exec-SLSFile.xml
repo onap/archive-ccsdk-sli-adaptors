@@ -3,17 +3,17 @@
                xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd'
                module='APPC' version='2.0.1'>
     <method rpc='saltstack-adapter-1.0-exec-SLSFile' mode='sync'>
-        <execute plugin='org.openecomp.appc.adapter.ansible.AnsibleAdapter'
+        <execute plugin='org.openecomp.appc.adapter.ansible.SaltstackAdapter'
                  method='reqExecCommand'>
             <parameter name='HostName' value='`$AgentUrl`'/>
             <parameter name='Port' value='`$Port`'/>
             <parameter name='User' value='`$User`'/>
             <parameter name='Password' value='`$Password`'/>
             <parameter name='Id' value='test1'/>
-            <parameter name='cmd'
+            <parameter name='Cmd'
                        value='salt &apos;*&apos; test.ping --out=json --static'/>
-            <parameter name='slsExec' value='false'/>
-            <parameter name='execTimeout' value='`$Timeout`'/>
+            <parameter name='SlsExec' value='false'/>
+            <parameter name='Timeout' value='`$Timeout`'/>
             <outcome value='failure'>
                 <return status='failure'>
                     <parameter name='error-code' value='200'/>
@@ -47,7 +47,7 @@
                             </outcome>
                             <outcome value='true'>
                                 <execute
-                                        plugin='org.openecomp.appc.adapter.ansible.AnsibleAdapter'
+                                        plugin='org.openecomp.appc.adapter.ansible.SaltstackAdapter'
                                         method='reqExecCommand'>
                                     <parameter name='HostName'
                                                value='`$AgentUrl`'/>
@@ -56,10 +56,10 @@
                                     <parameter name='Password'
                                                value='`$Password`'/>
                                     <parameter name='Id' value='test2'/>
-                                    <parameter name='cmd'
+                                    <parameter name='Cmd'
                                                value='cd /srv/salt/; salt &apos;minion1&apos; state.apply vim --out=json --static'/>
-                                    <parameter name='slsExec' value='true'/>
-                                    <parameter name='execTimeout'
+                                    <parameter name='SlsExec' value='true'/>
+                                    <parameter name='Timeout'
                                                value='`$Timeout`'/>
                                     <outcome value='failure'>
                                         <return status='failure'>

@@ -26,6 +26,8 @@ package org.onap.ccsdk.sli.adaptors.saltstack.impl;
 
 import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.onap.ccsdk.sli.adaptors.saltstack.SaltstackAdapter;
 import org.onap.ccsdk.sli.adaptors.saltstack.SaltstackAdapterPropertiesProvider;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackMessageParser;
@@ -61,6 +63,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     public static final String OUTCOME_SUCCESS = "success";
     public static final String CONNECTION_RETRY_DELAY = "retryDelay";
     public static final String CONNECTION_RETRY_COUNT = "retryCount";
+    private static final String APPC_EXCEPTION_CAUGHT = "APPCException caught";
     /**
      * Adapter Name
      */
@@ -74,6 +77,10 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     private static final String SS_SERVER_USERNAME = "org.onap.appc.adapter.saltstack.userName";
     private static final String SS_SERVER_PASSWD = "org.onap.appc.adapter.saltstack.userPasswd";
     private static final String SS_SERVER_SSH_KEY = "org.onap.appc.adapter.saltstack.sshKey";
+
+    private static final String COMMAND_IN_JSON_OUT = " --out=json --static ";
+    private static final String COMMAND_CHANGE_DEFAULT_DIR = " cd /srv/salt/ ;";
+
     /**
      * The logger to be used
      */
@@ -135,7 +142,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
      */
     @SuppressWarnings("static-method")
     private void doFailure(SvcLogicContext svcLogic, int code, String message) throws SvcLogicException {
-
+        logger.error(APPC_EXCEPTION_CAUGHT, message);
         svcLogic.setStatus(OUTCOME_FAILURE);
         svcLogic.setAttribute(RESULT_CODE_ATTRIBUTE_NAME, Integer.toString(code));
         svcLogic.setAttribute(MESSAGE_ATTRIBUTE_NAME, message);
@@ -219,9 +226,35 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
         }
     }
 
+    private String parseEnvParam(JSONObject envParams) {
+        StringBuilder envParamBuilder = new StringBuilder();
+        if (envParams != null) {
+            for(Object key : envParams.keySet()) {
+                if(envParamBuilder.length() > 0) {
+                    envParamBuilder.append(", ");
+                }
+                envParamBuilder.append(key+"="+envParams.get((String) key));
+                logger.info("EnvParameters : " + envParamBuilder);
+            }
+        }
+        return envParamBuilder.toString();
+    }
+
+    private String parseFileParam(JSONObject fileParams) {
+        StringBuilder fileParamBuilder = new StringBuilder();
+        if (fileParams != null) {
+            for(Object key : fileParams.keySet()) {
+                fileParamBuilder.append("echo -e \"" + fileParams.get((String) key) + "\" > /srv/salt/" + key).append("; ");
+                logger.info("FileParameters : " + fileParamBuilder);
+            }
+        }
+        return fileParamBuilder.toString();
+    }
+
     private String putToCommands(SvcLogicContext ctx, String slsFileName,
-                                    String applyTo) throws SvcLogicException {
-        String constructedCommand = "";
+                                    String applyTo, JSONObject envParams, JSONObject fileParams) throws SvcLogicException {
+
+        StringBuilder constructedCommand = new StringBuilder();
         try {
             File file = new File(slsFileName);
             String slsFile = file.getName();
@@ -236,8 +269,12 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             String str = new String(data, "UTF-8");
             in.close();
             String slsWithoutExtn = stripExtension(slsFile);
-            constructedCommand = "echo -e \""+str+"\" > /srv/salt/"+slsFile+"; cd /srv/salt/; salt '"+
-                    applyTo+"' state.apply "+slsWithoutExtn+" --out=json --static";
+            constructedCommand.append(parseFileParam(fileParams)).append("echo -e \"").append(str).append("\" > /srv/salt/").
+                    append(slsFile).append("; ").append(COMMAND_CHANGE_DEFAULT_DIR).append(" salt '").
+                    append(applyTo).append("' state.apply ").append(slsWithoutExtn).append(" ").append(parseEnvParam(envParams)).append(COMMAND_IN_JSON_OUT);
+
+            logger.info("Command to be executed on server : " + constructedCommand.toString());
+
         } catch (FileNotFoundException e) {
             doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(), "Input SLS file " +
                     "not found in path : " + slsFileName+". "+ e.getMessage());
@@ -248,8 +285,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(), "Input file " +
                     "is not of type .sls");
         }
-        logger.info("Command to be executed on server : " + constructedCommand);
-        return constructedCommand;
+        return constructedCommand.toString();
     }
 
     private String stripExtension (String str) {
@@ -259,12 +295,15 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
         return str.substring(0, pos);
     }
 
-    private String putToCommands(String slsName, String applyTo) {
-        String
-            constructedCommand = "cd /srv/salt/; salt '"+applyTo+"' state.apply "+slsName+" --out=json --static";
+    private String putToCommands(String slsName, String applyTo, JSONObject envParams, JSONObject fileParams) {
 
-        logger.info("Command to be executed on server : " + constructedCommand);
-        return constructedCommand;
+        StringBuilder constructedCommand = new StringBuilder();
+
+        constructedCommand.append(parseFileParam(fileParams)).append(COMMAND_CHANGE_DEFAULT_DIR).append(" salt '").append(applyTo)
+                .append("' state.apply ").append(slsName).append(" ").append(parseEnvParam(envParams)).append(COMMAND_IN_JSON_OUT);
+
+        logger.info("Command to be executed on server : " + constructedCommand.toString());
+        return constructedCommand.toString();
     }
 
     private void checkResponseStatus(SaltstackResult testResult, SvcLogicContext ctx, String reqID, boolean slsExec)
@@ -274,7 +313,6 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
         if (testResult.getStatusCode() != SaltstackResultCodes.FINAL_SUCCESS.getValue()) {
             ctx.setAttribute(ID_ATTRIBUTE_NAME, reqID);
             doFailure(ctx, testResult.getStatusCode(), "Request for execution of command failed. Reason = " + testResult.getStatusMessage());
-            return;
         } else {
             logger.info(String.format("Execution of request : successful."));
             ctx.setAttribute(RESULT_CODE_ATTRIBUTE_NAME, Integer.toString(testResult.getStatusCode()));
@@ -326,13 +364,18 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             String slsName = messageProcessor.reqSlsName(params);
             String applyTo = messageProcessor.reqApplyToDevices(params);
             long execTimeout = messageProcessor.reqExecTimeout(params);
-            String commandToExecute = putToCommands(slsName, applyTo);
+            JSONObject envParams = messageProcessor.reqEnvParameters(params);
+            JSONObject fileParams = messageProcessor.reqFileParameters(params);
+
+            String commandToExecute = putToCommands(slsName, applyTo, envParams, fileParams);
             testResult = execCommand(ctx, params, commandToExecute, execTimeout);
             testResult = messageProcessor.parseResponse(ctx, reqID, testResult, true);
             checkResponseStatus(testResult, ctx, reqID, true);
         } catch (IOException e) {
             doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(),
                       "IOException in file stream : "+ e.getMessage());
+        } catch (JSONException e) {
+            doFailure(ctx, SaltstackResultCodes.INVALID_COMMAND.getValue(), e.getMessage());
         }
     }
 
@@ -354,7 +397,10 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             String slsFile = messageProcessor.reqSlsFile(params);
             String applyTo = messageProcessor.reqApplyToDevices(params);
             long execTimeout = messageProcessor.reqExecTimeout(params);
-            String commandToExecute = putToCommands(ctx, slsFile, applyTo);
+            JSONObject envParams = messageProcessor.reqEnvParameters(params);
+            JSONObject fileParams = messageProcessor.reqFileParameters(params);
+
+            String commandToExecute = putToCommands(ctx, slsFile, applyTo, envParams, fileParams);
             testResult = execCommand(ctx, params, commandToExecute, execTimeout);
             testResult = messageProcessor.parseResponse(ctx, reqID, testResult, true);
             checkResponseStatus(testResult, ctx, reqID, true);
