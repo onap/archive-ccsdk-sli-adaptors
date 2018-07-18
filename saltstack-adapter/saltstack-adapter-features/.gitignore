@@ -1,7 +1,7 @@
 # ============LICENSE_START==========================================
-# ONAP : APPC
+# ONAP : CCSDK
 # ===================================================================
-# Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2017-2018 Samsung Electronics. All rights reserved.
 # ===================================================================
 #
 # Unless otherwise specified, all software contained herein is licensed
@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# ECOMP is a trademark and service mark of AT&T Intellectual Property.
+#
 # ============LICENSE_END============================================
 /target/
 /target-ide/
