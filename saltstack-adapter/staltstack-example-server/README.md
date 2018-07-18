@@ -59,7 +59,7 @@ This will redirect messages to host machine to the Vagarant Master server.
 ============
 TESTING: Sample Saltstack server command execution.
 ============
-
+    
     @Test
     public void reqExecCommand_shouldSetSuccessReal() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
@@ -69,19 +69,47 @@ TESTING: Sample Saltstack server command execution.
         params.put("User", "sdn");
         params.put("Password", "foo");
         params.put("Id", "test1");
-        params.put("cmd", "ls -l");
-        params.put("slsExec", "false");
-        params.put("execTimeout", "12000");
+        params.put("Cmd", "ls -l");
+        params.put("SlsExec", "false");
+        params.put("Timeout", "12000");
         adapter = new SaltstackAdapterImpl();
         try {
             adapter.reqExecCommand(params, svcContext);
             String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
             TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
-            assertEquals("250", status);
+            assertEquals("200", status);
             assertEquals(TestId, "test1");
         } catch (Exception e){
             //if local ssh is not enabled
-            return;
+            System.out.print(e.getMessage());
+        }
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessRealSLSCommand() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "<IP>");
+        params.put("Port", "2222");
+        params.put("User", "root");
+        params.put("Password", "vagrant");
+        params.put("Id", "test1");
+        params.put("Cmd", "salt '*' test.ping --out=json --static");
+        params.put("SlsExec", "false");
+        params.put("Timeout", "12000");
+
+        adapter = new SaltstackAdapterImpl();
+        try {
+            adapter.reqExecCommand(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+            assertEquals("200", status);
+            assertEquals(TestId, "test1");
+            TestId = svcContext.getAttribute("test1.minion1");
+            assertEquals(TestId, "true");
+        } catch (Exception e){
+            //if saltstack ssh IP is not enabled
+            System.out.print(e.getMessage());
         }
     }
 
@@ -89,14 +117,14 @@ TESTING: Sample Saltstack server command execution.
     public void reqExecCommand_shouldSetSuccessRealCommand() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
 
-        params.put("HostName", "<IP address of SS server>");
+        params.put("HostName", "<IP>");
         params.put("Port", "2222");
         params.put("User", "root");
         params.put("Password", "vagrant");
         params.put("Id", "test1");
-        params.put("cmd", "cd /srv/salt/; salt '*' state.apply vim --out=json --static");
-        params.put("slsExec", "true");
-        params.put("execTimeout", "12000");
+        params.put("Cmd", "cd /srv/salt/; salt '*' state.apply vim --out=json --static");
+        params.put("SlsExec", "true");
+        params.put("Timeout", "12000");
 
         adapter = new SaltstackAdapterImpl();
         try {
@@ -107,7 +135,7 @@ TESTING: Sample Saltstack server command execution.
             assertEquals(TestId, "test1");
         } catch (Exception e){
             //if saltstack ssh IP is not enabled
-            return;
+            System.out.print(e.getMessage());
         }
     }
 
@@ -115,14 +143,14 @@ TESTING: Sample Saltstack server command execution.
     public void reqExecCommand_shouldSetSuccessRealSSL() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
 
-        params.put("HostName", "10.251.92.17");
+        params.put("HostName", "<IP>");
         params.put("Port", "2222");
         params.put("User", "root");
         params.put("Password", "vagrant");
         params.put("Id", "test1");
-        params.put("slsName", "vim");
-        params.put("execTimeout", "12000");
-        params.put("applyTo", "minion1");
+        params.put("SlsName", "vim");
+        params.put("Timeout", "12000");
+        params.put("NodeList", "minion1");
 
         adapter = new SaltstackAdapterImpl();
         try {
@@ -133,21 +161,23 @@ TESTING: Sample Saltstack server command execution.
             assertEquals(TestId, "test1");
         } catch (Exception e){
             //if saltstack ssh IP is not enabled
-            return;
+            System.out.print(e.getMessage());
         }
     }
 
     @Test
-    public void reqExecCommand_shouldSetSuccessRealSSLNoApplyTo() throws SvcLogicException,
+    public void reqExecCommand_shouldSetSuccessEnvParam() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
 
-        params.put("HostName", "10.251.92.17");
+        params.put("HostName", "<IP>");
         params.put("Port", "2222");
         params.put("User", "root");
         params.put("Password", "vagrant");
         params.put("Id", "test1");
-        params.put("slsName", "vim");
-        params.put("execTimeout", "12000");
+        params.put("SlsName", "vim");
+        params.put("Timeout", "12000");
+        params.put("NodeList", "minion1");
+        params.put("EnvParameters", "{\"exclude\": bar*}");
 
         adapter = new SaltstackAdapterImpl();
         try {
@@ -158,22 +188,106 @@ TESTING: Sample Saltstack server command execution.
             assertEquals(TestId, "test1");
         } catch (Exception e){
             //if saltstack ssh IP is not enabled
-            return;
+            System.out.print(e.getMessage());
         }
     }
-    
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessFileParam() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "<IP>");
+        params.put("Port", "2222");
+        params.put("User", "root");
+        params.put("Password", "vagrant");
+        params.put("Id", "test1");
+        params.put("SlsName", "vim");
+        params.put("Timeout", "12000");
+        params.put("NodeList", "minion1");
+        params.put("EnvParameters", "{\"exclude\": \"bar,baz\"}");
+        params.put("FileParameters", "{\"config.txt\":\"db_ip=10.1.1.1, sip_timer=10000\"}");
+
+        adapter = new SaltstackAdapterImpl();
+        try {
+            adapter.reqExecSLS(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+            assertEquals("200", status);
+            assertEquals(TestId, "test1");
+        } catch (Exception e){
+            //if saltstack ssh IP is not enabled
+            System.out.print(e.getMessage());
+        }
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessPillarParam() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "<IP>");
+        params.put("Port", "2222");
+        params.put("User", "root");
+        params.put("Password", "vagrant");
+        params.put("Id", "test1");
+        params.put("SlsName", "vim");
+        params.put("Timeout", "12000");
+        params.put("NodeList", "minion1");
+        params.put("EnvParameters", "{\"exclude\": \"bar,baz\", \"pillar\":\"'{\\\"foo\\\": \\\"bar\\\"}'\"}");
+        params.put("FileParameters", "{\"config.txt\":\"db_ip=10.1.1.1, sip_timer=10000\"}");
+
+        adapter = new SaltstackAdapterImpl();
+        try {
+            adapter.reqExecSLS(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+            assertEquals("200", status);
+            assertEquals(TestId, "test1");
+        } catch (Exception e){
+            //if saltstack ssh IP is not enabled
+            System.out.print(e.getMessage());
+        }
+    }
+
+    @Test
+    public void reqExecCommand_shouldSetSuccessMultiFileParam() throws SvcLogicException,
+            IllegalStateException, IllegalArgumentException {
+
+        params.put("HostName", "<IP>");
+        params.put("Port", "2222");
+        params.put("User", "root");
+        params.put("Password", "vagrant");
+        params.put("Id", "test1");
+        params.put("SlsName", "vim");
+        params.put("Timeout", "12000");
+        params.put("NodeList", "minion1");
+        params.put("EnvParameters", "{\"exclude\": bar*}");
+        params.put("FileParameters", "{\"config.txt\":\"db_ip=10.1.1.1, sip_timer=10000\" , \"config-tep.txt\":\"db_ip=10.1.1.1, sip_timer=10000\"}");
+
+        adapter = new SaltstackAdapterImpl();
+        try {
+            adapter.reqExecSLS(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+            TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+            assertEquals("200", status);
+            assertEquals(TestId, "test1");
+        } catch (Exception e){
+            //if saltstack ssh IP is not enabled
+            System.out.print(e.getMessage());
+        }
+    }
+
     @Test
     public void reqExecCommand_shouldSetSuccessSSLFile() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
 
-        params.put("HostName", "10.251.92.17");
+        params.put("HostName", "<IP>");
         params.put("Port", "2222");
         params.put("User", "root");
         params.put("Password", "vagrant");
         params.put("Id", "test1");
-        params.put("execTimeout", "12000");
-        params.put("applyTo", "minion1");
-        params.put("slsFile", "src/test/resources/config.sls");
+        params.put("Timeout", "12000");
+        params.put("NodeList", "minion1");
+        params.put("SlsFile", "src/test/resources/config.sls");
 
         adapter = new SaltstackAdapterImpl();
         try {
@@ -184,6 +298,34 @@ TESTING: Sample Saltstack server command execution.
             assertEquals(TestId, "test1");
         } catch (Exception e){
             //if saltstack ssh IP is not enabled
-            return;
+            System.out.print(e.getMessage());
         }
     }
+    
+        @Test
+        public void reqExecCommand_shouldSetSuccessSSLFileMultiFileParam() throws SvcLogicException,
+                IllegalStateException, IllegalArgumentException {
+    
+            params.put("HostName", "<IP>");
+            params.put("Port", "2222");
+            params.put("User", "root");
+            params.put("Password", "vagrant");
+            params.put("Id", "test1");
+            params.put("Timeout", "12000");
+            params.put("NodeList", "minion1");
+            params.put("SlsFile", "src/test/resources/config.sls");
+            params.put("EnvParameters", "{\"exclude\": bar, \"pillar\":\"'{\\\"foo\\\": \\\"bar\\\"}'\"}");
+            params.put("FileParameters", "{\"config.txt\":\"db_ip=10.1.1.1, sip_timer=10000\" , \"config-tep.txt\":\"db_ip=10.1.1.1, sip_timer=10000\"}");
+    
+            adapter = new SaltstackAdapterImpl();
+            try {
+                adapter.reqExecSLSFile(params, svcContext);
+                String status = svcContext.getAttribute("org.onap.appc.adapter.saltstack.result.code");
+                TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
+                assertEquals("200", status);
+                assertEquals(TestId, "test1");
+            } catch (Exception e){
+                //if saltstack ssh IP is not enabled
+                System.out.print(e.getMessage());
+            }
+        }

@@ -3,24 +3,24 @@
                xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd'
                module='APPC' version='2.0.1'>
     <method rpc='saltstack-adapter-1.0-exec-multi-sls' mode='sync'>
-        <execute plugin='org.openecomp.appc.adapter.ansible.AnsibleAdapter'
+        <execute plugin='org.openecomp.appc.adapter.saltstack.SaltstackAdapter'
                  method='reqExecCommand'>
             <parameter name='HostName' value='`$AgentUrl`'/>
             <parameter name='Port' value='`$Port`'/>
             <parameter name='User' value='`$User`'/>
             <parameter name='Password' value='`$Password`'/>
             <parameter name='Id' value='test1'/>
-            <parameter name='cmd'
+            <parameter name='Cmd'
                        value='salt &apos;*&apos; test.ping --out=json --static'/>
-            <parameter name='slsExec' value='false'/>
-            <parameter name='execTimeout' value='`$Timeout`'/>
+            <parameter name='SlsExec' value='false'/>
+            <parameter name='Timeout' value='`$Timeout`'/>
             <outcome value='failure'>
                 <return status='failure'>
                     <parameter name='error-code' value='200'/>
                     <parameter name='error-message'
-                               value='`$org.openecomp.appc.adapter.ansible.message`'/>
+                               value='`$org.openecomp.appc.adapter.saltstack.message`'/>
                     <parameter name='output.status.results'
-                               value='`$org.openecomp.appc.adapter.ansible.results`'/>
+                               value='`$org.openecomp.appc.adapter.saltstack.results`'/>
                 </return>
             </outcome>
             <outcome value='Other'>
@@ -29,9 +29,9 @@
                         <return status='failure'>
                             <parameter name='error-code' value='200'/>
                             <parameter name='error-message'
-                                       value='`$org.openecomp.appc.adapter.ansible.message`'/>
+                                       value='`$org.openecomp.appc.adapter.saltstack.message`'/>
                             <parameter name='output.status.results'
-                                       value='`$org.openecomp.appc.adapter.ansible.results`'/>
+                                       value='`$org.openecomp.appc.adapter.saltstack.results`'/>
                         </return>
                     </outcome>
                     <outcome value='200'>
@@ -40,14 +40,14 @@
                                 <return status='failure'>
                                     <parameter name='error-code' value='200'/>
                                     <parameter name='error-message'
-                                               value='`$org.openecomp.appc.adapter.ansible.message`'/>
+                                               value='`$org.openecomp.appc.adapter.saltstack.message`'/>
                                     <parameter name='output.status.results'
-                                               value='`$org.openecomp.appc.adapter.ansible.results`'/>
+                                               value='`$org.openecomp.appc.adapter.saltstack.results`'/>
                                 </return>
                             </outcome>
                             <outcome value='true'>
                                 <execute
-                                        plugin='org.openecomp.appc.adapter.ansible.AnsibleAdapter'
+                                        plugin='org.openecomp.appc.adapter.saltstack.SaltstackAdapter'
                                         method='reqExecCommand'>
                                     <parameter name='HostName'
                                                value='`$AgentUrl`'/>
@@ -56,20 +56,20 @@
                                     <parameter name='Password'
                                                value='`$Password`'/>
                                     <parameter name='Id' value='test2'/>
-                                    <parameter name='cmd'
+                                    <parameter name='Cmd'
                                                value='salt &apos;minion1&apos; pkg.install vim --out=json --static'/>
-                                    <parameter name='slsExec' value='false'/>
-                                    <parameter name='execTimeout'
+                                    <parameter name='SlsExec' value='false'/>
+                                    <parameter name='Timeout'
                                                value='`$Timeout`'/>
                                     <outcome value='failure'>
                                         <return status='failure'>
                                             <parameter name='error-code'
                                                        value='200'/>
                                             <parameter name='error-message'
-                                                       value='`$org.openecomp.appc.adapter.ansible.message`'/>
+                                                       value='`$org.openecomp.appc.adapter.saltstack.message`'/>
                                             <parameter
                                                     name='output.status.results'
-                                                    value='`$org.openecomp.appc.adapter.ansible.results`'/>
+                                                    value='`$org.openecomp.appc.adapter.saltstack.results`'/>
                                         </return>
                                     </outcome>
                                     <outcome value='Other'>
