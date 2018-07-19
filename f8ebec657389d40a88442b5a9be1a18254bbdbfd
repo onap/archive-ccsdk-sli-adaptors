@@ -1,0 +1,8 @@
+Code-Review-1: Gildas Lanilis <gildas.lanilis@huawei.com>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Dan Timoney <dt5972@att.com>
+Submitted-by: Dan Timoney <dt5972@att.com>
+Submitted-at: Thu, 19 Jul 2018 16:16:22 +0000
+Reviewed-on: https://gerrit.onap.org/r/56687
+Project: ccsdk/sli/adaptors
+Branch: refs/heads/master
