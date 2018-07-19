@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * openECOMP : SDN-C
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights
+ * Copyright (C) 2018 Samsung Electronics. All rights
  * 			reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");

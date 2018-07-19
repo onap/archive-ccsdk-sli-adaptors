@@ -1,10 +1,10 @@
 /*-
  * ============LICENSE_START=======================================================
- * ONAP : APPC
+ * ONAP : CCSDK
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018 Samsung Electronics. All rights reserved.
  * ================================================================================
- * Copyright (C) 2017 Amdocs
+ *
  * =============================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * ECOMP is a trademark and service mark of AT&T Intellectual Property.
+ *
  * ============LICENSE_END=========================================================
  */
 
@@ -50,7 +50,7 @@ class SshConnection {
     public static final int DEFAULT_CONNECTION_RETRY_COUNT = 5;
     private static final EELFLogger logger = EELFManager.getInstance().getApplicationLogger();
     private static final long AUTH_TIMEOUT = 60000;
-    private static final long EXEC_TIMEOUT = 120000;
+    private static final long EXEC_TIMEOUT = 120;
     private String host;
     private int port;
     private String username;
@@ -162,7 +162,8 @@ class SshConnection {
     }
 
     public void setExecTimeout(long timeout) {
-        this.timeout = timeout;
+        //convert seconds to milliseconds
+        this.timeout = timeout*1000;
     }
 
     public SaltstackResult execCommand(String cmd, OutputStream out, OutputStream err, SaltstackResult result ) {
