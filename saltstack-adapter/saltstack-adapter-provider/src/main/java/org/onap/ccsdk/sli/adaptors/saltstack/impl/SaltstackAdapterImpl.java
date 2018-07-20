@@ -176,7 +176,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
                 logger.info("Creating ssh client connection");
                 // set path to keystore file
                 String sshHost = props.getProperty(SS_SERVER_HOSTNAME);
-                String sshPort = props.getProperty(SS_SERVER_PORT);
+                String sshPort = reqServerPort(props) ;
                 String sshUserName = props.getProperty(SS_SERVER_USERNAME);
                 String sshPassword = props.getProperty(SS_SERVER_PASSWD);
                 sshClient = new ConnectionBuilder(sshHost, sshPort, sshUserName, sshPassword);
@@ -184,7 +184,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
                 // set path to keystore file
                 String sshKey = props.getProperty(SS_SERVER_SSH_KEY);
                 String sshHost = props.getProperty(SS_SERVER_HOSTNAME);
-                String sshPort = props.getProperty(SS_SERVER_PORT);
+                String sshPort = reqServerPort(props);
                 logger.info("Creating ssh client with ssh KEY from " + sshKey);
                 sshClient = new ConnectionBuilder(sshHost, sshPort, sshKey);
             } else if ("BOTH".equalsIgnoreCase(clientType)) {
@@ -193,7 +193,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
                 String sshHost = props.getProperty(SS_SERVER_HOSTNAME);
                 String sshUserName = props.getProperty(SS_SERVER_USERNAME);
                 String sshPassword = props.getProperty(SS_SERVER_PASSWD);
-                String sshPort = props.getProperty(SS_SERVER_PORT);
+                String sshPort = reqServerPort(props);
                 logger.info("Creating ssh client with ssh KEY from " + sshKey);
                 sshClient = new ConnectionBuilder(sshHost, sshPort, sshUserName, sshPassword, sshKey);
             } else {
@@ -204,11 +204,17 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             logger.error("Error Initializing Saltstack Adapter due to Unknown Exception", e);
             throw new SvcLogicException("Saltstack Adapter Property file parsing Error = port in property file has to be an integer.");
         } catch (Exception e) {
-            logger.error("Error Initializing Saltstack Adapter due to Unknown Exception", e);
+            logger.error("Error Initializing Saltstack Adapter due to Exception", e);
             throw new SvcLogicException("Saltstack Adapter Property file parsing Error = " + e.getMessage());
         }
-
         logger.info("Initialized Saltstack Adapter");
+    }
+
+    private String reqServerPort(Properties props) {
+        // use default port if null
+        if (props.getProperty(SS_SERVER_PORT) == null)
+            return "22";
+        return props.getProperty(SS_SERVER_PORT);
     }
 
     private void setSSHClient(Map<String, String> params) throws SvcLogicException {

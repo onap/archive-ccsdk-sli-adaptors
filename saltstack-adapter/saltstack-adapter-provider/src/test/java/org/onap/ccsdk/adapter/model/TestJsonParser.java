@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * openECOMP : SDN-C
+ * ONAP : CCSDK
  * ================================================================================
  * Copyright (C) 2018 Samsung Electronics. All rights
  * 			reserved.

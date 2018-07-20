@@ -80,13 +80,13 @@
                                                         <return status='success'>
                                                             <parameter
                                                                     name='output.status.code'
-                                                                    value='`$org.openecomp.appc.adapter.ansible.result.code`'/>
+                                                                    value='`$org.openecomp.appc.adapter.saltstack.result.code`'/>
                                                             <parameter
                                                                     name='output.status.message'
-                                                                    value='`$org.openecomp.appc.adapter.ansible.message`'/>
+                                                                    value='`$org.openecomp.appc.adapter.saltstack.message`'/>
                                                             <parameter
                                                                     name='output.status.results'
-                                                                    value='`$org.openecomp.appc.adapter.ansible.results`'/>
+                                                                    value='`$org.openecomp.appc.adapter.saltstack.results`'/>
                                                         </return>
                                                     </outcome>
                                                     <outcome value='Other'>
@@ -96,10 +96,10 @@
                                                                     value='200'/>
                                                             <parameter
                                                                     name='error-message'
-                                                                    value='`$org.openecomp.appc.adapter.ansible.message`'/>
+                                                                    value='`$org.openecomp.appc.adapter.saltstack.message`'/>
                                                             <parameter
                                                                     name='output.status.results'
-                                                                    value='`$org.openecomp.appc.adapter.ansible.results`'/>
+                                                                    value='`$org.openecomp.appc.adapter.saltstack.results`'/>
                                                         </return>
                                                     </outcome>
                                                 </switch>
@@ -110,10 +110,10 @@
                                                                value='200'/>
                                                     <parameter
                                                             name='error-message'
-                                                            value='`$org.openecomp.appc.adapter.ansible.message`'/>
+                                                            value='`$org.openecomp.appc.adapter.saltstack.message`'/>
                                                     <parameter
                                                             name='output.status.results'
-                                                            value='`$org.openecomp.appc.adapter.ansible.results`'/>
+                                                            value='`$org.openecomp.appc.adapter.saltstack.results`'/>
                                                 </return>
                                             </outcome>
                                         </switch>
