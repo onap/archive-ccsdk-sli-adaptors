@@ -53,7 +53,7 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
         params = null;
     }
 
-    @Test(expected = SvcLogicException.class)
+    @Test
     public void reqExecCommand_setPropertiesBasicPortNull() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
         params.put("org.onap.appc.adapter.saltstack.clientType", "BASIC");
@@ -104,7 +104,7 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
         adapter = new SaltstackAdapterImpl(propProvider);
     }
 
-    @Test(expected = SvcLogicException.class)
+    @Test
     public void reqExecCommand_setPropertiesSSH_CERTPortNull() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
         params.put("org.onap.appc.adapter.saltstack.clientType", "SSH_CERT");
@@ -155,7 +155,7 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
         adapter = new SaltstackAdapterImpl(propProvider);
     }
 
-    @Test(expected = SvcLogicException.class)
+    @Test
     public void reqExecCommand_setPropertiesBOTHPortNull() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
         params.put("org.onap.appc.adapter.saltstack.clientType", "BOTH");

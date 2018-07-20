@@ -3,7 +3,7 @@
                xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd'
                module='APPC' version='2.0.1'>
     <method rpc='saltstack-adapter-1.0-exec-SLSFile' mode='sync'>
-        <execute plugin='org.openecomp.appc.adapter.ansible.SaltstackAdapter'
+        <execute plugin='org.openecomp.appc.adapter.saltstack.SaltstackAdapter'
                  method='reqExecCommand'>
             <parameter name='HostName' value='`$AgentUrl`'/>
             <parameter name='Port' value='`$Port`'/>
@@ -18,9 +18,9 @@
                 <return status='failure'>
                     <parameter name='error-code' value='200'/>
                     <parameter name='error-message'
-                               value='`$org.openecomp.appc.adapter.ansible.message`'/>
+                               value='`$org.openecomp.appc.adapter.saltstack.message`'/>
                     <parameter name='output.status.results'
-                               value='`$org.openecomp.appc.adapter.ansible.results`'/>
+                               value='`$org.openecomp.appc.adapter.saltstack.results`'/>
                 </return>
             </outcome>
             <outcome value='Other'>
@@ -29,9 +29,9 @@
                         <return status='failure'>
                             <parameter name='error-code' value='200'/>
                             <parameter name='error-message'
-                                       value='`$org.openecomp.appc.adapter.ansible.message`'/>
+                                       value='`$org.openecomp.appc.adapter.saltstack.message`'/>
                             <parameter name='output.status.results'
-                                       value='`$org.openecomp.appc.adapter.ansible.results`'/>
+                                       value='`$org.openecomp.appc.adapter.saltstack.results`'/>
                         </return>
                     </outcome>
                     <outcome value='200'>
@@ -40,14 +40,14 @@
                                 <return status='failure'>
                                     <parameter name='error-code' value='200'/>
                                     <parameter name='error-message'
-                                               value='`$org.openecomp.appc.adapter.ansible.message`'/>
+                                               value='`$org.openecomp.appc.adapter.saltstack.message`'/>
                                     <parameter name='output.status.results'
-                                               value='`$org.openecomp.appc.adapter.ansible.results`'/>
+                                               value='`$org.openecomp.appc.adapter.saltstack.results`'/>
                                 </return>
                             </outcome>
                             <outcome value='true'>
                                 <execute
-                                        plugin='org.openecomp.appc.adapter.ansible.SaltstackAdapter'
+                                        plugin='org.openecomp.appc.adapter.saltstack.SaltstackAdapter'
                                         method='reqExecCommand'>
                                     <parameter name='HostName'
                                                value='`$AgentUrl`'/>
@@ -66,10 +66,10 @@
                                             <parameter name='error-code'
                                                        value='200'/>
                                             <parameter name='error-message'
-                                                       value='`$org.openecomp.appc.adapter.ansible.message`'/>
+                                                       value='`$org.openecomp.appc.adapter.saltstack.message`'/>
                                             <parameter
                                                     name='output.status.results'
-                                                    value='`$org.openecomp.appc.adapter.ansible.results`'/>
+                                                    value='`$org.openecomp.appc.adapter.saltstack.results`'/>
                                         </return>
                                     </outcome>
                                     <outcome value='Other'>
@@ -78,13 +78,13 @@
                                                 <return status='success'>
                                                     <parameter
                                                             name='output.status.code'
-                                                            value='`$org.openecomp.appc.adapter.ansible.result.code`'/>
+                                                            value='`$org.openecomp.appc.adapter.saltstack.result.code`'/>
                                                     <parameter
                                                             name='output.status.message'
-                                                            value='`$org.openecomp.appc.adapter.ansible.message`'/>
+                                                            value='`$org.openecomp.appc.adapter.saltstack.message`'/>
                                                     <parameter
                                                             name='output.status.results'
-                                                            value='`$org.openecomp.appc.adapter.ansible.results`'/>
+                                                            value='`$org.openecomp.appc.adapter.saltstack.results`'/>
                                                 </return>
                                             </outcome>
                                             <outcome value='Other'>
@@ -93,10 +93,10 @@
                                                                value='200'/>
                                                     <parameter
                                                             name='error-message'
-                                                            value='`$org.openecomp.appc.adapter.ansible.message`'/>
+                                                            value='`$org.openecomp.appc.adapter.saltstack.message`'/>
                                                     <parameter
                                                             name='output.status.results'
-                                                            value='`$org.openecomp.appc.adapter.ansible.results`'/>
+                                                            value='`$org.openecomp.appc.adapter.saltstack.results`'/>
                                                 </return>
                                             </outcome>
                                         </switch>

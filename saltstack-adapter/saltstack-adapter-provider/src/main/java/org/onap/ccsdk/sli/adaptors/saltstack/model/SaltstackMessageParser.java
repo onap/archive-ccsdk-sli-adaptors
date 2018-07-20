@@ -78,13 +78,9 @@ public class SaltstackMessageParser {
      * the appropriate PORT number.
      */
     public String reqPortResult(Map<String, String> params) throws SvcLogicException {
-
-        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY,
-                PASS_KEY};
-
-        for (String key : mandatoryTestParams) {
-            throwIfMissingMandatoryParam(params, key);
-        }
+        // use default port if null
+        if (params.get(SS_AGENT_PORT_KEY) == null)
+            return "22";
         return params.get(SS_AGENT_PORT_KEY);
     }
 
@@ -95,12 +91,7 @@ public class SaltstackMessageParser {
      */
     public String reqHostNameResult(Map<String, String> params) throws SvcLogicException {
 
-        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY,
-                PASS_KEY};
-
-        for (String key : mandatoryTestParams) {
-            throwIfMissingMandatoryParam(params, key);
-        }
+        throwIfMissingMandatoryParam(params, SS_AGENT_HOSTNAME_KEY);
         return params.get(SS_AGENT_HOSTNAME_KEY);
     }
 
@@ -126,12 +117,7 @@ public class SaltstackMessageParser {
      */
     public String reqCmd(Map<String, String> params) throws SvcLogicException {
 
-        final String[] mandatoryTestParams = {CMD_EXEC, IS_SLS_EXEC};
-
-        for (String key : mandatoryTestParams) {
-            throwIfMissingMandatoryParam(params, key);
-        }
-
+        throwIfMissingMandatoryParam(params, CMD_EXEC);
         return params.get(SaltstackMessageParser.CMD_EXEC);
     }
 
@@ -142,12 +128,7 @@ public class SaltstackMessageParser {
      */
     public String reqSlsFile(Map<String, String> params) throws SvcLogicException {
 
-        final String[] mandatoryTestParams = {SLS_FILE_LOCATION};
-
-        for (String key : mandatoryTestParams) {
-            throwIfMissingMandatoryParam(params, key);
-        }
-
+        throwIfMissingMandatoryParam(params, SLS_FILE_LOCATION);
         return params.get(SaltstackMessageParser.SLS_FILE_LOCATION);
     }
 
@@ -158,11 +139,7 @@ public class SaltstackMessageParser {
      */
     public String reqSlsName(Map<String, String> params) throws SvcLogicException {
 
-        final String[] mandatoryTestParams = {SLS_NAME};
-
-        for (String key : mandatoryTestParams) {
-            throwIfMissingMandatoryParam(params, key);
-        }
+        throwIfMissingMandatoryParam(params, SLS_NAME);
         String slsName = params.get(SaltstackMessageParser.SLS_NAME);
         try {
             if (slsName.substring(slsName.lastIndexOf("."), slsName.length()).equalsIgnoreCase(".sls")) {
@@ -309,12 +286,7 @@ public class SaltstackMessageParser {
      */
     public String reqUserNameResult(Map<String, String> params) throws SvcLogicException {
 
-        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY,
-                PASS_KEY};
-
-        for (String key : mandatoryTestParams) {
-            throwIfMissingMandatoryParam(params, key);
-        }
+        throwIfMissingMandatoryParam(params, USER_KEY);
         return params.get(USER_KEY);
     }
 
@@ -325,12 +297,7 @@ public class SaltstackMessageParser {
      */
     public String reqPasswordResult(Map<String, String> params) throws SvcLogicException {
 
-        final String[] mandatoryTestParams = {SS_AGENT_HOSTNAME_KEY, SS_AGENT_PORT_KEY, USER_KEY,
-                PASS_KEY};
-
-        for (String key : mandatoryTestParams) {
-            throwIfMissingMandatoryParam(params, key);
-        }
+        throwIfMissingMandatoryParam(params, PASS_KEY);
         return params.get(PASS_KEY);
     }
 
