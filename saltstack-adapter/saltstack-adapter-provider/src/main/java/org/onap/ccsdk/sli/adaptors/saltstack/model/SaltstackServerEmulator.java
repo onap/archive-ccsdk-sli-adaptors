@@ -36,6 +36,7 @@ import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -61,6 +62,9 @@ public class SaltstackServerEmulator {
                 result = rejectRequest(result, "Mocked: Fail");
             } else {
                 String fileName = params.get(SALTSTATE_FILE_NAME);
+                if (fileName == null) {
+                    throw new FileNotFoundException("No response file found");
+                }
                 result = acceptRequest(result, fileName);
             }
         } catch (Exception e) {

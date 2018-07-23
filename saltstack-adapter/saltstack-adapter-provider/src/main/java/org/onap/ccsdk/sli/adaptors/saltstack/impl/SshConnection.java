@@ -1,10 +1,10 @@
 /*-
  * ============LICENSE_START=======================================================
- * ONAP : CCSDK
+ * ONAP : APPC
  * ================================================================================
- * Copyright (C) 2018 Samsung Electronics. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
- *
+ * Copyright (C) 2017 Amdocs
  * =============================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  *
  * ============LICENSE_END=========================================================
  */
@@ -34,9 +33,11 @@ import org.apache.sshd.client.future.AuthFuture;
 import org.apache.sshd.client.future.OpenFuture;
 import org.apache.sshd.common.KeyPairProvider;
 import org.apache.sshd.common.keyprovider.FileKeyPairProvider;
+import org.onap.appc.adapter.ssh.Constants;
+import org.onap.appc.adapter.ssh.SshException;
+import org.onap.appc.configuration.Configuration;
+import org.onap.appc.configuration.ConfigurationFactory;
 import org.onap.appc.encryption.EncryptionTool;
-import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResult;
-import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResultCodes;
 
 import java.io.OutputStream;
 import java.security.KeyPair;
@@ -46,11 +47,11 @@ import java.security.KeyPair;
  */
 class SshConnection {
 
-    public static final int DEFAULT_CONNECTION_RETRY_DELAY = 60;
-    public static final int DEFAULT_CONNECTION_RETRY_COUNT = 5;
     private static final EELFLogger logger = EELFManager.getInstance().getApplicationLogger();
+
     private static final long AUTH_TIMEOUT = 60000;
-    private static final long EXEC_TIMEOUT = 120;
+    private static final long EXEC_TIMEOUT = 120000;
+    private static final Configuration configuration = ConfigurationFactory.getConfiguration();
     private String host;
     private int port;
     private String username;
@@ -76,8 +77,7 @@ class SshConnection {
         this(host, port, null, null, keyFile);
     }
 
-    public SaltstackResult connect() {
-        SaltstackResult result = new SaltstackResult();
+    public void connect() {
         sshClient = SshClient.setUpDefaultClient();
         sshClient.start();
         try {
@@ -85,8 +85,7 @@ class SshConnection {
                     sshClient.connect(EncryptionTool.getInstance().decrypt(username), host, port).await().getSession();
             if (password != null) {
                 clientSession.addPasswordIdentity(EncryptionTool.getInstance().decrypt(password));
-            }
-            if (keyFile != null) {
+            } else if (keyFile != null) {
                 KeyPairProvider keyPairProvider = new FileKeyPairProvider(new String[]{
                         keyFile
                 });
@@ -96,42 +95,32 @@ class SshConnection {
             AuthFuture authFuture = clientSession.auth();
             authFuture.await(AUTH_TIMEOUT);
             if (!authFuture.isSuccess()) {
-                String errMessage = "Error establishing ssh connection to [" + username + "@" + host + ":" + port
-                        + "]. Authentication failed.";
-                result.setStatusCode(SaltstackResultCodes.USER_UNAUTHORIZED.getValue());
-                result.setStatusMessage(errMessage);
+                throw new SshException("Error establishing ssh connection to [" + username + "@" + host + ":" + port
+                                               + "]. Authentication failed.");
             }
         } catch (RuntimeException e) {
-            String errMessage = "Error establishing ssh connection to [" + username + "@" + host + ":" + port + "]." +
-                    "Runtime Exception : " + e.getMessage();
-            result.setStatusCode(SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue());
-            result.setStatusMessage(errMessage);
+            throw e;
         } catch (Exception e) {
-            String errMessage = "Error establishing ssh connection to [" + username + "@" + host + ":" + port + "]." +
-                    "Host Unknown : " + e.getMessage();
-            result.setStatusCode(SaltstackResultCodes.HOST_UNKNOWN.getValue());
-            result.setStatusMessage(errMessage);
+            throw new SshException("Error establishing ssh connection to [" + username + "@" + host + ":" + port + "].",
+                                   e);
         }
         if (logger.isDebugEnabled()) {
             logger.debug("SSH: connected to [" + toString() + "]");
         }
-        result.setStatusCode(SaltstackResultCodes.SUCCESS.getValue());
-        return result;
     }
 
-    public SaltstackResult connectWithRetry(int retryCount, int retryDelay) {
+    public void connectWithRetry() {
+        int retryCount;
+        int retryDelay;
         int retriesLeft;
-        SaltstackResult result = new SaltstackResult();
-        if (retryCount == 0) {
-            retryCount = DEFAULT_CONNECTION_RETRY_COUNT;
-        }
-        if (retryDelay == 0) {
-            retryDelay = DEFAULT_CONNECTION_RETRY_DELAY;
-        }
+        retryCount = configuration.getIntegerProperty(Constants.CONNECTION_RETRY_COUNT,
+                                                      Constants.DEFAULT_CONNECTION_RETRY_COUNT);
+        retryDelay = configuration.getIntegerProperty(Constants.CONNECTION_RETRY_DELAY,
+                                                      Constants.DEFAULT_CONNECTION_RETRY_DELAY);
         retriesLeft = retryCount + 1;
         do {
             try {
-                result = this.connect();
+                this.connect();
                 break;
             } catch (RuntimeException e) {
                 if (retriesLeft > 1) {
@@ -145,7 +134,6 @@ class SshConnection {
                 }
             }
         } while (retriesLeft > 0);
-        return result;
     }
 
     public void disconnect() {
@@ -162,21 +150,18 @@ class SshConnection {
     }
 
     public void setExecTimeout(long timeout) {
-        //convert seconds to milliseconds
-        this.timeout = timeout * 1000;
+        this.timeout = timeout;
     }
 
-    public SaltstackResult execCommand(String cmd, OutputStream out, OutputStream err, SaltstackResult result) {
-        return execCommand(cmd, out, err, false, result);
+    public int execCommand(String cmd, OutputStream out, OutputStream err) {
+        return execCommand(cmd, out, err, false);
     }
 
-    public SaltstackResult execCommandWithPty(String cmd, OutputStream out, SaltstackResult result) {
-        return execCommand(cmd, out, out, true, result);
+    public int execCommandWithPty(String cmd, OutputStream out) {
+        return execCommand(cmd, out, out, true);
     }
 
-    private SaltstackResult execCommand(String cmd, OutputStream out, OutputStream err,
-                                        boolean usePty, SaltstackResult result) {
-
+    private int execCommand(String cmd, OutputStream out, OutputStream err, boolean usePty) {
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("SSH: executing command");
@@ -192,31 +177,20 @@ class SshConnection {
                 openFuture.verify();
                 Integer exitStatusI = client.getExitStatus();
                 if (exitStatusI == null) {
-                    String errMessage = "Error executing command [" + cmd + "] over SSH [" + username + "@" + host
-                            + ":" + port + "]. SSH operation timed out.";
-                    result.setStatusCode(SaltstackResultCodes.OPERATION_TIMEOUT.getValue());
-                    result.setStatusMessage(errMessage);
-                    return result;
+                    throw new SshException("Error executing command [" + cmd + "] over SSH [" + username + "@" + host
+                                                   + ":" + port + "]. Operation timed out.");
                 }
                 exitStatus = exitStatusI;
             } finally {
                 client.close(false);
             }
-            result.setSshExitStatus(exitStatus);
-            return result;
+            return exitStatus;
         } catch (RuntimeException e) {
-            String errMessage = "Error establishing ssh connection to [" + username + "@" + host + ":" + port + "]." +
-                    "Runtime Exception : " + e.getMessage();
-            result.setStatusCode(SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue());
-            result.setStatusMessage(errMessage);
+            throw e;
         } catch (Exception e1) {
-            String errMessage = "Error executing command [" + cmd + "] over SSH [" + username + "@" + host + ":" +
-                    port + "]" + e1.getMessage();
-            result.setStatusCode(SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue());
-            result.setStatusMessage(errMessage);
+            throw new SshException(
+                    "Error executing command [" + cmd + "] over SSH [" + username + "@" + host + ":" + port + "]", e1);
         }
-        result.setStatusCode(SaltstackResultCodes.SUCCESS.getValue());
-        return result;
     }
 
     private void waitForConnection(int retryDelay) {

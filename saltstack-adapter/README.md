@@ -49,6 +49,7 @@ Create an Adaptor to communicate with the SaltStack server:
     "Port"; ->  Saltstack server's port to make SSH connection to.
     "Password"; ->  Saltstack server's SSH UserName.
     "User"; ->  Saltstack server's SSH Password.
+    "withRetry"; -> Specify 'true' if you wanna connect to server with retry.
   Note: SSH_CERT based Auth is not supported in this method.
   
 ***Using Saltstack Adaptor Commands and params to pass in: reqExecCommand API:*** 

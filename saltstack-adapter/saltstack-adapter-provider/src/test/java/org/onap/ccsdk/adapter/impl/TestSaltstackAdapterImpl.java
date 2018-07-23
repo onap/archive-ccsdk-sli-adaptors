@@ -179,8 +179,7 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("retryDelay", "10");
-        params.put("retryCount", "10");
+        params.put("withRetry", "true");
         params.put("Cmd", "test");
         params.put("SlsExec", "false");
         try {
@@ -202,8 +201,7 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("retryDelay", "0");
-        params.put("retryCount", "0");
+        params.put("withRetry", "0");
         params.put("Cmd", "test");
         params.put("SlsExec", "false");
         try {
@@ -225,8 +223,7 @@ public class TestSaltstackAdapterImpl {
         params.put("User", "test");
         params.put("Password", "test");
         params.put("Test", "success");
-        params.put("retryDelay", "-1");
-        params.put("retryCount", "-1");
+        params.put("withRetry", "false");
         params.put("Cmd", "test");
         params.put("SlsExec", "false");
 

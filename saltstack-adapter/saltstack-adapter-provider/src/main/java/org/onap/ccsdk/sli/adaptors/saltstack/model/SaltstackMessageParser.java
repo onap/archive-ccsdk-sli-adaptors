@@ -311,9 +311,10 @@ public class SaltstackMessageParser {
         if (code != SaltstackResultCodes.SUCCESS.getValue()) {
             return saltstackResult;
         }
-        ByteArrayOutputStream str = saltstackResult.getOutputMessage();
+        ByteArrayOutputStream outStream = saltstackResult.getOutputMessage();
+        String outMessage = outStream.toString();
         try {
-            Map<String, String> mm = JsonParser.convertToProperties(str.toString());
+            Map<String, String> mm = JsonParser.convertToProperties(outMessage);
             if (mm != null) {
                 for (Map.Entry<String, String> entry : mm.entrySet()) {
                     if (entry.getKey().contains("retcode")) {
@@ -337,16 +338,24 @@ public class SaltstackMessageParser {
             return new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "error parsing response file"
                     + " : " + e.getMessage());
         } finally {
-            if (str != null) {
-                str.close();
+            if (outStream != null) {
+                outStream.close();
             }
         }
         if (slsExec) {
             if (!retCodeFound) {
+                if (outMessage != null && !outMessage.equalsIgnoreCase("")) {
+                    return new SaltstackResult(SaltstackResultCodes.COMMAND_EXEC_FAILED_STATUS.getValue(),
+                                               outMessage);
+                }
                 return new SaltstackResult(SaltstackResultCodes.COMMAND_EXEC_FAILED_STATUS.getValue(),
                                            "error in executing configuration at the server, check your command input");
             }
             if (!executionStatus) {
+                if (outMessage != null && !outMessage.equalsIgnoreCase("")) {
+                    return new SaltstackResult(SaltstackResultCodes.COMMAND_EXEC_FAILED_STATUS.getValue(),
+                                               outMessage);
+                }
                 return new SaltstackResult(SaltstackResultCodes.COMMAND_EXEC_FAILED_STATUS.getValue(),
                                            "error in executing configuration at the server, check your command input");
             }
