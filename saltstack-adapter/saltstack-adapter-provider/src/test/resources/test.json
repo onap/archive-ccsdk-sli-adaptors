@@ -7,8 +7,8 @@
       "equipment-id": "Server1",
       "server-model": "Unknown",
       "server-id": "Server1",
-      "test-node" : {
-        "test-inner-node" : "Test-Value"
+      "test-node": {
+        "test-inner-node": "Test-Value"
       }
     }
   ],

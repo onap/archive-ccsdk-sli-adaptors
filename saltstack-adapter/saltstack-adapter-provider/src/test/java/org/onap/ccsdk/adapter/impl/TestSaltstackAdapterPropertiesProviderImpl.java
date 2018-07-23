@@ -29,7 +29,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.adaptors.saltstack.SaltstackAdapterPropertiesProvider;
 import org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 
 import java.util.Properties;
@@ -256,7 +255,6 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
         };
         adapter = new SaltstackAdapterImpl(propProvider);
     }
-
 
 
     @Test

@@ -20,19 +20,22 @@
   ============LICENSE_END=========================================================
   -->
 
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
-           xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
+<blueprint xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
            odl:use-default-for-reference-types="true">
 
-    <bean id="propProvider" class="org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterPropertiesProviderImpl" />
+    <bean id="propProvider"
+          class="org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterPropertiesProviderImpl"/>
 
-    <bean id="saltstackAdapterInstance" class="org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl">
+    <bean id="saltstackAdapterInstance"
+          class="org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl">
         <argument ref="propProvider"/>
     </bean>
 
     <service ref="saltstackAdapterInstance">
         <interfaces>
-            <value>org.onap.ccsdk.sli.adaptors.saltstack.SaltstackAdapter</value>
+            <value>org.onap.ccsdk.sli.adaptors.saltstack.SaltstackAdapter
+            </value>
         </interfaces>
     </service>
 

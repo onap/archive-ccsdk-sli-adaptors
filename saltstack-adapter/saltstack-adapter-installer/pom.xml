@@ -22,7 +22,9 @@
 
   ============LICENSE_END=========================================================
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
@@ -33,12 +35,15 @@
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>saltstack-adapter-installer</artifactId>
     <version>0.3.0-SNAPSHOT</version>
-    <name>ccsdk-sli-adaptors :: saltstack-adapter :: ${project.artifactId}</name>
+    <name>ccsdk-sli-adaptors :: saltstack-adapter :: ${project.artifactId}
+    </name>
     <packaging>pom</packaging>
     <properties>
         <application.name>ccsdk-saltstack-adapter</application.name>
         <features.boot>${application.name}</features.boot>
-        <features.repositories>mvn:org.onap.ccsdk.sli.adaptors/${features.boot}/${project.version}/xml/features</features.repositories>
+        <features.repositories>
+            mvn:org.onap.ccsdk.sli.adaptors/${features.boot}/${project.version}/xml/features
+        </features.repositories>
         <include.transitive.dependencies>false</include.transitive.dependencies>
     </properties>
     <dependencies>
@@ -79,11 +84,15 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                        	<appendAssemblyId>true</appendAssemblyId>
+                            <appendAssemblyId>true</appendAssemblyId>
                             <attach>false</attach>
-                            <finalName>stage/${application.name}-${project.version}</finalName>
+                            <finalName>
+                                stage/${application.name}-${project.version}
+                            </finalName>
                             <descriptors>
-                                <descriptor>src/assembly/assemble_mvnrepo_zip.xml</descriptor>
+                                <descriptor>
+                                    src/assembly/assemble_mvnrepo_zip.xml
+                                </descriptor>
                             </descriptors>
                         </configuration>
                     </execution>
@@ -94,11 +103,14 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                        	<appendAssemblyId>false</appendAssemblyId>
+                            <appendAssemblyId>false</appendAssemblyId>
                             <attach>true</attach>
-                            <finalName>${application.name}-${project.version}</finalName>
+                            <finalName>${application.name}-${project.version}
+                            </finalName>
                             <descriptors>
-                                <descriptor>src/assembly/assemble_installer_zip.xml</descriptor>
+                                <descriptor>
+                                    src/assembly/assemble_installer_zip.xml
+                                </descriptor>
                             </descriptors>
                         </configuration>
                     </execution>
@@ -116,7 +128,9 @@
                         <phase>prepare-package</phase>
                         <configuration>
                             <transitive>false</transitive>
-                            <outputDirectory>${project.build.directory}/assembly/system</outputDirectory>
+                            <outputDirectory>
+                                ${project.build.directory}/assembly/system
+                            </outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
@@ -140,10 +154,12 @@
                         <!-- here the phase you need -->
                         <phase>validate</phase>
                         <configuration>
-                            <outputDirectory>${basedir}/target/stage</outputDirectory>
+                            <outputDirectory>${basedir}/target/stage
+                            </outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/resources/scripts</directory>
+                                    <directory>src/main/resources/scripts
+                                    </directory>
                                     <includes>
                                         <include>install-feature.sh</include>
                                     </includes>

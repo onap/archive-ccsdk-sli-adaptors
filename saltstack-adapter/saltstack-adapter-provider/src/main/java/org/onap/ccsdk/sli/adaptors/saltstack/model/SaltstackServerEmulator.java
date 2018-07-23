@@ -34,12 +34,13 @@ package org.onap.ccsdk.sli.adaptors.saltstack.model;
 
 import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SaltstackServerEmulator {
 
@@ -60,13 +61,10 @@ public class SaltstackServerEmulator {
                 result = rejectRequest(result, "Mocked: Fail");
             } else {
                 String fileName = params.get(SALTSTATE_FILE_NAME);
-                if (fileName == null)
-                    result = acceptRequest(result, "");
-                else
-                    result = acceptRequest(result, fileName);
+                result = acceptRequest(result, fileName);
             }
         } catch (Exception e) {
-            logger.error("JSONException caught", e);
+            logger.error("Exception caught", e);
             rejectRequest(result, e.getMessage());
         }
         return result;
@@ -78,10 +76,14 @@ public class SaltstackServerEmulator {
         return result;
     }
 
-    private SaltstackResult acceptRequest(SaltstackResult result, String fileName) {
+    private SaltstackResult acceptRequest(SaltstackResult result, String fileName) throws IOException {
         result.setStatusCode(SaltstackResultCodes.SUCCESS.getValue());
         result.setStatusMessage("Success");
-        result.setOutputFileName(fileName);
+        Path path = Paths.get(fileName);
+        byte[] data = Files.readAllBytes(path);
+        ByteArrayOutputStream byteOut = new ByteArrayOutputStream(data.length);
+        byteOut.write(data, 0, data.length);
+        result.setOutputMessage(byteOut);
         return result;
     }
 }

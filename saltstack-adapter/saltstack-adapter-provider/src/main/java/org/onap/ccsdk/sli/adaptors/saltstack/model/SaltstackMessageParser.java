@@ -31,16 +31,14 @@ package org.onap.ccsdk.sli.adaptors.saltstack.model;
 
 import com.google.common.base.Strings;
 import org.json.JSONException;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -79,8 +77,9 @@ public class SaltstackMessageParser {
      */
     public String reqPortResult(Map<String, String> params) throws SvcLogicException {
         // use default port if null
-        if (params.get(SS_AGENT_PORT_KEY) == null)
+        if (params.get(SS_AGENT_PORT_KEY) == null) {
             return "22";
+        }
         return params.get(SS_AGENT_PORT_KEY);
     }
 
@@ -200,7 +199,7 @@ public class SaltstackMessageParser {
     public JSONObject reqEnvParameters(Map<String, String> params) throws JSONException {
 
         JSONObject jsonPayload = new JSONObject();
-        final String[] optionalTestParam = { SaltstackMessageParser.ENV_PARAMETERS_OPT_KEY };
+        final String[] optionalTestParam = {SaltstackMessageParser.ENV_PARAMETERS_OPT_KEY};
         parseParam(params, optionalTestParam, jsonPayload);
 
         return (JSONObject) jsonPayload.remove(SaltstackMessageParser.ENV_PARAMETERS_OPT_KEY);
@@ -214,7 +213,7 @@ public class SaltstackMessageParser {
     public JSONObject reqFileParameters(Map<String, String> params) throws JSONException {
 
         JSONObject jsonPayload = new JSONObject();
-        final String[] optionalTestParam = { SaltstackMessageParser.FILE_PARAMETERS_OPT_KEY };
+        final String[] optionalTestParam = {SaltstackMessageParser.FILE_PARAMETERS_OPT_KEY};
         parseParam(params, optionalTestParam, jsonPayload);
 
         return (JSONObject) jsonPayload.remove(SaltstackMessageParser.FILE_PARAMETERS_OPT_KEY);
@@ -308,19 +307,13 @@ public class SaltstackMessageParser {
     public SaltstackResult parseResponse(SvcLogicContext ctx, String pfx,
                                          SaltstackResult saltstackResult, boolean slsExec) throws IOException {
         int code = saltstackResult.getStatusCode();
-        InputStream in = null;
         boolean executionStatus = true, retCodeFound = false;
         if (code != SaltstackResultCodes.SUCCESS.getValue()) {
             return saltstackResult;
         }
+        ByteArrayOutputStream str = saltstackResult.getOutputMessage();
         try {
-            File file = new File(saltstackResult.getOutputFileName());
-            in = new FileInputStream(file);
-            byte[] data = new byte[(int) file.length()];
-            in.read(data);
-            String str = new String(data, "UTF-8");
-            in.close();
-            Map<String, String> mm = JsonParser.convertToProperties(str);
+            Map<String, String> mm = JsonParser.convertToProperties(str.toString());
             if (mm != null) {
                 for (Map.Entry<String, String> entry : mm.entrySet()) {
                     if (entry.getKey().contains("retcode")) {
@@ -333,18 +326,19 @@ public class SaltstackMessageParser {
                     LOGGER.info("+++ " + pfx + "." + entry.getKey() + ": [" + entry.getValue() + "]");
                 }
             }
-        } catch (FileNotFoundException e) {
-            return new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "error parsing response file "
-                    + saltstackResult.getOutputFileName() + " : " + e.getMessage());
         } catch (org.codehaus.jettison.json.JSONException e) {
+            if (slsExec) {
+                return new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE.getValue(), "error parsing response file"
+                        + " : Output has to be in JSON format");
+            }
             LOGGER.info("Output not in JSON format");
             return putToProperties(ctx, pfx, saltstackResult);
         } catch (Exception e) {
-            return new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "error parsing response file "
-                    + saltstackResult.getOutputFileName() + " : " + e.getMessage());
+            return new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "error parsing response file"
+                    + " : " + e.getMessage());
         } finally {
-            if (in != null) {
-                in.close();
+            if (str != null) {
+                str.close();
             }
         }
         if (slsExec) {
@@ -363,12 +357,14 @@ public class SaltstackMessageParser {
 
     public SaltstackResult putToProperties(SvcLogicContext ctx, String pfx,
                                            SaltstackResult saltstackResult) throws IOException {
-        InputStream in = null;
+
+        ByteArrayOutputStream buffer = saltstackResult.getOutputMessage();
+        InputStream inputStream = null;
         try {
-            File file = new File(saltstackResult.getOutputFileName());
-            in = new FileInputStream(file);
+            byte[] bytes = buffer.toByteArray();
             Properties prop = new Properties();
-            prop.load(in);
+            inputStream = new ByteArrayInputStream(bytes);
+            prop.load(inputStream);
             ctx.setAttribute(pfx + "completeResult", prop.toString());
             for (Object key : prop.keySet()) {
                 String name = (String) key;
@@ -379,11 +375,12 @@ public class SaltstackMessageParser {
                 }
             }
         } catch (Exception e) {
-            saltstackResult = new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "Error parsing response file = "
-                    + saltstackResult.getOutputFileName() + ". Error = " + e.getMessage());
+            saltstackResult = new SaltstackResult(SaltstackResultCodes.INVALID_RESPONSE_FILE.getValue(), "Error parsing response file." +
+                    " Error = " + e.getMessage());
         } finally {
-            if (in != null) {
-                in.close();
+            if (buffer != null && inputStream != null) {
+                buffer.close();
+                inputStream.close();
             }
         }
         saltstackResult.setStatusCode(SaltstackResultCodes.FINAL_SUCCESS.getValue());

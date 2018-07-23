@@ -29,14 +29,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.adaptors.saltstack.impl.ConnectionBuilder;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResult;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 
 public class TestConnectionBuilder {

@@ -163,19 +163,19 @@ class SshConnection {
 
     public void setExecTimeout(long timeout) {
         //convert seconds to milliseconds
-        this.timeout = timeout*1000;
+        this.timeout = timeout * 1000;
     }
 
-    public SaltstackResult execCommand(String cmd, OutputStream out, OutputStream err, SaltstackResult result ) {
+    public SaltstackResult execCommand(String cmd, OutputStream out, OutputStream err, SaltstackResult result) {
         return execCommand(cmd, out, err, false, result);
     }
 
-    public SaltstackResult execCommandWithPty(String cmd, OutputStream out, SaltstackResult result ) {
+    public SaltstackResult execCommandWithPty(String cmd, OutputStream out, SaltstackResult result) {
         return execCommand(cmd, out, out, true, result);
     }
 
     private SaltstackResult execCommand(String cmd, OutputStream out, OutputStream err,
-                                        boolean usePty, SaltstackResult result ) {
+                                        boolean usePty, SaltstackResult result) {
 
         try {
             if (logger.isDebugEnabled()) {

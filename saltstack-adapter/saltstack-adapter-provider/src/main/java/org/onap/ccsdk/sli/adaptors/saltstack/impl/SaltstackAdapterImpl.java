@@ -108,11 +108,11 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     /**
      * This default constructor is used as a work around because the activator wasn't getting called
      */
-    public SaltstackAdapterImpl() throws SvcLogicException{
+    public SaltstackAdapterImpl() throws SvcLogicException {
         initialize(new SaltstackAdapterPropertiesProviderImpl());
     }
 
-    public SaltstackAdapterImpl(SaltstackAdapterPropertiesProvider propProvider) throws SvcLogicException{
+    public SaltstackAdapterImpl(SaltstackAdapterPropertiesProvider propProvider) throws SvcLogicException {
         initialize(propProvider);
     }
 
@@ -152,7 +152,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     /**
      * initialize the Saltstack adapter based on default and over-ride configuration data
      */
-    private void initialize(SaltstackAdapterPropertiesProvider propProvider) throws SvcLogicException{
+    private void initialize(SaltstackAdapterPropertiesProvider propProvider) throws SvcLogicException {
 
 
         Properties props = propProvider.getProperties();
@@ -176,7 +176,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
                 logger.info("Creating ssh client connection");
                 // set path to keystore file
                 String sshHost = props.getProperty(SS_SERVER_HOSTNAME);
-                String sshPort = reqServerPort(props) ;
+                String sshPort = reqServerPort(props);
                 String sshUserName = props.getProperty(SS_SERVER_USERNAME);
                 String sshPassword = props.getProperty(SS_SERVER_PASSWD);
                 sshClient = new ConnectionBuilder(sshHost, sshPort, sshUserName, sshPassword);
@@ -212,8 +212,9 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
 
     private String reqServerPort(Properties props) {
         // use default port if null
-        if (props.getProperty(SS_SERVER_PORT) == null)
+        if (props.getProperty(SS_SERVER_PORT) == null) {
             return "22";
+        }
         return props.getProperty(SS_SERVER_PORT);
     }
 
@@ -235,11 +236,11 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     private String parseEnvParam(JSONObject envParams) {
         StringBuilder envParamBuilder = new StringBuilder();
         if (envParams != null) {
-            for(Object key : envParams.keySet()) {
-                if(envParamBuilder.length() > 0) {
+            for (Object key : envParams.keySet()) {
+                if (envParamBuilder.length() > 0) {
                     envParamBuilder.append(", ");
                 }
-                envParamBuilder.append(key+"="+envParams.get((String) key));
+                envParamBuilder.append(key + "=" + envParams.get((String) key));
                 logger.info("EnvParameters : " + envParamBuilder);
             }
         }
@@ -249,7 +250,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     private String parseFileParam(JSONObject fileParams) {
         StringBuilder fileParamBuilder = new StringBuilder();
         if (fileParams != null) {
-            for(Object key : fileParams.keySet()) {
+            for (Object key : fileParams.keySet()) {
                 fileParamBuilder.append("echo -e \"" + fileParams.get((String) key) + "\" > /srv/salt/" + key).append("; ");
                 logger.info("FileParameters : " + fileParamBuilder);
             }
@@ -258,7 +259,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
     }
 
     private String putToCommands(SvcLogicContext ctx, String slsFileName,
-                                    String applyTo, JSONObject envParams, JSONObject fileParams) throws SvcLogicException {
+                                 String applyTo, JSONObject envParams, JSONObject fileParams) throws SvcLogicException {
 
         StringBuilder constructedCommand = new StringBuilder();
         try {
@@ -283,10 +284,10 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
 
         } catch (FileNotFoundException e) {
             doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(), "Input SLS file " +
-                    "not found in path : " + slsFileName+". "+ e.getMessage());
+                    "not found in path : " + slsFileName + ". " + e.getMessage());
         } catch (IOException e) {
             doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(), "Input SLS file " +
-                    "error in path : " + slsFileName +". "+ e.getMessage());
+                    "error in path : " + slsFileName + ". " + e.getMessage());
         } catch (StringIndexOutOfBoundsException e) {
             doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(), "Input file " +
                     "is not of type .sls");
@@ -294,10 +295,14 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
         return constructedCommand.toString();
     }
 
-    private String stripExtension (String str) {
-        if (str == null) return null;
+    private String stripExtension(String str) {
+        if (str == null) {
+            return null;
+        }
         int pos = str.lastIndexOf(".");
-        if (pos == -1) return str;
+        if (pos == -1) {
+            return str;
+        }
         return str.substring(0, pos);
     }
 
@@ -348,7 +353,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             checkResponseStatus(testResult, ctx, reqID, slsExec);
         } catch (IOException e) {
             doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(),
-                      "IOException in file stream : "+ e.getMessage());
+                      "IOException in file stream : " + e.getMessage());
         }
     }
 
@@ -379,7 +384,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             checkResponseStatus(testResult, ctx, reqID, true);
         } catch (IOException e) {
             doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(),
-                      "IOException in file stream : "+ e.getMessage());
+                      "IOException in file stream : " + e.getMessage());
         } catch (JSONException e) {
             doFailure(ctx, SaltstackResultCodes.INVALID_COMMAND.getValue(), e.getMessage());
         }
@@ -412,13 +417,13 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             checkResponseStatus(testResult, ctx, reqID, true);
         } catch (IOException e) {
             doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(),
-                      "IOException in file stream : "+ e.getMessage());
+                      "IOException in file stream : " + e.getMessage());
         }
     }
 
     public SaltstackResult execCommand(SvcLogicContext ctx, Map<String, String> params, String commandToExecute,
                                        long execTimeout)
-                                    throws SvcLogicException{
+            throws SvcLogicException {
 
         SaltstackResult testResult = new SaltstackResult();
         try {
@@ -439,7 +444,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
             }
         } catch (IOException e) {
             doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(),
-                      "IOException in file stream : "+ e.getMessage());
+                      "IOException in file stream : " + e.getMessage());
         }
         return testResult;
     }

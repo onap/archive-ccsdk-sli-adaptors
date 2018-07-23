@@ -26,18 +26,11 @@ package org.onap.ccsdk.sli.adaptors.saltstack.impl;
 
 import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.RandomStringUtils;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResult;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResultCodes;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringWriter;
 
 /**
  * Returns a custom SSH client
@@ -98,11 +91,11 @@ public class ConnectionBuilder {
      * @return command execution status
      */
     public SaltstackResult connectNExecute(String cmd, int retryCount, int retryDelay, long execTimeout)
-                            throws IOException{
+            throws IOException {
 
         SaltstackResult result = new SaltstackResult();
-        OutputStream out = null;
-        OutputStream errs = null;
+        ByteArrayOutputStream out = null;
+        ByteArrayOutputStream errs = null;
         if (execTimeout >= 0) {
             sshConnection.setExecTimeout(execTimeout);
         }
@@ -116,69 +109,59 @@ public class ConnectionBuilder {
             if (result.getStatusCode() != SaltstackResultCodes.SUCCESS.getValue()) {
                 return result;
             }
-            String outFilePath = "/tmp/" + RandomStringUtils.random(5, true, true);
-            String errFilePath = "/tmp/" + RandomStringUtils.random(5, true, true);
-            out = new FileOutputStream(outFilePath);
-            errs = new FileOutputStream(errFilePath);
+            out = new ByteArrayOutputStream();
+            errs = new ByteArrayOutputStream();
             result = sshConnection.execCommand(cmd, out, errs, result);
             sshConnection.disconnect();
             if (result.getSshExitStatus() != 0) {
-                return sortExitStatus(result.getSshExitStatus(), errFilePath, cmd);
+                return sortExitStatus(result.getSshExitStatus(), errs.toString(), cmd);
             }
             if (result.getStatusCode() != SaltstackResultCodes.SUCCESS.getValue()) {
                 return result;
             }
             result.setStatusMessage("Success");
-            result.setOutputFileName(outFilePath);
+            result.setOutputMessage(out);
         } catch (Exception io) {
             logger.error("Caught Exception", io);
             result.setStatusCode(SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue());
             result.setStatusMessage(io.getMessage());
         } finally {
-            if( out != null )
+            if (out != null) {
                 out.close();
-            if( errs != null )
+            }
+            if (errs != null) {
                 errs.close();
+            }
         }
         return result;
     }
 
-    public SaltstackResult sortExitStatus(int exitStatus, String errFilePath, String cmd) {
+    public SaltstackResult sortExitStatus(int exitStatus, String errMess, String cmd) {
         SaltstackResult result = new SaltstackResult();
-        String err = "";
-        StringWriter writer = new StringWriter();
-        try {
-            IOUtils.copy(new FileInputStream(new File(errFilePath)), writer, "UTF-8");
-            err = writer.toString();
-        } catch (FileNotFoundException e){
-            logger.info("Error stream file doesn't exist");
-        } catch (IOException e){
-            logger.info("Error stream file doesn't exist");
-        }
         if (exitStatus == 255 || exitStatus == 1) {
             String errMessage = "Error executing command [" + cmd + "] over SSH [" + sshConnection.toString()
                     + "]. Exit Code " + exitStatus + " and Error message : " +
-                    "Malformed configuration. " + err;
+                    "Malformed configuration. " + errMess;
             logger.error(errMessage);
             result.setStatusCode(SaltstackResultCodes.INVALID_COMMAND.getValue());
             result.setStatusMessage(errMessage);
         } else if (exitStatus == 5 || exitStatus == 65) {
             String errMessage = "Error executing command [" + cmd + "] over SSH [" + sshConnection.toString()
                     + "]. Exit Code " + exitStatus + " and Error message : " +
-                    "Host not allowed to connect. " + err;
+                    "Host not allowed to connect. " + errMess;
             logger.error(errMessage);
             result.setStatusCode(SaltstackResultCodes.USER_UNAUTHORIZED.getValue());
             result.setStatusMessage(errMessage);
         } else if (exitStatus == 67 || exitStatus == 73) {
             String errMessage = "Error executing command [" + cmd + "] over SSH [" + sshConnection.toString()
                     + "]. Exit Code " + exitStatus + " and Error message : " +
-                    "Key exchange failed. " + err;
+                    "Key exchange failed. " + errMess;
             logger.error(errMessage);
             result.setStatusCode(SaltstackResultCodes.CERTIFICATE_ERROR.getValue());
             result.setStatusMessage(errMessage);
         } else {
             String errMessage = "Error executing command [" + cmd + "] over SSH [" + sshConnection.toString()
-                    + "]. Exit Code " + exitStatus + " and Error message : " + err;
+                    + "]. Exit Code " + exitStatus + " and Error message : " + errMess;
             logger.error(errMessage);
             result.setStatusCode(SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue());
             result.setStatusMessage(errMessage);

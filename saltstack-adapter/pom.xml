@@ -23,175 +23,178 @@
   ============LICENSE_END=========================================================
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.onap.ccsdk.parent</groupId>
-    <artifactId>odlparent-lite</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
-    <relativePath/>
-  </parent>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.onap.ccsdk.parent</groupId>
+        <artifactId>odlparent-lite</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
 
-  <groupId>org.onap.ccsdk.sli.adaptors</groupId>
-  <artifactId>saltstack-adaptor</artifactId>
-  <version>0.3.0-SNAPSHOT</version>
-  <name>ccsdk-sli-adaptors :: saltstack-adapter</name>
-  <description>Abstractions to interact with Saltstack server via REST</description>
-  <packaging>pom</packaging>
+    <groupId>org.onap.ccsdk.sli.adaptors</groupId>
+    <artifactId>saltstack-adaptor</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+    <name>ccsdk-sli-adaptors :: saltstack-adapter</name>
+    <description>Abstractions to interact with Saltstack server via REST
+    </description>
+    <packaging>pom</packaging>
 
-  <build>
-    <plugins>
+    <build>
+        <plugins>
 
-     <!-- Black duck plugin Not required for regular builds
-     <plugin> <groupId>com.blackducksoftware.integration</groupId> <artifactId>hub-maven-plugin</artifactId>
-           <version>1.4.0</version> <inherited>false</inherited> <configuration> <hubProjectName>${project.name}</hubProjectName>
-           <outputDirectory>${project.basedir}</outputDirectory> <deployHubBdio>false</deployHubBdio>
-           </configuration> <extensions>true</extensions>
-           <executions>
-		<execution>
-			<id>create-bdio-file</id>
-			<phase>package</phase>
-           		<goals>
-				<goal>createHubOutput</goal>
-			</goals>
-		</execution>
-	    </executions>
+            <!-- Black duck plugin Not required for regular builds
+            <plugin> <groupId>com.blackducksoftware.integration</groupId> <artifactId>hub-maven-plugin</artifactId>
+                  <version>1.4.0</version> <inherited>false</inherited> <configuration> <hubProjectName>${project.name}</hubProjectName>
+                  <outputDirectory>${project.basedir}</outputDirectory> <deployHubBdio>false</deployHubBdio>
+                  </configuration> <extensions>true</extensions>
+                  <executions>
+               <execution>
+                   <id>create-bdio-file</id>
+                   <phase>package</phase>
+                          <goals>
+                       <goal>createHubOutput</goal>
+                   </goals>
+               </execution>
+               </executions>
 
-     </plugin>
-     -->
+            </plugin>
+            -->
 
-    </plugins>
-  </build>
+        </plugins>
+    </build>
 
-  <reporting>
-    <plugins>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <additionalDependencies>
-            <additionalDependency>
-              <groupId>org.slf4j</groupId>
-              <artifactId>slf4j-api</artifactId>
-              <version>${slf4j.version}</version>
-            </additionalDependency>
-            <additionalDependency>
-              <groupId>org.antlr</groupId>
-              <artifactId>antlr4</artifactId>
-              <version>${antlr.version}</version>
-            </additionalDependency>
-            <additionalDependency>
-              <groupId>org.antlr</groupId>
-              <artifactId>antlr4-runtime</artifactId>
-              <version>4.3</version>
-            </additionalDependency>
-          </additionalDependencies>
-        </configuration>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>javadoc-no-fork</report>
-              <report>test-javadoc-no-fork</report>
-            </reports>
-          </reportSet>
-          <reportSet>
-            <id>aggregate</id>
-            <reports>
-              <report>aggregate</report>
-              <report>test-aggregate</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.3</version>
-        <reportSets>
-          <reportSet>
-            <id>aggregate</id>
-            <reports>
-              <report>aggregate</report>
-              <report>test-aggregate</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
+    <reporting>
+        <plugins>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <additionalDependencies>
+                        <additionalDependency>
+                            <groupId>org.slf4j</groupId>
+                            <artifactId>slf4j-api</artifactId>
+                            <version>${slf4j.version}</version>
+                        </additionalDependency>
+                        <additionalDependency>
+                            <groupId>org.antlr</groupId>
+                            <artifactId>antlr4</artifactId>
+                            <version>${antlr.version}</version>
+                        </additionalDependency>
+                        <additionalDependency>
+                            <groupId>org.antlr</groupId>
+                            <artifactId>antlr4-runtime</artifactId>
+                            <version>4.3</version>
+                        </additionalDependency>
+                    </additionalDependencies>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>javadoc-no-fork</report>
+                            <report>test-javadoc-no-fork</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <reports>
+                            <report>aggregate</report>
+                            <report>test-aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
+                <reportSets>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <reports>
+                            <report>aggregate</report>
+                            <report>test-aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
 
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changelog-plugin</artifactId>
-        <version>2.3</version>
-        <reportSets>
-          <reportSet>
-            <id>dual-report</id>
-            <configuration>
-              <type>range</type>
-              <range>30</range>
-            </configuration>
-            <reports>
-              <report>changelog</report>
-              <report>file-activity</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changelog-plugin</artifactId>
+                <version>2.3</version>
+                <reportSets>
+                    <reportSet>
+                        <id>dual-report</id>
+                        <configuration>
+                            <type>range</type>
+                            <range>30</range>
+                        </configuration>
+                        <reports>
+                            <report>changelog</report>
+                            <report>file-activity</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>taglist-maven-plugin</artifactId>
-        <version>2.4</version>
-      </plugin>
-    </plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+        </plugins>
 
-  </reporting>
+    </reporting>
 
-  <dependencyManagement>
-    <dependencies>
+    <dependencyManagement>
+        <dependencies>
 
-      <dependency>
-        <groupId>org.onap.appc</groupId>
-        <artifactId>saltstack-adapter-features</artifactId>
-        <classifier>features</classifier>
-        <type>xml</type>
-        <version>${project.version}</version>
-      </dependency>
+            <dependency>
+                <groupId>org.onap.appc</groupId>
+                <artifactId>saltstack-adapter-features</artifactId>
+                <classifier>features</classifier>
+                <type>xml</type>
+                <version>${project.version}</version>
+            </dependency>
 
-      <dependency>
-        <groupId>org.onap.appc</groupId>
-        <artifactId>saltstack-adapter-provider</artifactId>
-        <version>${project.version}</version>
-      </dependency>
+            <dependency>
+                <groupId>org.onap.appc</groupId>
+                <artifactId>saltstack-adapter-provider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-     <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.11</version>
-        <scope>test</scope>
-    </dependency>
-
-
-    </dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.11</version>
+                <scope>test</scope>
+            </dependency>
 
 
-  </dependencyManagement>
+        </dependencies>
 
-  <pluginRepositories>
-   <!-- Black Duck plugin dependencies -->
+
+    </dependencyManagement>
+
+    <pluginRepositories>
+        <!-- Black Duck plugin dependencies -->
         <pluginRepository>
             <id>JCenter</id>
             <name>JCenter Repository</name>
             <url>http://jcenter.bintray.com</url>
         </pluginRepository>
 
-  </pluginRepositories>
+    </pluginRepositories>
 
-  <modules>
-    <module>saltstack-adapter-provider</module>
-    <module>saltstack-adapter-features</module>
-    <module>saltstack-adapter-installer</module>
-  </modules>
+    <modules>
+        <module>saltstack-adapter-provider</module>
+        <module>saltstack-adapter-features</module>
+        <module>saltstack-adapter-installer</module>
+    </modules>
 </project>

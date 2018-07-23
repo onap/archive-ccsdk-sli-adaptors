@@ -24,17 +24,25 @@
   -->
 
 
-<features name="ccsdk-saltstack-adapter-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">     
+<features xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          name="ccsdk-saltstack-adapter-${project.version}"
+          xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
+          xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">
 
-     <repository>mvn:org.opendaylight.mdsal/features-mdsal/${odl.mdsal.features.version}/xml/features</repository>
-    
-    <feature name='ccsdk-saltstack-adapter' description="ccsdk-saltstack-adapter" version='${project.version}'>
+    <repository>
+        mvn:org.opendaylight.mdsal/features-mdsal/${odl.mdsal.features.version}/xml/features
+    </repository>
+
+    <feature name='ccsdk-saltstack-adapter'
+             description="ccsdk-saltstack-adapter" version='${project.version}'>
         <feature version="${odl.mdsal.version}">odl-mdsal-broker</feature>
         <feature>sdnc-sli</feature>
-         <bundle dependency="true">mvn:org.onap.appc/appc-common/${project.version}</bundle>
-        <bundle>mvn:org.onap.ccsdk.sli.adaptors/saltstack-adapter-provider/${project.version}</bundle>
+        <bundle dependency="true">
+            mvn:org.onap.appc/appc-common/${project.version}
+        </bundle>
+        <bundle>
+            mvn:org.onap.ccsdk.sli.adaptors/saltstack-adapter-provider/${project.version}
+        </bundle>
     </feature>
 
 </features>

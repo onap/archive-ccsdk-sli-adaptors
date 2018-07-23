@@ -801,7 +801,7 @@ public class TestSaltstackAdapterImpl {
             TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
             assertEquals("200", status);
             assertEquals(TestId, "test1");
-        } catch (Exception e){
+        } catch (Exception e) {
             //if local ssh is not enabled
             System.out.print(e.getMessage());
         }
@@ -829,7 +829,7 @@ public class TestSaltstackAdapterImpl {
             assertEquals(TestId, "test1");
             TestId = svcContext.getAttribute("test1.minion1");
             assertEquals(TestId, "true");
-        } catch (Exception e){
+        } catch (Exception e) {
             //if saltstack ssh IP is not enabled
             System.out.print(e.getMessage());
         }
@@ -855,7 +855,7 @@ public class TestSaltstackAdapterImpl {
             TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
             assertEquals("200", status);
             assertEquals(TestId, "test1");
-        } catch (Exception e){
+        } catch (Exception e) {
             //if saltstack ssh IP is not enabled
             System.out.print(e.getMessage());
         }
@@ -881,7 +881,7 @@ public class TestSaltstackAdapterImpl {
             TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
             assertEquals("200", status);
             assertEquals(TestId, "test1");
-        } catch (Exception e){
+        } catch (Exception e) {
             //if saltstack ssh IP is not enabled
             System.out.print(e.getMessage());
         }
@@ -908,7 +908,7 @@ public class TestSaltstackAdapterImpl {
             TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
             assertEquals("200", status);
             assertEquals(TestId, "test1");
-        } catch (Exception e){
+        } catch (Exception e) {
             //if saltstack ssh IP is not enabled
             System.out.print(e.getMessage());
         }
@@ -936,7 +936,7 @@ public class TestSaltstackAdapterImpl {
             TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
             assertEquals("200", status);
             assertEquals(TestId, "test1");
-        } catch (Exception e){
+        } catch (Exception e) {
             //if saltstack ssh IP is not enabled
             System.out.print(e.getMessage());
         }
@@ -964,7 +964,7 @@ public class TestSaltstackAdapterImpl {
             TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
             assertEquals("200", status);
             assertEquals(TestId, "test1");
-        } catch (Exception e){
+        } catch (Exception e) {
             //if saltstack ssh IP is not enabled
             System.out.print(e.getMessage());
         }
@@ -992,7 +992,7 @@ public class TestSaltstackAdapterImpl {
             TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
             assertEquals("200", status);
             assertEquals(TestId, "test1");
-        } catch (Exception e){
+        } catch (Exception e) {
             //if saltstack ssh IP is not enabled
             System.out.print(e.getMessage());
         }
@@ -1018,7 +1018,7 @@ public class TestSaltstackAdapterImpl {
             TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
             assertEquals("200", status);
             assertEquals(TestId, "test1");
-        } catch (Exception e){
+        } catch (Exception e) {
             //if saltstack ssh IP is not enabled
             System.out.print(e.getMessage());
         }
@@ -1046,7 +1046,7 @@ public class TestSaltstackAdapterImpl {
             TestId = svcContext.getAttribute("org.onap.appc.adapter.saltstack.Id");
             assertEquals("200", status);
             assertEquals(TestId, "test1");
-        } catch (Exception e){
+        } catch (Exception e) {
             //if saltstack ssh IP is not enabled
             System.out.print(e.getMessage());
         }

@@ -24,6 +24,8 @@
 
 package org.onap.ccsdk.sli.adaptors.saltstack.model;
 
+import java.io.ByteArrayOutputStream;
+
 /**
  * Simple class to store code and message returned by POST/GET to an Saltstack Server
  */
@@ -34,7 +36,7 @@ public class SaltstackResult {
     private int statusCode;
     private String statusMessage;
     private String results;
-    private String out;
+    private ByteArrayOutputStream out;
     private int sshExitStatus;
 
     public SaltstackResult() {
@@ -58,11 +60,11 @@ public class SaltstackResult {
         this.results = results;
     }
 
-    public String getOutputFileName() {
+    public ByteArrayOutputStream getOutputMessage() {
         return out;
     }
 
-    public void setOutputFileName(String out) {
+    public void setOutputMessage(ByteArrayOutputStream out) {
         this.out = out;
     }
 
