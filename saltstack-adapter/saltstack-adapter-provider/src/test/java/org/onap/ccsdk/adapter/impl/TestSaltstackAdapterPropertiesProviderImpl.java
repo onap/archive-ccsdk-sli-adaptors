@@ -169,24 +169,6 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
         adapter = new SaltstackAdapterImpl(propProvider);
     }
 
-    @Test(expected = SvcLogicException.class)
-    public void reqExecCommand_setPropertiesBOTHPortString() throws SvcLogicException,
-            IllegalStateException, IllegalArgumentException {
-        params.put("org.onap.appc.adapter.saltstack.clientType", "BOTH");
-        params.put("org.onap.appc.adapter.saltstack.host", "test");
-        params.put("org.onap.appc.adapter.saltstack.port", "test");
-        params.put("org.onap.appc.adapter.saltstack.userName", "test");
-        params.put("org.onap.appc.adapter.saltstack.userPasswd", "test");
-        params.put("org.onap.appc.adapter.saltstack.sshKey", "test");
-        SaltstackAdapterPropertiesProvider propProvider = new SaltstackAdapterPropertiesProvider() {
-            @Override
-            public Properties getProperties() {
-                return params;
-            }
-        };
-        adapter = new SaltstackAdapterImpl(propProvider);
-    }
-
     @Test
     public void reqExecCommand_setPropertiesBOTHSuccess() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {

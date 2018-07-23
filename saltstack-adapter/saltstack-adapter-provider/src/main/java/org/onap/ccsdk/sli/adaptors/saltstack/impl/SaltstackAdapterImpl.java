@@ -61,8 +61,7 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
      */
     @SuppressWarnings("nls")
     public static final String OUTCOME_SUCCESS = "success";
-    public static final String CONNECTION_RETRY_DELAY = "retryDelay";
-    public static final String CONNECTION_RETRY_COUNT = "retryCount";
+    public static final String CONNECTION_RETRY = "withRetry";
     private static final String APPC_EXCEPTION_CAUGHT = "APPCException caught";
     /**
      * Adapter Name
@@ -187,15 +186,6 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
                 String sshPort = reqServerPort(props);
                 logger.info("Creating ssh client with ssh KEY from " + sshKey);
                 sshClient = new ConnectionBuilder(sshHost, sshPort, sshKey);
-            } else if ("BOTH".equalsIgnoreCase(clientType)) {
-                // set path to keystore file
-                String sshKey = props.getProperty(SS_SERVER_SSH_KEY);
-                String sshHost = props.getProperty(SS_SERVER_HOSTNAME);
-                String sshUserName = props.getProperty(SS_SERVER_USERNAME);
-                String sshPassword = props.getProperty(SS_SERVER_PASSWD);
-                String sshPort = reqServerPort(props);
-                logger.info("Creating ssh client with ssh KEY from " + sshKey);
-                sshClient = new ConnectionBuilder(sshHost, sshPort, sshUserName, sshPassword, sshKey);
             } else {
                 logger.info("No saltstack-adapter.properties defined so reading from DG props");
                 sshClient = null;
@@ -425,13 +415,19 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
                                        long execTimeout)
             throws SvcLogicException {
 
+        //convert execTimeout to Milliseconds
+        execTimeout = execTimeout * 1000;
         SaltstackResult testResult = new SaltstackResult();
         try {
-            if (params.get(CONNECTION_RETRY_DELAY) != null && params.get(CONNECTION_RETRY_COUNT) != null) {
-                int retryDelay = Integer.parseInt(params.get(CONNECTION_RETRY_DELAY));
-                int retryCount = Integer.parseInt(params.get(CONNECTION_RETRY_COUNT));
+            if (params.get(CONNECTION_RETRY) == null) {
                 if (!testMode) {
-                    testResult = sshClient.connectNExecute(commandToExecute, retryCount, retryDelay, execTimeout);
+                    testResult = sshClient.connectNExecute(commandToExecute, execTimeout);
+                } else {
+                    testResult = testServer.mockReqExec(params);
+                }
+            } else if (params.get(CONNECTION_RETRY).equalsIgnoreCase("true")) {
+                if (!testMode) {
+                    testResult = sshClient.connectNExecute(commandToExecute, true, execTimeout);
                 } else {
                     testResult = testServer.mockReqExec(params);
                 }

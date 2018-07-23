@@ -26,11 +26,15 @@ package org.onap.ccsdk.sli.adaptors.saltstack.impl;
 
 import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
+import org.onap.appc.adapter.ssh.SshException;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResult;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResultCodes;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+//import org.onap.appc.adapter.ssh.SshConnection;
+//import org.onap.appc.adapter.ssh.SshAdapter;
 
 /**
  * Returns a custom SSH client
@@ -54,19 +58,12 @@ public class ConnectionBuilder {
 
     /**
      * Constructor that initializes an ssh client based on ssh certificate
+     * This is still not supported in 1.3.0 version
      **/
     public ConnectionBuilder(String host, String port, String certFile) {
         sshConnection = new SshConnection(host, Integer.parseInt(port), certFile);
     }
 
-    /**
-     * Constructor that initializes an ssh client based on ssh username password and certificate
-     **/
-    public ConnectionBuilder(String host, String port, String userName, String userPasswd,
-                             String certFile) {
-
-        sshConnection = new SshConnection(host, Integer.parseInt(port), userName, userPasswd, certFile);
-    }
 
     /**
      * 1. Connect to SSH server.
@@ -77,7 +74,7 @@ public class ConnectionBuilder {
      * @return command execution status
      */
     public SaltstackResult connectNExecute(String cmd, long execTimeout) throws IOException {
-        return connectNExecute(cmd, -1, -1, execTimeout);
+        return connectNExecute(cmd, false, execTimeout);
     }
 
     /**
@@ -85,12 +82,11 @@ public class ConnectionBuilder {
      * 2. Exec remote command over SSH. Return command execution status.
      * Command output is written to out or err stream.
      *
-     * @param cmd        Commands to execute
-     * @param retryDelay delay between retry to make a SSH connection.
-     * @param retryCount number of count retry to make a SSH connection.
+     * @param cmd       Commands to execute
+     * @param withRetry make a SSH connection with default retry.
      * @return command execution status
      */
-    public SaltstackResult connectNExecute(String cmd, int retryCount, int retryDelay, long execTimeout)
+    public SaltstackResult connectNExecute(String cmd, boolean withRetry, long execTimeout)
             throws IOException {
 
         SaltstackResult result = new SaltstackResult();
@@ -101,29 +97,34 @@ public class ConnectionBuilder {
         }
 
         try {
-            if (retryCount != -1) {
-                result = sshConnection.connectWithRetry(retryCount, retryDelay);
+            if (withRetry) {
+                sshConnection.connectWithRetry();
             } else {
-                result = sshConnection.connect();
-            }
-            if (result.getStatusCode() != SaltstackResultCodes.SUCCESS.getValue()) {
-                return result;
+                sshConnection.connect();
             }
             out = new ByteArrayOutputStream();
             errs = new ByteArrayOutputStream();
-            result = sshConnection.execCommand(cmd, out, errs, result);
+            int resultCode = sshConnection.execCommand(cmd, out, errs);
             sshConnection.disconnect();
-            if (result.getSshExitStatus() != 0) {
-                return sortExitStatus(result.getSshExitStatus(), errs.toString(), cmd);
+            if (resultCode != 0) {
+                return sortExitStatus(resultCode, errs.toString(), cmd);
             }
-            if (result.getStatusCode() != SaltstackResultCodes.SUCCESS.getValue()) {
-                return result;
-            }
+            result.setStatusCode(SaltstackResultCodes.SUCCESS.getValue());
             result.setStatusMessage("Success");
             result.setOutputMessage(out);
+        } catch (SshException io) {
+            if (io.toString().equalsIgnoreCase("Authentication failed")) {
+                logger.error(io.toString());
+                result.setStatusCode(SaltstackResultCodes.USER_UNAUTHORIZED.getValue());
+                result.setStatusMessage(io.toString());
+                return result;
+            }
+            logger.error("Caught Exception", io);
+            result.setStatusCode(SaltstackResultCodes.SSH_EXCEPTION.getValue());
+            result.setStatusMessage(io.getMessage());
         } catch (Exception io) {
             logger.error("Caught Exception", io);
-            result.setStatusCode(SaltstackResultCodes.UNKNOWN_EXCEPTION.getValue());
+            result.setStatusCode(SaltstackResultCodes.SSH_EXCEPTION.getValue());
             result.setStatusMessage(io.getMessage());
         } finally {
             if (out != null) {
