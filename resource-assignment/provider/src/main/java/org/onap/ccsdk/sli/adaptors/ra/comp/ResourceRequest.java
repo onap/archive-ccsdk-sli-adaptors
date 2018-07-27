@@ -30,6 +30,7 @@ public class ResourceRequest {
     public boolean rangeReverseOrder;
     public int rangeMinOverride;
     public int rangeMaxOverride;
+    public boolean rangeForceNewNumbers;
     public boolean replace;
     public String requestType;
     public String serviceModel;

@@ -21,6 +21,7 @@
 
 package jtest.org.onap.ccsdk.sli.adaptors.ra;
 
+import java.util.Date;
 import jtest.util.org.onap.ccsdk.sli.adaptors.ra.TestDb;
 import jtest.util.org.onap.ccsdk.sli.adaptors.ra.TestTable;
 
@@ -31,10 +32,11 @@ public class DataSetup {
     private TestTable resource = null;
     private TestTable allocationItem = null;
 
-    private static final String[] RESOURCE_COLUMNS = {"asset_id", "resource_name", "resource_type", "lt_used"};
+    private static final String[] RESOURCE_COLUMNS =
+        {"asset_id", "resource_name", "resource_type", "lt_used", "rr_used"};
 
     private static final String[] ALLOCATION_ITEM_COLUMNS = {"resource_id", "application_id", "resource_set_id",
-            "resource_union_id", "resource_share_group_list", "lt_used", "allocation_time"};
+            "resource_union_id", "resource_share_group_list", "lt_used", "rr_used", "allocation_time"};
 
     private void initTables() {
         if (resource == null) {
@@ -49,6 +51,37 @@ public class DataSetup {
         initTables();
         allocationItem.delete("true");
         resource.delete("true");
+    }
+
+    public void setupLimitItem(String resourceName, String assetId, String resourceSetId, String resourceUnionId,
+            long used) {
+        initTables();
+
+        Long rid = resource.getId("asset_id = '" + assetId + "' AND resource_name = '" + resourceName + "'");
+        if (rid == null) {
+            resource.add(assetId, resourceName, "Limit", used, null);
+            rid = resource.getLastId();
+        }
+        allocationItem.add(rid, "SDNC", resourceSetId, resourceUnionId, null, used, null, new Date());
+    }
+
+    public void setupRangeItem(String resourceName, String assetId, String resourceSetId, String resourceUnionId,
+            String used) {
+        initTables();
+
+        Long rid = resource.getId("asset_id = '" + assetId + "' AND resource_name = '" + resourceName + "'");
+        if (rid == null) {
+            resource.add(assetId, resourceName, "Range", null, used);
+            rid = resource.getLastId();
+        }
+        allocationItem.add(rid, "SDNC", resourceSetId, resourceUnionId, null, null, used, new Date());
+    }
+
+    public boolean checkRangeItem(String resourceName, String assetId, String resourceSetId, String used) {
+        String where = "resource_id = (SELECT resource_id FROM RESOURCE WHERE resource_name = '" + resourceName
+                + "' AND asset_id = '" + assetId + "') AND resource_set_id = '" + resourceSetId + "'";
+        Object usedInDb = allocationItem.getColumn("rr_used", where);
+        return used.equals(usedInDb);
     }
 
     public void setTestDb(TestDb testDb) {

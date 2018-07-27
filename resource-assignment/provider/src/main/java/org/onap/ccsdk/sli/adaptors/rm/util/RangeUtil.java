@@ -76,15 +76,19 @@ public class RangeUtil {
                             found = true;
                             break;
                         }
+                        if (req.forceNewNumbers && rai.used.contains(num)) {
+                            found = true;
+                            break;
+                        }
                     }
                 }
-                
+
                 if (!found) {
                     good = true;
                     break;
                 }
             }
-            
+
             return good;
         }
 

@@ -178,6 +178,7 @@ public class DbAllocationRule implements AllocationRule {
                 ar.rangeList.get(ar.rangeList.size() - 1).max = resourceRequest.rangeMaxOverride;
             }
         }
+        ar.forceNewNumbers = resourceRequest.rangeForceNewNumbers;
         return ar;
     }
 

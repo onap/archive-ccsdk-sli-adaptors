@@ -60,7 +60,7 @@ public class ResourceAllocator implements SvcLogicResource {
     @Override
     public QueryStatus notify(String resource, String action, String key, SvcLogicContext ctx)
             throws SvcLogicException {
-        return (QueryStatus.SUCCESS);
+        return QueryStatus.SUCCESS;
     }
 
     @Override
@@ -351,6 +351,8 @@ public class ResourceAllocator implements SvcLogicResource {
         rr.rangeMinOverride = Integer.parseInt(rangeMinOverrideStr);
         String rangeMaxOverrideStr = getParam(ctx, "range-max-override", false, "-1");
         rr.rangeMaxOverride = Integer.parseInt(rangeMaxOverrideStr);
+        String rangeForceNewNumbersStr = getParam(ctx, "range-force-new-numbers", false, "false");
+        rr.rangeForceNewNumbers = Boolean.parseBoolean(rangeForceNewNumbersStr);
         String replaceStr = getParam(ctx, "replace", false, "true");
         rr.replace = Boolean.parseBoolean(replaceStr);
         rr.applicationId = getParam(ctx, "application-id", false, "SDNC");

@@ -267,7 +267,7 @@ class AllocationFunction extends SynchronizedFunction {
 
                 // First try to reuse the numbers already taken by the same resource union
                 SortedSet<Integer> uu = RangeUtil.getUsed(rr, req.resourceUnionId);
-                if (uu != null && !uu.isEmpty() && req.replace) {
+                if (uu != null && !uu.isEmpty() && req.replace && !req.forceNewNumbers) {
                     if (uu.size() >= req.requestedCount) {
                         // Just take the first req.requestedCount numbers from uu
                         Iterator<Integer> i = uu.iterator();
