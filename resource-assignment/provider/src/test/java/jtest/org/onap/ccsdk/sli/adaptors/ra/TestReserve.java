@@ -1,6 +1,7 @@
 package jtest.org.onap.ccsdk.sli.adaptors.ra;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceRequest;
 import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceResponse;
 import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceTarget;
 import org.onap.ccsdk.sli.adaptors.rm.data.AllocationStatus;
+import org.onap.ccsdk.sli.adaptors.rm.data.Range;
+import org.onap.ccsdk.sli.adaptors.rm.data.ResourceType;
 import org.onap.ccsdk.sli.adaptors.util.str.StrUtil;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
@@ -711,4 +714,124 @@ public class TestReserve {
         Assert.assertTrue(dataSetup.checkRangeItem(resourceName, assetId, resourceSet1, "201"));
         Assert.assertFalse(dataSetup.checkRangeItem(resourceName, assetId, resourceSet2, "201"));
     }
+    
+    @Test
+	public void test0010_vlantag_with_resourcemodel() throws Exception {
+		
+		String t = "0010";
+		log.info("============== reserve " + t + " ================================");
+		
+		dataSetup.cleanup();
+		
+		TestTable resource = new TestTable(jdbcTemplate, "RESOURCE", "resource_id", RESOURCE_COLUMNS);
+		TestTable allocationItem = new TestTable(jdbcTemplate, "ALLOCATION_ITEM", "allocation_item_id",
+				ALLOCATION_ITEM_COLUMNS);
+		
+		
+		ResourceEntity sd = new ResourceEntity();
+		sd.resourceEntityId = "gblond2003me6";
+		sd.resourceEntityType = "VNF";
+		sd.resourceEntityVersion = "1";
+		
+		ResourceTarget rt = new ResourceTarget();
+		rt.resourceTargetId = "MDTWNJ21A5";
+		rt.resourceTargetType = "Site";
+
+		ResourceRequest rr= new ResourceRequest();
+		rr.serviceModel = "MY-SERV-MODEL_3456";
+		rr.resourceName = "vlan-id-outer";
+		rr.endPointPosition="VPE-Core1";
+		rr.rangeMaxOverride = 3901;
+		rr.rangeMinOverride = 3900;
+		rr.resourceType = ResourceType.Range;
+	
+		
+		List <ResourceResponse> rsList = new ArrayList<>();
+		resourceAllocator.reserve(sd, rt, rr, rsList);
+		
+		resource.print();
+		allocationItem.print();
+		
+		Range range = new Range();
+		range.min = 3900;
+		range.max = 3901;
+		
+		sd = new ResourceEntity();
+		sd.resourceEntityId = "gblond2003me6";
+		sd.resourceEntityType = "VNF";
+		sd.resourceEntityVersion = "1";
+		
+		rt = new ResourceTarget();
+		rt.resourceTargetId = "MDTWNJ21A5";
+		rt.resourceTargetType = "Site";
+
+
+		rr= new ResourceRequest();
+		rr.serviceModel = "MY-SERV-MODEL_3456";
+		rr.resourceName = "vlan-id-outer";
+		rr.endPointPosition="VPE-Core2";
+		rr.rangeMaxOverride = -1;
+		rr.rangeMinOverride = -1;
+		rr.rangeOverrideList = Arrays.asList(range);
+		rr.resourceType = ResourceType.Range;
+	
+		
+		rsList = new ArrayList<>();
+		resourceAllocator.reserve(sd, rt, rr, rsList);
+		
+		resource.print();
+		allocationItem.print();
+		
+		
+		sd = new ResourceEntity();
+		sd.resourceEntityId = "gblond2003me6";
+		sd.resourceEntityType = "VNF";
+		sd.resourceEntityVersion = "1";
+		
+		rt = new ResourceTarget();
+		rt.resourceTargetId = "MDTWNJ21A5";
+		rt.resourceTargetType = "Site";
+
+		Range range1 = new Range();
+		range1.min=3900;
+		range1.max=3901;
+		
+		Range range2 = new Range();
+		range2.min=3904;
+		range2.max=3905;
+
+		rr= new ResourceRequest();
+		rr.serviceModel = "MY-SERV-MODEL_3456";
+		rr.resourceName = "vlan-id-outer";
+		rr.endPointPosition="VPE-Core3";
+		rr.rangeMaxOverride = -1;
+		rr.rangeMinOverride = -1;
+		rr.rangeOverrideList = new ArrayList<>();
+		rr.rangeOverrideList.add(range1);
+		rr.rangeOverrideList.add(range2);
+		rr.resourceType = ResourceType.Range;
+	
+		
+		rsList = new ArrayList<>();
+		AllocationStatus status = resourceAllocator.reserve(sd, rt, rr, rsList);
+		Assert.assertTrue(status == AllocationStatus.Success);
+		
+		resource.print();
+		allocationItem.print();
+		
+		
+		sd = new ResourceEntity();
+		sd.resourceEntityId = "gblond2003me6";
+		sd.resourceEntityType = "VNF";
+		sd.resourceEntityVersion = "1";
+		
+		rr= new ResourceRequest();
+		rr.endPointPosition="VPE-Core2";
+		status = resourceAllocator.release(sd, rr);
+		Assert.assertTrue(status == AllocationStatus.Success);
+		
+		resource.print();
+		allocationItem.print();
+		
+	}
 }

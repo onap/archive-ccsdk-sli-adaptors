@@ -48,7 +48,8 @@ public class ResourceAllocator implements SvcLogicResource {
     private static final Logger log = LoggerFactory.getLogger(ResourceAllocator.class);
 
     private static final String[] INPUT_PREFIX = {"ra-input.", "tmp.resource-allocator."};
-
+    private static final String START_RELEASE_LC = "Starting release for: {}";
+    
     private ResourceManager resourceManager;
     private EndPointAllocator endPointAllocator;
     private SpeedUtil speedUtil;
@@ -184,14 +185,19 @@ public class ResourceAllocator implements SvcLogicResource {
                 getParam(ctx, new String[] {"reservation-entity-type", "resource-entity-type"}, true, null);
         String resourceEntityVersion =
                 getParam(ctx, new String[] {"reservation-entity-version", "resource-entity-version"}, false, null);
+        
+        String endPointPosition = getParam(ctx, "endpoint-position", false, null);
 
         ResourceEntity sd = new ResourceEntity();
         sd.resourceEntityId = resourceEntityId;
         sd.resourceEntityType = resourceEntityType;
         sd.resourceEntityVersion = resourceEntityVersion;
+        
+        ResourceRequest rr = new ResourceRequest();
+        rr.endPointPosition = endPointPosition;
 
         try {
-            this.release(sd);
+            this.release(sd, rr);
         } catch (Exception e) {
             throw new SvcLogicException(e.getMessage());
         }
@@ -202,12 +208,12 @@ public class ResourceAllocator implements SvcLogicResource {
 
         if (sd.resourceEntityVersion != null) {
             String resourceSet = sd.resourceEntityType + "::" + sd.resourceEntityId + "::" + sd.resourceEntityVersion;
-            log.info("Starting release for: " + resourceSet);
+            log.info(START_RELEASE_LC, resourceSet);
 
             resourceManager.releaseResourceSet(resourceSet);
         } else {
             String resourceUnion = sd.resourceEntityType + "::" + sd.resourceEntityId;
-            log.info("Starting release for: " + resourceUnion);
+            log.info(START_RELEASE_LC, resourceUnion);
 
             resourceManager.releaseResourceUnion(resourceUnion);
         }
@@ -215,6 +221,39 @@ public class ResourceAllocator implements SvcLogicResource {
         return AllocationStatus.Success;
 
     }
+    
+	public AllocationStatus release(ResourceEntity sd, ResourceRequest rr) throws Exception {
+
+		if (sd != null && sd.resourceEntityVersion != null) {
+			if (rr != null && rr.endPointPosition != null && !rr.endPointPosition.isEmpty()) {
+				String resourceSet = sd.resourceEntityType + "::" + sd.resourceEntityId + "::" + rr.endPointPosition
+						+ "::" + sd.resourceEntityVersion;
+				log.info(START_RELEASE_LC, resourceSet);
+				resourceManager.releaseResourceSet(resourceSet);
+
+			} else {
+				String resourceSet = sd.resourceEntityType + "::" + sd.resourceEntityId + "::"
+						+ sd.resourceEntityVersion;
+				log.info(START_RELEASE_LC, resourceSet);
+				resourceManager.releaseResourceSet(resourceSet);
+			}
+
+		} else if (sd != null && (sd.resourceEntityVersion == null || sd.resourceEntityVersion.isEmpty())) {
+			if (rr != null && rr.endPointPosition != null && !rr.endPointPosition.isEmpty()) {
+				String resourceUnion = sd.resourceEntityType + "::" + sd.resourceEntityId + "::" + rr.endPointPosition;
+				log.info(START_RELEASE_LC, resourceUnion);
+				resourceManager.releaseResourceUnion(resourceUnion);
+
+			} else {
+				String resourceUnion = sd.resourceEntityType + "::" + sd.resourceEntityId;
+				log.info(START_RELEASE_LC, resourceUnion);
+				resourceManager.releaseResourceUnion(resourceUnion);
+			}
+		}
+
+		return AllocationStatus.Success;
+
+	}
 
     private QueryStatus allocateResources(SvcLogicContext ctx, boolean checkOnly, String prefix)
             throws SvcLogicException {

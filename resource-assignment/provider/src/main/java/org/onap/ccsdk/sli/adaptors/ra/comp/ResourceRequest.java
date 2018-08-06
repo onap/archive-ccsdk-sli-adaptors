@@ -21,6 +21,11 @@
 
 package org.onap.ccsdk.sli.adaptors.ra.comp;
 
+import java.util.List;
+
+import org.onap.ccsdk.sli.adaptors.rm.data.Range;
+import org.onap.ccsdk.sli.adaptors.rm.data.ResourceType;
+
 public class ResourceRequest {
 
     public String resourceName;
@@ -37,4 +42,6 @@ public class ResourceRequest {
     public boolean checkOnly;
     public String applicationId;
     public String endPointPosition;
+    public ResourceType resourceType;
+    public List<Range> rangeOverrideList;
 }
