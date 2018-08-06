@@ -56,7 +56,7 @@ public class RangeUtil {
         if (req.rangeList != null && !req.rangeList.isEmpty()) {
             boolean good = false;
             for (Range range : req.rangeList) {
-                if (num < range.min || num > range.min) {
+                if (num < range.min || num > range.max) {
                     continue;
                 }
 

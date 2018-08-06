@@ -38,6 +38,7 @@ import org.onap.ccsdk.sli.adaptors.rm.data.LimitAllocationRequest;
 import org.onap.ccsdk.sli.adaptors.rm.data.MultiResourceAllocationRequest;
 import org.onap.ccsdk.sli.adaptors.rm.data.Range;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeAllocationRequest;
+import org.onap.ccsdk.sli.adaptors.rm.data.ResourceType;
 import org.onap.ccsdk.sli.adaptors.util.expr.ExpressionEvaluator;
 import org.onap.ccsdk.sli.adaptors.util.str.StrUtil;
 import org.slf4j.Logger;
@@ -92,6 +93,13 @@ public class DbAllocationRule implements AllocationRule {
             arlist.add(ar1);
         }
 
+        if ((rangeRuleList == null || rangeRuleList.isEmpty())
+                && ResourceType.Range.equals(resourceRequest.resourceType)) {
+            AllocationRequest ar1 = buildAllocationRequest(resourceEntity, resourceTarget, resourceRequest, checkOnly,
+                    change);
+            arlist.add(ar1);
+        }
+
         if (arlist.isEmpty()) {
             return null;
         }
@@ -103,6 +111,59 @@ public class DbAllocationRule implements AllocationRule {
         MultiResourceAllocationRequest ar = new MultiResourceAllocationRequest();
         ar.stopOnFirstFailure = false;
         ar.allocationRequestList = arlist;
+        return ar;
+    }
+
+    private AllocationRequest buildAllocationRequest(ResourceEntity resourceEntity, ResourceTarget resourceTarget,
+            ResourceRequest resourceRequest, boolean checkOnly, boolean change) {
+
+        RangeAllocationRequest ar = new RangeAllocationRequest();
+        ar.applicationId = resourceRequest.applicationId;
+        if (resourceRequest.endPointPosition != null) {
+            ar.resourceUnionId = resourceEntity.resourceEntityType + "::" + resourceEntity.resourceEntityId + "::"
+                    + resourceRequest.endPointPosition;
+            ar.endPointPosition = resourceRequest.endPointPosition;
+        } else {
+            ar.resourceUnionId = resourceEntity.resourceEntityType + "::" + resourceEntity.resourceEntityId;
+        }
+        ar.resourceSetId = ar.resourceUnionId + "::" + resourceEntity.resourceEntityVersion;
+        ar.resourceName = resourceRequest.resourceName;
+        if (resourceRequest.resourceShareGroup != null) {
+            ar.resourceShareGroupList = Collections.singleton(resourceRequest.resourceShareGroup);
+        }
+        ar.assetId = resourceTarget.resourceTargetType + "::" + resourceTarget.resourceTargetId;
+        ar.requestedNumbers = StrUtil.listInt(resourceRequest.rangeRequestedNumbers,
+                "Invalid value for requested-numbers");
+        if (ar.requestedNumbers != null) {
+            ar.requestedCount = ar.requestedNumbers.size();
+        }
+        ar.excludeNumbers = StrUtil.listInt(resourceRequest.rangeExcludeNumbers, "Invalid value for exclude-numbers");
+        ar.reverseOrder = resourceRequest.rangeReverseOrder;
+        ar.missingResourceAction = AllocationAction.Succeed_Allocate;
+        ar.expiredResourceAction = AllocationAction.Succeed_Allocate;
+        ar.replace = resourceRequest.replace;
+        ar.check = true;
+        ar.allocate = !checkOnly;
+        ar.rangeList = resourceRequest.rangeOverrideList;
+        if (ar.rangeList == null || ar.rangeList.isEmpty()) {
+            if (resourceRequest.rangeMinOverride >= 0
+                    && resourceRequest.rangeMaxOverride >= resourceRequest.rangeMinOverride) {
+                ar.rangeList = new ArrayList<>();
+                Range range = new Range();
+                range.min = resourceRequest.rangeMinOverride;
+                range.max = resourceRequest.rangeMaxOverride;
+                ar.rangeList.add(range);
+            }
+        } else {
+            if (resourceRequest.rangeMinOverride >= 0) {
+                ar.rangeList.get(0).min = resourceRequest.rangeMinOverride;
+            }
+            if (resourceRequest.rangeMaxOverride >= 0) {
+                ar.rangeList.get(ar.rangeList.size() - 1).max = resourceRequest.rangeMaxOverride;
+            }
+        }
+        ar.forceNewNumbers = resourceRequest.rangeForceNewNumbers;
+        StrUtil.info(log, ar);
         return ar;
     }
 
@@ -163,7 +224,8 @@ public class DbAllocationRule implements AllocationRule {
         ar.allocate = !checkOnly;
         ar.rangeList = rangeRule.rangeList;
         if (ar.rangeList == null || ar.rangeList.isEmpty()) {
-            if (resourceRequest.rangeMinOverride >= 0 && resourceRequest.rangeMaxOverride >= resourceRequest.rangeMinOverride) {
+            if (resourceRequest.rangeMinOverride >= 0
+                    && resourceRequest.rangeMaxOverride >= resourceRequest.rangeMinOverride) {
                 ar.rangeList = new ArrayList<>();
                 Range range = new Range();
                 range.min = resourceRequest.rangeMinOverride;
@@ -177,6 +239,7 @@ public class DbAllocationRule implements AllocationRule {
             if (resourceRequest.rangeMaxOverride >= 0) {
                 ar.rangeList.get(ar.rangeList.size() - 1).max = resourceRequest.rangeMaxOverride;
             }
+
         }
         ar.forceNewNumbers = resourceRequest.rangeForceNewNumbers;
         return ar;
