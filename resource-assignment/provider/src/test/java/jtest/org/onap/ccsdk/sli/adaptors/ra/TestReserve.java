@@ -1,6 +1,7 @@
 package jtest.org.onap.ccsdk.sli.adaptors.ra;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceRequest;
 import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceResponse;
 import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceTarget;
 import org.onap.ccsdk.sli.adaptors.rm.data.AllocationStatus;
+import org.onap.ccsdk.sli.adaptors.rm.data.Range;
+import org.onap.ccsdk.sli.adaptors.rm.data.ResourceType;
 import org.onap.ccsdk.sli.adaptors.util.str.StrUtil;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
@@ -27,7 +30,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import jtest.util.org.onap.ccsdk.sli.adaptors.ra.TestTable;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:test-context.xml"})
+@ContextConfiguration(locations = { "classpath:test-context.xml" })
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestReserve {
 
@@ -35,11 +38,10 @@ public class TestReserve {
 
     private JdbcTemplate jdbcTemplate;
 
-    private static final String[] RESOURCE_COLUMNS = {"asset_id", "resource_name", "resource_type", "lt_used"};
+    private static final String[] RESOURCE_COLUMNS = { "asset_id", "resource_name", "resource_type", "lt_used" };
 
-    private static final String[] ALLOCATION_ITEM_COLUMNS = {"resource_id", "application_id", "resource_set_id",
-            "resource_union_id", "resource_share_group_list", "lt_used", "allocation_time"};
-
+    private static final String[] ALLOCATION_ITEM_COLUMNS = { "resource_id", "application_id", "resource_set_id",
+            "resource_union_id", "resource_share_group_list", "lt_used", "allocation_time" };
 
     @Autowired
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
@@ -50,7 +52,8 @@ public class TestReserve {
     private ResourceAllocator resourceAllocator;
 
     /*
-     * @Autowired(required = true) private ResourceAllocatorApi resourceAllocatorApi;
+     * @Autowired(required = true) private ResourceAllocatorApi
+     * resourceAllocatorApi;
      */
 
     @Autowired(required = true)
@@ -67,9 +70,8 @@ public class TestReserve {
         dataSetup.cleanup();
 
         TestTable resource = new TestTable(jdbcTemplate, "RESOURCE", "resource_id", RESOURCE_COLUMNS);
-        TestTable allocationItem =
-                new TestTable(jdbcTemplate, "ALLOCATION_ITEM", "allocation_item_id", ALLOCATION_ITEM_COLUMNS);
-
+        TestTable allocationItem = new TestTable(jdbcTemplate, "ALLOCATION_ITEM", "allocation_item_id",
+                ALLOCATION_ITEM_COLUMNS);
 
         SvcLogicContext ctx = new SvcLogicContext();
         ctx.setAttribute("ra-input.service-model", "ADIG");
@@ -85,7 +87,6 @@ public class TestReserve {
         ctx.setAttribute("ra-input.reservation-target-type", "VNF");
 
         ctx.setAttribute("ra-input.reservation-target-data.max-vpe-bandwidth-mbps", "5000");
-
 
         QueryStatus st = resourceAllocator.reserve("NetworkCapacity", null, null, null, ctx);
 
@@ -106,7 +107,6 @@ public class TestReserve {
         ctx.setAttribute("ra-input.reservation-target-id", "ICORESITEID-123456");
         ctx.setAttribute("ra-input.reservation-target-type", "Port");
 
-
         st = resourceAllocator.reserve("NetworkCapacity", null, null, null, ctx);
 
         Assert.assertTrue(st == QueryStatus.SUCCESS);
@@ -123,7 +123,6 @@ public class TestReserve {
         ctx.setAttribute("ra-input.reservation-target-id", "mdt300vpe54");
         ctx.setAttribute("ra-input.reservation-target-type", "AffinityLink");
 
-
         st = resourceAllocator.reserve("NetworkCapacity", null, null, null, ctx);
 
         Assert.assertTrue(st == QueryStatus.SUCCESS);
@@ -131,17 +130,14 @@ public class TestReserve {
         resource.print();
         allocationItem.print();
 
-
         /* Query Using ReservationEntityId using ServiceLogicContext */
         ctx = new SvcLogicContext();
         ctx.setAttribute("ra-input.service-model", "ADIG");
         ctx.setAttribute("ra-input.reservation-entity-id", "ICOREPVCID-123456");
         ctx.setAttribute("ra-input.reservation-entity-type", "SI");
 
-
         st = resourceAllocator.query("NetworkCapacity", false, null, null, null, null, ctx);
         Assert.assertTrue(st == QueryStatus.SUCCESS);
-
 
         /* Query Using ReservationTargetId using ServiceLogicContext */
         ctx = new SvcLogicContext();
@@ -158,7 +154,6 @@ public class TestReserve {
         ResourceEntity sd = new ResourceEntity();
         sd.resourceEntityId = "ICOREPVCID-123456";
         sd.resourceEntityType = "SI";
-
 
         ResourceRequest rr = new ResourceRequest();
         rr.serviceModel = "ADIG";
@@ -179,11 +174,9 @@ public class TestReserve {
         AllocationStatus status = resourceAllocator.release(sd);
         Assert.assertTrue(status == AllocationStatus.Success);
 
-
         log.info("========================  Query Using ResourceEntity==============================");
         rsList = new ArrayList<>();
         resourceAllocator.query(sd, null, null, rsList);
-
 
         rsList.forEach(r -> {
             StrUtil.info(log, r);
@@ -241,7 +234,6 @@ public class TestReserve {
 
     }
 
-
     @Test
     public void test003() throws Exception {
         String t = "003";
@@ -255,7 +247,6 @@ public class TestReserve {
         ResourceTarget rt = new ResourceTarget();
         rt.resourceTargetId = "MDTWNJ21A5";
         rt.resourceTargetType = "Site";
-
 
         ResourceRequest rr = new ResourceRequest();
         rr.serviceModel = "MY-SERV-MODEL";
@@ -280,8 +271,6 @@ public class TestReserve {
         });
 
     }
-
-
 
     @Test
     public void test004() throws Exception {
@@ -313,8 +302,6 @@ public class TestReserve {
         rr.resourceName = "VPE-Core2";
         rrs.add(rr);
 
-
-
         List<ResourceResponse> rsList = new ArrayList<>();
         // resourceAllocator.reserve(sd, rt, rrs, rsList);
 
@@ -332,7 +319,6 @@ public class TestReserve {
 
     }
 
-
     @Test
     public void test005() throws Exception {
         String t = "005";
@@ -344,9 +330,8 @@ public class TestReserve {
         dataSetup.cleanup();
 
         TestTable resource = new TestTable(jdbcTemplate, "RESOURCE", "resource_id", RESOURCE_COLUMNS);
-        TestTable allocationItem =
-                new TestTable(jdbcTemplate, "ALLOCATION_ITEM", "allocation_item_id", ALLOCATION_ITEM_COLUMNS);
-
+        TestTable allocationItem = new TestTable(jdbcTemplate, "ALLOCATION_ITEM", "allocation_item_id",
+                ALLOCATION_ITEM_COLUMNS);
 
         SvcLogicContext ctx = new SvcLogicContext();
         ctx.setAttribute("ra-input.service-model", "MY-SERV-MODEL-1");
@@ -358,7 +343,6 @@ public class TestReserve {
         ctx.setAttribute("ra-input.reservation-target-type", "Site");
 
         ctx.setAttribute("ra-input.resource-name", "cust-vlan-id");
-
 
         QueryStatus st = resourceAllocator.reserve("NetworkCapacity", null, null, null, ctx);
 
@@ -377,7 +361,6 @@ public class TestReserve {
         ctx.setAttribute("ra-input.reservation-target-type", "Site");
 
         ctx.setAttribute("ra-input.resource-name", "vlan-id-inner");
-
 
         st = resourceAllocator.reserve("NetworkCapacity", null, null, null, ctx);
 
@@ -398,7 +381,6 @@ public class TestReserve {
         ctx.setAttribute("ra-input.resource-name", "vlan-id-inner");
         ctx.setAttribute("ra-input.replace", "false");
 
-
         st = resourceAllocator.reserve("NetworkCapacity", null, null, null, ctx);
 
         Assert.assertTrue(st == QueryStatus.SUCCESS);
@@ -406,17 +388,14 @@ public class TestReserve {
         resource.print();
         allocationItem.print();
 
-
         /* Query Using ReservationEntityId using ServiceLogicContext */
         ctx = new SvcLogicContext();
         ctx.setAttribute("ra-input.service-model", "MY-SERV-MODEL-1");
         ctx.setAttribute("ra-input.reservation-entity-id", "gblond2003me6");
         ctx.setAttribute("ra-input.reservation-entity-type", "VPE-Core1");
 
-
         st = resourceAllocator.query("NetworkCapacity", false, null, null, null, null, ctx);
         Assert.assertTrue(st == QueryStatus.SUCCESS);
-
 
         /* Query Using ReservationTargetId using ServiceLogicContext */
         ctx = new SvcLogicContext();
@@ -434,7 +413,6 @@ public class TestReserve {
         sd.resourceEntityId = "gblond2003me6";
         sd.resourceEntityType = "VPE-Core1";
 
-
         ResourceRequest rr = new ResourceRequest();
         rr.serviceModel = "MY-SERV-MODEL-1";
         rr.resourceName = "vlan-id-inner";
@@ -450,21 +428,23 @@ public class TestReserve {
         });
 
         /*
-         * log.info("========================  release Using ResourceEntity==============================");
-         * rsList = new ArrayList<ResourceResponse>(); AllocationStatus status =
-         * resourceAllocator.release(sd); Assert.assertTrue(status == AllocationStatus.Success);
+         * log.
+         * info("========================  release Using ResourceEntity=============================="
+         * ); rsList = new ArrayList<ResourceResponse>(); AllocationStatus status =
+         * resourceAllocator.release(sd); Assert.assertTrue(status ==
+         * AllocationStatus.Success);
          *
          *
-         * log.info("========================  Query Using ResourceEntity==============================");
-         * rsList = new ArrayList<ResourceResponse>(); resourceAllocator.query(sd, null, null, rsList);
+         * log.
+         * info("========================  Query Using ResourceEntity=============================="
+         * ); rsList = new ArrayList<ResourceResponse>(); resourceAllocator.query(sd,
+         * null, null, rsList);
          *
          *
          * rsList.forEach(r -> { StrUtil.info(log, r); });
          */
 
     }
-
-
 
     @Test
     public void test006() throws Exception {
@@ -480,11 +460,9 @@ public class TestReserve {
         rt.resourceTargetId = "MDTWNJ21A5";
         rt.resourceTargetType = "Site";
 
-
         ResourceRequest rr = new ResourceRequest();
         rr.serviceModel = "MY-SERV-MODEL-1";
         rr.resourceName = "cust-vlan-id";
-
 
         List<ResourceResponse> rsList = new ArrayList<>();
         resourceAllocator.reserve(sd, rt, rr, rsList);
@@ -512,9 +490,8 @@ public class TestReserve {
         dataSetup.cleanup();
 
         TestTable resource = new TestTable(jdbcTemplate, "RESOURCE", "resource_id", RESOURCE_COLUMNS);
-        TestTable allocationItem =
-                new TestTable(jdbcTemplate, "ALLOCATION_ITEM", "allocation_item_id", ALLOCATION_ITEM_COLUMNS);
-
+        TestTable allocationItem = new TestTable(jdbcTemplate, "ALLOCATION_ITEM", "allocation_item_id",
+                ALLOCATION_ITEM_COLUMNS);
 
         ResourceEntity sd = new ResourceEntity();
         sd.resourceEntityId = "gblond2003me6";
@@ -525,14 +502,12 @@ public class TestReserve {
         rt.resourceTargetId = "MDTWNJ21A5";
         rt.resourceTargetType = "Site";
 
-
         ResourceRequest rr = new ResourceRequest();
         rr.serviceModel = "MY-SERV-MODEL";
         // rr.resourceName = "vlan-id-outer";
         rr.endPointPosition = "VPE-Cust";
         rr.rangeMaxOverride = -1;
         rr.rangeMinOverride = -1;
-
 
         List<ResourceResponse> rsList = new ArrayList<>();
         resourceAllocator.reserve(sd, rt, rr, rsList);
@@ -547,7 +522,6 @@ public class TestReserve {
         rt.resourceTargetId = "MDTWNJ21A5";
         rt.resourceTargetType = "Site";
 
-
         rr = new ResourceRequest();
         rr.serviceModel = "MY-SERV-MODEL";
         // rr.resourceName = "vlan-id-filter";
@@ -555,10 +529,8 @@ public class TestReserve {
         rr.rangeMaxOverride = -1;
         rr.rangeMinOverride = -1;
 
-
         rsList = new ArrayList<>();
         resourceAllocator.reserve(sd, rt, rr, rsList);
-
 
         // VPE-Core2
         sd = new ResourceEntity();
@@ -570,7 +542,6 @@ public class TestReserve {
         rt.resourceTargetId = "MDTWNJ21A5";
         rt.resourceTargetType = "Site";
 
-
         rr = new ResourceRequest();
         rr.serviceModel = "MY-SERV-MODEL";
         // rr.resourceName = "vlan-id-filter";
@@ -578,10 +549,8 @@ public class TestReserve {
         rr.rangeMaxOverride = -1;
         rr.rangeMinOverride = -1;
 
-
         rsList = new ArrayList<>();
         resourceAllocator.reserve(sd, rt, rr, rsList);
-
 
         // VPE-Core3
         sd = new ResourceEntity();
@@ -593,14 +562,12 @@ public class TestReserve {
         rt.resourceTargetId = "MDTWNJ21A5";
         rt.resourceTargetType = "Site";
 
-
         rr = new ResourceRequest();
         rr.serviceModel = "MY-SERV-MODEL";
         // rr.resourceName = "vlan-id-filter";
         rr.endPointPosition = "VPE-Core3";
         rr.rangeMaxOverride = -1;
         rr.rangeMinOverride = -1;
-
 
         rsList = new ArrayList<>();
         resourceAllocator.reserve(sd, rt, rr, rsList);
@@ -620,12 +587,9 @@ public class TestReserve {
             StrUtil.info(log, r);
         });
 
-
-
         SvcLogicContext ctx = new SvcLogicContext();
         ctx.setAttribute("ra-input.reservation-entity-id", "gblond2003me6");
         ctx.setAttribute("ra-input.reservation-entity-type", "VPE");
-
 
         QueryStatus st = resourceAllocator.release("NetworkCapacity", "gblond2003me6", ctx);
         Assert.assertTrue(st == QueryStatus.SUCCESS);
@@ -710,5 +674,118 @@ public class TestReserve {
         Assert.assertTrue(st == QueryStatus.SUCCESS);
         Assert.assertTrue(dataSetup.checkRangeItem(resourceName, assetId, resourceSet1, "201"));
         Assert.assertFalse(dataSetup.checkRangeItem(resourceName, assetId, resourceSet2, "201"));
+    }
+
+    @Test
+    public void test0010_vlantag_with_resourcemodel() throws Exception {
+
+        String t = "0010";
+        log.info("============== reserve " + t + " ================================");
+
+        dataSetup.cleanup();
+
+        TestTable resource = new TestTable(jdbcTemplate, "RESOURCE", "resource_id", RESOURCE_COLUMNS);
+        TestTable allocationItem = new TestTable(jdbcTemplate, "ALLOCATION_ITEM", "allocation_item_id",
+                ALLOCATION_ITEM_COLUMNS);
+
+        ResourceEntity sd = new ResourceEntity();
+        sd.resourceEntityId = "gblond2003me6";
+        sd.resourceEntityType = "VNF";
+        sd.resourceEntityVersion = "1";
+
+        ResourceTarget rt = new ResourceTarget();
+        rt.resourceTargetId = "MDTWNJ21A5";
+        rt.resourceTargetType = "Site";
+
+        ResourceRequest rr = new ResourceRequest();
+        rr.serviceModel = "MY-SERV-MODEL_3456";
+        rr.resourceName = "vlan-id-outer";
+        rr.endPointPosition = "VPE-Core1";
+        rr.rangeMaxOverride = 3901;
+        rr.rangeMinOverride = 3900;
+        rr.resourceType = ResourceType.Range;
+
+        List<ResourceResponse> rsList = new ArrayList<>();
+        resourceAllocator.reserve(sd, rt, rr, rsList);
+
+        resource.print();
+        allocationItem.print();
+
+        Range range = new Range();
+        range.min = 3900;
+        range.max = 3901;
+
+        sd = new ResourceEntity();
+        sd.resourceEntityId = "gblond2003me6";
+        sd.resourceEntityType = "VNF";
+        sd.resourceEntityVersion = "1";
+
+        rt = new ResourceTarget();
+        rt.resourceTargetId = "MDTWNJ21A5";
+        rt.resourceTargetType = "Site";
+
+        rr = new ResourceRequest();
+        rr.serviceModel = "MY-SERV-MODEL_3456";
+        rr.resourceName = "vlan-id-outer";
+        rr.endPointPosition = "VPE-Core2";
+        rr.rangeMaxOverride = -1;
+        rr.rangeMinOverride = -1;
+        rr.rangeOverrideList = Arrays.asList(range);
+        rr.resourceType = ResourceType.Range;
+
+        rsList = new ArrayList<>();
+        resourceAllocator.reserve(sd, rt, rr, rsList);
+
+        resource.print();
+        allocationItem.print();
+
+        sd = new ResourceEntity();
+        sd.resourceEntityId = "gblond2003me6";
+        sd.resourceEntityType = "VNF";
+        sd.resourceEntityVersion = "1";
+
+        rt = new ResourceTarget();
+        rt.resourceTargetId = "MDTWNJ21A5";
+        rt.resourceTargetType = "Site";
+
+        Range range1 = new Range();
+        range1.min = 3900;
+        range1.max = 3901;
+
+        Range range2 = new Range();
+        range2.min = 3904;
+        range2.max = 3905;
+
+        rr = new ResourceRequest();
+        rr.serviceModel = "MY-SERV-MODEL_3456";
+        rr.resourceName = "vlan-id-outer";
+        rr.endPointPosition = "VPE-Core3";
+        rr.rangeMaxOverride = -1;
+        rr.rangeMinOverride = -1;
+        rr.rangeOverrideList = new ArrayList<>();
+        rr.rangeOverrideList.add(range1);
+        rr.rangeOverrideList.add(range2);
+        rr.resourceType = ResourceType.Range;
+
+        rsList = new ArrayList<>();
+        AllocationStatus status = resourceAllocator.reserve(sd, rt, rr, rsList);
+        Assert.assertTrue(status == AllocationStatus.Success);
+
+        resource.print();
+        allocationItem.print();
+
+        sd = new ResourceEntity();
+        sd.resourceEntityId = "gblond2003me6";
+        sd.resourceEntityType = "VNF";
+        sd.resourceEntityVersion = "1";
+
+        rr = new ResourceRequest();
+        rr.endPointPosition = "VPE-Core2";
+        status = resourceAllocator.release(sd, rr);
+        Assert.assertTrue(status == AllocationStatus.Success);
+
+        resource.print();
+        allocationItem.print();
+
     }
 }

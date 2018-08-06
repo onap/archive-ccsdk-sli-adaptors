@@ -40,8 +40,8 @@ public class RangeRuleDaoImpl implements RangeRuleDao {
 
     @Override
     public List<RangeRule> getRangeRules(String serviceModel, String equipLevel) {
-        List<RangeRule> rangeRuleList =
-                jdbcTemplate.query(GET_SQL, new Object[] {serviceModel, equipLevel}, (RowMapper<RangeRule>) (rs, rowNum) -> {
+        return jdbcTemplate.query(GET_SQL, new Object[] { serviceModel, equipLevel },
+                (RowMapper<RangeRule>) (rs, rowNum) -> {
                     RangeRule rl = new RangeRule();
                     rl.id = rs.getLong("range_rule_id");
                     rl.rangeName = rs.getString("range_name");
@@ -71,14 +71,14 @@ public class RangeRuleDaoImpl implements RangeRuleDao {
                             }
                         }
                         if (nn.length > 2) {
-                            log.warn("Invalid value found in DB for range: " + rangeStr);
+                            log.warn("Invalid value found in DB for range: {}", rangeStr);
                         }
                         rl.rangeList.add(range);
                     }
 
                     return rl;
                 });
-        return rangeRuleList;
+
     }
 
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {

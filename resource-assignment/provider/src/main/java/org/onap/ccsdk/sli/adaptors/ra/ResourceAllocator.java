@@ -47,7 +47,8 @@ public class ResourceAllocator implements SvcLogicResource {
 
     private static final Logger log = LoggerFactory.getLogger(ResourceAllocator.class);
 
-    private static final String[] INPUT_PREFIX = {"ra-input.", "tmp.resource-allocator."};
+    private static final String[] INPUT_PREFIX = { "ra-input.", "tmp.resource-allocator." };
+    private static final String START_RELEASE_LC = "Starting release for: {}";
 
     private ResourceManager resourceManager;
     private EndPointAllocator endPointAllocator;
@@ -98,16 +99,16 @@ public class ResourceAllocator implements SvcLogicResource {
             String orderBy, SvcLogicContext ctx) throws SvcLogicException {
 
         String resourceEntityId = getParam(ctx,
-                new String[] {"service-instance-id", "reservation-entity-id", "resource-entity-id"}, false, null);
-        String resourceEntityType =
-                getParam(ctx, new String[] {"reservation-entity-type", "resource-entity-type"}, false, null);
-        String resourceEntityVersion =
-                getParam(ctx, new String[] {"reservation-entity-version", "resource-entity-version"}, false, "1");
+                new String[] { "service-instance-id", "reservation-entity-id", "resource-entity-id" }, false, null);
+        String resourceEntityType = getParam(ctx, new String[] { "reservation-entity-type", "resource-entity-type" },
+                false, null);
+        String resourceEntityVersion = getParam(ctx,
+                new String[] { "reservation-entity-version", "resource-entity-version" }, false, "1");
 
-        String resourceTargetId =
-                getParam(ctx, new String[] {"reservation-target-id", "resource-target-id"}, false, null);
-        String resourceTargetType =
-                getParam(ctx, new String[] {"reservation-target-type", "resource-target-type"}, false, null);
+        String resourceTargetId = getParam(ctx, new String[] { "reservation-target-id", "resource-target-id" }, false,
+                null);
+        String resourceTargetType = getParam(ctx, new String[] { "reservation-target-type", "resource-target-type" },
+                false, null);
         String resourceName = getParam(ctx, "resource-name", false, null);
 
         if (resourceEntityId != null && resourceEntityType != null) {
@@ -130,8 +131,8 @@ public class ResourceAllocator implements SvcLogicResource {
                     sd.resourceEntityId, sd.resourceEntityVersion);
             setResourceDataInResponse(rdlist, rsList);
         } else if (rt.resourceTargetId != null && rt.resourceTargetType != null && rr.resourceName != null) {
-            ResourceData rd =
-                    endPointAllocator.getResource(rt.resourceTargetType, rt.resourceTargetId, rr.resourceName);
+            ResourceData rd = endPointAllocator.getResource(rt.resourceTargetType, rt.resourceTargetId,
+                    rr.resourceName);
             setResourceDataInResponse(Collections.singletonList(rd), rsList);
         }
 
@@ -179,19 +180,24 @@ public class ResourceAllocator implements SvcLogicResource {
     @Override
     public QueryStatus release(String resource, String key, SvcLogicContext ctx) throws SvcLogicException {
         String resourceEntityId = getParam(ctx,
-                new String[] {"service-instance-id", "reservation-entity-id", "resource-entity-id"}, true, null);
-        String resourceEntityType =
-                getParam(ctx, new String[] {"reservation-entity-type", "resource-entity-type"}, true, null);
-        String resourceEntityVersion =
-                getParam(ctx, new String[] {"reservation-entity-version", "resource-entity-version"}, false, null);
+                new String[] { "service-instance-id", "reservation-entity-id", "resource-entity-id" }, true, null);
+        String resourceEntityType = getParam(ctx, new String[] { "reservation-entity-type", "resource-entity-type" },
+                true, null);
+        String resourceEntityVersion = getParam(ctx,
+                new String[] { "reservation-entity-version", "resource-entity-version" }, false, null);
+
+        String endPointPosition = getParam(ctx, "endpoint-position", false, null);
 
         ResourceEntity sd = new ResourceEntity();
         sd.resourceEntityId = resourceEntityId;
         sd.resourceEntityType = resourceEntityType;
         sd.resourceEntityVersion = resourceEntityVersion;
 
+        ResourceRequest rr = new ResourceRequest();
+        rr.endPointPosition = endPointPosition;
+
         try {
-            this.release(sd);
+            this.release(sd, rr);
         } catch (Exception e) {
             throw new SvcLogicException(e.getMessage());
         }
@@ -202,14 +208,47 @@ public class ResourceAllocator implements SvcLogicResource {
 
         if (sd.resourceEntityVersion != null) {
             String resourceSet = sd.resourceEntityType + "::" + sd.resourceEntityId + "::" + sd.resourceEntityVersion;
-            log.info("Starting release for: " + resourceSet);
+            log.info(START_RELEASE_LC, resourceSet);
 
             resourceManager.releaseResourceSet(resourceSet);
         } else {
             String resourceUnion = sd.resourceEntityType + "::" + sd.resourceEntityId;
-            log.info("Starting release for: " + resourceUnion);
+            log.info(START_RELEASE_LC, resourceUnion);
 
             resourceManager.releaseResourceUnion(resourceUnion);
+        }
+
+        return AllocationStatus.Success;
+
+    }
+
+    public AllocationStatus release(ResourceEntity sd, ResourceRequest rr) throws Exception {
+
+        if (sd != null && sd.resourceEntityVersion != null) {
+            if (rr != null && rr.endPointPosition != null && !rr.endPointPosition.isEmpty()) {
+                String resourceSet = sd.resourceEntityType + "::" + sd.resourceEntityId + "::" + rr.endPointPosition
+                        + "::" + sd.resourceEntityVersion;
+                log.info(START_RELEASE_LC, resourceSet);
+                resourceManager.releaseResourceSet(resourceSet);
+
+            } else {
+                String resourceSet = sd.resourceEntityType + "::" + sd.resourceEntityId + "::"
+                        + sd.resourceEntityVersion;
+                log.info(START_RELEASE_LC, resourceSet);
+                resourceManager.releaseResourceSet(resourceSet);
+            }
+
+        } else if (sd != null && (sd.resourceEntityVersion == null || sd.resourceEntityVersion.isEmpty())) {
+            if (rr != null && rr.endPointPosition != null && !rr.endPointPosition.isEmpty()) {
+                String resourceUnion = sd.resourceEntityType + "::" + sd.resourceEntityId + "::" + rr.endPointPosition;
+                log.info(START_RELEASE_LC, resourceUnion);
+                resourceManager.releaseResourceUnion(resourceUnion);
+
+            } else {
+                String resourceUnion = sd.resourceEntityType + "::" + sd.resourceEntityId;
+                log.info(START_RELEASE_LC, resourceUnion);
+                resourceManager.releaseResourceUnion(resourceUnion);
+            }
         }
 
         return AllocationStatus.Success;
@@ -321,20 +360,20 @@ public class ResourceAllocator implements SvcLogicResource {
     private ResourceEntity getResourceEntityData(SvcLogicContext ctx) throws SvcLogicException {
         ResourceEntity sd = new ResourceEntity();
         sd.resourceEntityId = getParam(ctx,
-                new String[] {"service-instance-id", "reservation-entity-id", "resource-entity-id"}, true, null);
-        sd.resourceEntityType =
-                getParam(ctx, new String[] {"reservation-entity-type", "resource-entity-type"}, true, null);
-        sd.resourceEntityVersion =
-                getParam(ctx, new String[] {"reservation-entity-version", "resource-entity-version"}, false, "1");
+                new String[] { "service-instance-id", "reservation-entity-id", "resource-entity-id" }, true, null);
+        sd.resourceEntityType = getParam(ctx, new String[] { "reservation-entity-type", "resource-entity-type" }, true,
+                null);
+        sd.resourceEntityVersion = getParam(ctx,
+                new String[] { "reservation-entity-version", "resource-entity-version" }, false, "1");
         sd.data = getDataParam(ctx, "reservation-entity-data", "resource-entity-data", "service-data");
         return sd;
     }
 
     private ResourceTarget getResourceTargetData(SvcLogicContext ctx) throws SvcLogicException {
         ResourceTarget sd = new ResourceTarget();
-        sd.resourceTargetId = getParam(ctx, new String[] {"reservation-target-id", "resource-target-id"}, true, null);
-        sd.resourceTargetType =
-                getParam(ctx, new String[] {"reservation-target-type", "resource-target-type"}, true, null);
+        sd.resourceTargetId = getParam(ctx, new String[] { "reservation-target-id", "resource-target-id" }, true, null);
+        sd.resourceTargetType = getParam(ctx, new String[] { "reservation-target-type", "resource-target-type" }, true,
+                null);
         sd.data = getDataParam(ctx, "reservation-target-data", "resource-target-data", "equipment-data");
         return sd;
     }
