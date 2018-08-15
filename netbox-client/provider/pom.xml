@@ -59,6 +59,15 @@
             <artifactId>httpcore-osgi</artifactId>
             <version>${apache.httpcomponents.core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.ccsdk.sli.core</groupId>
+            <artifactId>sli-common</artifactId>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -70,9 +79,9 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
+                            org.onap.ccsdk.sli.adaptors.netbox.api,
                             org.onap.ccsdk.sli.adaptors.netbox.ipam,
-                            org.onap.ccsdk.sli.adaptors.netbox.model,
-                            org.onap.ccsdk.sli.adaptors.netbox.query
+                            org.onap.ccsdk.sli.adaptors.netbox.model
                         </Export-Package>
                     </instructions>
                 </configuration>
