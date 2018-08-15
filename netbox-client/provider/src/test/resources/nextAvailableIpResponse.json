@@ -1,0 +1,13 @@
+{
+  "id": 8,
+  "address": "192.168.20.7/32",
+  "vrf": null,
+  "tenant": 1,
+  "status": 1,
+  "role": null,
+  "interface": null,
+  "description": "",
+  "nat_inside": null,
+  "created": "2018-08-15",
+  "last_updated": "2018-08-15T15:51:26.634903Z"
+}
