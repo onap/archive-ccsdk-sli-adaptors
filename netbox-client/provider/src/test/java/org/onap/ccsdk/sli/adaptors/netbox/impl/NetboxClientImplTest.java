@@ -30,6 +30,9 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 import static org.apache.http.HttpHeaders.ACCEPT;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -41,6 +44,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.UUID;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -50,11 +56,14 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.onap.ccsdk.sli.adaptors.netbox.api.IpamException;
 import org.onap.ccsdk.sli.adaptors.netbox.model.IPAddress;
 import org.onap.ccsdk.sli.adaptors.netbox.model.Prefix;
 import org.onap.ccsdk.sli.adaptors.netbox.model.Status.Values;
+import org.onap.ccsdk.sli.core.dblib.DbLibService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NetboxClientImplTest {
@@ -64,7 +73,12 @@ public class NetboxClientImplTest {
     @Rule
     public WireMockRule wm = new WireMockRule(wireMockConfig().dynamicPort());
 
+    @Mock
+    private DbLibService dbLib;
+
     private String token = "token";
+    private String serviceInstanceId = UUID.randomUUID().toString();
+    private String vfModuleId = UUID.randomUUID().toString();
 
     private NetboxHttpClient httpClient;
     private NetboxClientImpl netboxClient;
@@ -76,7 +90,7 @@ public class NetboxClientImplTest {
         httpClient = new NetboxHttpClient(baseUrl, token);
         httpClient.init();
 
-        netboxClient = new NetboxClientImpl(httpClient);
+        netboxClient = new NetboxClientImpl(httpClient, dbLib);
 
         wm.addMockServiceRequestListener(
             (request, response) -> {
@@ -93,11 +107,11 @@ public class NetboxClientImplTest {
     }
 
     @Test
-    public void nextAvailableIpInPrefixTestNoId() {
+    public void nextAvailableIpInPrefixTestNoId() throws SQLException {
         Prefix prefix = mock(Prefix.class);
         doReturn(null).when(prefix).getId();
         try {
-            netboxClient.assign(prefix);
+            netboxClient.assign(prefix, serviceInstanceId, vfModuleId);
         } catch (IpamException e) {
             Assert.assertEquals("Id must be set", e.getMessage());
             return;
@@ -106,7 +120,7 @@ public class NetboxClientImplTest {
     }
 
     @Test
-    public void nextAvailableIpInPrefixTest() throws IOException, IpamException {
+    public void nextAvailableIpInPrefixTest() throws IOException, IpamException, SQLException {
         Integer id = 3;
         Prefix prefix = mock(Prefix.class);
         doReturn(id).when(prefix).getId();
@@ -117,16 +131,17 @@ public class NetboxClientImplTest {
         String expectedUrl = "/api/ipam/prefixes/" + id + "/available-ips/";
         givenThat(post(urlEqualTo(expectedUrl)).willReturn(created().withBody(response)));
 
-        netboxClient.assign(prefix);
+        netboxClient.assign(prefix, serviceInstanceId, vfModuleId);
 
         verify(postRequestedFor(urlEqualTo(expectedUrl))
             .withHeader(ACCEPT, equalTo(APPLICATION_JSON))
             .withHeader(CONTENT_TYPE, equalTo(APPLICATION_JSON))
             .withHeader(AUTHORIZATION, equalTo("Token " + token)));
+        Mockito.verify(dbLib).writeData(anyString(), any(ArrayList.class), eq((null)));
     }
 
     @Test
-    public void deleteIpTestError500() {
+    public void deleteIpTestError500() throws SQLException {
         Integer id = 3;
         IPAddress ipAddress = mock(IPAddress.class);
         doReturn(id).when(ipAddress).getId();
@@ -134,7 +149,7 @@ public class NetboxClientImplTest {
         String expectedUrl = "/api/ipam/ip-addresses/" + id + "/";
         givenThat(delete(urlEqualTo(expectedUrl)).willReturn(serverError()));
         try {
-            netboxClient.unassign(ipAddress);
+            netboxClient.unassign(ipAddress, serviceInstanceId, vfModuleId);
         } catch (IpamException e) {
             Assert.assertEquals(IllegalStateException.class, e.getCause().getClass());
             Assert.assertTrue(e.getMessage().contains(
@@ -145,18 +160,19 @@ public class NetboxClientImplTest {
     }
 
     @Test
-    public void deleteIpTest() throws IpamException {
+    public void deleteIpTest() throws IpamException, SQLException {
         Integer id = 3;
         IPAddress ipAddress = mock(IPAddress.class);
         doReturn(id).when(ipAddress).getId();
 
         String expectedUrl = "/api/ipam/ip-addresses/" + id + "/";
         givenThat(delete(urlEqualTo(expectedUrl)).willReturn(ok()));
-        netboxClient.unassign(ipAddress);
+        netboxClient.unassign(ipAddress, serviceInstanceId, vfModuleId);
         verify(deleteRequestedFor(urlEqualTo(expectedUrl))
             .withHeader(ACCEPT, equalTo(APPLICATION_JSON))
             .withHeader(CONTENT_TYPE, equalTo(APPLICATION_JSON))
             .withHeader(AUTHORIZATION, equalTo("Token " + token)));
+        Mockito.verify(dbLib).writeData(anyString(), any(ArrayList.class), eq((null)));
     }
 
 
