@@ -49,8 +49,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.Response.Status; 
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.codec.binary.Base64;
 import org.onap.ccsdk.sli.adaptors.aai.AAIService.TransactionIdTracker;
@@ -67,6 +65,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
+import org.apache.http.impl.EnglishReasonPhraseCatalog;
 
 /**
  * The AAIClientRESTExecutor class provides CRUD API for AAI Client service.
@@ -201,6 +200,7 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(AAIService.class);
+    private static final String NOT_PROVIDED = "NOT PROVIDED";
     private final MetricLogger ml = new MetricLogger();
 
     private SSLContext CTX;
@@ -260,15 +260,13 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
             try {
             	responseMessage = con.getResponseMessage();
             } catch(Exception exc) {
-            	Status status = Response.Status.fromStatusCode(responseCode) ;
-            	if(status != null && status.getReasonPhrase() != null)
-            		responseMessage = status.getReasonPhrase();
-            	else
-            		responseMessage = "NOT PROVIDED";
+            	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            	if(responseMessage == null)
+            		responseMessage = NOT_PROVIDED;
             }
 
             // Process the response
-            LOG.debug("HttpURLConnection result:" + responseCode + " : " + responseMessage);
+            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
 
             if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
@@ -403,14 +401,12 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
             try {
             	responseMessage = con.getResponseMessage();
             } catch(Exception exc) {
-            	Status status = Response.Status.fromStatusCode(responseCode) ;
-            	if(status != null && status.getReasonPhrase() != null)
-            		responseMessage = status.getReasonPhrase();
-            	else
-            		responseMessage = "NOT PROVIDED";
+            	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            	if(responseMessage == null)
+            		responseMessage = NOT_PROVIDED;
             }
 
-            LOG.debug("HttpURLConnection result:" + responseCode + " : " + responseMessage);
+            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
 
             // Process the response
@@ -486,15 +482,13 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
             try {
             	responseMessage = conn.getResponseMessage();
             } catch(Exception exc) {
-            	Status status = Response.Status.fromStatusCode(responseCode) ;
-            	if(status != null && status.getReasonPhrase() != null)
-            		responseMessage = status.getReasonPhrase();
-            	else
-            		responseMessage = "NOT PROVIDED";
+            	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            	if(responseMessage == null)
+            		responseMessage = NOT_PROVIDED;
             }
 
             // Process the response
-            LOG.debug("HttpURLConnection result:" + responseCode + " : " + responseMessage);
+            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
 
             if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
@@ -569,13 +563,12 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
             try {
             	responseMessage = con.getResponseMessage();
             } catch(Exception exc) {
-            	Status status = Response.Status.fromStatusCode(responseCode) ;
-            	if(status != null && status.getReasonPhrase() != null)
-            		responseMessage = status.getReasonPhrase();
-            	else
-            		responseMessage = "NOT PROVIDED";
+            	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            	if(responseMessage == null)
+            		responseMessage = NOT_PROVIDED;
             }
 
+            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
             ObjectMapper mapper = AAIService.getObjectMapper();
 
@@ -644,14 +637,12 @@ public     class AAIClientRESTExecutor implements AAIExecutorInterface {
             try {
             	responseMessage = con.getResponseMessage();
             } catch(Exception exc) {
-            	Status status = Response.Status.fromStatusCode(responseCode) ;
-            	if(status != null && status.getReasonPhrase() != null)
-            		responseMessage = status.getReasonPhrase();
-            	else
-            		responseMessage = "NOT PROVIDED";
+            	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            	if(responseMessage == null)
+            		responseMessage = NOT_PROVIDED;
             }
 
-            LOG.info("HttpURLConnection result: " + responseCode + " : " + responseMessage);
+            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
 
             // Process the response
