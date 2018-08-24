@@ -21,8 +21,7 @@
       interface="org.onap.ccsdk.sli.core.dblib.DbLibService"/>
 
     <bean id="netboxProperty" class="org.onap.ccsdk.sli.adaptors.netbox.property.NetboxProperties"/>
-    <bean id="httpClient" class="org.onap.ccsdk.sli.adaptors.netbox.impl.NetboxHttpClient" init-method="init"
-      destroy-method="close">
+    <bean id="httpClient" class="org.onap.ccsdk.sli.adaptors.netbox.impl.NetboxHttpClient" destroy-method="close">
         <argument ref="netboxProperty"/>
     </bean>
 

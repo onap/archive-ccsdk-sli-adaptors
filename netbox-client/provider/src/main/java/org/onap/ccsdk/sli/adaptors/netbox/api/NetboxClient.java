@@ -15,37 +15,45 @@
  */
 package org.onap.ccsdk.sli.adaptors.netbox.api;
 
-import java.sql.SQLException;
-import org.onap.ccsdk.sli.adaptors.netbox.model.IPAddress;
-import org.onap.ccsdk.sli.adaptors.netbox.model.Prefix;
+import java.util.Map;
+import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
+import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
+import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
 
 /**
  * This client is meant to interact both with the IPAM system, and the SDNC DB, in order to provide, at any time,
  * an up to date status of the assigned resources.
  */
-public interface NetboxClient {
+public interface NetboxClient extends SvcLogicJavaPlugin {
 
     /**
      * Assign next available IP in prefix and store it in the SDNC database, table IPAM_IP_ASSIGNEMENT.
      *
-     * @param prefix The prefix from which to get next available IP.
-     * @param serviceInstanceId The service instance ID uniquely identifying the service.
-     * @param vfModuleId The VF module ID uniquely identifying the VF.
-     * @return The IPAddress
-     * @throws IpamException If something goes wrong while communicating with the IPAM system.
-     * @throws SQLException If something goes wrong while communicating with the SDNC DB.
+     * @param parameters HashMap<String,String> of parameters passed by the DG to this function
+     * <table border="1">
+     * <thead><th>parameter</th><th>Mandatory/Optional</th><th>description</th></thead>
+     * <tbody>
+     * <tr><td>service_instance_id</td><td>Mandatory</td><td>The service instance ID uniquely identifying the service.</td></tr>
+     * <tr><td>vf_module_id</td><td>Mandatory</td><td>The VF module ID uniquely identifying the VF.</td></tr>
+     * <tr><td>prefix_id</td><td>Mandatory</td><td>The prefix from which to get next available IP.</td></tr>
+     * </tbody>
+     * </table>
      */
-    IPAddress assign(Prefix prefix, String serviceInstanceId, String vfModuleId) throws IpamException, SQLException;
+    QueryStatus assignIpAddress(Map<String, String> parameters, SvcLogicContext ctx);
 
     /**
-     * Release the IP and remove the entry in the SDNC database, table IPAM_IP_ASSIGNEMENT.
+     * Release the IP and update the entry in the SDNC database, table IPAM_IP_ASSIGNEMENT.
      *
-     * @param ip The IP to release.
-     * @param serviceInstanceId The service instance ID uniquely identifying the service.
-     * @param vfModuleId The VF module ID uniquely identifying the VF.
-     * @throws IpamException If something goes wrong while communicating with the IPAM system.
-     * @throws SQLException If something goes wrong while communicating with the SDNC DB.
+     * @param parameters HashMap<String,String> of parameters passed by the DG to this function
+     * <table border="1">
+     * <thead><th>parameter</th><th>Mandatory/Optional</th><th>description</th></thead>
+     * <tbody>
+     * <tr><td>service_instance_id</td><td>Mandatory</td><td>The service instance ID uniquely identifying the service.</td></tr>
+     * <tr><td>vf_module_id</td><td>Mandatory</td><td>The VF module ID uniquely identifying the VF.</td></tr>
+     * <tr><td>ip_address_id</td><td>Mandatory</td><td>The IP to release.</td></tr>
+     * </tbody>
+     * </table>
      */
-    void unassign(IPAddress ip, String serviceInstanceId, String vfModuleId) throws IpamException, SQLException;
+    QueryStatus unassignIpAddress(Map<String, String> parameters, SvcLogicContext ctx);
 }
 
