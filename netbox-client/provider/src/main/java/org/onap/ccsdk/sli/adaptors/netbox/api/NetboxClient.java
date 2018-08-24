@@ -15,15 +15,17 @@
  */
 package org.onap.ccsdk.sli.adaptors.netbox.api;
 
-import java.sql.SQLException;
 import org.onap.ccsdk.sli.adaptors.netbox.model.IPAddress;
 import org.onap.ccsdk.sli.adaptors.netbox.model.Prefix;
+import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
+import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
+import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
 
 /**
  * This client is meant to interact both with the IPAM system, and the SDNC DB, in order to provide, at any time,
  * an up to date status of the assigned resources.
  */
-public interface NetboxClient {
+public interface NetboxClient extends SvcLogicJavaPlugin {
 
     /**
      * Assign next available IP in prefix and store it in the SDNC database, table IPAM_IP_ASSIGNEMENT.
@@ -31,11 +33,8 @@ public interface NetboxClient {
      * @param prefix The prefix from which to get next available IP.
      * @param serviceInstanceId The service instance ID uniquely identifying the service.
      * @param vfModuleId The VF module ID uniquely identifying the VF.
-     * @return The IPAddress
-     * @throws IpamException If something goes wrong while communicating with the IPAM system.
-     * @throws SQLException If something goes wrong while communicating with the SDNC DB.
      */
-    IPAddress assign(Prefix prefix, String serviceInstanceId, String vfModuleId) throws IpamException, SQLException;
+    QueryStatus assignIpAddress(Prefix prefix, String serviceInstanceId, String vfModuleId, SvcLogicContext ctx);
 
     /**
      * Release the IP and remove the entry in the SDNC database, table IPAM_IP_ASSIGNEMENT.
@@ -43,9 +42,7 @@ public interface NetboxClient {
      * @param ip The IP to release.
      * @param serviceInstanceId The service instance ID uniquely identifying the service.
      * @param vfModuleId The VF module ID uniquely identifying the VF.
-     * @throws IpamException If something goes wrong while communicating with the IPAM system.
-     * @throws SQLException If something goes wrong while communicating with the SDNC DB.
      */
-    void unassign(IPAddress ip, String serviceInstanceId, String vfModuleId) throws IpamException, SQLException;
+    QueryStatus unassignIpAddress(IPAddress ip, String serviceInstanceId, String vfModuleId, SvcLogicContext ctx);
 }
 
