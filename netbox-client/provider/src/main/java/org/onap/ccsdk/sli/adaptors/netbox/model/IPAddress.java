@@ -15,23 +15,18 @@
  */
 package org.onap.ccsdk.sli.adaptors.netbox.model;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.util.Objects;
 
 public class IPAddress extends Identifiable {
 
-    private Status.Values status;
-    private String address;
+    private static final Gson gson = new GsonBuilder().create();
 
-    public void setStatus(Status.Values status) {
-        this.status = status;
-    }
+    private String address;
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public Status.Values getStatus() {
-        return status;
     }
 
     public String getAddress() {
@@ -47,12 +42,15 @@ public class IPAddress extends Identifiable {
             return false;
         }
         IPAddress ipAddress = (IPAddress) o;
-        return Objects.equals(status, ipAddress.status) &&
-            Objects.equals(address, ipAddress.address);
+        return Objects.equals(address, ipAddress.address);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(status, address);
+        return Objects.hash(address);
+    }
+
+    public static IPAddress fromJson(final String json) {
+        return gson.fromJson(json, IPAddress.class);
     }
 }
