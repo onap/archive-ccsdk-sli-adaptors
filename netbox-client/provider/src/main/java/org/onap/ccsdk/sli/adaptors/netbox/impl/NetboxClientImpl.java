@@ -27,15 +27,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.concurrent.CompletionException;
 import org.apache.http.HttpResponse;
-import org.onap.ccsdk.sli.adaptors.netbox.api.IpamException;
+import org.jline.utils.Log;
 import org.onap.ccsdk.sli.adaptors.netbox.api.NetboxClient;
 import org.onap.ccsdk.sli.adaptors.netbox.model.IPAddress;
 import org.onap.ccsdk.sli.adaptors.netbox.model.Prefix;
 import org.onap.ccsdk.sli.adaptors.netbox.model.Status;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
-import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
+import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
+import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class NetboxClientImpl implements NetboxClient, SvcLogicJavaPlugin {
+public class NetboxClientImpl implements NetboxClient {
+
+    private static final Logger LOG = LoggerFactory.getLogger(NetboxClientImpl.class);
 
     private static final String NEXT_AVAILABLE_IP_IN_PREFIX_PATH = "/api/ipam/prefixes/%s/available-ips/";
     private static final String IP_ADDRESS_PATH = "/api/ipam/ip-addresses/%s/";
@@ -43,7 +48,7 @@ public class NetboxClientImpl implements NetboxClient, SvcLogicJavaPlugin {
     private static final String ID_MISSING_MSG = "Id must be set";
 
     private static final String ASSIGN_IP_SQL_STATEMENT =
-        "INSERT INTO IPAM_IP_ASSIGNEMENT (service_instance_id, vf_module_id, prefix_id, ip_address_id, ip_adress, ip_status) \n"
+        "INSERT INTO IPAM_IP_ASSIGNEMENT (service_instance_id, vf_module_id, prefix_id, ip_address_id, ip_address, ip_status) \n"
             + "VALUES (?, ?, ?, ?, ?, ?)";
     private static final String UNASSIGN_IP_SQL_STATEMENT =
         "DELETE FROM IPAM_IP_ASSIGNEMENT WHERE service_instance_id = ? AND vf_module_id = ? AND ip_address_id = ?";
@@ -62,10 +67,13 @@ public class NetboxClientImpl implements NetboxClient, SvcLogicJavaPlugin {
     }
 
     @Override
-    public IPAddress assign(final Prefix prefix, final String serviceInstanceId, final String vfModuleId)
-        throws IpamException, SQLException {
+    public QueryStatus assignIpAddress(final Prefix prefix, final String serviceInstanceId, final String vfModuleId,
+        final SvcLogicContext ctx) {
 
-        checkArgument(prefix.getId() != null);
+        if (prefix.getId() == null) {
+            Log.error(ID_MISSING_MSG);
+        }
+
         try {
             IPAddress ipAddress = client
                 .post(String.format(NEXT_AVAILABLE_IP_IN_PREFIX_PATH, prefix.getId()), EMPTY_STRING)
@@ -81,19 +89,25 @@ public class NetboxClientImpl implements NetboxClient, SvcLogicJavaPlugin {
                 ipAddress.getStatus().getLabel());
             dbLibService.writeData(ASSIGN_IP_SQL_STATEMENT, args, null);
 
-            return ipAddress;
+            return QueryStatus.SUCCESS;
         } catch (CompletionException e) {
             // Unwrap the CompletionException and wrap in IpamException
-            throw new IpamException("Fail to assign IP for Prefix(id= " + prefix.getId() + "). " + e.getMessage(),
-                e.getCause());
+            LOG.error("Fail to assign IP for Prefix(id= " + prefix.getId() + "). " + e.getMessage(), e.getCause());
+            return QueryStatus.FAILURE;
+        } catch (SQLException e) {
+            LOG.error("Caught SQL exception", e);
+            return QueryStatus.FAILURE;
         }
     }
 
     @Override
-    public void unassign(final IPAddress ipAddress, final String serviceInstanceId, final String vfModuleId)
-        throws IpamException, SQLException {
+    public QueryStatus unassignIpAddress(final IPAddress ipAddress, final String serviceInstanceId,
+        final String vfModuleId, final SvcLogicContext ctx) {
 
-        checkArgument(ipAddress.getId() != null);
+        if (ipAddress.getId() == null) {
+            Log.error(ID_MISSING_MSG);
+        }
+
         try {
             client.delete(String.format(IP_ADDRESS_PATH, ipAddress.getId()))
                 .thenAccept(this::checkResult)
@@ -106,11 +120,15 @@ public class NetboxClientImpl implements NetboxClient, SvcLogicJavaPlugin {
                 String.valueOf(ipAddress.getId()));
             dbLibService.writeData(UNASSIGN_IP_SQL_STATEMENT, args, null);
 
+            return QueryStatus.SUCCESS;
         } catch (CompletionException e) {
             // Unwrap the CompletionException and wrap in IpamException
-            throw new IpamException(
-                "Fail to unassign IP for IPAddress(id= " + ipAddress.getId() + "). " + e.getMessage(),
+            LOG.error("Fail to unassign IP for IPAddress(id= " + ipAddress.getId() + "). " + e.getMessage(),
                 e.getCause());
+            return QueryStatus.FAILURE;
+        } catch (SQLException e) {
+            LOG.error("Caught SQL exception", e);
+            return QueryStatus.FAILURE;
         }
     }
 
@@ -126,16 +144,10 @@ public class NetboxClientImpl implements NetboxClient, SvcLogicJavaPlugin {
         }
     }
 
-    private static void checkArgument(final boolean argument) throws IpamException {
-        if (!argument) {
-            throw new IpamException(ID_MISSING_MSG);
-        }
-    }
-
-    private void checkResult(final HttpResponse response) {
+    private String checkResult(final HttpResponse response) {
         if (response.getStatusLine().getStatusCode() - 200 >= 100) {
-            throw new IllegalStateException(
-                "Netbox request failed with status: " + NetboxHttpClient.getBodyAsString(response));
+            return "Netbox request failed with status: " + NetboxHttpClient.getBodyAsString(response);
         }
+        return null;
     }
 }
