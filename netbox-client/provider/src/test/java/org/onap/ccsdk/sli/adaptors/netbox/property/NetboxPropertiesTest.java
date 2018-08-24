@@ -56,7 +56,6 @@ public class NetboxPropertiesTest {
             "Missing configuration properties resource for Netbox: netbox.properties");
     }
 
-
     private void verifyLogEntry(String message) {
         verify(appender, times(1)).doAppend(captor.capture());
         List<ILoggingEvent> allValues = captor.getAllValues();
