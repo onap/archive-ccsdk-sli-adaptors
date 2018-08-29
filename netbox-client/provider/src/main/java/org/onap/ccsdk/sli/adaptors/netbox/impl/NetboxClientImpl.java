@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
+import javax.sql.rowset.CachedRowSet;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.onap.ccsdk.sli.adaptors.netbox.api.NetboxClient;
@@ -38,20 +39,38 @@ public class NetboxClientImpl implements NetboxClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(NetboxClientImpl.class);
 
+    // Netbox URI
+
     private static final String NEXT_AVAILABLE_IP_IN_PREFIX_PATH = "/api/ipam/prefixes/%s/available-ips/";
     private static final String IP_ADDRESS_PATH = "/api/ipam/ip-addresses/%s/";
-    private static final String EMPTY_STRING = "";
+
+    // Netbox Payload
+
+    private static final String ASSIGN_IP_ADDRESS_PAYLOAD = "{\n"
+        + "  \"custom_fields\": {\n"
+        + "    \"external-key\": \"%s\",\n"
+        + "    \"resource-name\": \"%s\"\n"
+        + "  }\n"
+        + "}";
+
+    // Service Logic Context input variables and exception
+
     private static final String SERVICE_INSTANCE_ID_PROP = "service_instance_id";
     private static final String VF_MODULE_ID_PROP = "vf_module_id";
+    private static final String EXTERNAL_KEY_PROP = "external_key";
+    private static final String SQL_EXCEPTION_MESSAGE = "Caught SQL exception";
+
+    // SQL statement
 
     private static final String ASSIGN_IP_SQL_STATEMENT =
-        "INSERT INTO IPAM_IP_ASSIGNEMENT (service_instance_id, vf_module_id, prefix_id, ip_address_id, ip_address, ip_status, ip_response_json) \n"
+        "INSERT INTO IPAM_IP_ASSIGNEMENT (service_instance_id, vf_module_id, prefix_id, ip_address_id, ip_address, ip_status, ip_response_json, external_key) \n"
             + "VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String UNASSIGN_IP_SQL_STATEMENT =
-        "UPDATE IPAM_IP_ASSIGNEMENT SET ip_status = ? WHERE service_instance_id = ? AND vf_module_id = ? AND ip_address_id = ?";
+        "UPDATE IPAM_IP_ASSIGNEMENT SET ip_status = ? WHERE service_instance_id = ? AND external_key = ?";
+    private static final String GET_IP_ADDRESS_ID_SQL_STATEMENT =
+        "SELECT ip_address_id FROM IPAM_IP_ASSIGNEMENT WHERE service_instance_id = ? AND external_key = ?";
 
     private final NetboxHttpClient client;
-
     private final DbLibService dbLibService;
 
     public NetboxClientImpl(final NetboxHttpClient client, final DbLibService dbLibService) {
@@ -64,23 +83,24 @@ public class NetboxClientImpl implements NetboxClient {
 
         try {
             SliPluginUtils
-                .checkParameters(parameters, new String[]{SERVICE_INSTANCE_ID_PROP, VF_MODULE_ID_PROP, "prefix_id"},
-                    LOG);
+                .checkParameters(parameters,
+                    new String[]{SERVICE_INSTANCE_ID_PROP, VF_MODULE_ID_PROP, "prefix_id", "resource_name",
+                        EXTERNAL_KEY_PROP}, LOG);
         } catch (SvcLogicException e) {
             return QueryStatus.FAILURE;
         }
 
         final String serviceInstanceId = parameters.get(SERVICE_INSTANCE_ID_PROP);
-        LOG.trace("assignIpAddress: service_instance_id = {}", serviceInstanceId);
         final String vfModuleId = parameters.get(VF_MODULE_ID_PROP);
-        LOG.trace("assignIpAddress: vf_module_id = {}", vfModuleId);
         final String prefixId = parameters.get("prefix_id");
-        LOG.trace("assignIpAddress: prefix_id = {}", prefixId);
+        final String resourceName = parameters.get("resource_name");
+        final String externalKey = parameters.get(EXTERNAL_KEY_PROP);
 
         HttpResponse httpResp;
         try {
             httpResp = client
-                .post(String.format(NEXT_AVAILABLE_IP_IN_PREFIX_PATH, prefixId), EMPTY_STRING);
+                .post(String.format(NEXT_AVAILABLE_IP_IN_PREFIX_PATH, prefixId),
+                    String.format(ASSIGN_IP_ADDRESS_PAYLOAD, externalKey, resourceName));
         } catch (IOException e) {
             LOG.error("Fail to assign IP for Prefix(id={}). {}", prefixId, e.getMessage(), e.getCause());
             return QueryStatus.FAILURE;
@@ -109,18 +129,20 @@ public class NetboxClientImpl implements NetboxClient {
             return QueryStatus.FAILURE;
         }
 
-        ArrayList<String> args = Lists.newArrayList(serviceInstanceId,
+        ArrayList<String> args = Lists.newArrayList(
+            serviceInstanceId,
             vfModuleId,
             String.valueOf(prefixId),
             String.valueOf(ipAddress.getId()),
             ipAddress.getAddress(),
             IPStatus.ASSIGNED.name(),
-            ipamRespJson);
+            ipamRespJson,
+            externalKey);
 
         try {
             dbLibService.writeData(ASSIGN_IP_SQL_STATEMENT, args, null);
         } catch (SQLException e) {
-            LOG.error("Caught SQL exception", e);
+            LOG.error(SQL_EXCEPTION_MESSAGE, e);
             return QueryStatus.FAILURE;
         }
 
@@ -133,18 +155,26 @@ public class NetboxClientImpl implements NetboxClient {
     public QueryStatus unassignIpAddress(final Map<String, String> parameters, final SvcLogicContext ctx) {
         try {
             SliPluginUtils
-                .checkParameters(parameters, new String[]{SERVICE_INSTANCE_ID_PROP, VF_MODULE_ID_PROP, "ip_address_id"},
+                .checkParameters(parameters, new String[]{SERVICE_INSTANCE_ID_PROP, EXTERNAL_KEY_PROP},
                     LOG);
         } catch (SvcLogicException e) {
             return QueryStatus.FAILURE;
         }
 
         final String serviceInstanceId = parameters.get(SERVICE_INSTANCE_ID_PROP);
-        LOG.trace("assignIpAddress: service_instance_id = {}", serviceInstanceId);
-        final String vfModuleId = parameters.get(VF_MODULE_ID_PROP);
-        LOG.trace("assignIpAddress: vf_module_id = {}", vfModuleId);
-        final String ipAddressId = parameters.get("ip_address_id");
-        LOG.trace("assignIpAddress: ip_address_id = {}", ipAddressId);
+        final String externalKey = parameters.get(EXTERNAL_KEY_PROP);
+
+        String ipAddressId;
+        ArrayList<String> args = Lists.newArrayList(
+            serviceInstanceId,
+            externalKey);
+        try (CachedRowSet row = dbLibService.getData(GET_IP_ADDRESS_ID_SQL_STATEMENT, args, null)) {
+            ipAddressId = row.getString("ip_address_id");
+        } catch (SQLException e) {
+            LOG.error(SQL_EXCEPTION_MESSAGE, e);
+            return QueryStatus.FAILURE;
+        }
+
         HttpResponse httpResp;
         try {
             httpResp = client.delete(String.format(IP_ADDRESS_PATH, ipAddressId));
@@ -160,15 +190,16 @@ public class NetboxClientImpl implements NetboxClient {
             return QueryStatus.FAILURE;
         }
 
-        ArrayList<String> args = Lists.newArrayList(
-            IPStatus.UNASSIGNED.name(),
+        args.clear();
+        args = Lists.newArrayList(
+            IPStatus.DELETED.name(),
             serviceInstanceId,
-            vfModuleId,
-            String.valueOf(ipAddressId));
+            externalKey);
+
         try {
             dbLibService.writeData(UNASSIGN_IP_SQL_STATEMENT, args, null);
         } catch (SQLException e) {
-            LOG.error("Caught SQL exception", e);
+            LOG.error(SQL_EXCEPTION_MESSAGE, e);
             return QueryStatus.FAILURE;
         }
 

@@ -32,7 +32,9 @@ import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -48,6 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.sql.rowset.CachedRowSet;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -89,7 +92,8 @@ public class NetboxClientImplTest {
         .of("service_instance_id", serviceInstanceId,
             "vf_module_id", vfModuleId,
             "prefix_id", "3",
-            "ip_address_id", "3"
+            "external_key", "3",
+            "resource_name", "3"
         );
 
     private NetboxHttpClient httpClient;
@@ -133,12 +137,18 @@ public class NetboxClientImplTest {
     public void unassignIpAddressTestNoParams() {
         QueryStatus status = netboxClient.unassignIpAddress(ImmutableMap.of(), svcLogicContext);
         Assert.assertEquals(QueryStatus.FAILURE, status);
-        verifyLogEntry("This method requires the parameters [service_instance_id,vf_module_id,ip_address_id], but no parameters were passed in");
+        verifyLogEntry(
+            "This method requires the parameters [service_instance_id,external_key], but no parameters were passed in.");
     }
 
     @Test
-    public void unassignIpAddressFailedRequest() throws IOException {
+    public void unassignIpAddressFailedRequest() throws IOException, SQLException {
         doThrow(new IOException("Failed request")).when(httpClientMock).delete(anyString());
+
+        CachedRowSet crs = mock(CachedRowSet.class);
+        doReturn("3").when(crs).getString(eq("ip_address_id"));
+        doReturn(crs).when(dbLib).getData(anyString(), any(ArrayList.class), eq(null));
+
         QueryStatus status = netboxClientMock
             .unassignIpAddress(params, svcLogicContext);
 
@@ -147,10 +157,14 @@ public class NetboxClientImplTest {
     }
 
     @Test
-    public void unassignIpAddressServerError() {
+    public void unassignIpAddressServerError() throws SQLException {
 
         String expectedUrl = "/api/ipam/ip-addresses/3/";
         givenThat(delete(urlEqualTo(expectedUrl)).willReturn(serverError()));
+
+        CachedRowSet crs = mock(CachedRowSet.class);
+        doReturn("3").when(crs).getString(eq("ip_address_id"));
+        doReturn(crs).when(dbLib).getData(anyString(), any(ArrayList.class), eq(null));
 
         QueryStatus status = netboxClient.unassignIpAddress(params, svcLogicContext);
 
@@ -166,6 +180,10 @@ public class NetboxClientImplTest {
         String expectedUrl = "/api/ipam/ip-addresses/3/";
         givenThat(delete(urlEqualTo(expectedUrl)).willReturn(created().withBody(response)));
 
+        CachedRowSet crs = mock(CachedRowSet.class);
+        doReturn("3").when(crs).getString(eq("ip_address_id"));
+        doReturn(crs).when(dbLib).getData(anyString(), any(ArrayList.class), eq(null));
+
         doThrow(new SQLException("Failed")).when(dbLib).writeData(anyString(), any(ArrayList.class), eq(null));
 
         QueryStatus status = netboxClient.unassignIpAddress(params, svcLogicContext);
@@ -180,6 +198,10 @@ public class NetboxClientImplTest {
 
         String expectedUrl = "/api/ipam/ip-addresses/3/";
         givenThat(delete(urlEqualTo(expectedUrl)).willReturn(created().withBody(response)));
+
+        CachedRowSet crs = mock(CachedRowSet.class);
+        doReturn("3").when(crs).getString(eq("ip_address_id"));
+        doReturn(crs).when(dbLib).getData(anyString(), any(ArrayList.class), eq(null));
 
         QueryStatus status = netboxClient.unassignIpAddress(params, svcLogicContext);
 
@@ -197,7 +219,8 @@ public class NetboxClientImplTest {
     public void nextAvailableIpInPrefixTestNoId() {
         QueryStatus status = netboxClient.assignIpAddress(ImmutableMap.of(), svcLogicContext);
         Assert.assertEquals(QueryStatus.FAILURE, status);
-        verifyLogEntry("This method requires the parameters [service_instance_id,vf_module_id,prefix_id], but no parameters were passed in");
+        verifyLogEntry(
+            "This method requires the parameters [service_instance_id,vf_module_id,prefix_id,resource_name,external_key], but no parameters were passed in.");
     }
 
     @Test
