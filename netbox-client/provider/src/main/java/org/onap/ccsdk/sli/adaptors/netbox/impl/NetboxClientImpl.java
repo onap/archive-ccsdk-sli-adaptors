@@ -64,7 +64,7 @@ public class NetboxClientImpl implements NetboxClient {
 
     private static final String ASSIGN_IP_SQL_STATEMENT =
         "INSERT INTO IPAM_IP_ASSIGNEMENT (service_instance_id, vf_module_id, prefix_id, ip_address_id, ip_address, ip_status, ip_response_json, external_key) \n"
-            + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String UNASSIGN_IP_SQL_STATEMENT =
         "UPDATE IPAM_IP_ASSIGNEMENT SET ip_status = ? WHERE service_instance_id = ? AND external_key = ?";
     private static final String GET_IP_ADDRESS_ID_SQL_STATEMENT =
@@ -169,7 +169,11 @@ public class NetboxClientImpl implements NetboxClient {
             serviceInstanceId,
             externalKey);
         try (CachedRowSet row = dbLibService.getData(GET_IP_ADDRESS_ID_SQL_STATEMENT, args, null)) {
-            ipAddressId = row.getString("ip_address_id");
+            if (row.next()) {
+                ipAddressId = row.getString("ip_address_id");
+            } else {
+                throw new SQLException("Data not found.");
+            }
         } catch (SQLException e) {
             LOG.error(SQL_EXCEPTION_MESSAGE, e);
             return QueryStatus.FAILURE;

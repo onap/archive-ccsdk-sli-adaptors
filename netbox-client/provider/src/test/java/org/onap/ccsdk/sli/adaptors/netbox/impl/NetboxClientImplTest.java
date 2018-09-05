@@ -147,6 +147,7 @@ public class NetboxClientImplTest {
 
         CachedRowSet crs = mock(CachedRowSet.class);
         doReturn("3").when(crs).getString(eq("ip_address_id"));
+        doReturn(true).when(crs).next();
         doReturn(crs).when(dbLib).getData(anyString(), any(ArrayList.class), eq(null));
 
         QueryStatus status = netboxClientMock
@@ -164,6 +165,7 @@ public class NetboxClientImplTest {
 
         CachedRowSet crs = mock(CachedRowSet.class);
         doReturn("3").when(crs).getString(eq("ip_address_id"));
+        doReturn(true).when(crs).next();
         doReturn(crs).when(dbLib).getData(anyString(), any(ArrayList.class), eq(null));
 
         QueryStatus status = netboxClient.unassignIpAddress(params, svcLogicContext);
@@ -181,6 +183,7 @@ public class NetboxClientImplTest {
         givenThat(delete(urlEqualTo(expectedUrl)).willReturn(created().withBody(response)));
 
         CachedRowSet crs = mock(CachedRowSet.class);
+        doReturn(true).when(crs).next();
         doReturn("3").when(crs).getString(eq("ip_address_id"));
         doReturn(crs).when(dbLib).getData(anyString(), any(ArrayList.class), eq(null));
 
@@ -201,6 +204,7 @@ public class NetboxClientImplTest {
 
         CachedRowSet crs = mock(CachedRowSet.class);
         doReturn("3").when(crs).getString(eq("ip_address_id"));
+        doReturn(true).when(crs).next();
         doReturn(crs).when(dbLib).getData(anyString(), any(ArrayList.class), eq(null));
 
         QueryStatus status = netboxClient.unassignIpAddress(params, svcLogicContext);
