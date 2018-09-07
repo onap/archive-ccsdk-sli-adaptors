@@ -99,7 +99,7 @@ public class TestConnectionBuilder {
     }
 
     @Test (expected = FileNotFoundException.class)
-    public void testGetModeCert()
+    public void testGetModeNoCert()
             throws KeyStoreException, CertificateException, IOException,
             KeyManagementException, NoSuchAlgorithmException, SvcLogicException {
         String user = "testUser";
@@ -108,6 +108,42 @@ public class TestConnectionBuilder {
         String certFile = "testCert";
 
         builder = new ConnectionBuilder(certFile);
+        builder.setHttpContext(user, pass);
+        AnsibleResult result = builder.get(agentUrl);
+
+        assertEquals(611, result.getStatusCode());
+        assertEquals(null, result.getStatusMessage());
+        assertEquals("UNKNOWN", result.getResults());
+    }
+
+    @Test
+    public void testGetModeCert()
+            throws KeyStoreException, CertificateException, IOException,
+            KeyManagementException, NoSuchAlgorithmException, SvcLogicException {
+        String user = "testUser";
+        String pass = "testPassword";
+        String agentUrl = "test/server.com";
+        String certFile = "src/test/resources/cert";
+
+        builder = new ConnectionBuilder(certFile);
+        builder.setHttpContext(user, pass);
+        AnsibleResult result = builder.get(agentUrl);
+
+        assertEquals(611, result.getStatusCode());
+        assertEquals(null, result.getStatusMessage());
+        assertEquals("UNKNOWN", result.getResults());
+    }
+
+    @Test (expected = IOException.class)
+    public void testGetModeStore()
+            throws KeyStoreException, CertificateException, IOException,
+            KeyManagementException, NoSuchAlgorithmException, SvcLogicException {
+        String user = "testUser";
+        String pass = "testPassword";
+        String agentUrl = "test/server.com";
+        String store = "src/test/resources/cert";
+
+        builder = new ConnectionBuilder(store, new char['t'] );
         builder.setHttpContext(user, pass);
         AnsibleResult result = builder.get(agentUrl);
 
