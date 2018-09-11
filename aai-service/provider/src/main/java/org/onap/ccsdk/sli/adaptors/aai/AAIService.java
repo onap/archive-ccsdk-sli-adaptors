@@ -77,11 +77,11 @@ import org.onap.ccsdk.sli.core.sli.MetricLogger;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
-import org.openecomp.aai.inventory.v13.GenericVnf;
-import org.openecomp.aai.inventory.v13.PhysicalLink;
-import org.openecomp.aai.inventory.v13.ResultData;
-import org.openecomp.aai.inventory.v13.SearchResults;
-import org.openecomp.aai.inventory.v13.Vserver;
+import org.onap.aai.inventory.v14.GenericVnf;
+import org.onap.aai.inventory.v14.PhysicalLink;
+import org.onap.aai.inventory.v14.ResultData;
+import org.onap.aai.inventory.v14.SearchResults;
+import org.onap.aai.inventory.v14.Vserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -582,7 +582,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
     /*
      * (non-Javadoc)
-     * @see org.openecomp.sdnct.sli.aai.AAIClient#requestVServersData(java.lang.String, java.lang.String)
+     * @see org.onap.sdnct.sli.aai.AAIClient#requestVServersData(java.lang.String, java.lang.String)
      */
     @Override
     public Vserver requestVServerData(String tenantId, String vserverId, String cloudOwner, String cloudRegionId)    throws AAIServiceException {

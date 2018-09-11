@@ -10,8 +10,8 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openecomp.aai.inventory.v13.RelationshipList;
-import org.openecomp.aai.inventory.v13.Vlans;
+import org.onap.aai.inventory.v14.RelationshipList;
+import org.onap.aai.inventory.v14.Vlans;
 
 public class SubInterfaceTest {
 

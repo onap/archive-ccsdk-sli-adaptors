@@ -51,7 +51,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.openecomp.aai.inventory.v13.*;
+import org.onap.aai.inventory.v14.*;
 
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
@@ -76,7 +76,7 @@ public class AAIServiceTest {
 
 //    @Test
     public void existsGetPserverByCallBackUrl_shouldReturnSuccess() throws MalformedURLException, Exception {
-        String key = "https://aai.api.simpledemo.openecomp.org:8443/aai/v11/cloud-infrastructure/pservers/pserver/chcil129snd";
+        String key = "https://aai.api.simpledemo.onap.org:8443/aai/v11/cloud-infrastructure/pservers/pserver/chcil129snd";
         String fileLocation = "json/pserverJson.txt";
         SvcLogicContext ctx = new SvcLogicContext();
         setConnMock();
@@ -93,7 +93,7 @@ public class AAIServiceTest {
 //    @Test
     public void existsGetPserverByCallBackUrl_throwsExceptionAndReturnsFailure()
             throws MalformedURLException, Exception {
-        String key = "https://aai.api.simpledemo.openecomp.org:8443/aai/v11/cloud-infrastructure/pservers/pserver/chcil129snd";
+        String key = "https://aai.api.simpledemo.onap.org:8443/aai/v11/cloud-infrastructure/pservers/pserver/chcil129snd";
         String fileLocation = "json/pserverJson.txt";
         SvcLogicContext ctx = new SvcLogicContext();
         setConnMock();
@@ -113,7 +113,7 @@ public class AAIServiceTest {
 //    @Test
     public void pserverDataChangeRequestData_shouldSucceed() throws Exception {
         String fileLocation = "json/pserverJson.txt";
-        String url = "https://aai.api.simpledemo.openecomp.org:8443/aai/v11/cloud-infrastructure/pservers/pserver/chcil129snd";
+        String url = "https://aai.api.simpledemo.onap.org:8443/aai/v11/cloud-infrastructure/pservers/pserver/chcil129snd";
         setConnMock();
 
         when(aaiServiceSpy.getConfiguredConnection(new URL(url), HttpMethod.GET)).thenReturn(connMock);
@@ -128,7 +128,7 @@ public class AAIServiceTest {
 //    @Test
     public void pserverDataChangeRequestData_shouldReturnNullFor404() throws Exception {
         String fileLocation = "json/pserverJson.txt";
-        String url = "https://aai.api.simpledemo.openecomp.org:8443/aai/v11/cloud-infrastructure/pservers/pserver/chcil129snd";
+        String url = "https://aai.api.simpledemo.onap.org:8443/aai/v11/cloud-infrastructure/pservers/pserver/chcil129snd";
         setConnMock();
 
         when(aaiServiceSpy.getConfiguredConnection(new URL(url), HttpMethod.GET)).thenReturn(connMock);
@@ -143,7 +143,7 @@ public class AAIServiceTest {
     @Test(expected = AAIServiceException.class)
     public void dataChangeRequestData_throwsAAIServiceException() throws Exception {
         String fileLocation = "json/pserverJson.txt";
-        String url = "https://aai.api.simpledemo.openecomp.org:8443/aai/v11/cloud-infrastructure/pservers/pserver/chcil129snd";
+        String url = "https://aai.api.simpledemo.onap.org:8443/aai/v11/cloud-infrastructure/pservers/pserver/chcil129snd";
         setConnMock();
 
         when(aaiServiceSpy.getConfiguredConnection(new URL(url), HttpMethod.GET)).thenReturn(connMock);
