@@ -45,7 +45,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.openecomp.aai.inventory.v13.GenericVnf;
+import org.onap.aai.inventory.v14.GenericVnf;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

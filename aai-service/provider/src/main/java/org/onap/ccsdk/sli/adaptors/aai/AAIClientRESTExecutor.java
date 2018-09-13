@@ -71,7 +71,7 @@ import org.apache.http.impl.EnglishReasonPhraseCatalog;
  * The AAIClientRESTExecutor class provides CRUD API for AAI Client service.
  * @author  richtabedzki
  */
-public     class AAIClientRESTExecutor implements AAIExecutorInterface {
+public class AAIClientRESTExecutor implements AAIExecutorInterface {
 
     private final String truststorePath;
     private final String truststorePassword;

@@ -9,16 +9,16 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openecomp.aai.inventory.v13.CloudRegion;
-import org.openecomp.aai.inventory.v13.GenericVnf;
-import org.openecomp.aai.inventory.v13.L3Network;
-import org.openecomp.aai.inventory.v13.LogicalLink;
-import org.openecomp.aai.inventory.v13.PInterface;
-import org.openecomp.aai.inventory.v13.Pnf;
-import org.openecomp.aai.inventory.v13.ServiceInstance;
-import org.openecomp.aai.inventory.v13.Tenant;
-import org.openecomp.aai.inventory.v13.Vnf;
-import org.openecomp.aai.inventory.v13.Vserver;
+import org.onap.aai.inventory.v14.CloudRegion;
+import org.onap.aai.inventory.v14.GenericVnf;
+import org.onap.aai.inventory.v14.L3Network;
+import org.onap.aai.inventory.v14.LogicalLink;
+import org.onap.aai.inventory.v14.PInterface;
+import org.onap.aai.inventory.v14.Pnf;
+import org.onap.aai.inventory.v14.ServiceInstance;
+import org.onap.aai.inventory.v14.Tenant;
+import org.onap.aai.inventory.v14.Vnf;
+import org.onap.aai.inventory.v14.Vserver;
 
 public class InstanceFilterTest {
 
