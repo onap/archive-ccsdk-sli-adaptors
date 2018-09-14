@@ -28,4 +28,6 @@
 
         <service ref="resourceAllocator" interface="org.onap.ccsdk.sli.adaptors.ra.ResourceAllocator"/>
 
+        <service ref="resourceLockNode" interface="org.onap.ccsdk.sli.adaptors.ra.ResourceLockNode"/>
+
 </blueprint>

@@ -122,6 +122,9 @@
         <property name="speedUtil" ref="speedUtil" />
     </bean>
 
+	<bean id="resourceLockNode" class="org.onap.ccsdk.sli.adaptors.ra.ResourceLockNode">
+		<property name="lockHelper" ref="lockHelper" />
+	</bean>
 
     <bean id="speedUtil" class="org.onap.ccsdk.sli.adaptors.util.speed.SpeedUtil" />
 
