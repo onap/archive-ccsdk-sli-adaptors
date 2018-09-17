@@ -48,7 +48,6 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
-import javax.ws.rs.HttpMethod;
 
 import org.apache.commons.codec.binary.Base64;
 import org.onap.ccsdk.sli.adaptors.aai.AAIService.TransactionIdTracker;
@@ -63,8 +62,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import org.apache.http.impl.EnglishReasonPhraseCatalog;
 
 /**
@@ -132,7 +129,6 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
 
         if(keystorePath != null && keystorePassword != null && (new File(keystorePath)).exists())
         {
-            DefaultClientConfig config = new DefaultClientConfig();
             //both jersey and HttpURLConnection can use this
             SSLContext ctx = null;
             try {
@@ -159,12 +155,6 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
                 }
 
                 ctx.init(kmf.getKeyManagers(), null, null);
-                config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties( new HostnameVerifier() {
-                        @Override
-                        public boolean verify( String s, SSLSession sslSession ) {
-                            return ignoreCertificateHostError;
-                        }
-                }, ctx));
 
                 CTX = ctx;
                 LOG.debug("SSLContext created");
@@ -261,6 +251,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             	responseMessage = con.getResponseMessage();
             } catch(Exception exc) {
             	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            } finally {
             	if(responseMessage == null)
             		responseMessage = NOT_PROVIDED;
             }
@@ -402,6 +393,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             	responseMessage = con.getResponseMessage();
             } catch(Exception exc) {
             	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            } finally {
             	if(responseMessage == null)
             		responseMessage = NOT_PROVIDED;
             }
@@ -483,6 +475,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             	responseMessage = conn.getResponseMessage();
             } catch(Exception exc) {
             	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            } finally {
             	if(responseMessage == null)
             		responseMessage = NOT_PROVIDED;
             }
@@ -564,6 +557,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             	responseMessage = con.getResponseMessage();
             } catch(Exception exc) {
             	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            } finally {
             	if(responseMessage == null)
             		responseMessage = NOT_PROVIDED;
             }
@@ -638,6 +632,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             	responseMessage = con.getResponseMessage();
             } catch(Exception exc) {
             	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            } finally {
             	if(responseMessage == null)
             		responseMessage = NOT_PROVIDED;
             }
