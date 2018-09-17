@@ -102,6 +102,8 @@ public abstract class AAIDeclarations implements AAIClient {
 
     public static final String TARGET_URI         = "org.onap.ccsdk.sli.adaptors.aai.uri";
 
+    public static final String AAI_VERSION          = "org.onap.ccsdk.sli.adaptors.aai.version";
+
     // Availability zones query
     public static final String QUERY_PATH         = "org.onap.ccsdk.sli.adaptors.aai.path.query";
 
@@ -137,6 +139,8 @@ public abstract class AAIDeclarations implements AAIClient {
     // node query (1602)
     public static final String QUERY_NODES_PATH          = "org.onap.ccsdk.sli.adaptors.aai.query.nodes";
 
+    private static final String VERSION_PATTERN = "/v$/";
+	
 
     protected abstract Logger getLogger();
     public abstract AAIExecutorInterface getExecutor();
@@ -1264,7 +1268,7 @@ public abstract class AAIDeclarations implements AAIClient {
                     getLogger().debug("About to process related link of {}", relatedLink);
                     if(relatedLink != null) {
                         if(relatedLink.contains("v$"))
-                            relatedLink = relatedLink.replace("v$", "v14");
+                            relatedLink = relatedLink.replace(VERSION_PATTERN, "/v14/");
                         relationship.setRelatedLink(relatedLink);
                     } else {
                         Map<String, String> relParams = new HashMap<>();
@@ -1553,7 +1557,7 @@ public abstract class AAIDeclarations implements AAIClient {
 
                 if (relatedLink != null) {
                     if(relatedLink.contains("v$"))
-                        relatedLink = relatedLink.replace("v$", "v14");
+                        relatedLink = relatedLink.replace(VERSION_PATTERN,  AAIRequest.getSupportedAAIVersion());
                     relationship.setRelatedLink(relatedLink);
                 } else {
                     Map<String, String> relParams = new HashMap<>();
@@ -1753,7 +1757,7 @@ public abstract class AAIDeclarations implements AAIClient {
 
     private QueryStatus processDeleteRelationshipList(String resource, String key, SvcLogicContext ctx, HashMap<String, String> nameValues) {
         try {
-            AAIRequest request = AAIRequest.createRequest(resource, nameValues);
+            AAIRequest request = AAIRequest.createRequest(resource.split(":")[0], nameValues);
             if(request == null) {
                 return QueryStatus.FAILURE;
             }

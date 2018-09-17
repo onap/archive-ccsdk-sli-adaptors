@@ -32,6 +32,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -173,7 +174,7 @@ public abstract class AAIRequest {
             }
 
             InputStream in = url.openStream();
-            Reader reader = new InputStreamReader(in, "UTF-8");
+            Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
 
             Properties properties = new Properties();
             properties.load(reader);
@@ -467,5 +468,9 @@ public abstract class AAIRequest {
 
     public String getTargetUri() {
         return targetUri;
+    }
+    
+    public static final String getSupportedAAIVersion() {
+    	return configProperties.getProperty(AAIDeclarations.AAI_VERSION, "/v14/");
     }
 }

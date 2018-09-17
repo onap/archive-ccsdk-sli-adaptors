@@ -132,7 +132,6 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
 
         if(keystorePath != null && keystorePassword != null && (new File(keystorePath)).exists())
         {
-            DefaultClientConfig config = new DefaultClientConfig();
             //both jersey and HttpURLConnection can use this
             SSLContext ctx = null;
             try {
@@ -159,12 +158,6 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
                 }
 
                 ctx.init(kmf.getKeyManagers(), null, null);
-                config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties( new HostnameVerifier() {
-                        @Override
-                        public boolean verify( String s, SSLSession sslSession ) {
-                            return ignoreCertificateHostError;
-                        }
-                }, ctx));
 
                 CTX = ctx;
                 LOG.debug("SSLContext created");
@@ -261,6 +254,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             	responseMessage = con.getResponseMessage();
             } catch(Exception exc) {
             	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            } finally {
             	if(responseMessage == null)
             		responseMessage = NOT_PROVIDED;
             }
@@ -402,6 +396,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             	responseMessage = con.getResponseMessage();
             } catch(Exception exc) {
             	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            } finally {
             	if(responseMessage == null)
             		responseMessage = NOT_PROVIDED;
             }
@@ -483,6 +478,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             	responseMessage = conn.getResponseMessage();
             } catch(Exception exc) {
             	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            } finally {
             	if(responseMessage == null)
             		responseMessage = NOT_PROVIDED;
             }
@@ -564,6 +560,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             	responseMessage = con.getResponseMessage();
             } catch(Exception exc) {
             	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            } finally {
             	if(responseMessage == null)
             		responseMessage = NOT_PROVIDED;
             }
@@ -638,6 +635,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             	responseMessage = con.getResponseMessage();
             } catch(Exception exc) {
             	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
+            } finally {
             	if(responseMessage == null)
             		responseMessage = NOT_PROVIDED;
             }
