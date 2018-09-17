@@ -63,8 +63,8 @@ public class NetboxClientImpl implements NetboxClient {
     // SQL statement
 
     private static final String ASSIGN_IP_SQL_STATEMENT =
-        "INSERT INTO IPAM_IP_ASSIGNEMENT (service_instance_id, vf_module_id, prefix_id, ip_address_id, ip_address, ip_status, ip_response_json, external_key) \n"
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO IPAM_IP_ASSIGNEMENT (service_instance_id, vf_module_id, prefix_id, ip_address_id, ip_address, ip_status, ip_response_json, external_key, ip_address_type) \n"
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String UNASSIGN_IP_SQL_STATEMENT =
         "UPDATE IPAM_IP_ASSIGNEMENT SET ip_status = ? WHERE service_instance_id = ? AND external_key = ?";
     private static final String GET_IP_ADDRESS_ID_SQL_STATEMENT =
@@ -137,7 +137,8 @@ public class NetboxClientImpl implements NetboxClient {
             ipAddress.getAddress(),
             IPStatus.ASSIGNED.name(),
             ipamRespJson,
-            externalKey);
+            externalKey,
+            resourceName);
 
         try {
             dbLibService.writeData(ASSIGN_IP_SQL_STATEMENT, args, null);
