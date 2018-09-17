@@ -48,6 +48,8 @@ import org.slf4j.LoggerFactory;
 
 public class AAIServiceUtils {
 
+    private static final String VERSION_PATTERN = "/v$/";
+
     private static final Logger LOG = LoggerFactory.getLogger(AAIService.class);
 
     private AAIServiceUtils() {
@@ -191,7 +193,13 @@ public class AAIServiceUtils {
         if (term.startsWith("$") && (ctx != null)) {
             // Resolve any index variables.
 
-            return ("'" + resolveCtxVariable(term.substring(1), ctx) + "'");
+            term = ("'" + resolveCtxVariable(term.substring(1), ctx) + "'");
+            if (term.contains(VERSION_PATTERN) && (ctx != null)) {
+                return term.replace(VERSION_PATTERN, AAIRequest.getSupportedAAIVersion());
+            }
+            return term;
+        } else if (term.contains(VERSION_PATTERN) && (ctx != null)) {
+            return term.replace(VERSION_PATTERN, AAIRequest.getSupportedAAIVersion());
         } else if (term.startsWith("'") || term.startsWith("\"")) {
             return (term);
         } else {
