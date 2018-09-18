@@ -61,12 +61,13 @@ public class ResourceLoadJdbcDaoImpl implements ResourceLoadJdbcDao {
 
             @Override
             public PreparedStatement createPreparedStatement(Connection dbc) throws SQLException {
-                PreparedStatement ps = dbc.prepareStatement(INSERT_SQL, new String[] { "resource_load_id" });
-                ps.setLong(1, rl.resourceId);
-                ps.setString(2, rl.applicationId);
-                ps.setTimestamp(3, new Timestamp(rl.loadTime.getTime()));
-                ps.setTimestamp(4, new Timestamp(rl.expirationTime.getTime()));
-                return ps;
+                try(PreparedStatement ps = dbc.prepareStatement(INSERT_SQL, new String[] { "resource_load_id" })) {
+                    ps.setLong(1, rl.resourceId);
+                    ps.setString(2, rl.applicationId);
+                    ps.setTimestamp(3, new Timestamp(rl.loadTime.getTime()));
+                    ps.setTimestamp(4, new Timestamp(rl.expirationTime.getTime()));
+                    return ps;
+                }
             }
         };
         KeyHolder keyHolder = new GeneratedKeyHolder();
