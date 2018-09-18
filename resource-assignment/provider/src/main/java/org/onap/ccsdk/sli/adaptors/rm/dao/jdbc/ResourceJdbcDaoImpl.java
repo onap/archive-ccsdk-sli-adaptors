@@ -93,15 +93,16 @@ public class ResourceJdbcDaoImpl implements ResourceJdbcDao {
 
             @Override
             public PreparedStatement createPreparedStatement(Connection dbc) throws SQLException {
-                PreparedStatement ps = dbc.prepareStatement(INSERT_SQL, new String[] { "resource_id" });
-                ps.setString(1, r.assetId);
-                ps.setString(2, r.name);
-                ps.setString(3, r.type);
-                ps.setLong(4, r.ltUsed);
-                ps.setString(5, r.llLabel);
-                ps.setInt(6, r.llReferenceCount);
-                ps.setString(7, r.rrUsed);
-                return ps;
+                try(PreparedStatement ps = dbc.prepareStatement(INSERT_SQL, new String[] { "resource_id" })) {
+                    ps.setString(1, r.assetId);
+                    ps.setString(2, r.name);
+                    ps.setString(3, r.type);
+                    ps.setLong(4, r.ltUsed);
+                    ps.setString(5, r.llLabel);
+                    ps.setInt(6, r.llReferenceCount);
+                    ps.setString(7, r.rrUsed);
+                    return ps;
+                }
             }
         };
         KeyHolder keyHolder = new GeneratedKeyHolder();
