@@ -74,22 +74,20 @@ public class DataSourceWrap implements DataSource {
 
     @Override
     public Connection getConnection() throws SQLException {
-        Connection c = dataSource.getConnection();
-
-        log.debug("getConnection: " + c.getClass().getName());
-
-        c.setAutoCommit(true);
-        return c;
+        try(Connection c = dataSource.getConnection()) {
+            log.debug("getConnection: " + c.getClass().getName());
+            c.setAutoCommit(true);
+            return c;
+        }
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        Connection c = dataSource.getConnection(username, password);
-
-        log.debug("getConnection: " + c.getClass().getName());
-
-        c.setAutoCommit(true);
-        return c;
+        try(Connection c = dataSource.getConnection(username, password)) {
+            log.debug("getConnection: " + c.getClass().getName());
+            c.setAutoCommit(true);
+            return c;
+        }
     }
 
     public void setDataSource(DataSource dataSource) {
