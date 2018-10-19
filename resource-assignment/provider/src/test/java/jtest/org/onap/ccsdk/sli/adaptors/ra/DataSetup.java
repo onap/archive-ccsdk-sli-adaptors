@@ -66,7 +66,7 @@ public class DataSetup {
     }
 
     public void setupRangeItem(String resourceName, String assetId, String resourceSetId, String resourceUnionId,
-            String used) {
+            String resourceShareGroup, String used) {
         initTables();
 
         Long rid = resource.getId("asset_id = '" + assetId + "' AND resource_name = '" + resourceName + "'");
@@ -74,7 +74,12 @@ public class DataSetup {
             resource.add(assetId, resourceName, "Range", null, used);
             rid = resource.getLastId();
         }
-        allocationItem.add(rid, "SDNC", resourceSetId, resourceUnionId, null, null, used, new Date());
+        allocationItem.add(rid, "SDNC", resourceSetId, resourceUnionId, resourceShareGroup, null, used, new Date());
+    }
+
+    public void setupRangeItem(String resourceName, String assetId, String resourceSetId, String resourceUnionId,
+            String used) {
+        setupRangeItem(resourceName, assetId, resourceSetId, resourceUnionId, null, used);
     }
 
     public boolean checkRangeItem(String resourceName, String assetId, String resourceSetId, String used) {

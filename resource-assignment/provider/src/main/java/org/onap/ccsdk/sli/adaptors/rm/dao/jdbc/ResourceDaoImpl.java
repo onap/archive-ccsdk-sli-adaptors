@@ -66,6 +66,32 @@ public class ResourceDaoImpl implements ResourceDao {
     }
 
     @Override
+    public org.onap.ccsdk.sli.adaptors.rm.data.Resource query(String assetId, String resourceName,
+            String resourceUnionFilter, String resourceShareGroupFilter) {
+        Resource rEntity = resourceJdbcDao.getResource(assetId, resourceName);
+        org.onap.ccsdk.sli.adaptors.rm.data.Resource r = createResource(rEntity);
+
+        if (r != null) {
+            List<AllocationItem> aiEntityList = allocationItemJdbcDao.queryAllocationItems(rEntity.id,
+                    resourceUnionFilter, resourceShareGroupFilter);
+            r.allocationItems = new ArrayList<>();
+            for (AllocationItem aiEntity : aiEntityList) {
+                org.onap.ccsdk.sli.adaptors.rm.data.AllocationItem ai = createAllocationItem(r, aiEntity);
+                r.allocationItems.add(ai);
+            }
+
+            List<ResourceLoad> rlEntityList = resourceLoadJdbcDao.getResourceLoads(rEntity.id);
+            r.resourceLoadList = new ArrayList<>();
+            for (ResourceLoad rlEntity : rlEntityList) {
+                org.onap.ccsdk.sli.adaptors.rm.data.ResourceLoad rl = createResourceLoad(r, rlEntity);
+                r.resourceLoadList.add(rl);
+            }
+        }
+
+        return r;
+    }
+
+    @Override
     public void saveResource(org.onap.ccsdk.sli.adaptors.rm.data.Resource resource) {
         if (resource == null) {
             return;
@@ -201,8 +227,7 @@ public class ResourceDaoImpl implements ResourceDao {
     @Override
     public List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> getResourceSet(String resourceSetId) {
         List<Resource> rEntityList = resourceJdbcDao.getResourceSet(resourceSetId);
-        List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> rlist =
-                new ArrayList<>();
+        List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> rlist = new ArrayList<>();
         for (Resource rEntity : rEntityList) {
             org.onap.ccsdk.sli.adaptors.rm.data.Resource r = createResource(rEntity);
             rlist.add(r);
@@ -227,8 +252,7 @@ public class ResourceDaoImpl implements ResourceDao {
     @Override
     public List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> getResourceUnion(String resourceUnionId) {
         List<Resource> rEntityList = resourceJdbcDao.getResourceUnion(resourceUnionId);
-        List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> rlist =
-                new ArrayList<>();
+        List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> rlist = new ArrayList<>();
         for (Resource rEntity : rEntityList) {
             org.onap.ccsdk.sli.adaptors.rm.data.Resource r = createResource(rEntity);
             rlist.add(r);

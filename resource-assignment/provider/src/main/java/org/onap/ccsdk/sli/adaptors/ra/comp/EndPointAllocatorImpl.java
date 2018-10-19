@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 public class EndPointAllocatorImpl implements EndPointAllocator {
 
     private static final Logger log = LoggerFactory.getLogger(EndPointAllocatorImpl.class);
-    
+
     private ResourceManager resourceManager;
 
     private Map<String, List<AllocationRule>> allocationRuleMap;
@@ -204,10 +204,27 @@ public class EndPointAllocatorImpl implements EndPointAllocator {
     }
 
     @Override
-    public ResourceData getResource(String resourceTargetType, String resourceTargetId, String resourceName) {
-        ResourceData rd = new ResourceData();;
+    public ResourceData getResource(String resourceTargetType, String resourceTargetId, String resourceName,
+            String resourceEntityTypeFilter, String resourceEntityIdFilter, String resourceShareGroupFilter) {
+        ResourceData rd = new ResourceData();
         String assetId = resourceTargetType + "::" + resourceTargetId;
-        Resource r = resourceManager.getResource(resourceName, assetId);
+
+        String resourceUnionFilter = null;
+        if (resourceEntityTypeFilter != null && resourceEntityIdFilter != null) {
+            resourceUnionFilter = resourceEntityTypeFilter + "::" + resourceEntityIdFilter;
+        } else if (resourceEntityTypeFilter != null) {
+            resourceUnionFilter = resourceEntityTypeFilter;
+        } else if (resourceEntityIdFilter != null) {
+            resourceUnionFilter = resourceEntityIdFilter;
+        }
+
+        Resource r = null;
+        if (resourceUnionFilter != null || resourceShareGroupFilter != null) {
+            r = resourceManager.queryResource(resourceName, assetId, resourceUnionFilter, resourceShareGroupFilter);
+        } else {
+            r = resourceManager.getResource(resourceName, assetId);
+        }
+
         if (r != null) {
             log.info("ResourceName:" + r.resourceKey.resourceName + " assetId:" + r.resourceKey.assetId);
 

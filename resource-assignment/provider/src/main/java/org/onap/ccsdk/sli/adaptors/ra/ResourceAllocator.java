@@ -110,13 +110,17 @@ public class ResourceAllocator implements SvcLogicResource {
         String resourceTargetType = getParam(ctx, new String[] { "reservation-target-type", "resource-target-type" },
                 false, null);
         String resourceName = getParam(ctx, "resource-name", false, null);
+        String resourceEntityTypeFilter = getParam(ctx, "resource-entity-type-filter", false, null);
+        String resourceEntityIdFilter = getParam(ctx, "resource-entity-id-filter", false, null);
+        String resourceShareGroupFilter = getParam(ctx, "resource-share-group-filter", false, null);
 
         if (resourceEntityId != null && resourceEntityType != null) {
             List<ResourceData> rdlist = endPointAllocator.getResourcesForEntity(resourceEntityType, resourceEntityId,
                     resourceEntityVersion);
             setResourceDataInContext(ctx, prefix, rdlist);
         } else if (resourceTargetId != null && resourceTargetType != null && resourceName != null) {
-            ResourceData rd = endPointAllocator.getResource(resourceTargetType, resourceTargetId, resourceName);
+            ResourceData rd = endPointAllocator.getResource(resourceTargetType, resourceTargetId, resourceName,
+                    resourceEntityTypeFilter, resourceEntityIdFilter, resourceShareGroupFilter);
             setResourceDataInContext(ctx, prefix, Collections.singletonList(rd));
         }
 
@@ -126,13 +130,14 @@ public class ResourceAllocator implements SvcLogicResource {
     public AllocationStatus query(ResourceEntity sd, ResourceTarget rt, ResourceRequest rr,
             List<ResourceResponse> rsList) throws Exception {
 
-        if (sd.resourceEntityId != null && sd.resourceEntityType != null) {
+        if (sd != null && sd.resourceEntityId != null && sd.resourceEntityType != null) {
             List<ResourceData> rdlist = endPointAllocator.getResourcesForEntity(sd.resourceEntityType,
                     sd.resourceEntityId, sd.resourceEntityVersion);
             setResourceDataInResponse(rdlist, rsList);
-        } else if (rt.resourceTargetId != null && rt.resourceTargetType != null && rr.resourceName != null) {
-            ResourceData rd = endPointAllocator.getResource(rt.resourceTargetType, rt.resourceTargetId,
-                    rr.resourceName);
+        } else if (rt != null && rt.resourceTargetId != null && rt.resourceTargetType != null && rr != null
+                && rr.resourceName != null) {
+            ResourceData rd = endPointAllocator.getResource(rt.resourceTargetType, rt.resourceTargetId, rr.resourceName,
+                    rr.resourceEntityTypeFilter, rr.resourceEntityIdFilter, rr.resourceShareGroupFilter);
             setResourceDataInResponse(Collections.singletonList(rd), rsList);
         }
 
@@ -232,8 +237,8 @@ public class ResourceAllocator implements SvcLogicResource {
                 resourceManager.releaseResourceSet(resourceSet);
 
             } else {
-                String resourceSet = sd.resourceEntityType + "::" + sd.resourceEntityId + "::"
-                        + sd.resourceEntityVersion;
+                String resourceSet =
+                        sd.resourceEntityType + "::" + sd.resourceEntityId + "::" + sd.resourceEntityVersion;
                 log.info(START_RELEASE_LC, resourceSet);
                 resourceManager.releaseResourceSet(resourceSet);
             }

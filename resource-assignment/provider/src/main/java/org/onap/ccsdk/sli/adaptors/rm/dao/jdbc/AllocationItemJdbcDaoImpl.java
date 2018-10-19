@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,14 +21,12 @@
 
 package org.onap.ccsdk.sli.adaptors.rm.dao.jdbc;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -59,22 +57,18 @@ public class AllocationItemJdbcDaoImpl implements AllocationItemJdbcDao {
 
     @Override
     public void add(final AllocationItem ai) {
-        PreparedStatementCreator psc = new PreparedStatementCreator() {
-
-            @Override
-            public PreparedStatement createPreparedStatement(Connection dbc) throws SQLException {
-                PreparedStatement ps = dbc.prepareStatement(INSERT_SQL, new String[] { "allocation_item_id" });
-                ps.setLong(1, ai.resourceId);
-                ps.setString(2, ai.applicationId);
-                ps.setString(3, ai.resourceSetId);
-                ps.setString(4, ai.resourceUnionId);
-                ps.setString(5, ai.resourceShareGroupList);
-                ps.setLong(6, ai.ltUsed);
-                ps.setString(7, ai.llLabel);
-                ps.setString(8, ai.rrUsed);
-                ps.setTimestamp(9, new Timestamp(ai.allocationTime.getTime()));
-                return ps;
-            }
+        PreparedStatementCreator psc = dbc -> {
+            PreparedStatement ps = dbc.prepareStatement(INSERT_SQL, new String[] { "allocation_item_id" });
+            ps.setLong(1, ai.resourceId);
+            ps.setString(2, ai.applicationId);
+            ps.setString(3, ai.resourceSetId);
+            ps.setString(4, ai.resourceUnionId);
+            ps.setString(5, ai.resourceShareGroupList);
+            ps.setLong(6, ai.ltUsed);
+            ps.setString(7, ai.llLabel);
+            ps.setString(8, ai.rrUsed);
+            ps.setTimestamp(9, new Timestamp(ai.allocationTime.getTime()));
+            return ps;
         };
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(psc, keyHolder);
@@ -95,10 +89,35 @@ public class AllocationItemJdbcDaoImpl implements AllocationItemJdbcDao {
 
     @Override
     public List<AllocationItem> getAllocationItems(long resourceId) {
-        if (resourceId <= 0)
+        if (resourceId <= 0) {
             return Collections.emptyList();
+        }
 
         return jdbcTemplate.query(GET_SQL, new Object[] { resourceId }, allocationItemRowMapper);
+    }
+
+    @Override
+    public List<AllocationItem> queryAllocationItems(long resourceId, String resourceUnionFilter,
+            String resourceShareGroupFilter) {
+        if (resourceId <= 0) {
+            return Collections.emptyList();
+        }
+
+        String sql = GET_SQL;
+
+        if (resourceUnionFilter != null) {
+            sql += " AND resource_union_id LIKE '" + resourceUnionFilter + "'";
+        }
+
+        if (resourceShareGroupFilter != null) {
+            if (resourceShareGroupFilter.equalsIgnoreCase("null")) {
+                sql += " AND resource_share_group_list IS NULL";
+            } else {
+                sql += " AND resource_share_group_list LIKE '" + resourceShareGroupFilter + "'";
+            }
+        }
+
+        return jdbcTemplate.query(sql, new Object[] { resourceId }, allocationItemRowMapper);
     }
 
     private static class AllocationItemRowMapper implements RowMapper<AllocationItem> {
