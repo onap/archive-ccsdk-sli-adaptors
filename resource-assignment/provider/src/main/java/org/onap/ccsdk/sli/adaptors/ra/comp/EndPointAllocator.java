@@ -31,5 +31,6 @@ public interface EndPointAllocator {
     List<ResourceData> getResourcesForEntity(String resourceEntityType, String resourceEntityId,
             String resourceEntityVersion);
 
-    ResourceData getResource(String resourceTargetType, String resourceTargetId, String resourceName);
+    ResourceData getResource(String resourceTargetType, String resourceTargetId, String resourceName,
+            String resourceEntityTypeFilter, String resourceEntityIdFilter, String resourceShareGroupFilter);
 }
