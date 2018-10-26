@@ -79,22 +79,22 @@ public class ConnectionBuilder {
             KeyManagementException, NoSuchAlgorithmException, SvcLogicException {
 
         /* Point to the certificate */
-        FileInputStream fs = new FileInputStream(certFile);
+        try(FileInputStream fs = new FileInputStream(certFile)){
+	        /* Generate a certificate from the X509 */
+	        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+	        X509Certificate cert = (X509Certificate) cf.generateCertificate(fs);
 
-        /* Generate a certificate from the X509 */
-        CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        X509Certificate cert = (X509Certificate) cf.generateCertificate(fs);
+	        /* Create a keystore object and load the certificate there */
+	        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+	        keystore.load(null, null);
+	        keystore.setCertificateEntry("cacert", cert);
 
-        /* Create a keystore object and load the certificate there */
-        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keystore.load(null, null);
-        keystore.setCertificateEntry("cacert", cert);
+	        SSLContext sslcontext = SSLContexts.custom().loadTrustMaterial(keystore).build();
+	        SSLConnectionSocketFactory factory = new SSLConnectionSocketFactory(sslcontext,
+	                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
 
-        SSLContext sslcontext = SSLContexts.custom().loadTrustMaterial(keystore).build();
-        SSLConnectionSocketFactory factory = new SSLConnectionSocketFactory(sslcontext,
-                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-
-        httpClient = HttpClients.custom().setSSLSocketFactory(factory).build();
+	        httpClient = HttpClients.custom().setSSLSocketFactory(factory).build();
+        }
     }
 
     /**

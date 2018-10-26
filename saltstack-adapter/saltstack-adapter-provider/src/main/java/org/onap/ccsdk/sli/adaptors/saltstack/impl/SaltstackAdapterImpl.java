@@ -260,16 +260,15 @@ public class SaltstackAdapterImpl implements SaltstackAdapter {
                 doFailure(ctx, SaltstackResultCodes.IO_EXCEPTION.getValue(), "Input file " +
                         "is not of type .sls");
             }
-            InputStream in = new FileInputStream(file);
-            byte[] data = new byte[(int) file.length()];
-            in.read(data);
-            String str = new String(data, "UTF-8");
-            in.close();
-            String slsWithoutExtn = stripExtension(slsFile);
-            constructedCommand.append(parseFileParam(fileParams)).append("echo -e \"").append(str).append("\" > /srv/salt/").
+            try(InputStream in = new FileInputStream(file)){
+                byte[] data = new byte[(int) file.length()];
+                in.read(data);
+                String str = new String(data, "UTF-8");
+                String slsWithoutExtn = stripExtension(slsFile);
+                constructedCommand.append(parseFileParam(fileParams)).append("echo -e \"").append(str).append("\" > /srv/salt/").
                     append(slsFile).append("; ").append(COMMAND_CHANGE_DEFAULT_DIR).append(" salt '").
                     append(applyTo).append("' state.apply ").append(slsWithoutExtn).append(" ").append(parseEnvParam(envParams)).append(COMMAND_IN_JSON_OUT);
-
+            }
             logger.info("Command to be executed on server : " + constructedCommand.toString());
 
         } catch (FileNotFoundException e) {
