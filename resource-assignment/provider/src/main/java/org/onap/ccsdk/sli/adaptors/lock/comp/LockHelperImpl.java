@@ -41,7 +41,12 @@ public class LockHelperImpl implements LockHelper {
 
     @Override
     public void lock(String resourceName, String lockRequester, int lockTimeout /* Seconds */) {
-        lock(Collections.singleton(resourceName), lockRequester, lockTimeout);
+        lock(resourceName, lockRequester, lockTimeout, lockWait, retryCount);
+    }
+
+    @Override
+    public void lock(String resourceName, String lockRequester, int lockTimeout /* Seconds */, int lockWait /* Seconds */, int retryCount) {
+        lock(Collections.singleton(resourceName), lockRequester, lockTimeout, lockWait, retryCount);
     }
 
     @Override
@@ -51,13 +56,18 @@ public class LockHelperImpl implements LockHelper {
 
     @Override
     public void lock(Collection<String> resourceNameList, String lockRequester, int lockTimeout /* Seconds */) {
+        lock(resourceNameList, lockRequester, lockTimeout, lockWait, retryCount);
+    }
+
+    @Override
+    public void lock(Collection<String> resourceNameList, String lockRequester, int lockTimeout /* Seconds */, int lockWait /* Seconds */, int retryCount) {
         for (int i = 0; true; i++) {
             try {
                 tryLock(resourceNameList, lockRequester, lockTimeout);
                 log.info("Resources locked: " + resourceNameList);
                 return;
             } catch (ResourceLockedException e) {
-                if (i > retryCount) {
+                if (i >= retryCount) {
                     throw e;
                 }
                 try {

@@ -45,8 +45,12 @@ public class ResourceLockNode implements SvcLogicJavaPlugin {
         String lockRequester = getParam(paramMap, "lock-requester", false, generateLockRequester());
         String lockTimeoutStr = getParam(paramMap, "lock-timeout", false, "600"); // Default lock timeout: 10 min
         int lockTimeout = Integer.parseInt(lockTimeoutStr);
+        String lockWaitStr = getParam(paramMap, "lock-wait", false, "5"); // Time waiting before next retry. Default: 5 sec
+        int lockWait = Integer.parseInt(lockWaitStr);
+        String lockRetryCountStr = getParam(paramMap, "lock-retry-count", false, "10"); // Default: 10 retries
+        int lockRetryCount = Integer.parseInt(lockRetryCountStr);
 
-        lockHelper.lock(resourceName, lockRequester, lockTimeout);
+        lockHelper.lock(resourceName, lockRequester, lockTimeout, lockWait, lockRetryCount);
     }
 
     public void unlockResource(Map<String, String> paramMap, SvcLogicContext ctx) throws SvcLogicException {
@@ -56,6 +60,10 @@ public class ResourceLockNode implements SvcLogicJavaPlugin {
     }
 
     public void lockResource(String resourceName, String lockRequester, int lockTimeout /* sec */) {
+        lockResource(resourceName, lockRequester, lockTimeout, 5, 10);
+    }
+
+    public void lockResource(String resourceName, String lockRequester, int lockTimeout /* sec */, int lockWait /* Seconds */, int retryCount) {
         if (lockRequester == null) {
             lockRequester = generateLockRequester();
         }
@@ -63,7 +71,7 @@ public class ResourceLockNode implements SvcLogicJavaPlugin {
             lockTimeout = 600;
         }
 
-        lockHelper.lock(resourceName, lockRequester, lockTimeout);
+        lockHelper.lock(resourceName, lockRequester, lockTimeout, lockWait, retryCount);
     }
 
     public void unlockResource(String resourceName) {
