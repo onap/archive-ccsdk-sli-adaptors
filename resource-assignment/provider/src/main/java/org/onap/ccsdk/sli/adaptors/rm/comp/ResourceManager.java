@@ -38,5 +38,8 @@ public interface ResourceManager {
 
     void releaseResourceUnion(String resourceUnionId);
 
-    Resource queryResource(String resourceName, String assetId, String resourceUnionFilter, String resourceShareGroupFilter);
+    Resource queryResource(String resourceName, String assetId, String resourceUnionFilter,
+            String resourceShareGroupFilter);
+
+    List<Resource> queryResources(String resourceName, String assetIdFilter);
 }

@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,13 +21,11 @@
 
 package org.onap.ccsdk.sli.adaptors.rm.dao.jdbc;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -42,6 +40,9 @@ public class ResourceJdbcDaoImpl implements ResourceJdbcDao {
     private static final Logger log = LoggerFactory.getLogger(ResourceJdbcDaoImpl.class);
 
     private static final String RESOURCE_SQL = "SELECT * FROM RESOURCE WHERE asset_id = ? AND resource_name = ?";
+
+    private static final String RESOURCE_QUERY_1_SQL =
+            "SELECT * FROM RESOURCE WHERE asset_id LIKE ? AND resource_name = ?";
 
     private static final String RESOURCE_SET_SQL = "SELECT * FROM RESOURCE WHERE resource_id IN (\n"
             + "SELECT DISTINCT resource_id FROM ALLOCATION_ITEM WHERE resource_set_id = ?)";
@@ -63,46 +64,56 @@ public class ResourceJdbcDaoImpl implements ResourceJdbcDao {
 
     @Override
     public Resource getResource(String assetId, String resourceName) {
-        if (assetId == null || assetId.trim().length() == 0 || resourceName == null ||
-                resourceName.trim().length() == 0)
+        if (assetId == null || assetId.trim().length() == 0 || resourceName == null
+                || resourceName.trim().length() == 0) {
             return null;
+        }
 
-        List<Resource> ll = jdbcTemplate.query(RESOURCE_SQL, new Object[] { assetId, resourceName }, resourceRowMapper);
+        List<Resource> ll = jdbcTemplate.query(RESOURCE_SQL, new Object[] {assetId, resourceName}, resourceRowMapper);
         return ll.isEmpty() ? null : ll.get(0);
     }
 
     @Override
-    public List<Resource> getResourceSet(String resourceSetId) {
-        if (resourceSetId == null)
+    public List<Resource> queryResources(String assetIdFilter, String resourceName) {
+        if (assetIdFilter == null || assetIdFilter.trim().length() == 0 || resourceName == null
+                || resourceName.trim().length() == 0) {
             return Collections.emptyList();
+        }
 
-        return jdbcTemplate.query(RESOURCE_SET_SQL, new Object[] { resourceSetId }, resourceRowMapper);
+
+        return jdbcTemplate.query(RESOURCE_QUERY_1_SQL, new Object[] {assetIdFilter, resourceName}, resourceRowMapper);
+    }
+
+    @Override
+    public List<Resource> getResourceSet(String resourceSetId) {
+        if (resourceSetId == null) {
+            return Collections.emptyList();
+        }
+
+        return jdbcTemplate.query(RESOURCE_SET_SQL, new Object[] {resourceSetId}, resourceRowMapper);
     }
 
     @Override
     public List<Resource> getResourceUnion(String resourceUnionId) {
-        if (resourceUnionId == null)
+        if (resourceUnionId == null) {
             return Collections.emptyList();
+        }
 
-        return jdbcTemplate.query(RESOURCE_UNION_SQL, new Object[] { resourceUnionId }, resourceRowMapper);
+        return jdbcTemplate.query(RESOURCE_UNION_SQL, new Object[] {resourceUnionId}, resourceRowMapper);
     }
 
     @Override
     public void add(final Resource r) {
-        PreparedStatementCreator psc = new PreparedStatementCreator() {
-
-            @Override
-            public PreparedStatement createPreparedStatement(Connection dbc) throws SQLException {
-                PreparedStatement ps = dbc.prepareStatement(INSERT_SQL, new String[] { "resource_id" });
-                ps.setString(1, r.assetId);
-                ps.setString(2, r.name);
-                ps.setString(3, r.type);
-                ps.setLong(4, r.ltUsed);
-                ps.setString(5, r.llLabel);
-                ps.setInt(6, r.llReferenceCount);
-                ps.setString(7, r.rrUsed);
-                return ps;
-            }
+        PreparedStatementCreator psc = dbc -> {
+            PreparedStatement ps = dbc.prepareStatement(INSERT_SQL, new String[] {"resource_id"});
+            ps.setString(1, r.assetId);
+            ps.setString(2, r.name);
+            ps.setString(3, r.type);
+            ps.setLong(4, r.ltUsed);
+            ps.setString(5, r.llLabel);
+            ps.setInt(6, r.llReferenceCount);
+            ps.setString(7, r.rrUsed);
+            return ps;
         };
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(psc, keyHolder);

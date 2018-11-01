@@ -6,8 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.onap.ccsdk.sli.adaptors.ra.ResourceAllocator;
-import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceRequest;
-import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceTarget;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
 import org.slf4j.Logger;
@@ -86,13 +84,6 @@ public class TestGetResource {
 
         setupResourceData();
 
-        ResourceTarget rt = new ResourceTarget();
-        rt.resourceTargetId = "GBLOND2025MG2";
-        rt.resourceTargetType = "Device";
-
-        ResourceRequest rr = new ResourceRequest();
-        rr.resourceName = "internal-vlan";
-
         SvcLogicContext ctx = new SvcLogicContext();
         ctx.setAttribute("ra-input.resource-target-id", "GBLOND2025MG2");
         ctx.setAttribute("ra-input.resource-target-type", "Device");
@@ -119,13 +110,6 @@ public class TestGetResource {
         log.info("=== Test query for resource target - with resource entity condition");
 
         setupResourceData();
-
-        ResourceTarget rt = new ResourceTarget();
-        rt.resourceTargetId = "GBLOND2025MG2";
-        rt.resourceTargetType = "Device";
-
-        ResourceRequest rr = new ResourceRequest();
-        rr.resourceName = "internal-vlan";
 
         SvcLogicContext ctx = new SvcLogicContext();
         ctx.setAttribute("ra-input.resource-target-id", "GBLOND2025MG2");
@@ -157,13 +141,6 @@ public class TestGetResource {
 
         setupResourceData();
 
-        ResourceTarget rt = new ResourceTarget();
-        rt.resourceTargetId = "GBLOND2025MG2";
-        rt.resourceTargetType = "Device";
-
-        ResourceRequest rr = new ResourceRequest();
-        rr.resourceName = "internal-vlan";
-
         SvcLogicContext ctx = new SvcLogicContext();
         ctx.setAttribute("ra-input.resource-target-id", "GBLOND2025MG2");
         ctx.setAttribute("ra-input.resource-target-type", "Device");
@@ -193,13 +170,6 @@ public class TestGetResource {
 
         setupResourceData();
 
-        ResourceTarget rt = new ResourceTarget();
-        rt.resourceTargetId = "GBLOND2025MG2";
-        rt.resourceTargetType = "Device";
-
-        ResourceRequest rr = new ResourceRequest();
-        rr.resourceName = "internal-vlan";
-
         SvcLogicContext ctx = new SvcLogicContext();
         ctx.setAttribute("ra-input.resource-target-id", "GBLOND2025MG2");
         ctx.setAttribute("ra-input.resource-target-type", "Device");
@@ -228,13 +198,6 @@ public class TestGetResource {
         log.info("=== Test query for resource target - with both resource entity and resource share group conditions");
 
         setupResourceData();
-
-        ResourceTarget rt = new ResourceTarget();
-        rt.resourceTargetId = "GBLOND2025MG2";
-        rt.resourceTargetType = "Device";
-
-        ResourceRequest rr = new ResourceRequest();
-        rr.resourceName = "internal-vlan";
 
         SvcLogicContext ctx = new SvcLogicContext();
         ctx.setAttribute("ra-input.resource-target-id", "GBLOND2025MG2");

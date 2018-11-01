@@ -204,6 +204,65 @@ public class EndPointAllocatorImpl implements EndPointAllocator {
     }
 
     @Override
+    public List<ResourceData> getResourcesForTarget(String resourceTargetTypeFilter, String resourceTargetIdFilter,
+            String resourceName) {
+        List<ResourceData> rdlist = new ArrayList<>();
+
+        String assetIdFilter = null;
+        if (resourceTargetTypeFilter != null && resourceTargetIdFilter != null) {
+            assetIdFilter = resourceTargetTypeFilter + "::" + resourceTargetIdFilter;
+        } else if (resourceTargetTypeFilter != null) {
+            assetIdFilter = resourceTargetTypeFilter;
+        } else if (resourceTargetIdFilter != null) {
+            assetIdFilter = resourceTargetIdFilter;
+        }
+
+        List<Resource> rlist = resourceManager.queryResources(resourceName, assetIdFilter);
+
+        for (Resource r : rlist) {
+
+            log.info("ResourceName:" + r.resourceKey.resourceName + " assetId:" + r.resourceKey.assetId);
+
+            ResourceData rd = new ResourceData();
+            rdlist.add(rd);
+
+            rd.resourceName = r.resourceKey.resourceName;
+            int i1 = r.resourceKey.assetId.indexOf("::");
+            if (i1 > 0) {
+                rd.resourceTargetType = r.resourceKey.assetId.substring(0, i1);
+                rd.resourceTargetId = r.resourceKey.assetId.substring(i1 + 2);
+
+                int i2 = r.resourceKey.assetId.lastIndexOf("::");
+                if (i2 > i1) {
+                    rd.resourceTargetValue = r.resourceKey.assetId.substring(i2 + 2);
+                }
+            } else {
+                rd.resourceTargetType = "";
+                rd.resourceTargetId = r.resourceKey.assetId;
+            }
+
+            rd.data = new HashMap<>();
+
+            if (r instanceof RangeResource) {
+                RangeResource rr = (RangeResource) r;
+
+                log.info("rr.used: " + rr.used);
+                String ss = String.valueOf(rr.used);
+                ss = ss.substring(1, ss.length() - 1);
+                rd.data.put("allocated", ss);
+
+            } else if (r instanceof LimitResource) {
+                LimitResource lr = (LimitResource) r;
+
+                log.info("lr.used: " + lr.used);
+                rd.data.put("allocated", String.valueOf(lr.used));
+            }
+        }
+
+        return rdlist;
+    }
+
+    @Override
     public ResourceData getResource(String resourceTargetType, String resourceTargetId, String resourceName,
             String resourceEntityTypeFilter, String resourceEntityIdFilter, String resourceShareGroupFilter) {
         ResourceData rd = new ResourceData();

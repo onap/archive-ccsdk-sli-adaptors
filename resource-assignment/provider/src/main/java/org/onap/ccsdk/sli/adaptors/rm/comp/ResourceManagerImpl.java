@@ -113,6 +113,15 @@ public class ResourceManagerImpl implements ResourceManager {
         return r;
     }
 
+    @Override
+    public List<Resource> queryResources(String resourceName, String assetIdFilter) {
+        List<Resource> rlist = resourceDao.query(assetIdFilter, resourceName);
+        for (Resource r : rlist) {
+            ResourceUtil.recalculate(r);
+        }
+        return rlist;
+    }
+
     private Set<String> getLockNames(List<Resource> resourceList) {
         Set<String> lockNames = new HashSet<>();
         for (Resource r : resourceList) {

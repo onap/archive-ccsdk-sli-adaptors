@@ -92,6 +92,31 @@ public class ResourceDaoImpl implements ResourceDao {
     }
 
     @Override
+    public List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> query(String assetIdFilter, String resourceName) {
+        List<Resource> rEntityList = resourceJdbcDao.queryResources(assetIdFilter, resourceName);
+        List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> rlist = new ArrayList<>();
+        for (Resource rEntity : rEntityList) {
+            org.onap.ccsdk.sli.adaptors.rm.data.Resource r = createResource(rEntity);
+            rlist.add(r);
+
+            List<AllocationItem> aiEntityList = allocationItemJdbcDao.getAllocationItems(rEntity.id);
+            r.allocationItems = new ArrayList<>();
+            for (AllocationItem aiEntity : aiEntityList) {
+                org.onap.ccsdk.sli.adaptors.rm.data.AllocationItem ai = createAllocationItem(r, aiEntity);
+                r.allocationItems.add(ai);
+            }
+
+            List<ResourceLoad> rlEntityList = resourceLoadJdbcDao.getResourceLoads(rEntity.id);
+            r.resourceLoadList = new ArrayList<>();
+            for (ResourceLoad rlEntity : rlEntityList) {
+                org.onap.ccsdk.sli.adaptors.rm.data.ResourceLoad rl = createResourceLoad(r, rlEntity);
+                r.resourceLoadList.add(rl);
+            }
+        }
+        return rlist;
+    }
+
+    @Override
     public void saveResource(org.onap.ccsdk.sli.adaptors.rm.data.Resource resource) {
         if (resource == null) {
             return;

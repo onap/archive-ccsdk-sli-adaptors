@@ -46,4 +46,6 @@ public class ResourceRequest {
     public String resourceEntityTypeFilter;
     public String resourceEntityIdFilter;
     public String resourceShareGroupFilter;
+    public String resourceTargetTypeFilter;
+    public String resourceTargetIdFilter;
 }
