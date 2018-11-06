@@ -42,6 +42,7 @@
             <artifactId>ccsdk-sli</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
@@ -49,6 +50,7 @@
             <version>${ccsdk.sli.core.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
