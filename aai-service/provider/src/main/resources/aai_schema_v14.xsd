@@ -9689,6 +9689,17 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         </xs:appinfo>
       </xs:annotation>
       <xs:sequence>
+        <xs:element ref="tns:cloud-region" minOccurs="0"/>
+        <xs:element ref="tns:generic-vnf" minOccurs="0"/>
+        <xs:element ref="tns:l3-network" minOccurs="0"/>
+        <xs:element ref="tns:logical-link" minOccurs="0"/>
+        <xs:element ref="tns:p-interface" minOccurs="0"/>
+        <xs:element ref="tns:physical-link" minOccurs="0"/>
+        <xs:element ref="tns:pserver" minOccurs="0"/>
+        <xs:element ref="tns:pnf" minOccurs="0"/>
+        <xs:element ref="tns:service-instance" minOccurs="0"/>
+        <xs:element ref="tns:tenant" minOccurs="0"/>
+        <xs:element ref="tns:vserver" minOccurs="0"/>
         <xs:element name="model-name" type="xs:string" minOccurs="0"/>
         <xs:element ref="tns:extra-properties" minOccurs="0"/>
         <xs:element ref="tns:inventory-response-items" minOccurs="0"/>
