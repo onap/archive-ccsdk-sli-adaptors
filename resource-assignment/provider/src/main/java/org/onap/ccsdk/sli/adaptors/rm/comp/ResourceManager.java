@@ -38,6 +38,10 @@ public interface ResourceManager {
 
     void releaseResourceUnion(String resourceUnionId);
 
+    void releaseResourceSet(String resourceSetId, String assetId);
+
+    void releaseResourceUnion(String resourceUnionId, String assetId);
+
     Resource queryResource(String resourceName, String assetId, String resourceUnionFilter,
             String resourceShareGroupFilter);
 

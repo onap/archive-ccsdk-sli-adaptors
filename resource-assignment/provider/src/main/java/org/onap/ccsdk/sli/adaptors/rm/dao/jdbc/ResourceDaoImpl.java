@@ -44,25 +44,7 @@ public class ResourceDaoImpl implements ResourceDao {
     @Override
     public org.onap.ccsdk.sli.adaptors.rm.data.Resource getResource(String assetId, String resourceName) {
         Resource rEntity = resourceJdbcDao.getResource(assetId, resourceName);
-        org.onap.ccsdk.sli.adaptors.rm.data.Resource r = createResource(rEntity);
-
-        if (r != null) {
-            List<AllocationItem> aiEntityList = allocationItemJdbcDao.getAllocationItems(rEntity.id);
-            r.allocationItems = new ArrayList<>();
-            for (AllocationItem aiEntity : aiEntityList) {
-                org.onap.ccsdk.sli.adaptors.rm.data.AllocationItem ai = createAllocationItem(r, aiEntity);
-                r.allocationItems.add(ai);
-            }
-
-            List<ResourceLoad> rlEntityList = resourceLoadJdbcDao.getResourceLoads(rEntity.id);
-            r.resourceLoadList = new ArrayList<>();
-            for (ResourceLoad rlEntity : rlEntityList) {
-                org.onap.ccsdk.sli.adaptors.rm.data.ResourceLoad rl = createResourceLoad(r, rlEntity);
-                r.resourceLoadList.add(rl);
-            }
-        }
-
-        return r;
+        return createResourceWithItems(rEntity);
     }
 
     @Override
@@ -96,22 +78,8 @@ public class ResourceDaoImpl implements ResourceDao {
         List<Resource> rEntityList = resourceJdbcDao.queryResources(assetIdFilter, resourceName);
         List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> rlist = new ArrayList<>();
         for (Resource rEntity : rEntityList) {
-            org.onap.ccsdk.sli.adaptors.rm.data.Resource r = createResource(rEntity);
+            org.onap.ccsdk.sli.adaptors.rm.data.Resource r = createResourceWithItems(rEntity);
             rlist.add(r);
-
-            List<AllocationItem> aiEntityList = allocationItemJdbcDao.getAllocationItems(rEntity.id);
-            r.allocationItems = new ArrayList<>();
-            for (AllocationItem aiEntity : aiEntityList) {
-                org.onap.ccsdk.sli.adaptors.rm.data.AllocationItem ai = createAllocationItem(r, aiEntity);
-                r.allocationItems.add(ai);
-            }
-
-            List<ResourceLoad> rlEntityList = resourceLoadJdbcDao.getResourceLoads(rEntity.id);
-            r.resourceLoadList = new ArrayList<>();
-            for (ResourceLoad rlEntity : rlEntityList) {
-                org.onap.ccsdk.sli.adaptors.rm.data.ResourceLoad rl = createResourceLoad(r, rlEntity);
-                r.resourceLoadList.add(rl);
-            }
         }
         return rlist;
     }
@@ -254,22 +222,8 @@ public class ResourceDaoImpl implements ResourceDao {
         List<Resource> rEntityList = resourceJdbcDao.getResourceSet(resourceSetId);
         List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> rlist = new ArrayList<>();
         for (Resource rEntity : rEntityList) {
-            org.onap.ccsdk.sli.adaptors.rm.data.Resource r = createResource(rEntity);
+            org.onap.ccsdk.sli.adaptors.rm.data.Resource r = createResourceWithItems(rEntity);
             rlist.add(r);
-
-            List<AllocationItem> aiEntityList = allocationItemJdbcDao.getAllocationItems(rEntity.id);
-            r.allocationItems = new ArrayList<>();
-            for (AllocationItem aiEntity : aiEntityList) {
-                org.onap.ccsdk.sli.adaptors.rm.data.AllocationItem ai = createAllocationItem(r, aiEntity);
-                r.allocationItems.add(ai);
-            }
-
-            List<ResourceLoad> rlEntityList = resourceLoadJdbcDao.getResourceLoads(rEntity.id);
-            r.resourceLoadList = new ArrayList<>();
-            for (ResourceLoad rlEntity : rlEntityList) {
-                org.onap.ccsdk.sli.adaptors.rm.data.ResourceLoad rl = createResourceLoad(r, rlEntity);
-                r.resourceLoadList.add(rl);
-            }
         }
         return rlist;
     }
@@ -279,22 +233,32 @@ public class ResourceDaoImpl implements ResourceDao {
         List<Resource> rEntityList = resourceJdbcDao.getResourceUnion(resourceUnionId);
         List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> rlist = new ArrayList<>();
         for (Resource rEntity : rEntityList) {
-            org.onap.ccsdk.sli.adaptors.rm.data.Resource r = createResource(rEntity);
+            org.onap.ccsdk.sli.adaptors.rm.data.Resource r = createResourceWithItems(rEntity);
             rlist.add(r);
+        }
+        return rlist;
+    }
 
-            List<AllocationItem> aiEntityList = allocationItemJdbcDao.getAllocationItems(rEntity.id);
-            r.allocationItems = new ArrayList<>();
-            for (AllocationItem aiEntity : aiEntityList) {
-                org.onap.ccsdk.sli.adaptors.rm.data.AllocationItem ai = createAllocationItem(r, aiEntity);
-                r.allocationItems.add(ai);
-            }
+    @Override
+    public List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> getResourceSetForAsset(String resourceSetId,
+            String assetId) {
+        List<Resource> rEntityList = resourceJdbcDao.getResourceSetForAsset(resourceSetId, assetId);
+        List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> rlist = new ArrayList<>();
+        for (Resource rEntity : rEntityList) {
+            org.onap.ccsdk.sli.adaptors.rm.data.Resource r = createResourceWithItems(rEntity);
+            rlist.add(r);
+        }
+        return rlist;
+    }
 
-            List<ResourceLoad> rlEntityList = resourceLoadJdbcDao.getResourceLoads(rEntity.id);
-            r.resourceLoadList = new ArrayList<>();
-            for (ResourceLoad rlEntity : rlEntityList) {
-                org.onap.ccsdk.sli.adaptors.rm.data.ResourceLoad rl = createResourceLoad(r, rlEntity);
-                r.resourceLoadList.add(rl);
-            }
+    @Override
+    public List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> getResourceUnionForAsset(String resourceUnionId,
+            String assetId) {
+        List<Resource> rEntityList = resourceJdbcDao.getResourceUnionForAsset(resourceUnionId, assetId);
+        List<org.onap.ccsdk.sli.adaptors.rm.data.Resource> rlist = new ArrayList<>();
+        for (Resource rEntity : rEntityList) {
+            org.onap.ccsdk.sli.adaptors.rm.data.Resource r = createResourceWithItems(rEntity);
+            rlist.add(r);
         }
         return rlist;
     }
@@ -372,6 +336,27 @@ public class ResourceDaoImpl implements ResourceDao {
         } else if (resource.resourceType == ResourceType.Range) {
             resourceEntity.rrUsed = StrUtil.listInt(((RangeResource) resource).used);
         }
+    }
+
+    private org.onap.ccsdk.sli.adaptors.rm.data.Resource createResourceWithItems(Resource rEntity) {
+        org.onap.ccsdk.sli.adaptors.rm.data.Resource r = createResource(rEntity);
+
+        if (r != null) {
+            List<AllocationItem> aiEntityList = allocationItemJdbcDao.getAllocationItems(rEntity.id);
+            r.allocationItems = new ArrayList<>();
+            for (AllocationItem aiEntity : aiEntityList) {
+                org.onap.ccsdk.sli.adaptors.rm.data.AllocationItem ai = createAllocationItem(r, aiEntity);
+                r.allocationItems.add(ai);
+            }
+
+            List<ResourceLoad> rlEntityList = resourceLoadJdbcDao.getResourceLoads(rEntity.id);
+            r.resourceLoadList = new ArrayList<>();
+            for (ResourceLoad rlEntity : rlEntityList) {
+                org.onap.ccsdk.sli.adaptors.rm.data.ResourceLoad rl = createResourceLoad(r, rlEntity);
+                r.resourceLoadList.add(rl);
+            }
+        }
+        return r;
     }
 
     private org.onap.ccsdk.sli.adaptors.rm.data.Resource createResource(Resource resourceEntity) {

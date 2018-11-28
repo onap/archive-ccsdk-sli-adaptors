@@ -33,6 +33,10 @@ public interface ResourceJdbcDao {
 
     List<Resource> getResourceUnion(String resourceUnionId);
 
+    List<Resource> getResourceSetForAsset(String resourceSetId, String assetId);
+
+    List<Resource> getResourceUnionForAsset(String resourceUnionId, String assetId);
+
     void add(Resource r);
 
     void delete(long id);

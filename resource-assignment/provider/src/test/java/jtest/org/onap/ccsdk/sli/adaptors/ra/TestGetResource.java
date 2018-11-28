@@ -79,7 +79,7 @@ public class TestGetResource {
     public void test001() throws Exception {
 
         String t = "001";
-        log.info("============== query node " + t + " ================================");
+        log.info("============== get-resource node " + t + " ================================");
         log.info("=== Test query for resource target - no additional criteria");
 
         setupResourceData();
@@ -106,7 +106,7 @@ public class TestGetResource {
     public void test002() throws Exception {
 
         String t = "002";
-        log.info("============== query node " + t + " ================================");
+        log.info("============== get-resource node " + t + " ================================");
         log.info("=== Test query for resource target - with resource entity condition");
 
         setupResourceData();
@@ -136,7 +136,7 @@ public class TestGetResource {
     public void test003() throws Exception {
 
         String t = "003";
-        log.info("============== query node " + t + " ================================");
+        log.info("============== get-resource node " + t + " ================================");
         log.info("=== Test query for resource target - with resource share group condition");
 
         setupResourceData();
@@ -165,7 +165,7 @@ public class TestGetResource {
     public void test004() throws Exception {
 
         String t = "004";
-        log.info("============== query node " + t + " ================================");
+        log.info("============== get-resource node " + t + " ================================");
         log.info("=== Test query for resource target - with resource share group condition NULL");
 
         setupResourceData();
@@ -194,7 +194,7 @@ public class TestGetResource {
     public void test005() throws Exception {
 
         String t = "005";
-        log.info("============== query node " + t + " ================================");
+        log.info("============== get-resource node " + t + " ================================");
         log.info("=== Test query for resource target - with both resource entity and resource share group conditions");
 
         setupResourceData();

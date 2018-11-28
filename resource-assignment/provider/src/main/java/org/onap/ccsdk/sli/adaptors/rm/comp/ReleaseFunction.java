@@ -24,7 +24,6 @@ package org.onap.ccsdk.sli.adaptors.rm.comp;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import org.onap.ccsdk.sli.adaptors.lock.comp.LockHelper;
 import org.onap.ccsdk.sli.adaptors.lock.comp.ResourceLockedException;
 import org.onap.ccsdk.sli.adaptors.lock.comp.SynchronizedFunction;
@@ -42,21 +41,24 @@ class ReleaseFunction extends SynchronizedFunction {
 
     private ResourceDao resourceDao;
 
-    private String resourceSetId, resourceUnionId;
+    private String resourceSetId, resourceUnionId, assetId;
 
-    public ReleaseFunction(LockHelper lockHelper, ResourceDao resourceDao, String resourceSetId,
-            String resourceUnionId, Collection<String> lockNames, int lockTimeout) {
+    public ReleaseFunction(LockHelper lockHelper, ResourceDao resourceDao, String resourceSetId, String resourceUnionId,
+            String assetId, Collection<String> lockNames, int lockTimeout) {
         super(lockHelper, lockNames, lockTimeout);
         this.resourceDao = resourceDao;
         this.resourceSetId = resourceSetId;
         this.resourceUnionId = resourceUnionId;
+        this.assetId = assetId;
     }
 
     @Override
     public void _exec() throws ResourceLockedException {
-        List<Resource> resourceList =
-                resourceSetId != null
-                        ? resourceDao.getResourceSet(resourceSetId) : resourceDao.getResourceUnion(resourceUnionId);
+        List<Resource> resourceList = assetId != null
+                ? (resourceSetId != null ? resourceDao.getResourceSetForAsset(resourceSetId, assetId)
+                        : resourceDao.getResourceUnionForAsset(resourceUnionId, assetId))
+                : (resourceSetId != null ? resourceDao.getResourceSet(resourceSetId)
+                        : resourceDao.getResourceUnion(resourceUnionId));
         for (Resource r : resourceList) {
             boolean updated = false;
             if (r.allocationItems != null) {
