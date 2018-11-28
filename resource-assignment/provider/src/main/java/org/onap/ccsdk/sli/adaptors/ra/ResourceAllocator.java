@@ -48,7 +48,8 @@ public class ResourceAllocator implements SvcLogicResource {
     private static final Logger log = LoggerFactory.getLogger(ResourceAllocator.class);
 
     private static final String[] INPUT_PREFIX = {"ra-input.", "tmp.resource-allocator."};
-    private static final String START_RELEASE_LC = "Starting release for: {}";
+    private static final String START_RELEASE = "Starting release for: {}";
+    private static final String START_RELEASE_FOR_TARGET = "Starting release for: {} on target: {}";
 
     private ResourceManager resourceManager;
     private EndPointAllocator endPointAllocator;
@@ -201,6 +202,10 @@ public class ResourceAllocator implements SvcLogicResource {
                 getParam(ctx, new String[] {"reservation-entity-type", "resource-entity-type"}, true, null);
         String resourceEntityVersion =
                 getParam(ctx, new String[] {"reservation-entity-version", "resource-entity-version"}, false, null);
+        String resourceTargetId =
+                getParam(ctx, new String[] {"reservation-target-id", "resource-target-id"}, false, null);
+        String resourceTargetType =
+                getParam(ctx, new String[] {"reservation-target-type", "resource-target-type"}, false, null);
 
         String endPointPosition = getParam(ctx, "endpoint-position", false, null);
 
@@ -212,8 +217,12 @@ public class ResourceAllocator implements SvcLogicResource {
         ResourceRequest rr = new ResourceRequest();
         rr.endPointPosition = endPointPosition;
 
+        ResourceTarget rt = new ResourceTarget();
+        rt.resourceTargetType = resourceTargetType;
+        rt.resourceTargetId = resourceTargetId;
+
         try {
-            this.release(sd, rr);
+            this.release(sd, rr, rt);
         } catch (Exception e) {
             throw new SvcLogicException(e.getMessage());
         }
@@ -221,54 +230,54 @@ public class ResourceAllocator implements SvcLogicResource {
     }
 
     public AllocationStatus release(ResourceEntity sd) throws Exception {
-
-        if (sd.resourceEntityVersion != null) {
-            String resourceSet = sd.resourceEntityType + "::" + sd.resourceEntityId + "::" + sd.resourceEntityVersion;
-            log.info(START_RELEASE_LC, resourceSet);
-
-            resourceManager.releaseResourceSet(resourceSet);
-        } else {
-            String resourceUnion = sd.resourceEntityType + "::" + sd.resourceEntityId;
-            log.info(START_RELEASE_LC, resourceUnion);
-
-            resourceManager.releaseResourceUnion(resourceUnion);
-        }
-
-        return AllocationStatus.Success;
-
+        return release(sd, null, null);
     }
 
     public AllocationStatus release(ResourceEntity sd, ResourceRequest rr) throws Exception {
+        return release(sd, rr, null);
+    }
+
+    public AllocationStatus release(ResourceEntity sd, ResourceRequest rr, ResourceTarget rt) throws Exception {
 
         if (sd != null && sd.resourceEntityVersion != null) {
-            if (rr != null && rr.endPointPosition != null && !rr.endPointPosition.isEmpty()) {
-                String resourceSet = sd.resourceEntityType + "::" + sd.resourceEntityId + "::" + rr.endPointPosition
-                        + "::" + sd.resourceEntityVersion;
-                log.info(START_RELEASE_LC, resourceSet);
-                resourceManager.releaseResourceSet(resourceSet);
+            String resourceSet = null;
 
+            if (rr != null && rr.endPointPosition != null && !rr.endPointPosition.isEmpty()) {
+                resourceSet = sd.resourceEntityType + "::" + sd.resourceEntityId + "::" + rr.endPointPosition + "::"
+                        + sd.resourceEntityVersion;
             } else {
-                String resourceSet =
-                        sd.resourceEntityType + "::" + sd.resourceEntityId + "::" + sd.resourceEntityVersion;
-                log.info(START_RELEASE_LC, resourceSet);
+                resourceSet = sd.resourceEntityType + "::" + sd.resourceEntityId + "::" + sd.resourceEntityVersion;
+            }
+
+            if (rt != null && rt.resourceTargetId != null && rt.resourceTargetType != null) {
+                String assetId = rt.resourceTargetType + "::" + rt.resourceTargetId;
+                log.info(START_RELEASE_FOR_TARGET, resourceSet, assetId);
+                resourceManager.releaseResourceSet(resourceSet, assetId);
+            } else {
+                log.info(START_RELEASE, resourceSet);
                 resourceManager.releaseResourceSet(resourceSet);
             }
 
         } else if (sd != null && (sd.resourceEntityVersion == null || sd.resourceEntityVersion.isEmpty())) {
-            if (rr != null && rr.endPointPosition != null && !rr.endPointPosition.isEmpty()) {
-                String resourceUnion = sd.resourceEntityType + "::" + sd.resourceEntityId + "::" + rr.endPointPosition;
-                log.info(START_RELEASE_LC, resourceUnion);
-                resourceManager.releaseResourceUnion(resourceUnion);
+            String resourceUnion = null;
 
+            if (rr != null && rr.endPointPosition != null && !rr.endPointPosition.isEmpty()) {
+                resourceUnion = sd.resourceEntityType + "::" + sd.resourceEntityId + "::" + rr.endPointPosition;
             } else {
-                String resourceUnion = sd.resourceEntityType + "::" + sd.resourceEntityId;
-                log.info(START_RELEASE_LC, resourceUnion);
+                resourceUnion = sd.resourceEntityType + "::" + sd.resourceEntityId;
+            }
+
+            if (rt != null && rt.resourceTargetId != null && rt.resourceTargetType != null) {
+                String assetId = rt.resourceTargetType + "::" + rt.resourceTargetId;
+                log.info(START_RELEASE_FOR_TARGET, resourceUnion, assetId);
+                resourceManager.releaseResourceUnion(resourceUnion, assetId);
+            } else {
+                log.info(START_RELEASE, resourceUnion);
                 resourceManager.releaseResourceUnion(resourceUnion);
             }
         }
 
         return AllocationStatus.Success;
-
     }
 
     private QueryStatus allocateResources(SvcLogicContext ctx, boolean checkOnly, String prefix)

@@ -89,6 +89,13 @@ public class DataSetup {
         return used.equals(usedInDb);
     }
 
+    public boolean checkLimitItem(String resourceName, String assetId, String resourceSetId, int used) {
+        String where = "resource_id = (SELECT resource_id FROM RESOURCE WHERE resource_name = '" + resourceName
+                + "' AND asset_id = '" + assetId + "') AND resource_set_id = '" + resourceSetId + "' AND lt_used = "
+                + used;
+        return allocationItem.exists(where);
+    }
+
     public void setTestDb(TestDb testDb) {
         this.testDb = testDb;
     }

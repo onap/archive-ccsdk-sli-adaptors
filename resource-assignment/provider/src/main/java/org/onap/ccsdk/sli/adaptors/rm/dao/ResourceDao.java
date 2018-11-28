@@ -36,6 +36,10 @@ public interface ResourceDao {
 
     List<Resource> getResourceUnion(String resourceUnionId);
 
+    List<Resource> getResourceSetForAsset(String resourceSetId, String assetId);
+
+    List<Resource> getResourceUnionForAsset(String resourceUnionId, String assetId);
+
     Resource query(String assetId, String resourceName, String resourceUnionFilter, String resourceShareGroupFilter);
 
     List<Resource> query(String assetIdFilter, String resourceName);

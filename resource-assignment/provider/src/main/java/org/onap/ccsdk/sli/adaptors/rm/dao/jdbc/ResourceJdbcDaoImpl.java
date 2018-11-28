@@ -50,6 +50,12 @@ public class ResourceJdbcDaoImpl implements ResourceJdbcDao {
     private static final String RESOURCE_UNION_SQL = "SELECT * FROM RESOURCE WHERE resource_id IN (\n"
             + "SELECT DISTINCT resource_id FROM ALLOCATION_ITEM WHERE resource_union_id = ?)";
 
+    private static final String RESOURCE_SET_FOR_ASSET_SQL = "SELECT * FROM RESOURCE WHERE resource_id IN (\n"
+            + "SELECT DISTINCT resource_id FROM ALLOCATION_ITEM WHERE resource_set_id = ?) AND asset_id = ?";
+
+    private static final String RESOURCE_UNION_FOR_ASSET_SQL = "SELECT * FROM RESOURCE WHERE resource_id IN (\n"
+            + "SELECT DISTINCT resource_id FROM ALLOCATION_ITEM WHERE resource_union_id = ?) AND asset_id = ?";
+
     private static final String INSERT_SQL = "INSERT INTO RESOURCE (\n"
             + "  asset_id, resource_name, resource_type, lt_used, ll_label, ll_reference_count, rr_used)\n"
             + "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -100,6 +106,25 @@ public class ResourceJdbcDaoImpl implements ResourceJdbcDao {
         }
 
         return jdbcTemplate.query(RESOURCE_UNION_SQL, new Object[] {resourceUnionId}, resourceRowMapper);
+    }
+
+    @Override
+    public List<Resource> getResourceSetForAsset(String resourceSetId, String assetId) {
+        if (resourceSetId == null) {
+            return Collections.emptyList();
+        }
+
+        return jdbcTemplate.query(RESOURCE_SET_FOR_ASSET_SQL, new Object[] {resourceSetId, assetId}, resourceRowMapper);
+    }
+
+    @Override
+    public List<Resource> getResourceUnionForAsset(String resourceUnionId, String assetId) {
+        if (resourceUnionId == null) {
+            return Collections.emptyList();
+        }
+
+        return jdbcTemplate.query(RESOURCE_UNION_FOR_ASSET_SQL, new Object[] {resourceUnionId, assetId},
+                resourceRowMapper);
     }
 
     @Override

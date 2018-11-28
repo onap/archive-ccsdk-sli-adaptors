@@ -88,7 +88,7 @@ public class ResourceManagerImpl implements ResourceManager {
 
         Set<String> lockNames = getLockNames(resourceList);
         ReleaseFunction releaseFunction =
-                new ReleaseFunction(lockHelper, resourceDao, resourceSetId, null, lockNames, lockTimeout);
+                new ReleaseFunction(lockHelper, resourceDao, resourceSetId, null, null, lockNames, lockTimeout);
         releaseFunction.exec();
     }
 
@@ -101,7 +101,33 @@ public class ResourceManagerImpl implements ResourceManager {
 
         Set<String> lockNames = getLockNames(resourceList);
         ReleaseFunction releaseFunction =
-                new ReleaseFunction(lockHelper, resourceDao, null, resourceUnionId, lockNames, lockTimeout);
+                new ReleaseFunction(lockHelper, resourceDao, null, resourceUnionId, null, lockNames, lockTimeout);
+        releaseFunction.exec();
+    }
+
+    @Override
+    public void releaseResourceSet(String resourceSetId, String assetId) {
+        List<Resource> resourceList = resourceDao.getResourceSetForAsset(resourceSetId, assetId);
+        if (resourceList == null || resourceList.isEmpty()) {
+            return;
+        }
+
+        Set<String> lockNames = getLockNames(resourceList);
+        ReleaseFunction releaseFunction =
+                new ReleaseFunction(lockHelper, resourceDao, resourceSetId, null, assetId, lockNames, lockTimeout);
+        releaseFunction.exec();
+    }
+
+    @Override
+    public void releaseResourceUnion(String resourceUnionId, String assetId) {
+        List<Resource> resourceList = resourceDao.getResourceUnionForAsset(resourceUnionId, assetId);
+        if (resourceList == null || resourceList.isEmpty()) {
+            return;
+        }
+
+        Set<String> lockNames = getLockNames(resourceList);
+        ReleaseFunction releaseFunction =
+                new ReleaseFunction(lockHelper, resourceDao, null, resourceUnionId, assetId, lockNames, lockTimeout);
         releaseFunction.exec();
     }
 
