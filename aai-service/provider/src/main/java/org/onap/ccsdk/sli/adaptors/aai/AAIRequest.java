@@ -266,7 +266,7 @@ public abstract class AAIRequest {
                     function = clazz.getMethod("processPathData", request_url.getClass(), requestProperties.getClass());
                     request_url = (String) function.invoke(null, request_url,  requestProperties);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                	LOG.error("Caught exception", e);
                 }
             }
         }
