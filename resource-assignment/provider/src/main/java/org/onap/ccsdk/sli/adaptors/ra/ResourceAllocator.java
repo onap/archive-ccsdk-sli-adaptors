@@ -146,7 +146,7 @@ public class ResourceAllocator implements SvcLogicResource {
             ResourceData rd = endPointAllocator.getResource(rt.resourceTargetType, rt.resourceTargetId, rr.resourceName,
                     rr.resourceEntityTypeFilter, rr.resourceEntityIdFilter, rr.resourceShareGroupFilter);
             setResourceDataInResponse(Collections.singletonList(rd), rsList);
-        } else if ((rr.resourceTargetTypeFilter != null || rr.resourceTargetIdFilter != null)
+        } else if ((rr!=null && rr.resourceTargetTypeFilter != null || rr.resourceTargetIdFilter != null)
                 && rr.resourceName != null) {
             List<ResourceData> rdlist = endPointAllocator.getResourcesForTarget(rr.resourceTargetTypeFilter,
                     rr.resourceTargetIdFilter, rr.resourceName);
