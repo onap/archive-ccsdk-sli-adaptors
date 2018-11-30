@@ -285,7 +285,9 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
                 LOG.error("AAIResource", ex);
             }
 
-            ctx.init(kmf.getKeyManagers(), null, null);
+            if(null!=kmf) {
+            	ctx.init(kmf.getKeyManagers(), null, null);
+            }
             config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties( new HostnameVerifier() {
                     @Override
                     public boolean verify( String s, SSLSession sslSession ) {
