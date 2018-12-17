@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 			reserved.
+ * Modifications Copyright (C) 2018 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CustomQueryRequest extends AAIRequest {
 
-	public static final String GENERIC_SEARCH_PATH			= "org.onap.ccsdk.sli.adaptors.aai.query.generic";
+	public static final String GENERIC_SEARCH_PATH_CONST			= "org.onap.ccsdk.sli.adaptors.aai.query.generic";
 
 	private final String generic_search_path;
 
@@ -47,29 +48,29 @@ public class CustomQueryRequest extends AAIRequest {
 
 
 	public CustomQueryRequest() {
-		String tmp_generic_search_path = configProperties.getProperty(GENERIC_SEARCH_PATH);
-		tmp_generic_search_path = tmp_generic_search_path.split("search")[0];
-		generic_search_path = tmp_generic_search_path +"query";
+		String tmpGenericSearchPath = configProperties.getProperty(GENERIC_SEARCH_PATH_CONST);
+		tmpGenericSearchPath = tmpGenericSearchPath.split("search")[0];
+		generic_search_path = tmpGenericSearchPath +"query";
 	}
 
 
 	@Override
 	public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
 
-		String request_url = targetUri+generic_search_path;
+		String requestUrl = targetUri+generic_search_path;
 
-		request_url = processPathData(request_url, requestProperties);
+		requestUrl = processPathData(requestUrl, requestProperties);
 
 		String formatQuery = requestProperties.getProperty(FORMAT);
 
 		if(formatQuery != null) {
-			request_url = request_url +"?format="+formatQuery;
+			requestUrl = requestUrl +"?format="+formatQuery;
 		}
-		URL http_req_url =	new URL(request_url);
+		URL httpReqUrl =	new URL(requestUrl);
 
-		aaiService.LOGwriteFirstTrace(method, http_req_url.toString());
+		aaiService.LOGwriteFirstTrace(method, httpReqUrl.toString());
 
-		return http_req_url;
+		return httpReqUrl;
 	}
 
 	@Override
@@ -82,14 +83,14 @@ public class CustomQueryRequest extends AAIRequest {
 	public String toJSONString() {
 		ObjectMapper mapper = getObjectMapper();
 		FormattedQueryRequestData tenant = (FormattedQueryRequestData)requestDatum;
-		String json_text = null;
+		String jsonText = null;
 		try {
-			json_text = mapper.writeValueAsString(tenant);
+			jsonText = mapper.writeValueAsString(tenant);
 		} catch (JsonProcessingException exc) {
 			handleException(this, exc);
 			return null;
 		}
-		return json_text;
+		return jsonText;
 	}
 
 
@@ -106,15 +107,15 @@ public class CustomQueryRequest extends AAIRequest {
 	}
 
 
-	public static String processPathData(String request_url, Properties requestProperties) throws UnsupportedEncodingException {
+	public static String processPathData(String requestUrl, Properties requestProperties) throws UnsupportedEncodingException {
 
 		String key = FORMAT;
 
 		String encoded_vnf = encodeQuery(requestProperties.getProperty(key));
-		request_url = request_url.replace("{identifier}", encoded_vnf) ;
+		requestUrl = requestUrl.replace("{identifier}", encoded_vnf) ;
 		aaiService.LOGwriteDateTrace("identifier", requestProperties.getProperty(key));
 
-		return request_url;
+		return requestUrl;
 	}
 
 	public AAIDatum jsonStringToObject(String jsonData) throws JsonParseException, JsonMappingException, IOException {
