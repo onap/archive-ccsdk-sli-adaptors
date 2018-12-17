@@ -148,7 +148,7 @@ public abstract class AAIDeclarations implements AAIClient {
 
     @Override
     public QueryStatus query(String resource, boolean localOnly, String select, String key, String prefix, String orderBy, SvcLogicContext ctx)
-        throws SvcLogicException {
+            throws SvcLogicException {
 
         getLogger().debug("AAIService.query \tresource = "+resource);
 
@@ -242,17 +242,17 @@ public abstract class AAIDeclarations implements AAIClient {
                         } catch (AAIServiceException exc) {
                             int errorCode = exc.getReturnCode();
                             switch(errorCode) {
-                            case 400:
-                            case 404:
-                            case 412:
-                                break;
-                            default:
-                                getLogger().warn("Caught exception trying to refresh generic VNF", exc);
+                                case 400:
+                                case 404:
+                                case 412:
+                                    break;
+                                default:
+                                    getLogger().warn("Caught exception trying to refresh generic VNF", exc);
                             }
                             ctx.setAttribute(prefix + ".error.message", exc.getMessage());
                             if(errorCode >= 300) {
                                 ctx.setAttribute(prefix + ".error.http.response-code",
-                                                 Integer.toString(exc.getReturnCode()));
+                                        Integer.toString(exc.getReturnCode()));
                             }
                             return QueryStatus.FAILURE;
                         }
@@ -280,57 +280,59 @@ public abstract class AAIDeclarations implements AAIClient {
                     if(vserverId != null) vserverId = vserverId.trim().replace("'", "").replace("$", "").replace("'", "");
                     if(tenantId != null) tenantId = tenantId.trim().replace("'", "").replace("$", "").replace("'", "");
 
-                if (vserverName != null) {
-                    URL vserverUrl = null;
-                    try {
-                        vserverUrl = this.requestVserverURLNodeQuery(vserverName);
-                    } catch (AAIServiceException aaiexc) {
-                        ctx.setAttribute(prefix + ".error.message", aaiexc.getMessage());
-                        if (aaiexc.getReturnCode() >= 300) {
-                            ctx.setAttribute(prefix + ".error.http" + "" + ".response-code", Integer.toString(aaiexc.getReturnCode()));
+                    if (vserverName != null) {
+                        URL vserverUrl = null;
+                        try {
+                            vserverUrl = this.requestVserverURLNodeQuery(vserverName);
+                        } catch (AAIServiceException aaiexc) {
+                            getLogger().warn("AAI Service Exception", aaiexc);
+                            ctx.setAttribute(prefix + ".error.message", aaiexc.getMessage());
+                            if (aaiexc.getReturnCode() >= 300) {
+                                ctx.setAttribute(prefix + ".error.http" + "" + ".response-code", Integer.toString(aaiexc.getReturnCode()));
+                            }
+
+                            if (aaiexc.getReturnCode() == 404)
+                                return QueryStatus.NOT_FOUND;
+                            else
+                                return QueryStatus.FAILURE;
+                        }
+                        if (vserverUrl == null) {
+                            return QueryStatus.NOT_FOUND;
                         }
 
-                        if (aaiexc.getReturnCode() == 404)
-                            return QueryStatus.NOT_FOUND;
-                        else
-                            return QueryStatus.FAILURE;
-                    }
-                    if (vserverUrl == null) {
-                        return QueryStatus.NOT_FOUND;
-                    }
+                        tenantId = getTenantIdFromVserverUrl(vserverUrl);
+                        String cloudOwner = getCloudOwnerFromVserverUrl(vserverUrl);
+                        String cloudRegionId = getCloudRegionFromVserverUrl(vserverUrl);
 
-                    tenantId = getTenantIdFromVserverUrl(vserverUrl);
-                            String cloudOwner = getCloudOwnerFromVserverUrl(vserverUrl);
-                            String cloudRegionId = getCloudRegionFromVserverUrl(vserverUrl);
+                        Vserver vserver = null;
+                        try {
+                            vserver = this.requestVServerDataByURL(vserverUrl);
+                        } catch (AAIServiceException aaiexc) {
+                            getLogger().warn("AAI Service Exception", aaiexc);
+                            ctx.setAttribute(prefix + ".error.message", aaiexc.getMessage());
+                            if (aaiexc.getReturnCode() >= 300) {
+                                ctx.setAttribute(prefix + ".error.http" + ".response-code", Integer.toString(aaiexc.getReturnCode()));
+                            }
 
-                    Vserver vserver = null;
-                    try {
-                        vserver = this.requestVServerDataByURL(vserverUrl);
-                    } catch (AAIServiceException aaiexc) {
-                        ctx.setAttribute(prefix + ".error.message", aaiexc.getMessage());
-                        if (aaiexc.getReturnCode() >= 300) {
-                            ctx.setAttribute(prefix + ".error.http" + ".response-code", Integer.toString(aaiexc.getReturnCode()));
+                            if (aaiexc.getReturnCode() == 404)
+                                return QueryStatus.NOT_FOUND;
+                            else
+                                return QueryStatus.FAILURE;
                         }
-
-                        if (aaiexc.getReturnCode() == 404)
+                        if (vserver == null) {
                             return QueryStatus.NOT_FOUND;
-                        else
-                            return QueryStatus.FAILURE;
-                    }
-                    if (vserver == null) {
-                        return QueryStatus.NOT_FOUND;
-                    }
-                    attributes = mapper.convertValue(vserver, attributes.getClass());
-                    if (!attributes.containsKey("tenant-id") && tenantId != null) {
-                        attributes.put("tenant-id", tenantId);
-                    }
-                    if (!attributes.containsKey("cloud-owner") && cloudOwner != null) {
-                        attributes.put("cloud-owner", cloudOwner);
-                    }
-                    if (!attributes.containsKey("cloud-region-id") && cloudRegionId != null) {
-                        attributes.put("cloud-region-id", cloudRegionId);
-                    }
-                } else if (vserverId != null && tenantId != null) {
+                        }
+                        attributes = mapper.convertValue(vserver, attributes.getClass());
+                        if (!attributes.containsKey("tenant-id") && tenantId != null) {
+                            attributes.put("tenant-id", tenantId);
+                        }
+                        if (!attributes.containsKey("cloud-owner") && cloudOwner != null) {
+                            attributes.put("cloud-owner", cloudOwner);
+                        }
+                        if (!attributes.containsKey("cloud-region-id") && cloudRegionId != null) {
+                            attributes.put("cloud-region-id", cloudRegionId);
+                        }
+                    } else if (vserverId != null && tenantId != null) {
                         Vserver vserver = this.requestVServerData(tenantId, vserverId, "att-aic", "AAIAIC25");
                         if(vserver == null) {
                             return QueryStatus.NOT_FOUND;
@@ -425,7 +427,7 @@ public abstract class AAIDeclarations implements AAIClient {
             if(entity instanceof Map) {
                 writeMap( (Map<String, Object>)entity,  prefix + "[" + i + "]",  ctx);
             } else
-                if(entity instanceof String ||  entity instanceof Long || entity instanceof Integer || entity instanceof Boolean) {
+            if(entity instanceof String ||  entity instanceof Long || entity instanceof Integer || entity instanceof Boolean) {
                 ctx.setAttribute(prefix, entity.toString());
                 getLogger().debug(prefix  + " : " + entity.toString());
             }
@@ -484,6 +486,7 @@ public abstract class AAIDeclarations implements AAIClient {
                     path = request.getRequestUrl("GET", null);
                     params.put("vserver-selflink", path.toString());
                 } catch (UnsupportedEncodingException | MalformedURLException | URISyntaxException e) {
+                    getLogger().warn("URL error Exception", e);
                     params.put("vserver-selflink", "/vserver");
                 }
             }
@@ -598,6 +601,7 @@ public abstract class AAIDeclarations implements AAIClient {
             request.processRequestPathValues(nameValues);
             getExecutor().patch(request, resourceVersion);
         } catch(AAIServiceException aaiexc) {
+            getLogger().warn("AAI Service Exception", aaiexc);
             if(aaiexc.getReturnCode() == 404)
                 return QueryStatus.NOT_FOUND;
             else
@@ -670,6 +674,7 @@ public abstract class AAIDeclarations implements AAIClient {
                         return QueryStatus.SUCCESS;
                     }
                 } catch(AAIServiceException aaiexc) {
+                    getLogger().warn("AAI Service Exception", aaiexc);
                     if(aaiexc.getReturnCode() == 404)
                         return QueryStatus.NOT_FOUND;
                     else
@@ -758,7 +763,7 @@ public abstract class AAIDeclarations implements AAIClient {
         throw new SvcLogicException("Method AAIService.notify() has not been implemented yet");
     }
 
-//    @Override
+    //    @Override
     public QueryStatus newModelQuery(String resource, boolean localOnly, String select, String key, String prefix, String orderBy, SvcLogicContext ctx) {
 
         QueryStatus retval = QueryStatus.SUCCESS;
@@ -791,6 +796,7 @@ public abstract class AAIDeclarations implements AAIClient {
             retval = processResponseData(rv, resource, request, prefix,  ctx, nameValues, modifier);
 
         } catch(AAIServiceException aaiexc) {
+            getLogger().warn("AAI Service Exception", aaiexc);
             int errorCode = aaiexc.getReturnCode();
             ctx.setAttribute(prefix + ".error.message", aaiexc.getMessage());
             if(errorCode >= 300) {
@@ -815,53 +821,53 @@ public abstract class AAIDeclarations implements AAIClient {
     {
         Object response;
 
+        if(rv == null) {
+            return QueryStatus.NOT_FOUND;
+        }
+
+        response = request.jsonStringToObject(rv);
+        if(response == null) {
+            return QueryStatus.NOT_FOUND;
+        }
+
+        if("generic-query".equals(resource)) {
+            SearchResults rd = SearchResults.class.cast(response);
+            List<ResultData> rdList = rd.getResultData();
+            if(rdList == null || rdList.isEmpty()) {
+                return QueryStatus.NOT_FOUND;
+            }
+            ResultData rDatum = rdList.get(0);
+            nameValues.put("selflink", rDatum.getResourceLink());
+            AAIRequest req2 = AAIRequest.createRequest(rDatum.getResourceType(), nameValues);
+            req2.processRequestPathValues(nameValues);
+            rv = getExecutor().get(req2);
             if(rv == null) {
                 return QueryStatus.NOT_FOUND;
             }
 
-            response = request.jsonStringToObject(rv);
+            response = req2.jsonStringToObject(rv);
             if(response == null) {
                 return QueryStatus.NOT_FOUND;
             }
+        }
 
-            if("generic-query".equals(resource)) {
-                SearchResults rd = SearchResults.class.cast(response);
-                List<ResultData> rdList = rd.getResultData();
-                if(rdList == null || rdList.isEmpty()) {
-                    return QueryStatus.NOT_FOUND;
-                }
-                ResultData rDatum = rdList.get(0);
-                nameValues.put("selflink", rDatum.getResourceLink());
-                AAIRequest req2 = AAIRequest.createRequest(rDatum.getResourceType(), nameValues);
-                req2.processRequestPathValues(nameValues);
-                rv = getExecutor().get(req2);
-                if(rv == null) {
-                    return QueryStatus.NOT_FOUND;
-                }
-
-                response = req2.jsonStringToObject(rv);
-                if(response == null) {
-                    return QueryStatus.NOT_FOUND;
-                }
+        if("named-query".equals(resource)) {
+            InventoryResponseItems rd = InventoryResponseItems.class.cast(response);
+            List<InventoryResponseItem> iRIlist = rd.getInventoryResponseItem();
+            if(iRIlist == null || iRIlist.isEmpty()) {
+                return QueryStatus.NOT_FOUND;
             }
+        }
 
-            if("named-query".equals(resource)) {
-                InventoryResponseItems rd = InventoryResponseItems.class.cast(response);
-                List<InventoryResponseItem> iRIlist = rd.getInventoryResponseItem();
-                if(iRIlist == null || iRIlist.isEmpty()) {
-                    return QueryStatus.NOT_FOUND;
-                }
+        if("nodes-query".equals(resource)) {
+            SearchResults rd = SearchResults.class.cast(response);
+            List<ResultData> rdList = rd.getResultData();
+            if(rdList == null || rdList.isEmpty()) {
+                return QueryStatus.NOT_FOUND;
             }
-
-            if("nodes-query".equals(resource)) {
-                SearchResults rd = SearchResults.class.cast(response);
-                List<ResultData> rdList = rd.getResultData();
-                if(rdList == null || rdList.isEmpty()) {
-                    return QueryStatus.NOT_FOUND;
-                }
-                ResultData rDatum = rdList.get(0);
-                response = rDatum;
-            }
+            ResultData rDatum = rdList.get(0);
+            response = rDatum;
+        }
 
         if("formatted-query".equals(resource) || "custom-query".equals(resource)) {
             FormattedQueryResultList rd = FormattedQueryResultList.class.cast(response);
@@ -885,90 +891,90 @@ public abstract class AAIDeclarations implements AAIClient {
             getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
         }
 
-            String preFix;
-            if(prefix == null || prefix.isEmpty()) {
-                preFix = "";
-            } else {
-                preFix = prefix + ".";
+        String preFix;
+        if(prefix == null || prefix.isEmpty()) {
+            preFix = "";
+        } else {
+            preFix = prefix + ".";
+        }
+
+        Map<String,Object> props = objectToProperties(response);
+        Set<String> keys = props.keySet();
+        for(String theKey: keys) {
+            if(getLogger().isTraceEnabled())
+                getLogger().trace(theKey);
+
+            Object value = props.get(theKey);
+            if(value == null)
+                continue;
+            Object type = value.getClass();
+            if(value instanceof String) {
+                ctx.setAttribute(preFix + theKey, value.toString());
+                continue;
+            }
+            if(value instanceof Boolean) {
+                ctx.setAttribute(preFix + theKey, value.toString());
+                continue;
+            }
+            if(value instanceof Integer) {
+                ctx.setAttribute(preFix + theKey, value.toString());
+                continue;
+            }
+            if(value instanceof Long) {
+                ctx.setAttribute(preFix + theKey, value.toString());
+                continue;
             }
 
-            Map<String,Object> props = objectToProperties(response);
-            Set<String> keys = props.keySet();
-            for(String theKey: keys) {
-                if(getLogger().isTraceEnabled())
-                    getLogger().trace(theKey);
-
-                Object value = props.get(theKey);
-                if(value == null)
-                    continue;
-                Object type = value.getClass();
-                if(value instanceof String) {
-                    ctx.setAttribute(preFix + theKey, value.toString());
-                    continue;
+            if(value instanceof ArrayList) {
+                ArrayList<?> array = ArrayList.class.cast(value);
+                for(int i = 0; i < array.size(); i++) {
+                    writeList(array, String.format("%s.%s", prefix, theKey), ctx);
                 }
-                if(value instanceof Boolean) {
-                    ctx.setAttribute(preFix + theKey, value.toString());
-                    continue;
-                }
-                if(value instanceof Integer) {
-                    ctx.setAttribute(preFix + theKey, value.toString());
-                    continue;
-                }
-                if(value instanceof Long) {
-                    ctx.setAttribute(preFix + theKey, value.toString());
-                    continue;
-                }
+                continue;
+            }
 
-                if(value instanceof ArrayList) {
-                    ArrayList<?> array = ArrayList.class.cast(value);
-                    for(int i = 0; i < array.size(); i++) {
-                        writeList(array, String.format("%s.%s", prefix, theKey), ctx);
-                    }
-                    continue;
-                }
+            if("relationship-list".equals(theKey)){
+                Map<String, Object> relationshipList = (Map<String, Object>)value;
+                // we are interested in seeing just the selected relationship
+                if(theKey.equals(modifier)) {
+                    List<?> relationships = (List<?>)relationshipList.get("relationship");
+                    if(relationships != null && !relationships.isEmpty()) {
 
-                if("relationship-list".equals(theKey)){
-                    Map<String, Object> relationshipList = (Map<String, Object>)value;
-                    // we are interested in seeing just the selected relationship
-                    if(theKey.equals(modifier)) {
-                        List<?> relationships = (List<?>)relationshipList.get("relationship");
-                        if(relationships != null && !relationships.isEmpty()) {
+                        List newRelationships = new LinkedList();
+                        newRelationships.addAll(relationships);
 
-                            List newRelationships = new LinkedList();
-                            newRelationships.addAll(relationships);
+                        for(Object obj : newRelationships){
+                            if(obj instanceof Map<?, ?>) {
+                                Map<?, ?> relProperties = (Map<?, ?>)obj;
+                                if(relProperties.containsKey("related-to")) {
+                                    Object relPropsRelatedTo = relProperties.get("related-to");
 
-                            for(Object obj : newRelationships){
-                                if(obj instanceof Map<?, ?>) {
-                                    Map<?, ?> relProperties = (Map<?, ?>)obj;
-                                    if(relProperties.containsKey("related-to")) {
-                                        Object relPropsRelatedTo = relProperties.get("related-to");
-
-                                        String relatedTo = nameValues.get("related_to");
-                                        if(relatedTo != null) {
-                                            relatedTo = relatedTo.trim().replace("'", "").replace("$", "").replace("'", "");
-                                            if(!relatedTo.equals(relPropsRelatedTo)) {
-                                                relationships.remove(relProperties);
-                                            }
-                                            continue;
-                                        } else {
-                                            continue;
+                                    String relatedTo = nameValues.get("related_to");
+                                    if(relatedTo != null) {
+                                        relatedTo = relatedTo.trim().replace("'", "").replace("$", "").replace("'", "");
+                                        if(!relatedTo.equals(relPropsRelatedTo)) {
+                                            relationships.remove(relProperties);
                                         }
+                                        continue;
+                                    } else {
+                                        continue;
                                     }
                                 }
                             }
                         }
                     }
-                    writeMap(relationshipList, String.format("%s.%s", prefix, theKey), ctx);
-                    continue;
                 }
-
-                if(value instanceof Map) {
-                    Map<String, Object> subnetsList = (Map<String, Object>)value;
-                    writeMap(subnetsList, String.format("%s.%s", prefix, theKey), ctx);
-                    continue;
-                }
-
+                writeMap(relationshipList, String.format("%s.%s", prefix, theKey), ctx);
+                continue;
             }
+
+            if(value instanceof Map) {
+                Map<String, Object> subnetsList = (Map<String, Object>)value;
+                writeMap(subnetsList, String.format("%s.%s", prefix, theKey), ctx);
+                continue;
+            }
+
+        }
         return QueryStatus.SUCCESS;
     }
 
@@ -1003,6 +1009,7 @@ public abstract class AAIDeclarations implements AAIClient {
             String rv = getExecutor().get(request);
             ctx.setAttribute(prefix, rv);
         } catch(AAIServiceException aaiexc) {
+            getLogger().warn("AAI Service Exception", aaiexc);
             if(aaiexc.getReturnCode() == 404)
                 return QueryStatus.NOT_FOUND;
 
@@ -1141,7 +1148,7 @@ public abstract class AAIDeclarations implements AAIClient {
                                     setters.put(id, setter);
                                 }
                             } catch(Exception exc) {
-
+                                getLogger().warn("AAI Service Exception", exc);
                             }
 
                             Method getter;
@@ -1151,7 +1158,7 @@ public abstract class AAIDeclarations implements AAIClient {
                                     getters.put(id, getter);
                                 }
                             } catch(Exception exc) {
-
+                                getLogger().warn("AAI Service Exception", exc);
                             }
 
                         }
@@ -1194,7 +1201,6 @@ public abstract class AAIDeclarations implements AAIClient {
                             Object o = method.invoke(instance, arglist);
                             if(o instanceof ArrayList) {
                                 ArrayList<String> values = (ArrayList<String>)o;
-//                                getLogger().debug(String.format("Processing %s with parameter %s", types[0].getName(), value));
                                 value = value.replace("[", "").replace("]", "");
                                 List<String> items = Arrays.asList(value.split("\\s*,\\s*"));
                                 for(String s : items) {
@@ -1215,7 +1221,7 @@ public abstract class AAIDeclarations implements AAIClient {
                 Object obj = null;
                 Method getRelationshipListMethod = null;
                 try {
-                     getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
+                    getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
                 } catch(Exception exc) {
                     getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
                 }
@@ -1276,10 +1282,10 @@ public abstract class AAIDeclarations implements AAIClient {
                         while(true) {
                             String searchRelationshipKey = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-key";
                             String searchRelationshipValue = "relationship-list.relationship[" + i + "].relationship-data[" + j + "].relationship-value";
-                                if(!params.containsKey(searchRelationshipKey))
+                            if(!params.containsKey(searchRelationshipKey))
                                 break;
 
-                                relParams.put(params.get(searchRelationshipKey), params.get(searchRelationshipValue));
+                            relParams.put(params.get(searchRelationshipKey), params.get(searchRelationshipValue));
                             j++;
                         }
                         AAIRequest rlRequest = AAIRequest.createRequest(relatedTo, relParams);
@@ -1358,18 +1364,18 @@ public abstract class AAIDeclarations implements AAIClient {
                     vlan.setVlanInterface(vlanInterface);
 
                     if(vlanIdInner != null) {
-                    Long iVlanIdInner = Long.parseLong(vlanIdInner);
-                    vlan.setVlanIdInner(iVlanIdInner);
+                        Long iVlanIdInner = Long.parseLong(vlanIdInner);
+                        vlan.setVlanIdInner(iVlanIdInner);
                     }
 
                     if(vlanIdOute != null) {
                         Long iVlanIdOuter = Long.parseLong(vlanIdOute);
-                    vlan.setVlanIdOuter(iVlanIdOuter);
+                        vlan.setVlanIdOuter(iVlanIdOuter);
                     }
 
                     if(speedValue != null) {
-                    vlan.setSpeedValue(speedValue);
-                    vlan.setSpeedUnits(speedUnits);
+                        vlan.setSpeedValue(speedValue);
+                        vlan.setSpeedUnits(speedUnits);
                     }
 
                     vlanList.getVlan().add(vlan);
@@ -1439,15 +1445,15 @@ public abstract class AAIDeclarations implements AAIClient {
 
             request.processRequestPathValues(nameValues);
             request.setRequestObject(instance);
-                Object response = getExecutor().post(request);
-                if(request.expectsDataFromPUTRequest()){
-                    if(response != null && response instanceof String) {
-                        String rv = response.toString();
-                        QueryStatus retval = processResponseData(rv, resource, request, prefix,  ctx, nameValues, null);
-                        getLogger().debug("newModelSave - returning " + retval.toString());
-                        return retval;
-                    }
+            Object response = getExecutor().post(request);
+            if(request.expectsDataFromPUTRequest()){
+                if(response != null && response instanceof String) {
+                    String rv = response.toString();
+                    QueryStatus retval = processResponseData(rv, resource, request, prefix,  ctx, nameValues, null);
+                    getLogger().debug("newModelSave - returning " + retval.toString());
+                    return retval;
                 }
+            }
 
         } catch(AAIServiceException exc){
             ctx.setAttribute(prefix + ".error.message", exc.getMessage());
@@ -1498,7 +1504,7 @@ public abstract class AAIDeclarations implements AAIClient {
             Object obj = null;
             Method getRelationshipListMethod = null;
             try {
-                 getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
+                getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
             } catch(Exception exc) {
                 getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
             }
@@ -1787,7 +1793,7 @@ public abstract class AAIDeclarations implements AAIClient {
             Object obj = null;
             Method getRelationshipListMethod = null;
             try {
-                 getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
+                getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
             } catch(Exception exc) {
                 getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
             }
@@ -1832,13 +1838,13 @@ public abstract class AAIDeclarations implements AAIClient {
                             if(localRelatedLink.endsWith(relatedLink)) {
                                 getLogger().debug(String.format("Found relationship of '%s' to keyword '%s'", relationship.getRelatedTo(),  relatedTo));
                                 relationshipsToDelete.add(relationship);
+                            }
                         }
-                    }
                     } else {
-                    getLogger().debug(String.format("Found relationship of '%s' to keyword '%s'", relationship.getRelatedTo(),  relatedTo));
-                    relationshipsToDelete.add(relationship);
+                        getLogger().debug(String.format("Found relationship of '%s' to keyword '%s'", relationship.getRelatedTo(),  relatedTo));
+                        relationshipsToDelete.add(relationship);
+                    }
                 }
-            }
             }
             if(relationshipsToDelete == null || relationshipsToDelete.isEmpty()) {
                 getLogger().info(String.format("Relationship has not been found for %s", key));
@@ -2002,7 +2008,7 @@ public abstract class AAIDeclarations implements AAIClient {
     }
 
     /**
-    */
+     */
     protected NamedQueryData extractNamedQueryDataFromQueryPrefix(HashMap<String, String> nameValues, Map<String, String> parms) {
         if(parms.isEmpty()) {
             return null;
@@ -2055,15 +2061,15 @@ public abstract class AAIDeclarations implements AAIClient {
                             }
 
                             switch(split[1]) {
-                            case "link-name":
-                                logicalLink.setLinkName(value);
-                                break;
-                            case "link-type":
-                                logicalLink.setLinkType(value);
-                                break;
-                            case "operational-state":
-                                logicalLink.setOperationalStatus(value);
-                                break;
+                                case "link-name":
+                                    logicalLink.setLinkName(value);
+                                    break;
+                                case "link-type":
+                                    logicalLink.setLinkType(value);
+                                    break;
+                                case "operational-state":
+                                    logicalLink.setOperationalStatus(value);
+                                    break;
                             }
 
                         } else if("pnf".equals(split[0])) {
