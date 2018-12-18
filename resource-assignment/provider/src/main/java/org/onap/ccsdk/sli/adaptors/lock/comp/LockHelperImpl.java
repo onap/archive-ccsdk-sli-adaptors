@@ -73,6 +73,7 @@ public class LockHelperImpl implements LockHelper {
                 try {
                     Thread.sleep(lockWait * 1000);
                 } catch (InterruptedException ex) {
+                    log.error("Interrupted Exception", ex);
                 }
             }
         }
@@ -80,7 +81,7 @@ public class LockHelperImpl implements LockHelper {
 
     @Override
     public void unlock(Collection<String> lockNames, boolean force) {
-        if (lockNames == null || lockNames.size() == 0) {
+        if (lockNames == null || lockNames.isEmpty()) {
             return;
         }
 
@@ -105,7 +106,7 @@ public class LockHelperImpl implements LockHelper {
     }
 
     public void tryLock(Collection<String> resourceNameList, String lockRequester, int lockTimeout /* Seconds */) {
-        if (resourceNameList == null || resourceNameList.size() == 0) {
+        if (resourceNameList == null || resourceNameList.isEmpty()) {
             return;
         }
 
