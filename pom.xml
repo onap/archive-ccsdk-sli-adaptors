@@ -116,6 +116,7 @@
         <module>resource-assignment</module>
         <module>sql-resource</module>
         <module>features</module>
+        <module>artifacts</module>
     </modules>
     <organization>
         <name>ONAP</name>
