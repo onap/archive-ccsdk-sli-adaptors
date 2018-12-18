@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 							reserved.
+ * Modifications Copyright (C) 2018 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,7 +147,7 @@ public class ResourceAllocator implements SvcLogicResource {
             ResourceData rd = endPointAllocator.getResource(rt.resourceTargetType, rt.resourceTargetId, rr.resourceName,
                     rr.resourceEntityTypeFilter, rr.resourceEntityIdFilter, rr.resourceShareGroupFilter);
             setResourceDataInResponse(Collections.singletonList(rd), rsList);
-        } else if ((rr!=null && rr.resourceTargetTypeFilter != null || rr.resourceTargetIdFilter != null)
+        } else if ((rr!=null && (rr.resourceTargetTypeFilter != null || rr.resourceTargetIdFilter != null))
                 && rr.resourceName != null) {
             List<ResourceData> rdlist = endPointAllocator.getResourcesForTarget(rr.resourceTargetTypeFilter,
                     rr.resourceTargetIdFilter, rr.resourceName);
@@ -294,7 +295,7 @@ public class ResourceAllocator implements SvcLogicResource {
         StrUtil.info(log, rt);
         StrUtil.info(log, rr);
 
-        boolean change = requestType.equalsIgnoreCase("change");
+        boolean change = "change".equalsIgnoreCase(requestType);
 
         List<ResourceData> rlist = endPointAllocator.allocateResources(serviceModel, sd, rt, rr, checkOnly, change);
 
@@ -302,7 +303,7 @@ public class ResourceAllocator implements SvcLogicResource {
             setResourceDataInContext(ctx, prefix, rlist);
 
             for (ResourceData rd : rlist) {
-                if (!rd.status.equals("Success")) {
+                if (!"Success".equals(rd.status)) {
                     log.info("Capacity not found for: " + sd.resourceEntityType + "::" + sd.resourceEntityId);
                     return QueryStatus.NOT_FOUND;
                 }
@@ -322,7 +323,7 @@ public class ResourceAllocator implements SvcLogicResource {
         StrUtil.info(log, rt);
         StrUtil.info(log, rr);
 
-        boolean change = requestType.equalsIgnoreCase("change");
+        boolean change = "change".equalsIgnoreCase(requestType);
 
         List<ResourceData> rlist = endPointAllocator.allocateResources(serviceModel, sd, rt, rr, rr.checkOnly, change);
 
@@ -330,7 +331,7 @@ public class ResourceAllocator implements SvcLogicResource {
             setResourceDataInResponse(rlist, rsList);
 
             for (ResourceData rd : rlist) {
-                if (!rd.status.equals("Success")) {
+                if (!"Success".equals(rd.status)) {
                     log.info("Capacity not found for: " + sd.resourceEntityType + "::" + sd.resourceEntityId);
                     return AllocationStatus.ResourceNotFound;
                 }
@@ -350,19 +351,19 @@ public class ResourceAllocator implements SvcLogicResource {
             res.status = rd.status;
             if (rd.data != null && !rd.data.isEmpty()) {
                 for (String kk : rd.data.keySet()) {
-                    if (kk.equalsIgnoreCase("allocated")) {
+                    if ("allocated".equalsIgnoreCase(kk)) {
                         res.resourceAllocated = String.valueOf(rd.data.get(kk));
                     }
 
-                    if (kk.equalsIgnoreCase("used")) {
+                    if ("used".equalsIgnoreCase(kk)) {
                         res.resourceUsed = String.valueOf(rd.data.get(kk));
                     }
 
-                    if (kk.equalsIgnoreCase("available")) {
+                    if ("available".equalsIgnoreCase(kk)) {
                         res.resourceAvailable = String.valueOf(rd.data.get(kk));
                     }
 
-                    if (kk.equalsIgnoreCase("limit")) {
+                    if ("limit".equalsIgnoreCase(kk)) {
                         res.resourceLimit = String.valueOf(rd.data.get(kk));
                     }
 
