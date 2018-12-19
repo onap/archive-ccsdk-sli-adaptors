@@ -25,7 +25,9 @@ public class ResourceLockedException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    private String lockName, lockHolder, lockRequester;
+    private final String  lockName;
+    private final String lockHolder;
+    private final String lockRequester;
 
     public ResourceLockedException(String lockName, String lockHolder, String lockRequester) {
         this.lockName = lockName;
