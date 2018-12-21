@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *             reserved.
+ * Modifications Copyright © 2018 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +76,7 @@ public interface AAIClient extends SvcLogicResource, SvcLogicJavaPlugin {
 
     public void logKeyError(String keys);
 
-    public QueryStatus processResponseData(String rv, String resource, AAIRequest request, String prefix,  SvcLogicContext ctx, Map<String, String> nameValues, String modifier) throws JsonParseException, JsonMappingException, IOException, AAIServiceException ;
+    public QueryStatus processResponseData(String rv, String resource, AAIRequest request, String prefix,  SvcLogicContext ctx, Map<String, String> nameValues, String modifier) throws IOException, AAIServiceException ;
     public String getPathTemplateForResource(String resoourceName, String join, SvcLogicContext ctx) throws MalformedURLException;
     public boolean isDeprecatedFormat(String resource, Map<String, String> nameValues);
 
