@@ -32,9 +32,7 @@ import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.onap.ccsdk.sli.adaptors.aai.query.FormattedQueryRequestData;
 import org.onap.ccsdk.sli.adaptors.aai.query.FormattedQueryResultList;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -111,14 +109,14 @@ public class CustomQueryRequest extends AAIRequest {
 
 		String key = FORMAT;
 
-		String encoded_vnf = encodeQuery(requestProperties.getProperty(key));
-		requestUrl = requestUrl.replace("{identifier}", encoded_vnf) ;
+		String encodedVnf = encodeQuery(requestProperties.getProperty(key));
+		requestUrl = requestUrl.replace("{identifier}", encodedVnf) ;
 		aaiService.LOGwriteDateTrace("identifier", requestProperties.getProperty(key));
 
 		return requestUrl;
 	}
 
-	public AAIDatum jsonStringToObject(String jsonData) throws JsonParseException, JsonMappingException, IOException {
+	public AAIDatum jsonStringToObject(String jsonData) throws IOException {
 		if(jsonData == null) {
 			return null;
 		}
