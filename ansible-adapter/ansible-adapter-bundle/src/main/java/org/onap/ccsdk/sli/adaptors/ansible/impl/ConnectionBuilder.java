@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Copyright (C) 2017 Amdocs
+ * ================================================================================
+ * Modifications Copyright © 2018 IBM.
  * =============================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +36,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -52,7 +53,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResult;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResultCodes;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
 
@@ -76,7 +76,7 @@ public class ConnectionBuilder {
      * Constructor that initializes an http client based on certificate
      **/
     public ConnectionBuilder(String certFile) throws KeyStoreException, CertificateException, IOException,
-            KeyManagementException, NoSuchAlgorithmException, SvcLogicException {
+            KeyManagementException, NoSuchAlgorithmException {
 
         /* Point to the certificate */
         try(FileInputStream fs = new FileInputStream(certFile)){
@@ -121,7 +121,7 @@ public class ConnectionBuilder {
      * Default if Mode == 0
      */
     public ConnectionBuilder(int mode)
-            throws SSLException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+            throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         if (mode == 1) {
             SSLContext sslcontext = SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build();
             SSLConnectionSocketFactory factory = new SSLConnectionSocketFactory(sslcontext,
