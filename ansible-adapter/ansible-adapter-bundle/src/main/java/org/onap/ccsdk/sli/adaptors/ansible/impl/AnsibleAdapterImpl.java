@@ -79,9 +79,9 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
 
     private static final String CLIENT_TYPE_PROPERTY_NAME = "org.onap.appc.adapter.ansible.clientType";
     private static final String TRUSTSTORE_PROPERTY_NAME = "org.onap.appc.adapter.ansible.trustStore";
-    private static final String TRUSTPASSWD_PROPERTY_NAME = "org.onap.appc.adapter.ansible.trustStore.trustPasswd";
+    private static final String TRUSTPASSD_PROPERTY_NAME = "org.onap.appc.adapter.ansible.trustStore.trustPasswd";
 
-    private static final String PASSWORD = "Password";
+    private static final String PASSD = "Password";
 
     /**
      * The logger to be used
@@ -184,7 +184,7 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
             } else if ("TRUST_CERT".equals(clientType)) {
                 // set path to keystore file
                 String trustStoreFile = props.getProperty(TRUSTSTORE_PROPERTY_NAME);
-                String key = props.getProperty(TRUSTPASSWD_PROPERTY_NAME);
+                String key = props.getProperty(TRUSTPASSD_PROPERTY_NAME);
                 char[] trustStorePasswd = key.toCharArray();
                 logger.info("Creating http client with trustmanager from " + trustStoreFile);
                 httpClient = new ConnectionBuilder(trustStoreFile, trustStorePasswd);
@@ -222,7 +222,7 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
 
             agentUrl = (String) jsonPayload.remove("AgentUrl");
             user = (String) jsonPayload.remove("User");
-            password = (String) jsonPayload.remove(PASSWORD);
+            password = (String) jsonPayload.remove(PASSD);
             id = jsonPayload.getString("Id");
             payload = jsonPayload.toString();
             logger.info("Updated Payload  = " + payload);
@@ -316,7 +316,7 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
 
         try {
             // Try to retrieve the test results (modify the URL for that)
-            AnsibleResult testResult = queryServer(reqUri, params.get("User"), params.get(PASSWORD));
+            AnsibleResult testResult = queryServer(reqUri, params.get("User"), params.get(PASSD));
             code = testResult.getStatusCode();
             message = testResult.getStatusMessage();
 
@@ -331,6 +331,7 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
 
             logger.info("Request response = " + message);
         } catch (SvcLogicException e) {
+            logger.error(APPC_EXCEPTION_CAUGHT, e);
             doFailure(ctx, AnsibleResultCodes.UNKNOWN_EXCEPTION.getValue(),
                     "Exception encountered retrieving result : " + e.getMessage());
             return;
@@ -377,7 +378,7 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
         String message = StringUtils.EMPTY;
         try {
             // Try to retrieve the test results (modify the url for that)
-            AnsibleResult testResult = queryServer(reqUri, params.get("User"), params.get(PASSWORD));
+            AnsibleResult testResult = queryServer(reqUri, params.get("User"), params.get(PASSD));
             message = testResult.getStatusMessage();
             logger.info("Request output = " + message);
             ctx.setAttribute(LOG_ATTRIBUTE_NAME, message);
