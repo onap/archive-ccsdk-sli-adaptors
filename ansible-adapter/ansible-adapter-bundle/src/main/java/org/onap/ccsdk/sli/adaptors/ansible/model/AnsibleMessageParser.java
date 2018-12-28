@@ -6,6 +6,8 @@
  * ================================================================================
  * Copyright (C) 2017 Amdocs
  * =============================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -151,6 +153,7 @@ public class AnsibleMessageParser {
             ansibleResult = new AnsibleResult(code, msg);
 
         } catch (JSONException e) {
+            LOGGER.error("JSON exception", e);
             ansibleResult = new AnsibleResult(600, "Error parsing response = " + input + ". Error = " + e.getMessage());
         }
         return ansibleResult;
@@ -168,6 +171,7 @@ public class AnsibleMessageParser {
             JSONObject postResponse = new JSONObject(input);
             ansibleResult = parseGetResponseNested(ansibleResult, postResponse);
         } catch (JSONException e) {
+            LOGGER.error("JSON exception", e);
             ansibleResult = new AnsibleResult(AnsibleResultCodes.INVALID_PAYLOAD.getValue(),
                     "Error parsing response = " + input + ". Error = " + e.getMessage(), "");
         }
@@ -196,7 +200,7 @@ public class AnsibleMessageParser {
 
             // Results are available. process them
             // Results is a dictionary of the form
-            // {host :{status:s, group:g, message:m, hostname:h}, ...}
+
             LOGGER.info("Processing results in response");
             JSONObject results = postRsp.getJSONObject("Results");
             LOGGER.info("Get JSON dictionary from Results ..");
@@ -214,10 +218,11 @@ public class AnsibleMessageParser {
 
                     LOGGER.info("Code = {}, Message = {}", subCode, message);
 
-                    if (subCode != 200 || !message.equals("SUCCESS")) {
+                    if (subCode != 200 || !("SUCCESS").equals(message)) {
                         finalCode = AnsibleResultCodes.REQ_FAILURE.getValue();
                     }
                 } catch (JSONException e) {
+                    LOGGER.error("JSON exception", e);
                     ansibleResult.setStatusCode(AnsibleResultCodes.INVALID_RESPONSE.getValue());
                     ansibleResult.setStatusMessage(String.format(
                             "Error processing response message = %s from host %s", results.getString(host), host));
