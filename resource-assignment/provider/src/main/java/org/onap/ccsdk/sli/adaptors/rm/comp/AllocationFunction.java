@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *                         reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -105,7 +107,8 @@ class AllocationFunction extends SynchronizedFunction {
     @Override
     public void _exec() throws ResourceLockedException {
         outcome = allocate(request);
-        if (outcome.status == AllocationStatus.Success) {
+
+        if ((outcome!=null) && (outcome.status == AllocationStatus.Success)) {
             for (Resource r : updateList) {
                 resourceDao.saveResource(r);
             }
@@ -132,7 +135,7 @@ class AllocationFunction extends SynchronizedFunction {
     }
 
     private MultiAssetAllocationOutcome allocateMultiAsset(MultiAssetAllocationRequest req) {
-        // TODO Auto-generated method stub
+
         return null;
     }
 
@@ -252,7 +255,7 @@ class AllocationFunction extends SynchronizedFunction {
             out.status = AllocationStatus.Success;
             foundNumbers = req.requestedNumbers;
         } else {
-            if (req.requestedNumbers != null && req.requestedNumbers.size() > 0) {
+            if (req.requestedNumbers != null && !req.requestedNumbers.isEmpty()) {
                 foundNumbers = req.requestedNumbers;
                 out.status = AllocationStatus.Success;
                 for (int n : foundNumbers) {
