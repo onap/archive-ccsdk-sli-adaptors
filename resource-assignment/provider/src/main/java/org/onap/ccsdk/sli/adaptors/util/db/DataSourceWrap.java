@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *                         reserved.
+ * Modifications Copyright (C) 2018 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,25 +75,22 @@ public class DataSourceWrap implements DataSource {
 
     @Override
     public Connection getConnection() throws SQLException {
-        Connection c = dataSource.getConnection();
-
-        log.debug("getConnection: " + c.getClass().getName());
-
-        c.setAutoCommit(true);
-        return c;
+        try (Connection c = dataSource.getConnection()){
+            log.debug("getConnection: " + c.getClass().getName());
+            c.setAutoCommit(true);
+            return c;
+        }
     }
-
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        Connection c = dataSource.getConnection(username, password);
-
-        log.debug("getConnection: " + c.getClass().getName());
-
-        c.setAutoCommit(true);
-        return c;
+        try (Connection c = dataSource.getConnection(username, password)){
+            log.debug("getConnection: " + c.getClass().getName());
+            c.setAutoCommit(true);
+            return c;
+        }
     }
 
-    public void setDataSource(DataSource dataSource) {
+        public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 }
