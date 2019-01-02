@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 			reserved.
+ * Modifications Copyright © 2018 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,19 +105,19 @@ public class GenericQueryRequest extends AAIRequest {
 
 		String encoded_vnf = encodeQuery(requestProperties.getProperty(key));
 		request_url = request_url.replace("{identifier}", encoded_vnf) ;
-		aaiService.LOGwriteDateTrace("identifier", requestProperties.getProperty(key));
+		aaiService.LOGwriteDateTrace(IDENTIFIER, requestProperties.getProperty(key));
 
 		key = VALUE;
 
 		encoded_vnf = encodeQuery(requestProperties.getProperty(key));
 		request_url = request_url.replace("{value}", encoded_vnf) ;
-		aaiService.LOGwriteDateTrace("value", requestProperties.getProperty(key));
+		aaiService.LOGwriteDateTrace(VALUE, requestProperties.getProperty(key));
 
 		key = START_NODE_TYPE;
 
 		encoded_vnf = encodeQuery(requestProperties.getProperty(key));
 		request_url = request_url.replace("{start-node-type}", encoded_vnf) ;
-		aaiService.LOGwriteDateTrace("start-node-type", requestProperties.getProperty(key));
+		aaiService.LOGwriteDateTrace(START_NODE_TYPE, requestProperties.getProperty(key));
 
 		return request_url;
 	}
