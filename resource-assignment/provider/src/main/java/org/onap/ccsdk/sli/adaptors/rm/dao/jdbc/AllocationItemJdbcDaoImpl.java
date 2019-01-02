@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *                         reserved.
+ * Modifications Copyright © 2018 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,7 +111,7 @@ public class AllocationItemJdbcDaoImpl implements AllocationItemJdbcDao {
         }
 
         if (resourceShareGroupFilter != null) {
-            if (resourceShareGroupFilter.equalsIgnoreCase("null")) {
+            if (("null").equalsIgnoreCase(resourceShareGroupFilter)) {
                 sql += " AND resource_share_group_list IS NULL";
             } else {
                 sql += " AND resource_share_group_list LIKE '" + resourceShareGroupFilter + "'";
