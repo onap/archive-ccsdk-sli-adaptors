@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>sql-resource-provider</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.4.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>ccsdk-sli-adaptors :: sql-resource :: ${project.artifactId}</name>
@@ -21,6 +21,18 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <ccsdk.sli.adaptors.version>${project.version}</ccsdk.sli.adaptors.version>
     </properties>
+
+    <dependencyManagement>
+    	<dependencies>
+    		<dependency>
+    			<groupId>org.onap.ccsdk.sli.core</groupId>
+    			<artifactId>sli-core-artifacts</artifactId>
+    			<version>${ccsdk.sli.core.version}</version>
+    			<type>pom</type>
+    			<scope>import</scope>
+    		</dependency>
+    	</dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -63,7 +75,11 @@
             <artifactId>dblib-provider</artifactId>
             <scope>provided</scope>
         </dependency>
-
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<scope>provided</scope>
+		</dependency>
     </dependencies>
 
 
