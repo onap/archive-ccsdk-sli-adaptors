@@ -19,29 +19,6 @@
 	<name>ccsdk-sli-adaptors :: features :: ${project.artifactId}</name>
 
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.opendaylight.mdsal.model</groupId>
-				<artifactId>mdsal-model-artifacts</artifactId>
-				<version>${odl.mdsal.model.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.opendaylight.controller</groupId>
-				<artifactId>mdsal-artifacts</artifactId>
-				<version>${odl.mdsal.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-                        <dependency>
-                            <groupId>org.onap.ccsdk.sli.adaptors</groupId>
-                            <artifactId>aai-service-provider</artifactId>
-                            <version>${project.version}</version>
-                        </dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
