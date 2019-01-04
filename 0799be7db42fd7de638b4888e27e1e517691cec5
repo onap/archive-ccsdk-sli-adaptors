@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_6123a6a7",
+        "filename": "resource-assignment/provider/src/main/java/org/onap/ccsdk/sli/adaptors/rm/dao/jdbc/AllocationItemJdbcDaoImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 3293
+      },
+      "writtenOn": "2019-01-04T01:45:49Z",
+      "side": 1,
+      "message": "You can also make use of StringUtils.equalsIgnoreCase for readability https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/StringUtils.html#equalsIgnoreCase-java.lang.CharSequence-java.lang.CharSequence-",
+      "range": {
+        "startLine": 114,
+        "startChar": 15,
+        "endLine": 114,
+        "endChar": 70
+      },
+      "revId": "0799be7db42fd7de638b4888e27e1e517691cec5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
