@@ -142,7 +142,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
 
                     String extension = keystorePath.substring(keystorePath.lastIndexOf(".") + 1);
 
-                    if(extension != null && !extension.isEmpty() && extension.equalsIgnoreCase("JKS")) {
+                    if(extension != null && !extension.isEmpty() && "JKS".equalsIgnoreCase(extension)) {
                         storeType = "JKS";
                     }
                     KeyStore ks = KeyStore.getInstance(storeType);
@@ -609,7 +609,8 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             }
 
             URL requestUrl = null;
-            HttpURLConnection con = getConfiguredConnection(requestUrl = request.getRequestUrl("PATCH", resourceVersion), "PATCH");
+            requestUrl = request.getRequestUrl("PATCH", resourceVersion);
+            HttpURLConnection con = getConfiguredConnection(requestUrl, "PATCH");
             ObjectMapper mapper = AAIService.getObjectMapper();
             String jsonText = request.toJSONString();
 
@@ -631,6 +632,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             try {
             	responseMessage = con.getResponseMessage();
             } catch(Exception exc) {
+                LOG.info("Exception occured", exc.getMessage());
             	responseMessage = EnglishReasonPhraseCatalog.INSTANCE.getReason(responseCode,null);
             } finally {
             	if(responseMessage == null)
