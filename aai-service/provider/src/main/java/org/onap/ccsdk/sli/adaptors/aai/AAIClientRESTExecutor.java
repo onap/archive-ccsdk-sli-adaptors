@@ -79,6 +79,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
     private String userName;
     private String userPassword;
     private final String applicationId;
+    private static final String HTTP_URL_CONNECTION_RESULT="HttpURLConnection result: {} : {}";
 
     /**
      * class Constructor
@@ -116,10 +117,9 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
 
         ignoreCertificateHostError = host_error;
 
-        HttpsURLConnection.setDefaultHostnameVerifier( new HostnameVerifier(){
-            public boolean verify(String string,SSLSession ssls) {
-                return ignoreCertificateHostError;
-            }
+        HttpsURLConnection.setDefaultHostnameVerifier( verify(String string,SSLSession ssls)  -> {
+             return ignoreCertificateHostError;
+            
         });
 
         if(truststorePath != null && truststorePassword != null && (new File(truststorePath)).exists()) {
@@ -257,7 +257,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             }
 
             // Process the response
-            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
+            LOG.info(HTTP_URL_CONNECTION_RESULT, responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
 
             if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
@@ -398,7 +398,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             		responseMessage = NOT_PROVIDED;
             }
 
-            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
+            LOG.info(HTTP_URL_CONNECTION_RESULT, responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
 
             // Process the response
@@ -481,7 +481,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             }
 
             // Process the response
-            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
+            LOG.info(HTTP_URL_CONNECTION_RESULT, responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
 
             if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
@@ -562,7 +562,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             		responseMessage = NOT_PROVIDED;
             }
 
-            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
+            LOG.info(HTTP_URL_CONNECTION_RESULT, responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
             ObjectMapper mapper = AAIService.getObjectMapper();
 
@@ -637,7 +637,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             		responseMessage = NOT_PROVIDED;
             }
 
-            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
+            LOG.info(HTTP_URL_CONNECTION_RESULT, responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
 
             // Process the response
