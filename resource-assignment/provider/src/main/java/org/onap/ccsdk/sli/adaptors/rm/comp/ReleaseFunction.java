@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *                         reserved.
+ * Modifications Copyright © 2018 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +42,9 @@ class ReleaseFunction extends SynchronizedFunction {
 
     private ResourceDao resourceDao;
 
-    private String resourceSetId, resourceUnionId, assetId;
+    private String resourceSetId;
+    private String resourceUnionId;
+    private String assetId;
 
     public ReleaseFunction(LockHelper lockHelper, ResourceDao resourceDao, String resourceSetId, String resourceUnionId,
             String assetId, Collection<String> lockNames, int lockTimeout) {
