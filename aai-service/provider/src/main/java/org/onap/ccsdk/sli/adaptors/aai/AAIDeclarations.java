@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *             reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -140,7 +142,8 @@ public abstract class AAIDeclarations implements AAIClient {
     public static final String QUERY_NODES_PATH          = "org.onap.ccsdk.sli.adaptors.aai.query.nodes";
 
     private static final String VERSION_PATTERN = "/v$/";
-
+ 
+    private static final String AAI_SERVICE_EXCEPTION = "AAI Service Exception";
 
     protected abstract Logger getLogger();
     public abstract AAIExecutorInterface getExecutor();
@@ -285,7 +288,7 @@ public abstract class AAIDeclarations implements AAIClient {
                         try {
                             vserverUrl = this.requestVserverURLNodeQuery(vserverName);
                         } catch (AAIServiceException aaiexc) {
-                            getLogger().warn("AAI Service Exception", aaiexc);
+                            getLogger().warn(AAI_SERVICE_EXCEPTION, aaiexc);
                             ctx.setAttribute(prefix + ".error.message", aaiexc.getMessage());
                             if (aaiexc.getReturnCode() >= 300) {
                                 ctx.setAttribute(prefix + ".error.http" + "" + ".response-code", Integer.toString(aaiexc.getReturnCode()));
@@ -308,7 +311,7 @@ public abstract class AAIDeclarations implements AAIClient {
                         try {
                             vserver = this.requestVServerDataByURL(vserverUrl);
                         } catch (AAIServiceException aaiexc) {
-                            getLogger().warn("AAI Service Exception", aaiexc);
+                            getLogger().warn(AAI_SERVICE_EXCEPTION, aaiexc);
                             ctx.setAttribute(prefix + ".error.message", aaiexc.getMessage());
                             if (aaiexc.getReturnCode() >= 300) {
                                 ctx.setAttribute(prefix + ".error.http" + ".response-code", Integer.toString(aaiexc.getReturnCode()));
@@ -601,7 +604,7 @@ public abstract class AAIDeclarations implements AAIClient {
             request.processRequestPathValues(nameValues);
             getExecutor().patch(request, resourceVersion);
         } catch(AAIServiceException aaiexc) {
-            getLogger().warn("AAI Service Exception", aaiexc);
+            getLogger().warn(AAI_SERVICE_EXCEPTION, aaiexc);
             if(aaiexc.getReturnCode() == 404)
                 return QueryStatus.NOT_FOUND;
             else
@@ -674,7 +677,7 @@ public abstract class AAIDeclarations implements AAIClient {
                         return QueryStatus.SUCCESS;
                     }
                 } catch(AAIServiceException aaiexc) {
-                    getLogger().warn("AAI Service Exception", aaiexc);
+                    getLogger().warn(AAI_SERVICE_EXCEPTION, aaiexc);
                     if(aaiexc.getReturnCode() == 404)
                         return QueryStatus.NOT_FOUND;
                     else
@@ -796,7 +799,7 @@ public abstract class AAIDeclarations implements AAIClient {
             retval = processResponseData(rv, resource, request, prefix,  ctx, nameValues, modifier);
 
         } catch(AAIServiceException aaiexc) {
-            getLogger().warn("AAI Service Exception", aaiexc);
+            getLogger().warn(AAI_SERVICE_EXCEPTION, aaiexc);
             int errorCode = aaiexc.getReturnCode();
             ctx.setAttribute(prefix + ".error.message", aaiexc.getMessage());
             if(errorCode >= 300) {
@@ -1009,7 +1012,7 @@ public abstract class AAIDeclarations implements AAIClient {
             String rv = getExecutor().get(request);
             ctx.setAttribute(prefix, rv);
         } catch(AAIServiceException aaiexc) {
-            getLogger().warn("AAI Service Exception", aaiexc);
+            getLogger().warn(AAI_SERVICE_EXCEPTION, aaiexc);
             if(aaiexc.getReturnCode() == 404)
                 return QueryStatus.NOT_FOUND;
 
@@ -1148,7 +1151,7 @@ public abstract class AAIDeclarations implements AAIClient {
                                     setters.put(id, setter);
                                 }
                             } catch(Exception exc) {
-                                getLogger().warn("AAI Service Exception", exc);
+                                getLogger().warn(AAI_SERVICE_EXCEPTION, exc);
                             }
 
                             Method getter;
@@ -1158,7 +1161,7 @@ public abstract class AAIDeclarations implements AAIClient {
                                     getters.put(id, getter);
                                 }
                             } catch(Exception exc) {
-                                getLogger().warn("AAI Service Exception", exc);
+                                getLogger().warn(AAI_SERVICE_EXCEPTION, exc);
                             }
 
                         }
