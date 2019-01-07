@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *                         reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -79,6 +81,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
     private String userName;
     private String userPassword;
     private final String applicationId;
+    private static final String HTTP_URL_CONNECTION_RESULT="HttpURLConnection result: {} : {}";
 
     /**
      * class Constructor
@@ -116,10 +119,9 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
 
         ignoreCertificateHostError = host_error;
 
-        HttpsURLConnection.setDefaultHostnameVerifier( new HostnameVerifier(){
-            public boolean verify(String string,SSLSession ssls) {
-                return ignoreCertificateHostError;
-            }
+        HttpsURLConnection.setDefaultHostnameVerifier( (String string,SSLSession ssls)  -> {
+             return ignoreCertificateHostError;
+            
         });
 
         if(truststorePath != null && truststorePassword != null && (new File(truststorePath)).exists()) {
@@ -257,7 +259,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             }
 
             // Process the response
-            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
+            LOG.info(HTTP_URL_CONNECTION_RESULT, responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
 
             if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
@@ -398,7 +400,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             		responseMessage = NOT_PROVIDED;
             }
 
-            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
+            LOG.info(HTTP_URL_CONNECTION_RESULT, responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
 
             // Process the response
@@ -481,7 +483,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             }
 
             // Process the response
-            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
+            LOG.info(HTTP_URL_CONNECTION_RESULT, responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
 
             if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
@@ -562,7 +564,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             		responseMessage = NOT_PROVIDED;
             }
 
-            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
+            LOG.info(HTTP_URL_CONNECTION_RESULT, responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
             ObjectMapper mapper = AAIService.getObjectMapper();
 
@@ -637,7 +639,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             		responseMessage = NOT_PROVIDED;
             }
 
-            LOG.info("HttpURLConnection result: {} : {}", responseCode, responseMessage);
+            LOG.info(HTTP_URL_CONNECTION_RESULT, responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
 
             // Process the response
