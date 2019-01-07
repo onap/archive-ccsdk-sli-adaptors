@@ -67,6 +67,7 @@ public class AnsibleMessageParser {
     private static final String VERSION_OPT_KEY = "Version";
     private static final String ACTION_OPT_KEY = "Action";
 
+    private String jsonException = "JSON exception";
     private static final Logger LOGGER = LoggerFactory.getLogger(AnsibleMessageParser.class);
 
     /**
@@ -153,7 +154,7 @@ public class AnsibleMessageParser {
             ansibleResult = new AnsibleResult(code, msg);
 
         } catch (JSONException e) {
-            LOGGER.error("JSON exception", e);
+            LOGGER.error(jsonException, e);
             ansibleResult = new AnsibleResult(600, "Error parsing response = " + input + ". Error = " + e.getMessage());
         }
         return ansibleResult;
@@ -171,7 +172,7 @@ public class AnsibleMessageParser {
             JSONObject postResponse = new JSONObject(input);
             ansibleResult = parseGetResponseNested(ansibleResult, postResponse);
         } catch (JSONException e) {
-            LOGGER.error("JSON exception", e);
+            LOGGER.error(jsonException, e);
             ansibleResult = new AnsibleResult(AnsibleResultCodes.INVALID_PAYLOAD.getValue(),
                     "Error parsing response = " + input + ". Error = " + e.getMessage(), "");
         }
@@ -222,7 +223,7 @@ public class AnsibleMessageParser {
                         finalCode = AnsibleResultCodes.REQ_FAILURE.getValue();
                     }
                 } catch (JSONException e) {
-                    LOGGER.error("JSON exception", e);
+                    LOGGER.error(jsonException, e);
                     ansibleResult.setStatusCode(AnsibleResultCodes.INVALID_RESPONSE.getValue());
                     ansibleResult.setStatusMessage(String.format(
                             "Error processing response message = %s from host %s", results.getString(host), host));
