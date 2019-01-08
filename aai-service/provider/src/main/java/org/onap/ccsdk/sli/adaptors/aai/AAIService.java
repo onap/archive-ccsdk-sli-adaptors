@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *             reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -247,10 +249,10 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
         ignoreCertificateHostError = host_error;
 
-        HttpsURLConnection.setDefaultHostnameVerifier( new HostnameVerifier(){
-            public boolean verify(String string,SSLSession ssls) {
+        HttpsURLConnection.setDefaultHostnameVerifier( (String string,SSLSession ssls) ->{
+            
                 return ignoreCertificateHostError;
-            }
+          
         });
 
         if(truststorePath != null && truststorePassword != null && (new File(truststorePath)).exists()) {
@@ -288,11 +290,10 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             if(null!=kmf) {
             	ctx.init(kmf.getKeyManagers(), null, null);
             }
-            config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties( new HostnameVerifier() {
-                    @Override
-                    public boolean verify( String s, SSLSession sslSession ) {
+            config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties( ( String s, SSLSession sslSession ) -> {
+                    
                         return ignoreCertificateHostError;
-                    }
+                    
             }, ctx));
 
             CTX = ctx;
