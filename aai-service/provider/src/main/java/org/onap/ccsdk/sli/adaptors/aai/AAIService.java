@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *             reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2019 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -113,7 +115,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     private final String targetUri;
     private final String networkVserverPath;
 
-    private final String svc_inst_qry_path;
+    private final String svc_inst_query_path;
 
     private final String ubb_notify_path;
     private final String selflinkAvpn;
@@ -145,16 +147,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
     public AAIService(final URL url) {
         this(getProperties(url));
-    }
-
-    private static Properties getProperties(URL url) {
-        Properties properties = new Properties();
-        try {
-            properties.load(url.openStream());
-        } catch (IOException exc) {
-            LOG.error("getProperties", exc);
-        }
-        return properties;
     }
 
     public AAIService(Properties props) {
@@ -222,7 +214,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         networkVserverPath =props.getProperty(NETWORK_VSERVER_PATH);
 
         props.getProperty(SVC_INSTANCE_PATH);
-        svc_inst_qry_path    = props.getProperty(SVC_INST_QRY_PATH);
+        svc_inst_query_path    = props.getProperty(SVC_INST_QRY_PATH);
         props.getProperty(PARAM_SERVICE_TYPE, "service-type");
 
         props.getProperty(P_INTERFACE_PATH);
@@ -324,9 +316,19 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             methodsField.set(null, methods);
 
         } catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException e) {
-         e.printStackTrace();
+            LOG.error("Exception occured", e);
         }
 
+    }
+
+    private static Properties getProperties(URL url) {
+        Properties properties = new Properties();
+        try {
+            properties.load(url.openStream());
+        } catch (IOException exc) {
+            LOG.error("getProperties", exc);
+        }
+        return properties;
     }
 
     public void setExecutor(AAIExecutorInterface executor) {
@@ -426,7 +428,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         InputStream inputStream = null;
 
         try {
-            String path = svc_inst_qry_path;
+            String path = svc_inst_query_path;
             path = path.replace("{svc-instance-id}", encodeQuery(svc_instance_id));
 
             String request_url = targetUri+path;
@@ -474,6 +476,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
                 try {
                     inputStream.close();
                 } catch(Exception exc) {
+                    LOG.warn("Error closing Inputstream", exc);
                 }
             }
         }
@@ -729,7 +732,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
                 try {
                     inputStream.close();
                 } catch(Exception exc) {
-
+                    LOG.warn("Error closing InputStream", exc);
                 }
             }
         }
@@ -846,7 +849,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
                 if(inputStream != null)
                 inputStream.close();
             } catch (Exception exc) {
-
+                LOG.warn("Error closing Input stream", exc);
             }
         }
     }
@@ -906,7 +909,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
                 try {
                     inputStream.close();
                 } catch(Exception exc) {
-
+                    LOG.warn("Error closing Input stream", exc);
                 }
             }
         }
@@ -976,7 +979,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
                 try {
                     inputStream.close();
                 } catch(Exception exc) {
-
+                    LOG.warn("Error closing Input stream", exc);
                 }
             }
         }
@@ -1208,12 +1211,14 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             try {
                 u = new URL(url);
             } catch (MalformedURLException e) {
+                LOG.warn("MalformedURLException", exc);
                 return false;
             }
 
             try {
                 u.toURI();
             } catch (URISyntaxException e) {
+                LOG.warn("URISyntaxException", exc);
                 return false;
             }
 
@@ -1228,6 +1233,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         try {
             u = new URI(url);
         } catch (URISyntaxException e) {
+            LOG.warn("URISyntaxException", exc);
             return false;
         }
 
