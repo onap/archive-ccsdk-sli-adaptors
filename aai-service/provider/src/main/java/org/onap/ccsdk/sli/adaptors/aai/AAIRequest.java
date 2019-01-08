@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *             reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -292,7 +294,7 @@ public abstract class AAIRequest {
             // for group search add itself, but remove singular version of itself
             if(!uniqueResources.contains(resource)) {
                 boolean replaced =  false;
-                Set<String> tmpUniqueResources = new HashSet<String>();
+                Set<String> tmpUniqueResources = new HashSet<>();
                 tmpUniqueResources.addAll(uniqueResources);
                 for(String item : tmpUniqueResources){
                     String plural = item +"s";
