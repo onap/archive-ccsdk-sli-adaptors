@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *                         reserved.
+ *  Modifications Copyright (C) 2018 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +37,8 @@ import org.springframework.jdbc.support.KeyHolder;
 
 public class ResourceJdbcDaoImpl implements ResourceJdbcDao {
 
+    private static final String baseSelectResourceQuery = "SELECT * FROM RESOURCE WHERE resource_id IN (\n";
+
     @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(ResourceJdbcDaoImpl.class);
 
@@ -44,16 +47,16 @@ public class ResourceJdbcDaoImpl implements ResourceJdbcDao {
     private static final String RESOURCE_QUERY_1_SQL =
             "SELECT * FROM RESOURCE WHERE asset_id LIKE ? AND resource_name = ?";
 
-    private static final String RESOURCE_SET_SQL = "SELECT * FROM RESOURCE WHERE resource_id IN (\n"
+    private static final String RESOURCE_SET_SQL = baseSelectResourceQuery
             + "SELECT DISTINCT resource_id FROM ALLOCATION_ITEM WHERE resource_set_id = ?)";
 
-    private static final String RESOURCE_UNION_SQL = "SELECT * FROM RESOURCE WHERE resource_id IN (\n"
+    private static final String RESOURCE_UNION_SQL = baseSelectResourceQuery
             + "SELECT DISTINCT resource_id FROM ALLOCATION_ITEM WHERE resource_union_id = ?)";
 
-    private static final String RESOURCE_SET_FOR_ASSET_SQL = "SELECT * FROM RESOURCE WHERE resource_id IN (\n"
+    private static final String RESOURCE_SET_FOR_ASSET_SQL = baseSelectResourceQuery
             + "SELECT DISTINCT resource_id FROM ALLOCATION_ITEM WHERE resource_set_id = ?) AND asset_id = ?";
 
-    private static final String RESOURCE_UNION_FOR_ASSET_SQL = "SELECT * FROM RESOURCE WHERE resource_id IN (\n"
+    private static final String RESOURCE_UNION_FOR_ASSET_SQL = baseSelectResourceQuery
             + "SELECT DISTINCT resource_id FROM ALLOCATION_ITEM WHERE resource_union_id = ?) AND asset_id = ?";
 
     private static final String INSERT_SQL = "INSERT INTO RESOURCE (\n"
