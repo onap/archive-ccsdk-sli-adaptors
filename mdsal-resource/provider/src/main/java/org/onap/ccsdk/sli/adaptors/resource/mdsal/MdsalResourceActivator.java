@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 			reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,7 +22,7 @@
  */
 
 package org.onap.ccsdk.sli.adaptors.resource.mdsal;
-
+ 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.LinkedList;
@@ -40,7 +42,7 @@ public class MdsalResourceActivator implements BundleActivator {
 
     private static final String SDNC_CONFIG_DIR = "SDNC_CONFIG_DIR";
 
-    public LinkedList<ServiceRegistration> registrations = new LinkedList<ServiceRegistration>();
+    public LinkedList<ServiceRegistration> registrations = new LinkedList<>();
 
     private static final Logger LOG = LoggerFactory
             .getLogger(MdsalResourceActivator.class);
