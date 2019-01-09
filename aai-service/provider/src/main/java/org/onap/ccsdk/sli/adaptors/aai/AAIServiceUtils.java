@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *             reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -153,7 +155,7 @@ public class AAIServiceUtils {
         String term1 = null;
         String op = null;
         String term2 = null;
-        HashMap<String, String> results = new HashMap<String, String>();
+        HashMap<String, String> results = new HashMap<>();
 
         for (int i = 0; i < keyTerms.length; i++) {
             if (term1 == null) {
@@ -267,11 +269,11 @@ public class AAIServiceUtils {
     }
 
     protected static HashMap<String,String> pathToHashMap(String path) {
-        HashMap<String, String> nameValues = new  HashMap<String, String>();
+        HashMap<String, String> nameValues = new  HashMap<>();
 
         String[] split = path.split("/");
 
-        LinkedList<String> list = new LinkedList<String>( Arrays.asList(split));
+        LinkedList<String> list = new LinkedList<>( Arrays.asList(split));
         Iterator<String> it = list.iterator();
 
         while(it.hasNext()) {
