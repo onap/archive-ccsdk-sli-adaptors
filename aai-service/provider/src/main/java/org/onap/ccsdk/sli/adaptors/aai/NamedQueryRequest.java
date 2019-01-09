@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *             reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -107,7 +109,7 @@ public class NamedQueryRequest extends AAIRequest {
                         if(innerChild != null) {
                             if(innerChild instanceof ObjectNode) {
                                 ObjectNode on = ObjectNode.class.cast(innerChild);
-                                List<String> namesToDelete = new ArrayList<String>();
+                                List<String> namesToDelete = new ArrayList<>();
                                 Iterator<String> names = on.fieldNames();
                                 while(names.hasNext()) {
                                     String name = names.next();
@@ -125,7 +127,7 @@ public class NamedQueryRequest extends AAIRequest {
                         if(innerChild != null) {
                             if(innerChild instanceof ObjectNode) {
                                 ObjectNode on = ObjectNode.class.cast(innerChild);
-                                List<String> namesToDelete = new ArrayList<String>();
+                                List<String> namesToDelete = new ArrayList<>();
                                 Iterator<String> names = on.fieldNames();
                                 while(names.hasNext()) {
                                     String name = names.next();
@@ -143,7 +145,7 @@ public class NamedQueryRequest extends AAIRequest {
                         if(innerChild != null) {
                             if(innerChild instanceof ObjectNode) {
                                 ObjectNode on = ObjectNode.class.cast(innerChild);
-                                List<String> namesToDelete = new ArrayList<String>();
+                                List<String> namesToDelete = new ArrayList<>();
                                 Iterator<String> names = on.fieldNames();
                                 while(names.hasNext()) {
                                     String name = names.next();
@@ -194,7 +196,7 @@ public class NamedQueryRequest extends AAIRequest {
         if(requestProperties.containsKey(key)) {
             encoded_vnf = encodeQuery(requestProperties.getProperty(key));
             request_url = request_url.replace("{named-query-uuid}", encoded_vnf) ;
-            aaiService.LOGwriteDateTrace("named-query-uuid", requestProperties.getProperty(key));
+            aaiService.LOGwriteDateTrace(NAMED_QUERY_UUID, requestProperties.getProperty(key));
         }
 
         key = PREFIX;
@@ -202,7 +204,7 @@ public class NamedQueryRequest extends AAIRequest {
         if(requestProperties.containsKey(key)) {
             encoded_vnf = encodeQuery(requestProperties.getProperty(key));
             request_url = request_url.replace("{prefix}", encoded_vnf) ;
-            aaiService.LOGwriteDateTrace("prefix", requestProperties.getProperty(key));
+            aaiService.LOGwriteDateTrace(PREFIX, requestProperties.getProperty(key));
         }
 
         return request_url;
