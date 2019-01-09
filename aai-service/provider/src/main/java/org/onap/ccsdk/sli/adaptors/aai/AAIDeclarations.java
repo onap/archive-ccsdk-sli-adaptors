@@ -147,6 +147,8 @@ public abstract class AAIDeclarations implements AAIClient {
 
     protected abstract Logger getLogger();
     public abstract AAIExecutorInterface getExecutor();
+    
+    private static final String RELATIONSHIP_DATA="Retrofiting relationship data: ";
 
 
     @Override
@@ -891,7 +893,7 @@ public abstract class AAIDeclarations implements AAIClient {
                 AAIServiceUtils.populateRelationshipDataFromPath(list);
             }
         } catch(Exception exc) {
-            getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
+            getLogger().debug(RELATIONSHIP_DATA + exc.getMessage());
         }
 
         String preFix;
@@ -1226,7 +1228,7 @@ public abstract class AAIDeclarations implements AAIClient {
                 try {
                     getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
                 } catch(Exception exc) {
-                    getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
+                    getLogger().debug(RELATIONSHIP_DATA + exc.getMessage());
                 }
 
                 if(getRelationshipListMethod != null){
@@ -1509,7 +1511,7 @@ public abstract class AAIDeclarations implements AAIClient {
             try {
                 getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
             } catch(Exception exc) {
-                getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
+                getLogger().debug(RELATIONSHIP_DATA + exc.getMessage());
             }
             if(getRelationshipListMethod != null){
                 try {
@@ -1798,7 +1800,7 @@ public abstract class AAIDeclarations implements AAIClient {
             try {
                 getRelationshipListMethod = resourceClass.getMethod("getRelationshipList");
             } catch(Exception exc) {
-                getLogger().debug("Retrofiting relationship data: " + exc.getMessage());
+                getLogger().debug(RELATIONSHIP_DATA + exc.getMessage());
             }
             if(getRelationshipListMethod != null){
                 try {
