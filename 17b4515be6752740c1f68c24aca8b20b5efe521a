@@ -45,6 +45,30 @@
       "revId": "17b4515be6752740c1f68c24aca8b20b5efe521a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_93a36eff",
+        "filename": "aai-service/provider/src/main/java/org/onap/ccsdk/sli/adaptors/aai/AAIDeclarations.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1089
+      },
+      "writtenOn": "2019-01-10T16:56:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9adffdf1_d301f605",
+      "range": {
+        "startLine": 151,
+        "startChar": 51,
+        "endLine": 151,
+        "endChar": 62
+      },
+      "revId": "17b4515be6752740c1f68c24aca8b20b5efe521a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
