@@ -28,6 +28,7 @@ public class TestResourceLockNode {
     public void test1() throws Exception {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("resource-name", "test-resource-1");
+        paramMap.put("lock-requester", "SDNA");
 
         resourceLockNode.lockResource(paramMap, null);
         resourceLockNode.unlockResource(paramMap, null);

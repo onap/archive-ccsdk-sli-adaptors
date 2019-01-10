@@ -28,7 +28,7 @@ public interface ResourceLockDao {
 
     void add(ResourceLock l);
 
-    void update(long id, Date lockTime, Date expirationTime, int lockCount);
+    void update(long id, String lockHolder, Date lockTime, Date expirationTime, int lockCount);
 
     ResourceLock getByResourceName(String resourceName);
 

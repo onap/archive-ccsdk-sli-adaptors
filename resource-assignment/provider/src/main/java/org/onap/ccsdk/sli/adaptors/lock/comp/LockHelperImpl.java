@@ -45,7 +45,8 @@ public class LockHelperImpl implements LockHelper {
     }
 
     @Override
-    public void lock(String resourceName, String lockRequester, int lockTimeout /* Seconds */, int lockWait /* Seconds */, int retryCount) {
+    public void lock(String resourceName, String lockRequester, int lockTimeout /* Seconds */,
+            int lockWait /* Seconds */, int retryCount) {
         lock(Collections.singleton(resourceName), lockRequester, lockTimeout, lockWait, retryCount);
     }
 
@@ -60,7 +61,8 @@ public class LockHelperImpl implements LockHelper {
     }
 
     @Override
-    public void lock(Collection<String> resourceNameList, String lockRequester, int lockTimeout /* Seconds */, int lockWait /* Seconds */, int retryCount) {
+    public void lock(Collection<String> resourceNameList, String lockRequester, int lockTimeout /* Seconds */,
+            int lockWait /* Seconds */, int retryCount) {
         for (int i = 0; true; i++) {
             try {
                 tryLock(resourceNameList, lockRequester, lockTimeout);
@@ -129,6 +131,9 @@ public class LockHelperImpl implements LockHelper {
                 }
 
                 if (l != null) {
+                    if (now.getTime() > l.expirationTime.getTime() || l.lockCount <= 0) {
+                        l.lockCount = 0;
+                    }
                     dbLockList.add(l);
                 } else {
                     insertLockNameList.add(name);
@@ -137,7 +142,7 @@ public class LockHelperImpl implements LockHelper {
 
             // Update the lock info in DB
             for (ResourceLock l : dbLockList) {
-                resourceLockDao.update(l.id, now, new Date(now.getTime() + lockTimeout * 1000), l.lockCount + 1);
+                resourceLockDao.update(l.id, lockRequester, now, new Date(now.getTime() + lockTimeout * 1000), l.lockCount + 1);
             }
 
             // Insert records for those that are not yet there
@@ -159,7 +164,9 @@ public class LockHelperImpl implements LockHelper {
 
             resourceLockDao.commit();
 
-        } finally {
+        }finally
+
+        {
             resourceLockDao.rollback();
         }
     }

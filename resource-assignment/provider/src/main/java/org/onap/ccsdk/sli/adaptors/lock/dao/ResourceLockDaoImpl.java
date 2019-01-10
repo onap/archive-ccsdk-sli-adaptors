@@ -21,8 +21,6 @@
 
 package org.onap.ccsdk.sli.adaptors.lock.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import org.onap.ccsdk.sli.adaptors.lock.data.ResourceLock;
@@ -44,32 +42,28 @@ public class ResourceLockDaoImpl implements ResourceLockDao {
         jdbcTemplate.update(
                 "INSERT INTO RESOURCE_LOCK (resource_name, lock_holder, lock_count, lock_time, expiration_time)\n" +
                         "VALUES (?, ?, ?, ?, ?)",
-                new Object[] { l.resourceName, l.lockHolder, l.lockCount, l.lockTime, l.expirationTime });
+                        new Object[] { l.resourceName, l.lockHolder, l.lockCount, l.lockTime, l.expirationTime });
     }
 
     @Override
-    public void update(long id, Date lockTime, Date expirationTime, int lockCount) {
+    public void update(long id, String lockHolder, Date lockTime, Date expirationTime, int lockCount) {
         jdbcTemplate.update(
-                "UPDATE RESOURCE_LOCK SET lock_time = ?, expiration_time = ?, lock_count = ? WHERE resource_lock_id = ?",
-                new Object[] { lockTime, expirationTime, lockCount, id });
+                "UPDATE RESOURCE_LOCK SET lock_holder = ?, lock_time = ?, expiration_time = ?, lock_count = ? WHERE resource_lock_id = ?",
+                new Object[] { lockHolder, lockTime, expirationTime, lockCount, id });
     }
 
     @Override
     public ResourceLock getByResourceName(String resourceName) {
         List<ResourceLock> ll = jdbcTemplate.query("SELECT * FROM RESOURCE_LOCK WHERE resource_name = ?",
-                new Object[] { resourceName }, new RowMapper<ResourceLock>() {
-
-                    @Override
-                    public ResourceLock mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        ResourceLock rl = new ResourceLock();
-                        rl.id = rs.getLong("resource_lock_id");
-                        rl.resourceName = rs.getString("resource_name");
-                        rl.lockHolder = rs.getString("lock_holder");
-                        rl.lockCount = rs.getInt("lock_count");
-                        rl.lockTime = rs.getTimestamp("lock_time");
-                        rl.expirationTime = rs.getTimestamp("expiration_time");
-                        return rl;
-                    }
+                new Object[] { resourceName }, (RowMapper<ResourceLock>) (rs, rowNum) -> {
+                    ResourceLock rl = new ResourceLock();
+                    rl.id = rs.getLong("resource_lock_id");
+                    rl.resourceName = rs.getString("resource_name");
+                    rl.lockHolder = rs.getString("lock_holder");
+                    rl.lockCount = rs.getInt("lock_count");
+                    rl.lockTime = rs.getTimestamp("lock_time");
+                    rl.expirationTime = rs.getTimestamp("expiration_time");
+                    return rl;
                 });
         return ll != null && !ll.isEmpty() ? ll.get(0) : null;
     }
