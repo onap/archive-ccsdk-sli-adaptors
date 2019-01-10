@@ -51,6 +51,9 @@ public class ResourceAllocator implements SvcLogicResource {
     private static final String[] INPUT_PREFIX = {"ra-input.", "tmp.resource-allocator."};
     private static final String START_RELEASE = "Starting release for: {}";
     private static final String START_RELEASE_FOR_TARGET = "Starting release for: {} on target: {}";
+    private static final String RESOURCE_ENTITY_ID= "resource-entity-id";
+    private static final String SERVICE_INSTANCE_ID="service-instance-id";
+    private static final String RESERVATION_ENTITY_ID= "reservation-entity-id";
 
     private ResourceManager resourceManager;
     private EndPointAllocator endPointAllocator;
@@ -101,7 +104,7 @@ public class ResourceAllocator implements SvcLogicResource {
             String orderBy, SvcLogicContext ctx) throws SvcLogicException {
 
         String resourceEntityId = getParam(ctx,
-                new String[] {"service-instance-id", "reservation-entity-id", "resource-entity-id"}, false, null);
+                new String[] {SERVICE_INSTANCE_ID, RESERVATION_ENTITY_ID, RESOURCE_ENTITY_ID}, false, null);
         String resourceEntityType =
                 getParam(ctx, new String[] {"reservation-entity-type", "resource-entity-type"}, false, null);
         String resourceEntityVersion =
@@ -198,7 +201,7 @@ public class ResourceAllocator implements SvcLogicResource {
     @Override
     public QueryStatus release(String resource, String key, SvcLogicContext ctx) throws SvcLogicException {
         String resourceEntityId = getParam(ctx,
-                new String[] {"service-instance-id", "reservation-entity-id", "resource-entity-id"}, true, null);
+                new String[] {SERVICE_INSTANCE_ID, RESERVATION_ENTITY_ID, RESOURCE_ENTITY_ID}, true, null);
         String resourceEntityType =
                 getParam(ctx, new String[] {"reservation-entity-type", "resource-entity-type"}, true, null);
         String resourceEntityVersion =
@@ -386,7 +389,7 @@ public class ResourceAllocator implements SvcLogicResource {
     private ResourceEntity getResourceEntityData(SvcLogicContext ctx) throws SvcLogicException {
         ResourceEntity sd = new ResourceEntity();
         sd.resourceEntityId = getParam(ctx,
-                new String[] {"service-instance-id", "reservation-entity-id", "resource-entity-id"}, true, null);
+                new String[] {SERVICE_INSTANCE_ID, RESERVATION_ENTITY_ID, RESOURCE_ENTITY_ID}, true, null);
         sd.resourceEntityType =
                 getParam(ctx, new String[] {"reservation-entity-type", "resource-entity-type"}, true, null);
         sd.resourceEntityVersion =
