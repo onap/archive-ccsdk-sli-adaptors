@@ -69,6 +69,29 @@
       "revId": "17b4515be6752740c1f68c24aca8b20b5efe521a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_b05a2828",
+        "filename": "aai-service/provider/src/main/java/org/onap/ccsdk/sli/adaptors/aai/AAIDeclarations.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2019-01-10T19:34:46Z",
+      "side": 1,
+      "message": "You fixed the variable name but not the message ;-)\nThis should be Retrofitting (2 t\u0027s)",
+      "range": {
+        "startLine": 151,
+        "startChar": 51,
+        "endLine": 151,
+        "endChar": 62
+      },
+      "revId": "17b4515be6752740c1f68c24aca8b20b5efe521a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
