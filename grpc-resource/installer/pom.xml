@@ -121,7 +121,17 @@
                             <useRepositoryLayout>true</useRepositoryLayout>
                             <addParentPoms>false</addParentPoms>
                             <copyPom>false</copyPom>
-                            <includeGroupIds>org.onap.ccsdk.sli.adaptors</includeGroupIds>
+                            <includeGroupIds>
+                                org.onap.ccsdk.sli.adaptors,
+                                org.onap.ccsdk.apps.components,
+                                io.grpc,
+                                io.netty,
+                                com.google.protobuf,
+                                io.opencensus,
+                                com.google.api.grpc,
+                                com.google.errorprone,
+                                org.codehaus.mojo
+                            </includeGroupIds>
                             <scope>provided</scope>
                         </configuration>
                     </execution>
