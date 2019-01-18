@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.ccsdk.sli.adaptors.grpc;
+package org.onap.ccsdk.sli.adaptors.grpc.cds;
 
 public class GrpcClientTest {
 

@@ -15,15 +15,25 @@
  */
 package org.onap.ccsdk.sli.adaptors.grpc;
 
-public class GrpcClient {
+import java.util.Map;
+import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
+import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
+import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
 
-//    ManagedChannel channel = ManagedChannelBuilder
-//        .forAddress("localhost", 8080)
-//        .executor(Executors.newSingleThreadExecutor())
-//        .intercept()
-//        .userAgent("CCSDK gRPC Client")
-//        .usePlaintext()
-//        //.useTransportSecurity()
-//        .build();
+public interface GrpcClient extends SvcLogicJavaPlugin {
 
+    /**
+     * Send a request to process to a gRPC server.
+     *
+     * @param parameters HashMap<String,String> of parameters passed by the DG to this function
+     * <table border="1">
+     * <thead><th>parameter</th><th>Mandatory/Optional</th><th>description</th></thead>
+     * <tbody>
+     * <tr><td>host</td><td>Mandatory</td><td>The gRPC server hostname or ip address.</td></tr>
+     * <tr><td>port</td><td>Mandatory</td><td>The gRPC server port</td></tr>
+     * <tr><td>prefix_id</td><td>Mandatory</td><td>The prefix from which to get next available IP.</td></tr>
+     * </tbody>
+     * </table>
+     */
+    QueryStatus sendRequest(Map<String, String> parameters, SvcLogicContext ctx);
 }
