@@ -50,10 +50,17 @@
     </dependencyManagement>
 
     <dependencies>
+
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sliPluginUtils-provider</artifactId>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.onap.ccsdk.apps.controllerblueprints</groupId>
+            <artifactId>proto-definition</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- GRPC Dependencies -->
@@ -76,6 +83,11 @@
             <groupId>io.grpc</groupId>
             <artifactId>grpc-stub</artifactId>
             <version>${grpc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>2.6.1</version>
         </dependency>
 
         <!--Testing-->
