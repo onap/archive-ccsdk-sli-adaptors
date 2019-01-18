@@ -17,6 +17,17 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
   odl:use-default-for-reference-types="true">
 
-    <bean id="grpcClient" class="org.onap.ccsdk.sli.adaptors.grpc.GrpcClient"/>
+
+    <bean id="grpcProperty" class="org.onap.ccsdk.sli.adaptors.grpc.GrpcProperties"/>
+
+    <!--CDS-->
+
+    <bean id="blueprintProcessingHandler" class="org.onap.ccsdk.sli.adaptors.grpc.cds.BlueprintProcessingHandler"/>
+
+    <bean id="grpcClient" class="org.onap.ccsdk.sli.adaptors.grpc.cds.BlueprintProcessingClient"
+      init-method="start" destroy-method="stop">
+        <argument ref="blueprintProcessingHandler"/>
+        <argument ref="grpcProperty"/>
+    </bean>
 
 </blueprint>
