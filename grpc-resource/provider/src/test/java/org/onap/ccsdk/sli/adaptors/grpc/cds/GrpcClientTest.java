@@ -13,17 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.ccsdk.sli.adaptors.grpc;
+package org.onap.ccsdk.sli.adaptors.grpc.cds;
 
-public class GrpcClient {
-
-//    ManagedChannel channel = ManagedChannelBuilder
-//        .forAddress("localhost", 8080)
-//        .executor(Executors.newSingleThreadExecutor())
-//        .intercept()
-//        .userAgent("CCSDK gRPC Client")
-//        .usePlaintext()
-//        //.useTransportSecurity()
-//        .build();
+public class GrpcClientTest {
 
 }
