@@ -50,10 +50,17 @@
     </dependencyManagement>
 
     <dependencies>
+
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sliPluginUtils-provider</artifactId>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.onap.ccsdk.apps.controllerblueprints</groupId>
+            <artifactId>proto-definition</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- GRPC Dependencies -->
