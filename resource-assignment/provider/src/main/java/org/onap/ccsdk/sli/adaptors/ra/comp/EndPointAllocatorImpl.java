@@ -39,6 +39,7 @@ import org.onap.ccsdk.sli.adaptors.rm.data.MultiResourceAllocationOutcome;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeAllocationItem;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeAllocationOutcome;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeResource;
+import org.onap.ccsdk.sli.adaptors.rm.data.ReleaseRequest;
 import org.onap.ccsdk.sli.adaptors.rm.data.Resource;
 import org.onap.ccsdk.sli.adaptors.util.str.StrUtil;
 import org.slf4j.Logger;
@@ -83,7 +84,7 @@ public class EndPointAllocatorImpl implements EndPointAllocator {
                 if (!allgood) {
                     String resourceSetId = resourceEntity.resourceEntityType + "::" + resourceEntity.resourceEntityId
                             + "::" + resourceEntity.resourceEntityVersion;
-                    resourceManager.releaseResourceSet(resourceSetId);
+                    resourceManager.releaseResources(ReleaseRequest.resourceSet(resourceSetId));
                 }
             }
         }

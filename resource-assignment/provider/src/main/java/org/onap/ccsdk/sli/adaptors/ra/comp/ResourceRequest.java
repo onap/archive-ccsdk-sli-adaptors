@@ -48,4 +48,6 @@ public class ResourceRequest {
     public String resourceShareGroupFilter;
     public String resourceTargetTypeFilter;
     public String resourceTargetIdFilter;
+    public String rangeReleaseNumbers;
+    public int limitReleaseAmount;
 }

@@ -28,6 +28,7 @@ import org.onap.ccsdk.sli.adaptors.lock.comp.LockHelper;
 import org.onap.ccsdk.sli.adaptors.rm.dao.ResourceDao;
 import org.onap.ccsdk.sli.adaptors.rm.data.AllocationOutcome;
 import org.onap.ccsdk.sli.adaptors.rm.data.AllocationRequest;
+import org.onap.ccsdk.sli.adaptors.rm.data.ReleaseRequest;
 import org.onap.ccsdk.sli.adaptors.rm.data.Resource;
 import org.onap.ccsdk.sli.adaptors.rm.util.ResourceUtil;
 import org.onap.ccsdk.sli.adaptors.util.str.StrUtil;
@@ -80,54 +81,31 @@ public class ResourceManagerImpl implements ResourceManager {
     }
 
     @Override
-    public void releaseResourceSet(String resourceSetId) {
-        List<Resource> resourceList = resourceDao.getResourceSet(resourceSetId);
-        if (resourceList == null || resourceList.isEmpty()) {
+    public void releaseResources(ReleaseRequest releaseRequest) {
+        if (releaseRequest.resourceSetId == null && releaseRequest.resourceUnionId == null) {
             return;
         }
 
-        Set<String> lockNames = getLockNames(resourceList);
-        ReleaseFunction releaseFunction =
-                new ReleaseFunction(lockHelper, resourceDao, resourceSetId, null, null, lockNames, lockTimeout);
-        releaseFunction.exec();
-    }
+        Set<String> lockNames = new HashSet<>();
+        if (releaseRequest.assetId != null) {
+            lockNames.add(releaseRequest.assetId);
+        } else {
+            List<Resource> resourceList = null;
+            if (releaseRequest.resourceSetId != null) {
+                resourceList = resourceDao.getResourceSet(releaseRequest.resourceSetId);
+            } else {
+                resourceList = resourceDao.getResourceUnion(releaseRequest.resourceUnionId);
+            }
 
-    @Override
-    public void releaseResourceUnion(String resourceUnionId) {
-        List<Resource> resourceList = resourceDao.getResourceUnion(resourceUnionId);
-        if (resourceList == null || resourceList.isEmpty()) {
-            return;
+            if (resourceList == null || resourceList.isEmpty()) {
+                return;
+            }
+
+            lockNames = getLockNames(resourceList);
         }
 
-        Set<String> lockNames = getLockNames(resourceList);
         ReleaseFunction releaseFunction =
-                new ReleaseFunction(lockHelper, resourceDao, null, resourceUnionId, null, lockNames, lockTimeout);
-        releaseFunction.exec();
-    }
-
-    @Override
-    public void releaseResourceSet(String resourceSetId, String assetId) {
-        List<Resource> resourceList = resourceDao.getResourceSetForAsset(resourceSetId, assetId);
-        if (resourceList == null || resourceList.isEmpty()) {
-            return;
-        }
-
-        Set<String> lockNames = getLockNames(resourceList);
-        ReleaseFunction releaseFunction =
-                new ReleaseFunction(lockHelper, resourceDao, resourceSetId, null, assetId, lockNames, lockTimeout);
-        releaseFunction.exec();
-    }
-
-    @Override
-    public void releaseResourceUnion(String resourceUnionId, String assetId) {
-        List<Resource> resourceList = resourceDao.getResourceUnionForAsset(resourceUnionId, assetId);
-        if (resourceList == null || resourceList.isEmpty()) {
-            return;
-        }
-
-        Set<String> lockNames = getLockNames(resourceList);
-        ReleaseFunction releaseFunction =
-                new ReleaseFunction(lockHelper, resourceDao, null, resourceUnionId, assetId, lockNames, lockTimeout);
+                new ReleaseFunction(lockHelper, resourceDao, releaseRequest, lockNames, lockTimeout);
         releaseFunction.exec();
     }
 

@@ -49,6 +49,8 @@ public class TestRelease {
 
         dataSetup.setupRangeItem("test-range-1", "Port::TESTPORT-2", "EVC::TEST-5::1", "EVC::TEST-5", "5");
 
+        dataSetup.setupRangeItem("test-range-1", "Port::TESTPORT-2", "EVC::TEST-6::1", "EVC::TEST-6", "6-20");
+
         dataSetup.setupLimitItem("test-limit-1", "Port::TESTPORT-1", "EVC::TEST-1::1", "EVC::TEST-1", 100);
 
         dataSetup.setupLimitItem("test-limit-1", "Port::TESTPORT-1", "EVC::TEST-2::1", "EVC::TEST-2", 200);
@@ -67,6 +69,8 @@ public class TestRelease {
         dataSetup.setupLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-3::2", "EVC::TEST-3", 400);
 
         dataSetup.setupLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-5::1", "EVC::TEST-5", 500);
+
+        dataSetup.setupLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-6::1", "EVC::TEST-6", 1000);
     }
 
     @Test
@@ -296,5 +300,121 @@ public class TestRelease {
         Assert.assertFalse(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-1", "EVC::TEST-3::2", 400));
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-3::1", 300));
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-3::2", 400));
+    }
+
+    @Test
+    public void test007() throws Exception {
+
+        String t = "007";
+        log.info("============== release node " + t + " ================================");
+        log.info("=== Test release - partial release of range");
+
+        setupResourceData();
+
+        Assert.assertTrue(dataSetup.checkRangeItem("test-range-1", "Port::TESTPORT-2", "EVC::TEST-6::1", "6-20"));
+
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("ra-input.resource-entity-type", "EVC");
+        ctx.setAttribute("ra-input.resource-entity-id", "TEST-6");
+        ctx.setAttribute("ra-input.resource-entity-version", "1");
+
+        ctx.setAttribute("ra-input.resource-target-type", "Port");
+        ctx.setAttribute("ra-input.resource-target-id", "TESTPORT-2");
+
+        ctx.setAttribute("ra-input.resource-name", "test-range-1");
+        ctx.setAttribute("ra-input.range-release-numbers", "7,9,15-17");
+
+        QueryStatus st = resourceAllocator.release("NETWORK-CAPACITY", null, ctx);
+
+        Assert.assertTrue(st == QueryStatus.SUCCESS);
+
+        Assert.assertTrue(dataSetup.checkRangeItem("test-range-1", "Port::TESTPORT-2", "EVC::TEST-6::1", "6,8,10-14,18-20"));
+    }
+
+    @Test
+    public void test008() throws Exception {
+
+        String t = "008";
+        log.info("============== release node " + t + " ================================");
+        log.info("=== Test release - partial release of range, but release all numbers");
+
+        setupResourceData();
+
+        Assert.assertTrue(dataSetup.checkRangeItem("test-range-1", "Port::TESTPORT-2", "EVC::TEST-6::1", "6-20"));
+
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("ra-input.resource-entity-type", "EVC");
+        ctx.setAttribute("ra-input.resource-entity-id", "TEST-6");
+        ctx.setAttribute("ra-input.resource-entity-version", "1");
+
+        ctx.setAttribute("ra-input.resource-target-type", "Port");
+        ctx.setAttribute("ra-input.resource-target-id", "TESTPORT-2");
+
+        ctx.setAttribute("ra-input.resource-name", "test-range-1");
+        ctx.setAttribute("ra-input.range-release-numbers", "6-25");
+
+        QueryStatus st = resourceAllocator.release("NETWORK-CAPACITY", null, ctx);
+
+        Assert.assertTrue(st == QueryStatus.SUCCESS);
+
+        Assert.assertTrue(dataSetup.checkItemNotThere("test-range-1", "Port::TESTPORT-2", "EVC::TEST-6::1"));
+    }
+
+    @Test
+    public void test009() throws Exception {
+
+        String t = "009";
+        log.info("============== release node " + t + " ================================");
+        log.info("=== Test release - partial release of limit");
+
+        setupResourceData();
+
+        Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-6::1", 1000));
+
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("ra-input.resource-entity-type", "EVC");
+        ctx.setAttribute("ra-input.resource-entity-id", "TEST-6");
+        ctx.setAttribute("ra-input.resource-entity-version", "1");
+
+        ctx.setAttribute("ra-input.resource-target-type", "Port");
+        ctx.setAttribute("ra-input.resource-target-id", "TESTPORT-2");
+
+        ctx.setAttribute("ra-input.resource-name", "test-limit-1");
+        ctx.setAttribute("ra-input.limit-release-amount", "200");
+
+        QueryStatus st = resourceAllocator.release("NETWORK-CAPACITY", null, ctx);
+
+        Assert.assertTrue(st == QueryStatus.SUCCESS);
+
+        Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-6::1", 800));
+    }
+
+    @Test
+    public void test010() throws Exception {
+
+        String t = "010";
+        log.info("============== release node " + t + " ================================");
+        log.info("=== Test release - partial release of limit, but release big number");
+
+        setupResourceData();
+
+        Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-6::1", 1000));
+
+        SvcLogicContext ctx = new SvcLogicContext();
+        ctx.setAttribute("ra-input.resource-entity-type", "EVC");
+        ctx.setAttribute("ra-input.resource-entity-id", "TEST-6");
+        ctx.setAttribute("ra-input.resource-entity-version", "1");
+
+        ctx.setAttribute("ra-input.resource-target-type", "Port");
+        ctx.setAttribute("ra-input.resource-target-id", "TESTPORT-2");
+
+        ctx.setAttribute("ra-input.resource-name", "test-limit-1");
+        ctx.setAttribute("ra-input.limit-release-amount", "2000");
+
+        QueryStatus st = resourceAllocator.release("NETWORK-CAPACITY", null, ctx);
+
+        Assert.assertTrue(st == QueryStatus.SUCCESS);
+
+        Assert.assertTrue(dataSetup.checkItemNotThere("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-6::1"));
     }
 }

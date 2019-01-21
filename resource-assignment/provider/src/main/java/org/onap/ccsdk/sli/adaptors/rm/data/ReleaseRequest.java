@@ -19,26 +19,28 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.ccsdk.sli.adaptors.rm.comp;
+package org.onap.ccsdk.sli.adaptors.rm.data;
 
-import java.util.List;
-import org.onap.ccsdk.sli.adaptors.rm.data.AllocationOutcome;
-import org.onap.ccsdk.sli.adaptors.rm.data.AllocationRequest;
-import org.onap.ccsdk.sli.adaptors.rm.data.ReleaseRequest;
-import org.onap.ccsdk.sli.adaptors.rm.data.Resource;
+import java.util.Set;
 
-public interface ResourceManager {
+public class ReleaseRequest {
 
-    Resource getResource(String resourceName, String assetId);
+    public String resourceUnionId = null;
+    public String resourceSetId = null;
+    public String assetId = null;
+    public String resourceName = null;
+    public int releaseAmount = 0;
+    public Set<Integer> releaseNumbers = null;
 
-    List<Resource> getResourceUnion(String resourceUnionId);
+    public static ReleaseRequest resourceSet(String resourceSetId) {
+        ReleaseRequest rr = new ReleaseRequest();
+        rr.resourceSetId = resourceSetId;
+        return rr;
+    }
 
-    AllocationOutcome allocateResources(AllocationRequest allocationRequest);
-
-    void releaseResources(ReleaseRequest releaseRequest);
-
-    Resource queryResource(String resourceName, String assetId, String resourceUnionFilter,
-            String resourceShareGroupFilter);
-
-    List<Resource> queryResources(String resourceName, String assetIdFilter);
+    public static ReleaseRequest resourceUnion(String resourceUnionId) {
+        ReleaseRequest rr = new ReleaseRequest();
+        rr.resourceUnionId = resourceUnionId;
+        return rr;
+    }
 }

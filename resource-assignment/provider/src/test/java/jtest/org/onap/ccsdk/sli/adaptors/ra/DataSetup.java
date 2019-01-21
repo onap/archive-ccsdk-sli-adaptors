@@ -96,6 +96,12 @@ public class DataSetup {
         return allocationItem.exists(where);
     }
 
+    public boolean checkItemNotThere(String resourceName, String assetId, String resourceSetId) {
+        String where = "resource_id = (SELECT resource_id FROM RESOURCE WHERE resource_name = '" + resourceName
+                + "' AND asset_id = '" + assetId + "') AND resource_set_id = '" + resourceSetId + "'";
+        return !allocationItem.exists(where);
+    }
+
     public void setTestDb(TestDb testDb) {
         this.testDb = testDb;
     }
