@@ -5,6 +5,8 @@
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  *             reserved.
  * ================================================================================
+ * Modifications Copyright (C) 2018 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -47,26 +49,6 @@ public class NodesQueryRequest extends AAIRequest {
         nodes_search_path = configProperties.getProperty(NODES_SEARCH_PATH);
     }
 
-
-//    @Override
-//    public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
-//
-//        String request_url = targetUri+generic_search_path;
-//        String key = START_NODE_TYPE;
-//
-//        String encoded_vnf = encodeQuery(requestProperties.getProperty(key));
-//        request_url = request_url.replace("{vnf-id}", encoded_vnf) ;
-//
-//        if(resourceVersion != null) {
-//            request_url = request_url +"?resource-version="+resourceVersion;
-//        }
-//        URL http_req_url =    new URL(request_url);
-//
-//        aaiService.LOGwriteFirstTrace(method, http_req_url.toString());
-//
-//
-//        return http_req_url;
-//    }
 
     @Override
     public URL getRequestUrl(String method, String resourceVersion) throws UnsupportedEncodingException, MalformedURLException {
@@ -125,7 +107,7 @@ public class NodesQueryRequest extends AAIRequest {
 
         String encoded_vnf = encodeQuery(requestProperties.getProperty(key));
         request_url = request_url.replace("{entity-identifier}", encoded_vnf) ;
-        aaiService.LOGwriteDateTrace("entity-identifier", requestProperties.getProperty(key));
+        aaiService.LOGwriteDateTrace(ENTITY_IDENTIFIER, requestProperties.getProperty(key));
 
         key = ENTITY_VALUE;
 
@@ -137,7 +119,7 @@ public class NodesQueryRequest extends AAIRequest {
 
         encoded_vnf = encodeQuery(requestProperties.getProperty(key));
         request_url = request_url.replace("{node-type}", encoded_vnf) ;
-        aaiService.LOGwriteDateTrace("node-type", requestProperties.getProperty(key));
+        aaiService.LOGwriteDateTrace(NODE_TYPE, requestProperties.getProperty(key));
 
         return request_url;
     }
