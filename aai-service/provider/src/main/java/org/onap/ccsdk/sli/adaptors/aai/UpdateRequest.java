@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 			reserved.
+ * Modifications Copyright (C) 2018 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,7 +84,7 @@ public class UpdateRequest extends AAIRequest {
 		request.requestProperties.put(key, value);
 	}
 
-	public static String processPathData(String request_url, Properties requestProperties) throws UnsupportedEncodingException {
+	public static String processPathData(String requestUrl, Properties requestProperties) {
 		
 //		if(request != null) {
 //			Class<?> clazz = request.getClass();
@@ -97,7 +98,7 @@ public class UpdateRequest extends AAIRequest {
 //		}
 		
 //		request.processPathData(request_url, requestProperties);
-		return request_url; 
+		return requestUrl;
 	}
 	
 	public void processRequestPathValues(Map<String, String> nameValues) {
