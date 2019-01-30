@@ -433,8 +433,7 @@ public abstract class AAIRequest {
         if(clazz == null) {
             return null;
         }
-        GenericRequest request = new GenericRequest(clazz);
-        return request;
+        return new GenericRequest(clazz);
     }
 
     public static Map<String, String> splitQuery(String query) throws UnsupportedEncodingException {
