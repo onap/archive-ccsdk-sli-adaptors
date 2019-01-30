@@ -44,7 +44,6 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -82,6 +81,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
     private String userPassword;
     private final String applicationId;
     private static final String HTTP_URL_CONNECTION_RESULT="HttpURLConnection result: {} : {}";
+    private static final String ENTRY_DOESNT_EXIST="Entry does not exist.";
 
     /**
      * class Constructor
@@ -281,7 +281,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
                     LOGwriteEndingTrace(HttpURLConnection.HTTP_OK, responseMessage, mapper.writeValueAsString(response));
                 }
             } else if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
-                LOGwriteEndingTrace(responseCode, responseMessage, "Entry does not exist.");
+                LOGwriteEndingTrace(responseCode, responseMessage, ENTRY_DOESNT_EXIST);
                 ErrorResponse errorresponse = null;
                 try {
                     errorresponse = mapper.readValue(reader, ErrorResponse.class);
@@ -289,7 +289,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
                     errorresponse = new ErrorResponse();
                     RequestError requestError = new RequestError();
                     ServiceException serviceException = new ServiceException();
-                    serviceException.setText("Entry does not exist.");
+                    serviceException.setText(ENTRY_DOESNT_EXIST);
                     requestError.setServiceException(serviceException);
                     errorresponse.setRequestError(requestError );
                 }
@@ -501,7 +501,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
                 LOGwriteEndingTrace(responseCode, responseMessage, stringBuilder.toString());
                 response = true;
             } else if(responseCode == HttpURLConnection.HTTP_NOT_FOUND ) {
-                LOGwriteEndingTrace(responseCode, responseMessage, "Entry does not exist.");
+                LOGwriteEndingTrace(responseCode, responseMessage, ENTRY_DOESNT_EXIST);
                 response = false;
             } else {
                 ErrorResponse errorresponse = mapper.readValue(reader, ErrorResponse.class);
@@ -574,7 +574,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
                 response = mapper.readValue(reader, clas);
                 LOGwriteEndingTrace(HttpURLConnection.HTTP_OK, "SUCCESS", mapper.writeValueAsString(response));
             } else if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
-                LOGwriteEndingTrace(responseCode, "HTTP_NOT_FOUND", "Entry does not exist.");
+                LOGwriteEndingTrace(responseCode, "HTTP_NOT_FOUND", ENTRY_DOESNT_EXIST);
                 return response;
             } else {
                 BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
