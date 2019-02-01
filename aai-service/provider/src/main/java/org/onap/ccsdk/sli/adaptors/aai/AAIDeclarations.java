@@ -21,6 +21,10 @@
  * ============LICENSE_END=========================================================
  */
 
+/**
+ * @author Rich Tabedzki
+ *
+ */
 package org.onap.ccsdk.sli.adaptors.aai;
 
 import java.io.IOException;
