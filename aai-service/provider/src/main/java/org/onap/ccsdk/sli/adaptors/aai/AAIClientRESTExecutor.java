@@ -67,7 +67,7 @@ import org.apache.http.impl.EnglishReasonPhraseCatalog;
 
 /**
  * The AAIClientRESTExecutor class provides CRUD API for AAI Client service.
- * @author  richtabedzki
+ * @author  Rich Tabedzki
  */
 public class AAIClientRESTExecutor implements AAIExecutorInterface {
 

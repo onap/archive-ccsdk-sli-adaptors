@@ -19,6 +19,10 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
+/**
+ * The UpdateRequest class provides processing related to update transaction.
+ * @author  richtabedzki
+ */
 
 package org.onap.ccsdk.sli.adaptors.aai;
 
@@ -26,8 +30,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 
@@ -57,6 +65,7 @@ public class UpdateRequest extends AAIRequest {
 
 	@Override
 	public String toJSONString() {
+		updateArrayEntries(params);
 		ObjectMapper mapper = AAIService.getObjectMapper();
 		String json = null;
 		
@@ -67,6 +76,41 @@ public class UpdateRequest extends AAIRequest {
 		}
 		
 		return json;
+	}
+
+    /**
+    *
+    * Update array entries.
+    * The method converts indexed data entries to an array of values
+    *
+    * @param data Map containing String:String values representing input data
+    */
+	private void updateArrayEntries( Map<String, String> data) {
+		Set<String> set = data.keySet()
+	            .stream()
+	            .filter(s -> s.endsWith("_length"))
+	            .collect(Collectors.toSet());
+			
+		for(String lenghtKey : set) {
+			String key = lenghtKey.replace("_length", "");
+//			String index = data.get(lenghtKey);
+			List<String> array = new ArrayList<>();
+			
+			Set<String> subset = data.keySet()
+                    .stream()
+                    .filter(s -> s.startsWith(String.format("%s[",key)))
+                    .collect(Collectors.toSet());
+			for(String subKey : subset) {
+				String subValue = data.get(subKey);
+				array.add(subValue);
+				LOG.trace("{} : {} ", subKey, subValue);
+			}
+			data.put(key, array.toString());
+			data.remove(lenghtKey);
+			for(String subKey : subset) {
+				data.remove(subKey);
+			}
+		}
 	}
 
 	@Override
