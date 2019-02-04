@@ -37,6 +37,7 @@
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
+        <!-- saltstack-adapter needs to be changed to remove dependency on app-c code 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-saltstack-adapter</artifactId>
@@ -44,6 +45,7 @@
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
+        -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-netbox-client</artifactId>
