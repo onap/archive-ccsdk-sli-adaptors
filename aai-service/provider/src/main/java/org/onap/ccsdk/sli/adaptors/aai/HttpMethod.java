@@ -1,5 +1,8 @@
 package org.onap.ccsdk.sli.adaptors.aai;
-
+/**
+ * @author Rich Tabedzki
+ *
+ */
 public interface HttpMethod {
     public static final String GET = "GET";
     public static final String HEAD = "HEAD";
