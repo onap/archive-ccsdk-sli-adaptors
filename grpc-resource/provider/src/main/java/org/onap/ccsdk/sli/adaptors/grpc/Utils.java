@@ -15,18 +15,20 @@
  */
 package org.onap.ccsdk.sli.adaptors.grpc;
 
-import java.util.Map;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
-public interface GrpcClient extends SvcLogicJavaPlugin {
+public final class Utils {
 
-    /**
-     * Send a request to process to a gRPC server.
-     *
-     * @param parameters HashMap<String,String> of parameters passed by the DG to this function.
-     * Required parameters are defined in implemention.
-     */
-    QueryStatus sendRequest(Map<String, String> parameters, SvcLogicContext ctx);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+    private Utils() {
+        throw new AssertionError("Utility class");
+    }
+
+    public static String timestamp() {
+        LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+        return formatter.format(now);
+    }
 }
