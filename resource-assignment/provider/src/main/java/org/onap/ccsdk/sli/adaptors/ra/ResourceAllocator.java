@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.onap.ccsdk.sli.adaptors.ra.comp.AllocationData;
 import org.onap.ccsdk.sli.adaptors.ra.comp.EndPointAllocator;
 import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceData;
 import org.onap.ccsdk.sli.adaptors.ra.comp.ResourceEntity;
@@ -124,7 +125,9 @@ public class ResourceAllocator implements SvcLogicResource {
         } else if (resourceTargetId != null && resourceTargetType != null && resourceName != null) {
             ResourceData rd = endPointAllocator.getResource(resourceTargetType, resourceTargetId, resourceName,
                     resourceEntityTypeFilter, resourceEntityIdFilter, resourceShareGroupFilter);
-            setResourceDataInContext(ctx, prefix, Collections.singletonList(rd));
+            if (rd != null) {
+                setResourceDataInContext(ctx, prefix, Collections.singletonList(rd));
+            }
         } else if ((resourceTargetTypeFilter != null || resourceTargetIdFilter != null) && resourceName != null) {
             List<ResourceData> rdlist = endPointAllocator.getResourcesForTarget(resourceTargetTypeFilter,
                     resourceTargetIdFilter, resourceName);
@@ -157,6 +160,10 @@ public class ResourceAllocator implements SvcLogicResource {
     }
 
     private void setResourceDataInContext(SvcLogicContext ctx, String prefix, List<ResourceData> rdlist) {
+        if (rdlist == null || rdlist.isEmpty()) {
+            return;
+        }
+
         prefix = prefix == null ? "" : prefix + '.';
 
         setAttr(ctx, prefix + "resource-list_length", String.valueOf(rdlist.size()));
@@ -170,7 +177,6 @@ public class ResourceAllocator implements SvcLogicResource {
             setAttr(ctx, pp + "endpoint-position", rd.endPointPosition);
             setAttr(ctx, pp + "resource-target-type", rd.resourceTargetType);
             setAttr(ctx, pp + "resource-target-id", rd.resourceTargetId);
-            // SDNGC-7687
             setAttr(ctx, pp + "resource-target-value", rd.resourceTargetValue);
             setAttr(ctx, pp + "status", rd.status);
 
@@ -178,6 +184,28 @@ public class ResourceAllocator implements SvcLogicResource {
                 for (String kk : rd.data.keySet()) {
                     String value = String.valueOf(rd.data.get(kk));
                     setAttr(ctx, pp + kk, value);
+                }
+            }
+
+            if (rd.allocationDataList != null && !rd.allocationDataList.isEmpty()) {
+
+                setAttr(ctx, pp + "allocation-data-list_length", String.valueOf(rd.allocationDataList.size()));
+
+                for (int j = 0; j < rd.allocationDataList.size(); j++) {
+                    AllocationData ad = rd.allocationDataList.get(j);
+
+                    String ppp = pp + "allocation-data-list[" + j + "].";
+
+                    setAttr(ctx, ppp + "resource-entity-type", ad.resourceEntityType);
+                    setAttr(ctx, ppp + "resource-entity-id", ad.resourceEntityId);
+                    setAttr(ctx, ppp + "resource-entity-version", ad.resourceEntityVersion);
+
+                    if (ad.data != null && !ad.data.isEmpty()) {
+                        for (String kk : ad.data.keySet()) {
+                            String value = String.valueOf(ad.data.get(kk));
+                            setAttr(ctx, ppp + kk, value);
+                        }
+                    }
                 }
             }
         }

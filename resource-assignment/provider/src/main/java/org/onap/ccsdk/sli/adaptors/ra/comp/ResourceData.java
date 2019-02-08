@@ -21,6 +21,7 @@
 
 package org.onap.ccsdk.sli.adaptors.ra.comp;
 
+import java.util.List;
 import java.util.Map;
 
 public class ResourceData {
@@ -29,7 +30,8 @@ public class ResourceData {
     public String resourceTargetId;
     public String resourceTargetValue;
     public String resourceTargetType;
+    public String endPointPosition;
     public String status;
     public Map<String, String> data;
-    public String endPointPosition;
+    public List<AllocationData> allocationDataList;
 }

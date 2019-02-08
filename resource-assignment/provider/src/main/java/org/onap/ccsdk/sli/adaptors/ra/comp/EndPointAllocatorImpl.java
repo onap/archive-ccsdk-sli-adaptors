@@ -224,40 +224,8 @@ public class EndPointAllocatorImpl implements EndPointAllocator {
 
             log.info("ResourceName:" + r.resourceKey.resourceName + " assetId:" + r.resourceKey.assetId);
 
-            ResourceData rd = new ResourceData();
+            ResourceData rd = getResourceData(r);
             rdlist.add(rd);
-
-            rd.resourceName = r.resourceKey.resourceName;
-            int i1 = r.resourceKey.assetId.indexOf("::");
-            if (i1 > 0) {
-                rd.resourceTargetType = r.resourceKey.assetId.substring(0, i1);
-                rd.resourceTargetId = r.resourceKey.assetId.substring(i1 + 2);
-
-                int i2 = r.resourceKey.assetId.lastIndexOf("::");
-                if (i2 > i1) {
-                    rd.resourceTargetValue = r.resourceKey.assetId.substring(i2 + 2);
-                }
-            } else {
-                rd.resourceTargetType = "";
-                rd.resourceTargetId = r.resourceKey.assetId;
-            }
-
-            rd.data = new HashMap<>();
-
-            if (r instanceof RangeResource) {
-                RangeResource rr = (RangeResource) r;
-
-                log.info("rr.used: " + rr.used);
-                String ss = String.valueOf(rr.used);
-                ss = ss.substring(1, ss.length() - 1);
-                rd.data.put("allocated", ss);
-
-            } else if (r instanceof LimitResource) {
-                LimitResource lr = (LimitResource) r;
-
-                log.info("lr.used: " + lr.used);
-                rd.data.put("allocated", String.valueOf(lr.used));
-            }
         }
 
         return rdlist;
@@ -266,7 +234,6 @@ public class EndPointAllocatorImpl implements EndPointAllocator {
     @Override
     public ResourceData getResource(String resourceTargetType, String resourceTargetId, String resourceName,
             String resourceEntityTypeFilter, String resourceEntityIdFilter, String resourceShareGroupFilter) {
-        ResourceData rd = new ResourceData();
         String assetId = resourceTargetType + "::" + resourceTargetId;
 
         String resourceUnionFilter = null;
@@ -288,36 +255,87 @@ public class EndPointAllocatorImpl implements EndPointAllocator {
         if (r != null) {
             log.info("ResourceName:" + r.resourceKey.resourceName + " assetId:" + r.resourceKey.assetId);
 
-            rd.resourceName = r.resourceKey.resourceName;
-            int i1 = r.resourceKey.assetId.indexOf("::");
-            if (i1 > 0) {
-                rd.resourceTargetType = r.resourceKey.assetId.substring(0, i1);
-                rd.resourceTargetId = r.resourceKey.assetId.substring(i1 + 2);
+            ResourceData rd = getResourceData(r);
+            return rd;
+        }
 
-                int i2 = r.resourceKey.assetId.lastIndexOf("::");
-                if (i2 > i1) {
-                    rd.resourceTargetValue = r.resourceKey.assetId.substring(i2 + 2);
-                }
-            } else {
-                rd.resourceTargetType = "";
-                rd.resourceTargetId = r.resourceKey.assetId;
+        return null;
+    }
+
+    private ResourceData getResourceData(Resource r) {
+        ResourceData rd = new ResourceData();
+
+        rd.resourceName = r.resourceKey.resourceName;
+        int i1 = r.resourceKey.assetId.indexOf("::");
+        if (i1 > 0) {
+            rd.resourceTargetType = r.resourceKey.assetId.substring(0, i1);
+            rd.resourceTargetId = r.resourceKey.assetId.substring(i1 + 2);
+
+            int i2 = r.resourceKey.assetId.lastIndexOf("::");
+            if (i2 > i1) {
+                rd.resourceTargetValue = r.resourceKey.assetId.substring(i2 + 2);
             }
+        } else {
+            rd.resourceTargetType = "";
+            rd.resourceTargetId = r.resourceKey.assetId;
+        }
 
-            rd.data = new HashMap<>();
+        rd.data = new HashMap<>();
 
-            if (r instanceof RangeResource) {
-                RangeResource rr = (RangeResource) r;
+        if (r instanceof RangeResource) {
+            RangeResource rr = (RangeResource) r;
 
-                log.info("rr.used: " + rr.used);
-                String ss = String.valueOf(rr.used);
-                ss = ss.substring(1, ss.length() - 1);
-                rd.data.put("allocated", ss);
+            log.info("rr.used: " + rr.used);
+            String ss = String.valueOf(rr.used);
+            ss = ss.substring(1, ss.length() - 1);
+            rd.data.put("allocated", ss);
 
-            } else if (r instanceof LimitResource) {
-                LimitResource lr = (LimitResource) r;
+        } else if (r instanceof LimitResource) {
+            LimitResource lr = (LimitResource) r;
 
-                log.info("lr.used: " + lr.used);
-                rd.data.put("allocated", String.valueOf(lr.used));
+            log.info("lr.used: " + lr.used);
+            rd.data.put("allocated", String.valueOf(lr.used));
+        }
+
+        rd.allocationDataList = new ArrayList<>();
+
+        if (r.allocationItems != null) {
+            for (AllocationItem ai : r.allocationItems) {
+                AllocationData ad = new AllocationData();
+                rd.allocationDataList.add(ad);
+
+                i1 = ai.resourceUnionId.indexOf("::");
+                if (i1 > 0) {
+                    ad.resourceEntityType = ai.resourceUnionId.substring(0, i1);
+                    ad.resourceEntityId = ai.resourceUnionId.substring(i1 + 2);
+                } else {
+                    ad.resourceEntityType = "";
+                    ad.resourceEntityId = ai.resourceUnionId;
+                }
+
+                i1 = ai.resourceSetId.lastIndexOf("::");
+                if (i1 > 0) {
+                    ad.resourceEntityVersion = ai.resourceSetId.substring(i1 + 2);
+                } else {
+                    ad.resourceEntityVersion = "";
+                }
+
+                ad.data = new HashMap<>();
+
+                if (ai instanceof RangeAllocationItem) {
+                    RangeAllocationItem rai = (RangeAllocationItem) ai;
+
+                    log.info("rr.used: " + rai.used);
+                    String ss = String.valueOf(rai.used);
+                    ss = ss.substring(1, ss.length() - 1);
+                    ad.data.put("allocated", ss);
+
+                } else if (ai instanceof LimitAllocationItem) {
+                    LimitAllocationItem lai = (LimitAllocationItem) ai;
+
+                    log.info("lr.used: " + lai.used);
+                    ad.data.put("allocated", String.valueOf(lai.used));
+                }
             }
         }
 
