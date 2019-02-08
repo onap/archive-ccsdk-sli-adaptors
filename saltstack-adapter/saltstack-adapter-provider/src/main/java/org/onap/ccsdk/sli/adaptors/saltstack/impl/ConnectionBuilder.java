@@ -26,15 +26,12 @@ package org.onap.ccsdk.sli.adaptors.saltstack.impl;
 
 import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
-import org.onap.appc.adapter.ssh.SshException;
+import org.onap.ccsdk.sli.adaptors.saltstack.model.SshException;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResult;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResultCodes;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
-//import org.onap.appc.adapter.ssh.SshConnection;
-//import org.onap.appc.adapter.ssh.SshAdapter;
 
 /**
  * Returns a custom SSH client

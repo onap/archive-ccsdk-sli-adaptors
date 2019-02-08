@@ -34,11 +34,8 @@ import org.apache.sshd.client.future.AuthFuture;
 import org.apache.sshd.client.future.OpenFuture;
 import org.apache.sshd.common.KeyPairProvider;
 import org.apache.sshd.common.keyprovider.FileKeyPairProvider;
-import org.onap.appc.adapter.ssh.Constants;
-import org.onap.appc.adapter.ssh.SshException;
-import org.onap.appc.configuration.Configuration;
-import org.onap.appc.configuration.ConfigurationFactory;
-import org.onap.appc.encryption.EncryptionTool;
+import org.onap.ccsdk.sli.adaptors.saltstack.model.Constants;
+import org.onap.ccsdk.sli.adaptors.saltstack.model.SshException;
 
 import java.io.OutputStream;
 import java.security.KeyPair;
@@ -52,7 +49,6 @@ class SshConnection {
 
     private static final long AUTH_TIMEOUT = 60000;
     private static final long EXEC_TIMEOUT = 120000;
-    private static final Configuration configuration = ConfigurationFactory.getConfiguration();
     private String host;
     private int port;
     private String username;
@@ -83,9 +79,9 @@ class SshConnection {
         sshClient.start();
         try {
             clientSession =
-                    sshClient.connect(EncryptionTool.getInstance().decrypt(username), host, port).await().getSession();
+                    sshClient.connect(username, host, port).await().getSession();
             if (password != null) {
-                clientSession.addPasswordIdentity(EncryptionTool.getInstance().decrypt(password));
+                clientSession.addPasswordIdentity(password);
             } else if (keyFile != null) {
                 KeyPairProvider keyPairProvider = new FileKeyPairProvider(new String[]{
                         keyFile
@@ -114,10 +110,8 @@ class SshConnection {
         int retryCount;
         int retryDelay;
         int retriesLeft;
-        retryCount = configuration.getIntegerProperty(Constants.CONNECTION_RETRY_COUNT,
-                                                      Constants.DEFAULT_CONNECTION_RETRY_COUNT);
-        retryDelay = configuration.getIntegerProperty(Constants.CONNECTION_RETRY_DELAY,
-                                                      Constants.DEFAULT_CONNECTION_RETRY_DELAY);
+        retryCount = Constants.DEFAULT_CONNECTION_RETRY_COUNT;
+        retryDelay = Constants.DEFAULT_CONNECTION_RETRY_DELAY;
         retriesLeft = retryCount + 1;
         do {
             try {

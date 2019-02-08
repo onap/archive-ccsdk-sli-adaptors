@@ -35,8 +35,6 @@
         <feature version="${odl.mdsal.version}">odl-mdsal-broker</feature>
         <feature>sdnc-sli</feature>
         <bundle dependency="true">mvn:org.apache.sshd/sshd-core/0.12.0</bundle>
-        <bundle dependency="true">mvn:org.onap.appc/appc-common/1.3.0</bundle>
-        <bundle dependency="true">mvn:org.onap.appc/appc-ssh-adapter-api/1.3.0</bundle>
         <bundle dependency="true">mvn:org.apache.commons/commons-io/1.3.2</bundle>
         <bundle>mvn:org.onap.ccsdk.sli.adaptors/saltstack-adapter-provider/${project.version}</bundle>
     </feature>
