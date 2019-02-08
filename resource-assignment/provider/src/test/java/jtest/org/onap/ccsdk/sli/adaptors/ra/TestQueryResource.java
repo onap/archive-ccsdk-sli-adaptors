@@ -85,6 +85,27 @@ public class TestQueryResource {
         Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].resource-target-type"), "Port");
         Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].resource-target-id"), "TESTPORT-1-2");
         Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocated"), "0, 1, 2, 3, 4");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list_length"), "5");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[0].resource-entity-type"), "EVC");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[0].resource-entity-id"), "TEST-0-1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[0].resource-entity-version"), "1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[0].allocated"), "0");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[1].resource-entity-type"), "EVC");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[1].resource-entity-id"), "TEST-1-1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[1].resource-entity-version"), "1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[1].allocated"), "1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[2].resource-entity-type"), "EVC");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[2].resource-entity-id"), "TEST-2-1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[2].resource-entity-version"), "1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[2].allocated"), "2");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[3].resource-entity-type"), "EVC");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[3].resource-entity-id"), "TEST-3-1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[3].resource-entity-version"), "1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[3].allocated"), "3");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[4].resource-entity-type"), "EVC");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[4].resource-entity-id"), "TEST-4-1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[4].resource-entity-version"), "1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[1].allocation-data-list[4].allocated"), "4");
     }
 
     @Test
@@ -111,5 +132,26 @@ public class TestQueryResource {
         Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].resource-target-type"), "Port");
         Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].resource-target-id"), "TESTPORT-1-1");
         Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocated"), "1500");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list_length"), "5");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[0].resource-entity-type"), "EVC");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[0].resource-entity-id"), "TEST-0-1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[0].resource-entity-version"), "1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[0].allocated"), "100");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[1].resource-entity-type"), "EVC");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[1].resource-entity-id"), "TEST-1-1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[1].resource-entity-version"), "1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[1].allocated"), "200");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[2].resource-entity-type"), "EVC");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[2].resource-entity-id"), "TEST-2-1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[2].resource-entity-version"), "1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[2].allocated"), "300");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[3].resource-entity-type"), "EVC");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[3].resource-entity-id"), "TEST-3-1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[3].resource-entity-version"), "1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[3].allocated"), "400");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[4].resource-entity-type"), "EVC");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[4].resource-entity-id"), "TEST-4-1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[4].resource-entity-version"), "1");
+        Assert.assertEquals(ctx.getAttribute("ra-output.resource-list[0].allocation-data-list[4].allocated"), "500");
     }
 }
