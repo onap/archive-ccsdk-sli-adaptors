@@ -29,5 +29,7 @@
         <argument ref="blueprintProcessingHandler"/>
         <argument ref="grpcProperty"/>
     </bean>
+    <service ref="grpcClient" interface="org.onap.ccsdk.sli.adaptors.grpc.cds.BlueprintProcessingClient"
+      odl:type="default"/>
 
 </blueprint>
