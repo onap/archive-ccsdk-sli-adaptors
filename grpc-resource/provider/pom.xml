@@ -142,6 +142,7 @@
                             io.grpc.util
                         </Export-Package>
                         <Import-Package>!com.google.errorprone.annotations,*</Import-Package>
+                        <Embed-Dependency>*;inline=META-INF/services/**</Embed-Dependency>
                     </instructions>
                 </configuration>
             </plugin>
