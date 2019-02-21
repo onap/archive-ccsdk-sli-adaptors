@@ -17,6 +17,8 @@ package org.onap.ccsdk.sli.adaptors.grpc.cds;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Struct;
+import com.google.protobuf.Struct.Builder;
+import com.google.protobuf.util.JsonFormat;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
@@ -114,9 +116,9 @@ public class BlueprintProcessingHandler {
             .setMode(mode)
             .build();
 
-        Struct struct;
+        Builder struct= Struct.newBuilder();
         try {
-            struct = Struct.newBuilder().mergeFrom(payload.getBytes()).build();
+            JsonFormat.parser().merge(payload, struct);
         } catch (InvalidProtocolBufferException e) {
             log.error("Failed converting payload for blueprint({}:{}) for action({}). {}", blueprintVersion,
                 blueprintName, action, e);
@@ -125,7 +127,7 @@ public class BlueprintProcessingHandler {
 
         final ExecutionServiceInput request = ExecutionServiceInput.newBuilder()
             .setActionIdentifiers(actionIdentifiers)
-            .setPayload(struct)
+            .setPayload(struct.build())
             .setCommonHeader(commonHeader).build();
 
         final StreamObserver<ExecutionServiceInput> requestObserver = asyncStub.process(responseObserver);

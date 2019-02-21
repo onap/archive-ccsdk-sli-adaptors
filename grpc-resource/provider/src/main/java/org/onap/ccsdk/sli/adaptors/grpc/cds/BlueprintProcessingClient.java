@@ -17,6 +17,7 @@ package org.onap.ccsdk.sli.adaptors.grpc.cds;
 
 import io.grpc.ManagedChannel;
 import io.grpc.internal.DnsNameResolverProvider;
+import io.grpc.internal.PickFirstLoadBalancerProvider;
 import io.grpc.netty.NettyChannelBuilder;
 import java.util.Map;
 import org.onap.ccsdk.sli.adaptors.grpc.GrpcClient;
@@ -36,8 +37,9 @@ public class BlueprintProcessingClient implements GrpcClient {
     public BlueprintProcessingClient(BlueprintProcessingHandler handler, GrpcProperties props) {
         this.channel = NettyChannelBuilder
             .forAddress(props.getUrl(), props.getPort())
-            .usePlaintext()
             .nameResolverFactory(new DnsNameResolverProvider())
+            .loadBalancerFactory(new PickFirstLoadBalancerProvider())
+            .usePlaintext()
             .build();
         this.handler = handler;
     }
@@ -66,6 +68,7 @@ public class BlueprintProcessingClient implements GrpcClient {
      * <tr><td>blueprint_version</td><td>Mandatory</td><td>Version of the blueprint to process.</td></tr>
      * <tr><td>action</td><td>Mandatory</td><td>Action of the blueprint to process.</td></tr>
      * <tr><td>mode</td><td>Mandatory</td><td>Mode to operate the transaction.</td></tr>
+     * <tr><td>payload</td><td>Mandatory</td><td>Payload.</td></tr>
      * </tbody>
      * </table>
      */
