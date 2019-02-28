@@ -34,13 +34,18 @@ public class BlueprintProcessingClient implements GrpcClient {
     private ManagedChannel channel;
     private BlueprintProcessingHandler handler;
 
-    public BlueprintProcessingClient(BlueprintProcessingHandler handler, GrpcProperties props) {
+    public BlueprintProcessingClient(GrpcProperties props) {
         this.channel = NettyChannelBuilder
             .forAddress(props.getUrl(), props.getPort())
             .nameResolverFactory(new DnsNameResolverProvider())
             .loadBalancerFactory(new PickFirstLoadBalancerProvider())
             .usePlaintext()
             .build();
+        this.handler = new BlueprintProcessingHandler();
+    }
+
+    public BlueprintProcessingClient(ManagedChannel channel, BlueprintProcessingHandler handler) {
+        this.channel = channel;
         this.handler = handler;
     }
 
@@ -69,11 +74,12 @@ public class BlueprintProcessingClient implements GrpcClient {
      * <tr><td>action</td><td>Mandatory</td><td>Action of the blueprint to process.</td></tr>
      * <tr><td>mode</td><td>Mandatory</td><td>Mode to operate the transaction.</td></tr>
      * <tr><td>payload</td><td>Mandatory</td><td>Payload.</td></tr>
+     * <tr><td>prefix</td><td>Mandatory</td><td>Prefix string to put response in context.</td></tr>
      * </tbody>
      * </table>
      */
     @Override
     public QueryStatus sendRequest(Map<String, String> parameters, SvcLogicContext ctx) {
-        return handler.process(parameters, channel);
+        return handler.process(parameters, channel, ctx);
     }
 }
