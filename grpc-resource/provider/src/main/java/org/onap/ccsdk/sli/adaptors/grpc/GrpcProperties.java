@@ -36,6 +36,7 @@ public class GrpcProperties {
 
     private static final String BLUEPRINT_PROCESSOR_URL_PROP = "org.onap.ccsdk.sli.adaptors.grpc.blueprint.processor.url";
     private static final String BLUEPRINT_PROCESSOR_PORT_PROP = "org.onap.ccsdk.sli.adaptors.grpc.blueprint.processor.port";
+    private static final String BLUEPRINT_PROCESSOR_AUTH_PROP = "org.onap.ccsdk.sli.adaptors.grpc.blueprint.processor.auth";
 
     private Properties properties;
 
@@ -45,6 +46,10 @@ public class GrpcProperties {
 
     public String getUrl() {
         return properties.getProperty(BLUEPRINT_PROCESSOR_URL_PROP);
+    }
+
+    public String getAuth() {
+        return properties.getProperty(BLUEPRINT_PROCESSOR_AUTH_PROP);
     }
 
     public int getPort() {

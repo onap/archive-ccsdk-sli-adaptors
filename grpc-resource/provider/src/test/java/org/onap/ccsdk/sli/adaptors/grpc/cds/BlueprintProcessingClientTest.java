@@ -118,7 +118,7 @@ public class BlueprintProcessingClientTest {
         GrpcProperties props = Mockito.mock(GrpcProperties.class);
         doReturn(999).when(props).getPort();
         doReturn("localhost").when(props).getUrl();
-        new BlueprintProcessingClient(props);
+        new BlueprintProcessingClient(props).stop();
     }
 
 
