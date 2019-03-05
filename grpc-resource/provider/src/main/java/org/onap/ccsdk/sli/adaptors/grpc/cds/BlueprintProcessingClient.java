@@ -39,6 +39,7 @@ public class BlueprintProcessingClient implements GrpcClient {
             .forAddress(props.getUrl(), props.getPort())
             .nameResolverFactory(new DnsNameResolverProvider())
             .loadBalancerFactory(new PickFirstLoadBalancerProvider())
+            .intercept(new BasicAuthClientInterceptor(props))
             .usePlaintext()
             .build();
         this.handler = new BlueprintProcessingHandler();
