@@ -55,11 +55,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.lang.StringUtils;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.onap.ccsdk.sli.adaptors.aai.query.FormattedQueryResultList;
-import org.onap.ccsdk.sli.adaptors.aai.query.InstanceFilter;
-import org.onap.ccsdk.sli.adaptors.aai.query.InstanceFilters;
-import org.onap.ccsdk.sli.adaptors.aai.query.NamedQuery;
-import org.onap.ccsdk.sli.adaptors.aai.query.NamedQueryData;
-import org.onap.ccsdk.sli.adaptors.aai.query.QueryParameters;
 import org.onap.ccsdk.sli.adaptors.aai.query.Result;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
@@ -136,9 +131,6 @@ public abstract class AAIDeclarations implements AAIClient {
     //Service
     public static final String SERVICE_PATH              = "org.onap.ccsdk.sli.adaptors.aai.path.service";
 
-    // P-Interfaces
-    public static final String P_INTERFACE_PATH       = "org.onap.ccsdk.sli.adaptors.aai.path.pserver.pinterface";
-
     // site-pair-sets
     public static final String SITE_PAIR_SET_PATH     = "org.onap.ccsdk.sli.adaptors.aai.path.site.pair.set";
 
@@ -151,7 +143,7 @@ public abstract class AAIDeclarations implements AAIClient {
 
     protected abstract Logger getLogger();
     public abstract AAIExecutorInterface getExecutor();
-                                                                                    
+                                                                                
     private static final String RELATIONSHIP_DATA= "Retrofitting relationship data: ";
 
 
@@ -797,8 +789,6 @@ public abstract class AAIDeclarations implements AAIClient {
                 if(!tmpParams.isEmpty()) {
                     params.putAll(tmpParams);
                 }
-                if("named-query".equals(resource))
-                    request.setRequestObject(extractNamedQueryDataFromQueryPrefix(nameValues, params));
             }
             String rv = getExecutor().get(request);
 
@@ -856,14 +846,6 @@ public abstract class AAIDeclarations implements AAIClient {
 
             response = req2.jsonStringToObject(rv);
             if(response == null) {
-                return QueryStatus.NOT_FOUND;
-            }
-        }
-
-        if("named-query".equals(resource)) {
-            InventoryResponseItems rd = InventoryResponseItems.class.cast(response);
-            List<InventoryResponseItem> iRIlist = rd.getInventoryResponseItem();
-            if(iRIlist == null || iRIlist.isEmpty()) {
                 return QueryStatus.NOT_FOUND;
             }
         }
@@ -2014,114 +1996,6 @@ public abstract class AAIDeclarations implements AAIClient {
         }
 
         return prefixMap;
-    }
-
-    /**
-     */
-    protected NamedQueryData extractNamedQueryDataFromQueryPrefix(HashMap<String, String> nameValues, Map<String, String> parms) {
-        if(parms.isEmpty()) {
-            return null;
-        }
-
-        NamedQueryData data = new NamedQueryData();
-
-        // query parameters
-        if(data.getQueryParameters() == null) {
-            data.setQueryParameters(new QueryParameters());
-        }
-        String namedQueryUuid = nameValues.get("named-query-uuid".replaceAll("-", "_"));
-        if(namedQueryUuid == null) {
-            namedQueryUuid = parms.get("query-parameters.named-query.named-query-uuid");
-        }
-        NamedQuery namedQuery = new NamedQuery();
-        namedQuery.setNamedQueryUuid(namedQueryUuid);
-        data.getQueryParameters().setNamedQuery(namedQuery);
-
-        // instance filters
-        if(data.getInstanceFilters() == null) {
-            data.setInstanceFilters(new InstanceFilters());
-        }
-
-
-        String quantity = parms.get("instance-filters.instance-filter_length");
-        if(quantity != null && StringUtils.isNumeric(quantity)) {
-            int max = Integer.parseInt(quantity);
-            for(int i = 0; i < max; i++) {
-                String keyPattern = String.format("instance-filters.instance-filter[%d].", i);
-                Set<String> keys = parms.keySet();
-                for(String key: keys) {
-                    if(key.startsWith(keyPattern)){
-                        String value = parms.get(key);
-                        String remainder = key.substring(keyPattern.length());
-                        String[] split = remainder.split("\\.");
-                        getLogger().debug(String.format("%s", remainder));
-                        if("logical-link".equals(split[0])) {
-                            InstanceFilter insf = null;
-                            if(data.getInstanceFilters().getInstanceFilter().isEmpty()) {
-                                insf = new InstanceFilter();
-                                data.getInstanceFilters().getInstanceFilter().add(insf);
-                            } else {
-                                insf = data.getInstanceFilters().getInstanceFilter().get(0);
-                            }
-                            LogicalLink logicalLink = insf.getLogicalLink();
-                            if(logicalLink == null) {
-                                logicalLink = new LogicalLink();
-                                insf.setLogicalLink(logicalLink);
-                            }
-
-                            switch(split[1]) {
-                                case "link-name":
-                                    logicalLink.setLinkName(value);
-                                    break;
-                                case "link-type":
-                                    logicalLink.setLinkType(value);
-                                    break;
-                                case "operational-state":
-                                    logicalLink.setOperationalStatus(value);
-                                    break;
-                            }
-
-                        } else if("pnf".equals(split[0])) {
-                            Pnf pnf = new Pnf();
-                            pnf.setPnfName(value);
-
-                            InstanceFilter insf = new InstanceFilter();
-                            insf.setPnf(pnf);
-                            data.getInstanceFilters().getInstanceFilter().add(insf);
-
-                        } else if("service-instance".equals(split[0])) {
-                            ServiceInstance serviceInstance = new ServiceInstance();
-                            serviceInstance.setServiceInstanceId(value);
-
-                            InstanceFilter insf = new InstanceFilter();
-                            insf.setServiceInstance(serviceInstance);
-                            data.getInstanceFilters().getInstanceFilter().add(insf);
-
-                        } else if("l3-network".equals(split[0])) {
-                            L3Network l3Network = new L3Network();
-                            if("network-role".equals(split[1])) {
-                                l3Network.setNetworkRole(value);
-                            }
-
-                            InstanceFilter insf = new InstanceFilter();
-                            insf.setL3Network(l3Network);
-                            data.getInstanceFilters().getInstanceFilter().add(insf);
-                        } else if("generic-vnf".equals(split[0])) {
-                            GenericVnf vnf = new GenericVnf();
-                            if("vnf-id".equals(split[1])) {
-                                vnf.setVnfId(value);
-                            }
-
-                            InstanceFilter insf = new InstanceFilter();
-                            insf.setGenericVnf(vnf);
-                            data.getInstanceFilters().getInstanceFilter().add(insf);
-                        }
-                    }
-                }
-            }
-        }
-
-        return data;
     }
 
     public abstract <T> T getResource(String key, Class<T> type) throws AAIServiceException ;
