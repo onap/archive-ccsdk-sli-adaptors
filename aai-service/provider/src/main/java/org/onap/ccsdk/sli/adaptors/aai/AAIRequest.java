@@ -117,8 +117,6 @@ public abstract class AAIRequest {
         switch(resoource){
         case "generic-query":
             return new GenericQueryRequest();
-        case "named-query":
-            return new NamedQueryRequest();
         case "nodes-query":
             return new NodesQueryRequest();
         case "custom-query":

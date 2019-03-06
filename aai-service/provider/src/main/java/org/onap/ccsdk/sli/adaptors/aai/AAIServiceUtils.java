@@ -330,7 +330,6 @@ public class AAIServiceUtils {
     case "custom-query":
         case "formatted-query":
         case "generic-query":
-        case "named-query":
         case "nodes-query":
         case "linterface":
         case "l2-bridge-sbg":
@@ -365,7 +364,6 @@ public class AAIServiceUtils {
         case "custom-query":
         case "formatted-query":
         case "generic-query":
-        case "named-query":
         case "nodes-query":
         case "linterface":
         case "l2-bridge-sbg":
