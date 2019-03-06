@@ -219,8 +219,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         svc_inst_query_path    = props.getProperty(SVC_INST_QRY_PATH);
         props.getProperty(PARAM_SERVICE_TYPE, "service-type");
 
-        props.getProperty(P_INTERFACE_PATH);
-
         props.getProperty(VNF_IMAGE_QUERY_PATH);
 
         ubb_notify_path = props.getProperty(UBB_NOTIFY_PATH);
@@ -1358,7 +1356,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         case "custom-query":
         case "formatted-query":
         case "generic-query":
-        case "named-query":
         case "nodes-query":
         case "linterface":
         case "l2-bridge-sbg":
@@ -1387,7 +1384,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         case "custom-query":
         case "formatted-query":
         case "generic-query":
-        case "named-query":
         case "nodes-query":
         case "linterface":
         case "l2-bridge-sbg":
@@ -1416,7 +1412,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         case "custom-query":
         case "formatted-query":
         case "generic-query":
-        case "named-query":
         case "nodes-query":
         case "linterface":
         case "l2-bridge-sbg":
@@ -1445,7 +1440,6 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         case "custom-query":
         case "formatted-query":
         case "generic-query":
-        case "named-query":
         case "nodes-query":
         case "linterface":
         case "l2-bridge-sbg":
