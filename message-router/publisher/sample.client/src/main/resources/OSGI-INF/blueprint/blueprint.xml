@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+	xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0">
+
+	<bean id="client"
+		class="org.onap.ccsdk.messagerouter.publisher.client.impl.ClientImpl"
+		init-method="init">
+		<property name="publisher" ref="publisher" />
+		<cm:managed-properties
+			persistent-id="org.onap.ccsdk.messagerouter.publisher.client"
+			update-strategy="container-managed" />
+	</bean>
+
+	<reference id="publisher" interface="org.onap.ccsdk.messagerouter.publisher.api.PublisherApi" />
+
+</blueprint>

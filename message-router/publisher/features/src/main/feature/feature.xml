@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<features name="messagerouter-publisher-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">     
+    
+    <feature name='messagerouter-publisher' description="exposes message router publisher service" version='${project.version}'>
+        <bundle>mvn:org.onap.ccsdk.messagerouter/publisher.api/${project.version}</bundle>
+        <bundle>mvn:org.onap.ccsdk.messagerouter/publisher.provider/${project.version}</bundle>
+    </feature>
+
+    <feature name='sample-client' description="initializes a dummy client" version='${project.version}'>
+        <bundle>mvn:org.onap.ccsdk.messagerouter/sample.client/${project.version}</bundle>
+    </feature>
+
+</features>
