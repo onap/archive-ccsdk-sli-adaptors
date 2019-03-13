@@ -117,6 +117,7 @@
         <module>sql-resource</module>
         <module>features</module>
         <module>artifacts</module>
+        <module>message-router</module>
     </modules>
     <organization>
         <name>ONAP</name>
