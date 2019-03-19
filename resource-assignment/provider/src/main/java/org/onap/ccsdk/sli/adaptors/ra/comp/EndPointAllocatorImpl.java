@@ -221,6 +221,9 @@ public class EndPointAllocatorImpl implements EndPointAllocator {
         List<Resource> rlist = resourceManager.queryResources(resourceName, assetIdFilter);
 
         for (Resource r : rlist) {
+            if (r.allocationItems == null || r.allocationItems.isEmpty()) {
+                continue;
+            }
 
             log.info("ResourceName:" + r.resourceKey.resourceName + " assetId:" + r.resourceKey.assetId);
 
@@ -252,7 +255,7 @@ public class EndPointAllocatorImpl implements EndPointAllocator {
             r = resourceManager.getResource(resourceName, assetId);
         }
 
-        if (r != null) {
+        if (r != null && r.allocationItems != null && !r.allocationItems.isEmpty()) {
             log.info("ResourceName:" + r.resourceKey.resourceName + " assetId:" + r.resourceKey.assetId);
 
             ResourceData rd = getResourceData(r);
