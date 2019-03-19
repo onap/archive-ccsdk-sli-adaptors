@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>odlparent-lite</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.2-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -100,7 +100,9 @@
         <module>ansible-adapter</module>
         <module>saltstack-adapter</module>
         <module>netbox-client</module>
+        <!-- 
         <module>grpc-resource</module>
+        -->
         <module>mdsal-resource</module>
         <module>resource-assignment</module>
         <module>sql-resource</module>
@@ -111,7 +113,7 @@
     <organization>
         <name>ONAP</name>
     </organization>
-    <version>0.4.1-SNAPSHOT</version>
+    <version>0.4.2-SNAPSHOT</version>
 
 
 </project>

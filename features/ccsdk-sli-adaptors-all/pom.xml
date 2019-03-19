@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>single-feature-parent</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.2-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>ccsdk-sli-adaptors-all</artifactId>
-    <version>0.4.1-SNAPSHOT</version>
+    <version>0.4.2-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>ccsdk-sli-adaptors :: features :: ${project.artifactId}</name>
@@ -43,7 +43,6 @@
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
-        -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-grpc-client</artifactId>
@@ -51,6 +50,7 @@
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
+        -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-netbox-client</artifactId>
