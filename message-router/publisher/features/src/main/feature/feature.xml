@@ -5,12 +5,12 @@
     xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">     
     
     <feature name='messagerouter-publisher' description="exposes message router publisher service" version='${project.version}'>
-        <bundle>mvn:org.onap.ccsdk.messagerouter/publisher.api/${project.version}</bundle>
-        <bundle>mvn:org.onap.ccsdk.messagerouter/publisher.provider/${project.version}</bundle>
+        <bundle>mvn:${project.groupId}/publisher.api/${project.version}</bundle>
+        <bundle>mvn:${project.groupId}/publisher.provider/${project.version}</bundle>
     </feature>
 
     <feature name='sample-client' description="initializes a dummy client" version='${project.version}'>
-        <bundle>mvn:org.onap.ccsdk.messagerouter/sample.client/${project.version}</bundle>
+        <bundle>mvn:${project.groupId}/sample.client/${project.version}</bundle>
     </feature>
 
 </features>

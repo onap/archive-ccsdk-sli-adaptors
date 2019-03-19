@@ -80,7 +80,7 @@
             <classifier>features</classifier>
         </dependency>
         <dependency>
-            <groupId>org.onap.ccsdk.messagerouter</groupId>
+            <groupId>${project.groupId}.messagerouter</groupId>
             <artifactId>publisher.features</artifactId>
             <version>${project.version}</version>
             <type>xml</type>

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-	<groupId>org.onap.ccsdk.messagerouter</groupId>
+	<groupId>org.onap.ccsdk.sli.adaptors.messagerouter</groupId>
 	<artifactId>publisher.aggregate</artifactId>
 	<version>0.4.1-SNAPSHOT</version>
 	</parent>
@@ -18,7 +18,7 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<configuration>
 					<instructions>
-						<Export-Package>org.onap.ccsdk.messagerouter.publisher.api</Export-Package>
+						<Export-Package>org.onap.ccsdk.sli.adaptors.messagerouter.publisher.api</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>

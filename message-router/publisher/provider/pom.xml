@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.onap.ccsdk.messagerouter</groupId>
+		<groupId>org.onap.ccsdk.sli.adaptors.messagerouter</groupId>
 		<artifactId>publisher.aggregate</artifactId>
 		<version>0.4.1-SNAPSHOT</version>
 	</parent>
@@ -13,7 +13,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.onap.ccsdk.messagerouter</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>publisher.api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -30,7 +30,7 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<configuration>
 					<instructions>
-						<Private-Package>org.onap.ccsdk.messagerouter.publisher.provider.impl</Private-Package>
+						<Private-Package>${project.groupId}.publisher.provider.impl</Private-Package>
 					</instructions>
 				</configuration>
 			</plugin>
