@@ -43,6 +43,7 @@
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
+        -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-grpc-client</artifactId>
@@ -50,7 +51,7 @@
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
-        -->
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccsdk-netbox-client</artifactId>
