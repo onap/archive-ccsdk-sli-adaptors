@@ -60,7 +60,7 @@
 
         <!-- CDS dependencies -->
         <dependency>
-            <groupId>org.onap.ccsdk.apps.components</groupId>
+            <groupId>org.onap.ccsdk.cds.components</groupId>
             <artifactId>proto-definition</artifactId>
             <version>${project.version}</version>
             <exclusions>
