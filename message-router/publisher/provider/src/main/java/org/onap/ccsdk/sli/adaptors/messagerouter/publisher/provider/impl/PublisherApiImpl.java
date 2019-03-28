@@ -1,4 +1,4 @@
-package org.onap.ccsdk.messagerouter.publisher.provider.impl;
+package org.onap.ccsdk.sli.adaptors.messagerouter.publisher.provider.impl;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -10,7 +10,7 @@ import java.net.SocketException;
 import java.net.URL;
 import java.util.Base64;
 
-import org.onap.ccsdk.messagerouter.publisher.api.PublisherApi;
+import org.onap.ccsdk.sli.adaptors.messagerouter.publisher.api.PublisherApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

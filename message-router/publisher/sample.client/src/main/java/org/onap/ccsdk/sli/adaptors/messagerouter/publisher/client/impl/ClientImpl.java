@@ -1,6 +1,6 @@
-package org.onap.ccsdk.messagerouter.publisher.client.impl;
+package org.onap.ccsdk.sli.adaptors.messagerouter.publisher.client.impl;
 
-import org.onap.ccsdk.messagerouter.publisher.api.PublisherApi;
+import org.onap.ccsdk.sli.adaptors.messagerouter.publisher.api.PublisherApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
