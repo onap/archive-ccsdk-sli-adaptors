@@ -1,6 +1,6 @@
-package org.onap.ccsdk.messagerouter.publisher.client.impl;
+package org.onap.ccsdk.sli.adaptors.messagerouter.publisher.client.impl;
 
-import org.onap.ccsdk.messagerouter.publisher.api.PublisherApi;
+import org.onap.ccsdk.sli.adaptors.messagerouter.publisher.api.PublisherApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +25,12 @@ public class ClientImpl {
 		for (int i = 0; i < 5; i++) {
 			String body = "{\"hello\":\"world " + String.valueOf(Math.random()) + "\"}";
 			logger.error("Loop iteration " + i + " sending body " + body + " to the topic " + topic);
-			Boolean result = publisher.publish(topic, body);
-			logger.error("Loop iteration " + i + " returned the boolean value " + result);
+			try {
+				Boolean result = publisher.publish(topic, body);
+				logger.error("Loop iteration " + i + " returned the boolean value " + result);
+			} catch (Exception e) {
+				logger.error("Error when publishing " + body + " to topic " + topic, e);
+			}
 		}
 	}
 

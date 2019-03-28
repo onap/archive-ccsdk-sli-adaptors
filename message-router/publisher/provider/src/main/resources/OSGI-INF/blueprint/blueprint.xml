@@ -3,12 +3,12 @@
 	xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0">
 
 	<bean id="publisher"
-		class="org.onap.ccsdk.messagerouter.publisher.provider.impl.PublisherApiImpl">
+		class="org.onap.ccsdk.sli.adaptors.messagerouter.publisher.provider.impl.PublisherApiImpl">
 		<cm:managed-properties
-			persistent-id="org.onap.ccsdk.messagerouter.publisher.provider"
+			persistent-id="org.onap.ccsdk.sli.adaptors.messagerouter.publisher.provider"
 			update-strategy="container-managed" />
 	</bean>
 
-	<service ref="publisher" interface="org.onap.ccsdk.messagerouter.publisher.api.PublisherApi" />
+	<service ref="publisher" interface="org.onap.ccsdk.sli.adaptors.messagerouter.publisher.api.PublisherApi" />
 
 </blueprint>
