@@ -23,7 +23,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>publisher.features</artifactId>
+			<artifactId>ccsdk-messagerouter-publisher</artifactId>
 			<version>${project.version}</version>
 			<type>xml</type>
 			<classifier>features</classifier>
