@@ -97,8 +97,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.client.urlconnection.HTTPSProperties;
 
 
 public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicResource {
@@ -251,7 +249,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         }
 
         if(keystorePath != null && keystorePassword != null && (new File(keystorePath)).exists()) {
-        DefaultClientConfig config = new DefaultClientConfig();
+        //DefaultClientConfig config = new DefaultClientConfig();
         //both jersey and HttpURLConnection can use this
         SSLContext ctx = null;
         try {
@@ -280,12 +278,13 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
             if(null!=kmf) {
             	ctx.init(kmf.getKeyManagers(), null, null);
             }
-            config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties( new HostnameVerifier() {
-                    @Override
-                    public boolean verify( String s, SSLSession sslSession ) {
-                        return ignoreCertificateHostError;
-                    }
-            }, ctx));
+                /*
+                 * config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new
+                 * HTTPSProperties( new HostnameVerifier() {
+                 * 
+                 * @Override public boolean verify( String s, SSLSession sslSession ) { return
+                 * ignoreCertificateHostError; } }, ctx));
+                 */
 
             CTX = ctx;
                 LOG.debug("SSLContext created");
