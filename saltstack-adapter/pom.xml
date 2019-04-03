@@ -193,5 +193,6 @@
         <module>saltstack-adapter-provider</module>
         <module>saltstack-adapter-features</module>
         <module>saltstack-adapter-installer</module>
+        <module>saltstack-adapter-lighty</module>
     </modules>
 </project>
