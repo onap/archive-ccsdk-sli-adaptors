@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.onap.ccsdk.parent</groupId>
+		<artifactId>binding-parent</artifactId>
+		<version>1.2.2-SNAPSHOT</version>
+		<relativePath/>
+	</parent>
+
+	<groupId>org.onap.ccsdk.sli.adaptors</groupId>
+	<artifactId>sql-resource-lighty</artifactId>
+	<version>0.4.2-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>ccsdk-sli-adaptors :: sql-resource :: ${project.artifactId}</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.lighty.core</groupId>
+			<artifactId>lighty-controller</artifactId>
+			<version>9.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.onap.ccsdk.sli.adaptors</groupId>
+			<artifactId>sql-resource-provider</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.onap.ccsdk.sli.core</groupId>
+			<artifactId>dblib-provider</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.onap.ccsdk.sli.core</groupId>
+			<artifactId>sli-provider</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+</project>
