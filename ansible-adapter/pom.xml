@@ -185,5 +185,6 @@
     <module>ansible-adapter-bundle</module>
     <module>ansible-adapter-features</module>
     <module>ansible-adapter-installer</module>
+    <module>ansible-adapter-lighty</module>
   </modules>
 </project>
