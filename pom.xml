@@ -100,7 +100,7 @@
         <module>ansible-adapter</module>
         <module>saltstack-adapter</module>
         <module>netbox-client</module>
-        <!-- 
+        <!--
         <module>grpc-resource</module>
         -->
         <module>mdsal-resource</module>
