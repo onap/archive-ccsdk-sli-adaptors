@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5c58b8d6_2021c902",
+        "filename": "message-router/publisher/installer/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1219
+      },
+      "writtenOn": "2019-04-04T15:07:10Z",
+      "side": 1,
+      "message": "if we update features.boot I believe application.name should be updated because of how it interacts with assemble_installer_zip.xml",
+      "revId": "6a91fa496b5464a9f96b43851968eee4c837d80c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a9b38e2f_52d0453b",
+        "filename": "message-router/publisher/installer/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1219
+      },
+      "writtenOn": "2019-04-04T15:07:10Z",
+      "side": 1,
+      "message": "install-feature.sh runs feature:install ${features.boot}, I think this should change to features-messagerouter-publisher",
+      "revId": "6a91fa496b5464a9f96b43851968eee4c837d80c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1188ea56_071d593d",
+        "filename": "message-router/publisher/installer/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1219
+      },
+      "writtenOn": "2019-04-04T15:07:10Z",
+      "side": 1,
+      "message": "features.repositories should be updated now that publisher.features doesn\u0027t exist right?",
+      "revId": "6a91fa496b5464a9f96b43851968eee4c837d80c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
