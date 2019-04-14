@@ -49,4 +49,7 @@ public interface AnsibleAdapter extends SvcLogicJavaPlugin {
 
     /* Method to get log of a playbook execution request */
     void reqExecLog(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException;
+
+    /* Method to get output of a playbook execution request */
+    void reqExecOutput(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException;
 }
