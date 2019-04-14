@@ -75,6 +75,7 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
     private static final String MESSAGE_ATTRIBUTE_NAME = "org.onap.appc.adapter.ansible.message";
     private static final String RESULTS_ATTRIBUTE_NAME = "org.onap.appc.adapter.ansible.results";
     private static final String ID_ATTRIBUTE_NAME = "org.onap.appc.adapter.ansible.Id";
+    private static final String OUTPUT_ATTRIBUTE_NAME = "org.onap.appc.adapter.ansible.output";
     private static final String LOG_ATTRIBUTE_NAME = "org.onap.appc.adapter.ansible.log";
 
     private static final String CLIENT_TYPE_PROPERTY_NAME = "org.onap.appc.adapter.ansible.clientType";
@@ -382,6 +383,39 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
             message = testResult.getStatusMessage();
             logger.info("Request output = " + message);
             ctx.setAttribute(LOG_ATTRIBUTE_NAME, message);
+            ctx.setStatus(OUTCOME_SUCCESS);
+        } catch (Exception e) {
+            logger.error("Exception caught", e);
+            doFailure(ctx, AnsibleResultCodes.UNKNOWN_EXCEPTION.getValue(),
+                    "Exception encountered retreiving output : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Public method to get output from playbook execution for a specific request
+     *
+     * It blocks till the Ansible Server responds or the session times out very similar to
+     * reqExecResult logs are returned in the DG context variable org.onap.appc.adapter.ansible.output
+     */
+    @Override
+    public void reqExecOutput(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException {
+
+        String reqUri = StringUtils.EMPTY;
+        try {
+            reqUri = messageProcessor.reqUriOutput(params);
+            logger.info("Retrieving results from " + reqUri);
+        } catch (Exception e) {
+            logger.error("Exception caught", e);
+            doFailure(ctx, AnsibleResultCodes.INVALID_PAYLOAD.getValue(), e.getMessage());
+        }
+
+        String message = StringUtils.EMPTY;
+        try {
+            // Try to retrieve the test results (modify the url for that)
+            AnsibleResult testResult = queryServer(reqUri, params.get("User"), params.get(PASSD));
+            message = testResult.getStatusMessage();
+            logger.info("Request output = " + message);
+            ctx.setAttribute(OUTPUT_ATTRIBUTE_NAME, message);
             ctx.setStatus(OUTCOME_SUCCESS);
         } catch (Exception e) {
             logger.error("Exception caught", e);

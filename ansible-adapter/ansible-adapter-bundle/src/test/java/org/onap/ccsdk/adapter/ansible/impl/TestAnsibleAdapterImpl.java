@@ -127,4 +127,21 @@ public class TestAnsibleAdapterImpl {
             fail(e.getMessage() + " Unknown exception encountered ");
         }
     }
+
+    @Test
+    public void reqExecOutput_shouldSetMessage() throws IllegalStateException, IllegalArgumentException {
+
+        params.put("Id", "101");
+
+        try {
+            adapter.reqExecOutput(params, svcContext);
+            String status = svcContext.getAttribute("org.onap.appc.adapter.ansible.output");
+            assertEquals(message, status);
+        } catch (SvcLogicException e) {
+            String status = svcContext.getAttribute("org.onap.appc.adapter.ansible.output");
+            fail(e.getMessage() + " Code = " + status);
+        } catch (Exception e) {
+            fail(e.getMessage() + " Unknown exception encountered ");
+        }
+    }
 }
