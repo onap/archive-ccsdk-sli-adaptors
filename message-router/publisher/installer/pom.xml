@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.onap.ccsdk.sli.adaptors.messagerouter</groupId>
 		<artifactId>publisher.aggregate</artifactId>
-		<version>0.4.2-SNAPSHOT</version>
+		<version>0.4.3-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.onap.ccsdk.sli.adaptors.messagerouter</groupId>
 	<artifactId>publisher.installer</artifactId>
-	<version>0.4.2-SNAPSHOT</version>
+	<version>0.4.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>

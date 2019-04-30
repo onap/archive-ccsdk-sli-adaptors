@@ -16,12 +16,12 @@
     <parent>
         <artifactId>odlparent-lite</artifactId>
         <groupId>org.onap.ccsdk.parent</groupId>
-        <version>1.2.2</version>
+        <version>1.2.3-SNAPSHOT</version>
         <relativePath/>
     </parent>
     <groupId>org.onap.ccsdk.sli.adaptors.messagerouter</groupId>
     <artifactId>publisher.features</artifactId>
-    <version>0.4.2-SNAPSHOT</version>
+    <version>0.4.3-SNAPSHOT</version>
     <name>ccsdk-sli-adaptors :: messagerouter :: ${project.artifactId}</name>
 
     <packaging>pom</packaging>

@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>odlparent-lite</artifactId>
-        <version>1.2.2</version>
+        <version>1.2.3-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>sql-resource</artifactId>
-    <version>0.4.2-SNAPSHOT</version>
+    <version>0.4.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>ccsdk-sli-adaptors :: sql-resource</name>
