@@ -5,7 +5,7 @@
 	<parent>
 	<groupId>org.onap.ccsdk.sli.adaptors.messagerouter</groupId>
 	<artifactId>publisher.aggregate</artifactId>
-	<version>0.4.2-SNAPSHOT</version>
+	<version>0.5.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>publisher.api</artifactId>
