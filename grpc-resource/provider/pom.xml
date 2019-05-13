@@ -35,7 +35,7 @@
         <grpc.version>1.17.1</grpc.version>
         <protobuf.version>3.6.1</protobuf.version>
         <grpc.netty.version>4.1.30.Final</grpc.netty.version>
-        <ccsdk.sli.cds.version>0.4.2-SNAPSHOT</ccsdk.sli.cds.version>
+        <ccsdk.sli.cds.version>0.5.0-SNAPSHOT</ccsdk.sli.cds.version>
     </properties>
 
     <dependencyManagement>
