@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "20633e7b_94b4c2e0",
+        "filename": "grpc-resource/provider/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 137
+      },
+      "writtenOn": "2019-05-13T13:36:00Z",
+      "side": 1,
+      "message": "we could be using ${project.version}",
+      "range": {
+        "startLine": 38,
+        "startChar": 31,
+        "endLine": 38,
+        "endChar": 45
+      },
+      "revId": "791e3b3d14a5c768578f3c01e7ee1bd3b1cf71f2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
