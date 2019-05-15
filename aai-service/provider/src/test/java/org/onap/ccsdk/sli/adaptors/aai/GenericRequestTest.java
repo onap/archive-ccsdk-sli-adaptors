@@ -38,7 +38,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
-import org.onap.aai.inventory.v14.LInterface;
+import org.onap.aai.inventory.v16.LInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
