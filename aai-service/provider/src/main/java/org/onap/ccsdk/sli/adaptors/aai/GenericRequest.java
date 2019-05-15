@@ -40,8 +40,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
-import org.onap.aai.inventory.v14.L3Network;
-import org.onap.aai.inventory.v14.L3Networks;
+import org.onap.aai.inventory.v16.L3Network;
+import org.onap.aai.inventory.v16.L3Networks;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -43,9 +43,9 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
-import org.onap.aai.inventory.v14.Relationship;
-import org.onap.aai.inventory.v14.RelationshipData;
-import org.onap.aai.inventory.v14.RelationshipList;
+import org.onap.aai.inventory.v16.Relationship;
+import org.onap.aai.inventory.v16.RelationshipData;
+import org.onap.aai.inventory.v16.RelationshipList;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.slf4j.Logger;

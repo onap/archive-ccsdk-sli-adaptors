@@ -62,7 +62,7 @@ import org.junit.runners.MethodSorters;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
-import org.onap.aai.inventory.v14.GenericVnf;
+import org.onap.aai.inventory.v16.GenericVnf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;

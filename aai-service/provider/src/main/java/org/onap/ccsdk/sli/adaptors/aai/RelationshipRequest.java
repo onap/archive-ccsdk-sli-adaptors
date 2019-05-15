@@ -35,7 +35,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
 
-import org.onap.aai.inventory.v14.Relationship;
+import org.onap.aai.inventory.v16.Relationship;
 
 
 public class RelationshipRequest extends GenericRequest {
