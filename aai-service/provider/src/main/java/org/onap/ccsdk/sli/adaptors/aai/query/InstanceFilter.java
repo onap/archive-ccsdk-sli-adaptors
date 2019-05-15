@@ -33,16 +33,16 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import org.onap.aai.inventory.v14.CloudRegion;
-import org.onap.aai.inventory.v14.GenericVnf;
-import org.onap.aai.inventory.v14.L3Network;
-import org.onap.aai.inventory.v14.Pnf;
-import org.onap.aai.inventory.v14.LogicalLink;
-import org.onap.aai.inventory.v14.PInterface;
-import org.onap.aai.inventory.v14.ServiceInstance;
-import org.onap.aai.inventory.v14.Tenant;
-import org.onap.aai.inventory.v14.Vnf;
-import org.onap.aai.inventory.v14.Vserver;
+import org.onap.aai.inventory.v16.CloudRegion;
+import org.onap.aai.inventory.v16.GenericVnf;
+import org.onap.aai.inventory.v16.L3Network;
+import org.onap.aai.inventory.v16.Pnf;
+import org.onap.aai.inventory.v16.LogicalLink;
+import org.onap.aai.inventory.v16.PInterface;
+import org.onap.aai.inventory.v16.ServiceInstance;
+import org.onap.aai.inventory.v16.Tenant;
+import org.onap.aai.inventory.v16.Vnf;
+import org.onap.aai.inventory.v16.Vserver;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")

@@ -49,7 +49,7 @@ import org.onap.ccsdk.sli.adaptors.aai.AAIRequest;
 import org.onap.ccsdk.sli.adaptors.aai.AAIService;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
-import org.onap.aai.inventory.v14.GenericVnf;
+import org.onap.aai.inventory.v16.GenericVnf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -32,7 +32,7 @@ import java.net.URL;
 import java.util.Properties;
 
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
-import org.onap.aai.inventory.v14.ResultData;
+import org.onap.aai.inventory.v16.ResultData;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
