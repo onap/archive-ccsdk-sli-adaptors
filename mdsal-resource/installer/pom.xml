@@ -11,7 +11,7 @@
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>mdsal-resource-installer</artifactId>
-    <version>0.4.3-SNAPSHOT</version>
+    <version>0.4.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>ccsdk-sli-adaptors :: mdsal-resource :: ${project.artifactId}</name>

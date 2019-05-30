@@ -25,7 +25,7 @@
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>netbox-client-provider</artifactId>
-    <version>0.4.3-SNAPSHOT</version>
+    <version>0.4.4-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <modelVersion>4.0.0</modelVersion>
 
