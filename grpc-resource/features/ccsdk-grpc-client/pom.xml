@@ -31,6 +31,7 @@
 
     <name>ccsdk-sli-adaptors :: grpc-client :: ${project.artifactId}</name>
 
+
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
@@ -57,7 +58,6 @@
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
-            <version>3.6.1</version>
         </dependency>
     </dependencies>
 </project>
