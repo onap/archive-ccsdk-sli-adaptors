@@ -146,9 +146,10 @@ public class AAIServiceTest {
         String url = "https://aai.api.simpledemo.onap.org:8443/aai/v11/cloud-infrastructure/pservers/pserver/chcil129snd";
         setConnMock();
 
-        when(aaiServiceSpy.getConfiguredConnection(new URL(url), HttpMethod.GET)).thenReturn(connMock);
-        when(connMock.getResponseCode()).thenReturn(500);
-        when(connMock.getInputStream()).thenReturn(getClass().getClassLoader().getResourceAsStream(fileLocation));
+        // The following lines are not needed and cause latest version of mockito to throw an exception
+//        when(aaiServiceSpy.getConfiguredConnection(new URL(url), HttpMethod.GET)).thenReturn(connMock);
+//        when(connMock.getResponseCode()).thenReturn(500);
+//        when(connMock.getInputStream()).thenReturn(getClass().getClassLoader().getResourceAsStream(fileLocation));
 
         aaiServiceSpy.dataChangeRequestAaiData(url, Class.class);
     }
