@@ -36,6 +36,7 @@
         <ccsdk.sli.adaptors.version>${project.version}</ccsdk.sli.adaptors.version>
     </properties>
 
+
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
