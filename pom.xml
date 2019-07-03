@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>odlparent-lite</artifactId>
-        <version>1.3.3-SNAPSHOT</version>
+        <version>1.4.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -103,15 +103,14 @@
         <module>mdsal-resource</module>
         <module>resource-assignment</module>
         <module>sql-resource</module>
-        <module>base</module>
-        <module>message-router</module>
         <module>features</module>
         <module>artifacts</module>
+        <module>message-router</module>
     </modules>
     <organization>
         <name>ONAP</name>
     </organization>
-    <version>0.5.2-SNAPSHOT</version>
+    <version>0.6.0-SNAPSHOT</version>
 
 
 </project>
