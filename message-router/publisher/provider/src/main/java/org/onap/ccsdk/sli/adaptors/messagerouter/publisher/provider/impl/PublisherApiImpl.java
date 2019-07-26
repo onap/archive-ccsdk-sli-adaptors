@@ -28,12 +28,12 @@ public class PublisherApiImpl implements PublisherApi {
 
 	public void setUsername(String username) {
 		this.username = username;
-		buildAuthorizationString();
+		setAuthorizationString();
 	}
 
 	public void setPassword(String password) {
 		this.password = password;
-		buildAuthorizationString();
+		setAuthorizationString();
 	}
 
 	public void setHost(String hostString) {
@@ -51,10 +51,10 @@ public class PublisherApiImpl implements PublisherApi {
 	}
 
 	public void init() {
-		buildAuthorizationString();
+		setAuthorizationString();
 	}
 
-	private String buildUrlString(Integer hostIndex, String topic) {
+	protected String buildUrlString(Integer hostIndex, String topic) {
 		return hosts[hostIndex] + "/events/" + topic;
 	}
 
@@ -116,15 +116,22 @@ public class PublisherApiImpl implements PublisherApi {
 		return false;
 	}
 
-	private void buildAuthorizationString() {
-		String basicAuthString = username + ":" + password;
-		basicAuthString = Base64.getEncoder().encodeToString(basicAuthString.getBytes());
-		this.authorizationString = "Basic " + basicAuthString;
+	protected void setAuthorizationString() {
+	    String str = buildAuthorizationString(this.username, this.password);
+		this.authorizationString = str;
+		//System.out.println(this.authorizationString);
 	}
+	
+         protected String buildAuthorizationString(String username, String password) {
+             String basicAuthString = username + ":" + password;
+             basicAuthString = Base64.getEncoder().encodeToString(basicAuthString.getBytes());
+             return "Basic " + basicAuthString;
+        }
 
 	protected HttpURLConnection buildHttpURLConnection(URL url) throws IOException {
 		HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
 		if (authorizationString != null) {
+		    System.out.println(authorizationString);
 			httpUrlConnection.setRequestProperty("Authorization", authorizationString);
 		}
 		httpUrlConnection.setRequestProperty("Accept", "application/json");
