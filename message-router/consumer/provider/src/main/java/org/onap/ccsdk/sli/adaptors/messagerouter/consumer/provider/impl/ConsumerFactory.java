@@ -1,3 +1,25 @@
+/*-
+ * ============LICENSE_START=======================================================
+ * openECOMP : SDN-C
+ * ================================================================================
+ * Copyright (C) 2017 - 2019 AT&T Intellectual Property. All rights
+ *                      reserved.
+ *                      
+ * Modifications Copyright (C) 2019 IBM.
+ * ================================================================================
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============LICENSE_END=========================================================
+ */
 package org.onap.ccsdk.sli.adaptors.messagerouter.consumer.provider.impl;
 
 import java.io.UnsupportedEncodingException;
@@ -34,7 +56,27 @@ public class ConsumerFactory {
     private Integer timeoutQueryParamValue;
     private String filter;
     protected String auth;
+    
+    public ConsumerFactory(Properties properties) {
+    	// Required properties
+    	username = properties.getProperty("username");
+    	password = properties.getProperty("password");
+    	host = properties.getProperty("host");
+    	auth = properties.getProperty("auth");
+    	group = properties.getProperty("group");
+    	id = properties.getProperty("id");
 
+    	// Optional properties
+    	connectTimeout = readOptionalInteger(properties, "connectTimeoutSeconds");
+    	readTimeout = readOptionalInteger(properties, "readTimeoutMinutes");
+    	fetchPause = readOptionalInteger(properties, "fetchPause");
+    	limit = readOptionalInteger(properties, "limit");
+    	timeoutQueryParamValue = readOptionalInteger(properties, "timeout");
+    	processFilter(properties.getProperty("filter"));
+
+    	setDefaults();
+        }
+    
     public String getAuth() {
 	return auth;
     }
@@ -97,26 +139,6 @@ public class ConsumerFactory {
 	this.host = host;
 	this.group = group;
 	this.id = id;
-	setDefaults();
-    }
-
-    public ConsumerFactory(Properties properties) {
-	// Required properties
-	username = properties.getProperty("username");
-	password = properties.getProperty("password");
-	host = properties.getProperty("host");
-	auth = properties.getProperty("auth");
-	group = properties.getProperty("group");
-	id = properties.getProperty("id");
-
-	// Optional properties
-	connectTimeout = readOptionalInteger(properties, "connectTimeoutSeconds");
-	readTimeout = readOptionalInteger(properties, "readTimeoutMinutes");
-	fetchPause = readOptionalInteger(properties, "fetchPause");
-	limit = readOptionalInteger(properties, "limit");
-	timeoutQueryParamValue = readOptionalInteger(properties, "timeout");
-	processFilter(properties.getProperty("filter"));
-
 	setDefaults();
     }
 
