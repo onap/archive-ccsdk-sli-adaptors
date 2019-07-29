@@ -2,9 +2,9 @@
  * ============LICENSE_START=======================================================
  * openECOMP : SDN-C
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights
+ * Copyright (C) 2019 AT&T Intellectual Property. All rights
  * 							reserved.
- * Modifications Copyright (C) 2018 IBM.
+ * Modifications Copyright (C) 2019 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -273,7 +273,7 @@ public class ResourceAllocator implements SvcLogicResource {
         return release(sd, rr, null);
     }
 
-    public AllocationStatus release(ResourceEntity sd, ResourceRequest rr, ResourceTarget rt) throws Exception {
+    public AllocationStatus release(ResourceEntity sd, ResourceRequest rr, ResourceTarget rt) {
 
         ReleaseRequest releaseRequest = new ReleaseRequest();
 
