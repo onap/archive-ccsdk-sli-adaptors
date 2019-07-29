@@ -2,10 +2,10 @@
  * ============LICENSE_START=======================================================
  * openECOMP : SDN-C
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights
+ * Copyright (C) 2019 AT&T Intellectual Property. All rights
  *             reserved.
  * ================================================================================
- * Modifications Copyright (C) 2018 IBM.
+ * Modifications Copyright (C) 2019 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1636,7 +1636,6 @@ public abstract class AAIDeclarations implements AAIClient {
                 try {
                     obj = getMetadataMethod.invoke(instance);
                 } catch (InvocationTargetException x) {
-                    Throwable cause = x.getCause();
                 }
             }
             if(obj != null && obj instanceof Metadata){
