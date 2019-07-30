@@ -1240,7 +1240,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
     }
 
 
-    protected boolean deleteList(URL httpReqUrl, String json_text) throws AAIServiceException {
+    protected boolean deleteList(URL httpReqUrl, String jsonText) throws AAIServiceException {
         if(httpReqUrl ==  null) {
             throw new NullPointerException();
         }
@@ -1253,15 +1253,15 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
 //            SSLSocketFactory sockFact = CTX.getSocketFactory();
 //            con.setSSLSocketFactory( sockFact );
-            if (json_text != null) {
+            if (jsonText != null) {
                 OutputStreamWriter osw = new OutputStreamWriter(con.getOutputStream());
-                osw.write(json_text);
+                osw.write(jsonText);
                 osw.flush();
                 osw.close();
             }
 
             LOGwriteFirstTrace("DELETE", httpReqUrl.toString());
-            LOGwriteDateTrace("data", json_text);
+            LOGwriteDateTrace("data", jsonText);
 
             // Check for errors
             int responseCode = con.getResponseCode();
