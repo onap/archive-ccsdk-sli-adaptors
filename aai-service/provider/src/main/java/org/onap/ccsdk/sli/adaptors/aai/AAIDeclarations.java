@@ -1618,7 +1618,7 @@ public abstract class AAIDeclarations implements AAIClient {
         }
 
         Class resourceClass = instance.getClass();
-        Set<String> metadataKeys = new TreeSet<String>();
+        Set<String> metadataKeys = new TreeSet<>();
         Set<String> set = params.keySet();
         for(String attribute : set) {
             if(attribute.startsWith("metadata")) {
