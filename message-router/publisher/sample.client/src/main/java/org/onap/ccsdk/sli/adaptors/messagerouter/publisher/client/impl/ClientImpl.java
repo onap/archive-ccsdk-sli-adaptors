@@ -48,7 +48,7 @@ public class ClientImpl {
 
 	public void init() {
 		for (int i = 0; i < 5; i++) {
-			String body = "{\"hello\":\"world " + String.valueOf(Math.random()) + "\"}";
+			String body = "{\"hello\":\"world " + Math.random() + "\"}";
 			logger.error("Loop iteration " + i + " sending body " + body + " to the topic " + topic);
 			Boolean result = publisher.publish(topic, body);
 			logger.error("Loop iteration " + i + " returned the boolean value " + result);
