@@ -66,10 +66,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
 
         <!-- Needed to run SSH -->
         <!-- VERSION CONFLICT !!!!! -->
@@ -102,11 +98,13 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-common</artifactId>
-        </dependency>
+            <scope>provided</scope> 
+       </dependency>
 
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-provider</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
