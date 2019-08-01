@@ -28,6 +28,7 @@
             <version>${ccsdk.sli.core.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
