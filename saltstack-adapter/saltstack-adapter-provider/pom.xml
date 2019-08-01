@@ -36,7 +36,7 @@
     		<dependency>
     			<groupId>org.onap.ccsdk.sli.core</groupId>
     			<artifactId>sli-core-artifacts</artifactId>
-    			<version>${ccsdk.sli.core.version}</version>
+    			<version>${ccsdk.sli.core.artifacts.version}</version>
     			<type>pom</type>
     			<scope>import</scope>
     		</dependency>
@@ -65,10 +65,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
         </dependency>
 
         <!-- Needed to run SSH -->
@@ -102,11 +98,13 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-common</artifactId>
-        </dependency>
+            <scope>provided</scope> 
+       </dependency>
 
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-provider</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
