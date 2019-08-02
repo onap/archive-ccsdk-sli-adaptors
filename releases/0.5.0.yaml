@@ -1,0 +1,5 @@
+---
+distribution_type: 'maven'
+version: '0.5.0'
+project: 'ccsdk-sli-adaptors'
+log_dir: 'ccsdk-sli-adaptors-maven-stage-master/160/'
