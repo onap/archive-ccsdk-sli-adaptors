@@ -77,6 +77,16 @@ public class ConsumerFactory {
     	setDefaults();
         }
     
+    public ConsumerFactory(String username, String password, String host, String group, String id, Integer connectTimeout, Integer readTimeout) {
+    	this.username = username;
+    	this.password = password;
+    	this.host = host;
+    	this.group = group;
+    	this.id = id;
+    	setDefaults();
+        }
+
+    
     public String getAuth() {
 	return auth;
     }
@@ -131,15 +141,6 @@ public class ConsumerFactory {
 
     public void setFilter(String filter) {
 	processFilter(filter);
-    }
-
-    public ConsumerFactory(String username, String password, String host, String group, String id, Integer connectTimeout, Integer readTimeout) {
-	this.username = username;
-	this.password = password;
-	this.host = host;
-	this.group = group;
-	this.id = id;
-	setDefaults();
     }
 
     private Integer readOptionalInteger(Properties properties, String propertyName) {
