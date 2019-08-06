@@ -103,9 +103,10 @@
         <module>mdsal-resource</module>
         <module>resource-assignment</module>
         <module>sql-resource</module>
+        <module>base</module>
+        <module>message-router</module>
         <module>features</module>
         <module>artifacts</module>
-        <module>message-router</module>
     </modules>
     <organization>
         <name>ONAP</name>
