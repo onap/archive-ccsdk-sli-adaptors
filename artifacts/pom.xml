@@ -73,6 +73,13 @@
 			</dependency>
 			<dependency>
 				<groupId>org.onap.ccsdk.sli.adaptors</groupId>
+				<artifactId>ccsdk-base-http</artifactId>
+				<version>${project.version}</version>
+				<type>xml</type>
+				<classifier>feature</classifier>
+			</dependency>
+			<dependency>
+				<groupId>org.onap.ccsdk.sli.adaptors</groupId>
 				<artifactId>aai-service-provider</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -139,6 +146,16 @@
 			<dependency>
 				<groupId>org.onap.ccsdk.sli.adaptors</groupId>
 				<artifactId>sql-resource-installer</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.onap.ccsdk.sli.adaptors</groupId>
+				<artifactId>base-http-provider</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.onap.ccsdk.sli.adaptors</groupId>
+				<artifactId>base-http-installer</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
