@@ -48,6 +48,11 @@ public class PublisherApiImpl implements PublisherApi {
 	protected String[] hosts;
 	private String password;
 
+	public PublisherApiImpl() {
+		connectTimeout = DEFAULT_CONNECT_TIMEOUT;
+		readTimeout = DEFAULT_READ_TIMEOUT;
+	}
+
 	public void setUsername(String username) {
 		this.username = username;
 		setAuthorizationString();
@@ -65,11 +70,6 @@ public class PublisherApiImpl implements PublisherApi {
 		} else {
 			this.hosts = hostString.split(",");
 		}
-	}
-
-	public PublisherApiImpl() {
-		connectTimeout = DEFAULT_CONNECT_TIMEOUT;
-		readTimeout = DEFAULT_READ_TIMEOUT;
 	}
 
 	public void init() {
