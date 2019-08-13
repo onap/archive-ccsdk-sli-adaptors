@@ -265,11 +265,11 @@ public class ResourceAllocator implements SvcLogicResource {
         return QueryStatus.SUCCESS;
     }
 
-    public AllocationStatus release(ResourceEntity sd) throws Exception {
+    public AllocationStatus release(ResourceEntity sd){
         return release(sd, null, null);
     }
 
-    public AllocationStatus release(ResourceEntity sd, ResourceRequest rr) throws Exception {
+    public AllocationStatus release(ResourceEntity sd, ResourceRequest rr){
         return release(sd, rr, null);
     }
 
@@ -350,7 +350,7 @@ public class ResourceAllocator implements SvcLogicResource {
     }
 
     private AllocationStatus allocateResources(ResourceEntity sd, ResourceTarget rt, ResourceRequest rr,
-            List<ResourceResponse> rsList) throws Exception {
+            List<ResourceResponse> rsList){
 
         String serviceModel = rr.serviceModel;
         String requestType = rr.requestType == null ? "New" : rr.requestType;
