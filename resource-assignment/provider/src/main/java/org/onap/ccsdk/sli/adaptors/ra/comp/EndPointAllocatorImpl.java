@@ -259,9 +259,7 @@ public class EndPointAllocatorImpl implements EndPointAllocator {
 
         if (r != null && r.allocationItems != null && !r.allocationItems.isEmpty()) {
             log.info("ResourceName:" + r.resourceKey.resourceName + " assetId:" + r.resourceKey.assetId);
-
-            ResourceData rd = getResourceData(r);
-            return rd;
+            return getResourceData(r);
         }
 
         return null;
