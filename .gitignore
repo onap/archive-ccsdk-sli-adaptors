@@ -34,6 +34,7 @@ provider/src/main/java/inventory/
 logs/
 debug-logs/
 *.log
+*.versionsBackup
 
 ## BlackDuck generated file
 ccsdk-adaptors_bdio.jsonld
