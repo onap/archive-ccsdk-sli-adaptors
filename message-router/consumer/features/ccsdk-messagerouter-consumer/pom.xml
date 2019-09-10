@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.onap.ccsdk.parent</groupId>
 		<artifactId>single-feature-parent</artifactId>
-		<version>1.4.1-SNAPSHOT</version>
+		<version>1.4.1</version>
 	</parent>
 
 	<groupId>org.onap.ccsdk.sli.adaptors.messagerouter</groupId>
 	<artifactId>ccsdk-messagerouter-consumer</artifactId>
-	<version>0.6.1-SNAPSHOT</version>
+	<version>0.6.1</version>
 	<packaging>feature</packaging>
 	
 	<dependencies>
