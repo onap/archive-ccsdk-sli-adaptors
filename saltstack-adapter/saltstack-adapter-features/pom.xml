@@ -15,12 +15,12 @@
     <parent>
         <artifactId>odlparent-lite</artifactId>
         <groupId>org.onap.ccsdk.parent</groupId>
-        <version>1.3.4-SNAPSHOT</version>
+        <version>1.3.4</version>
         <relativePath/>
     </parent>
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>saltstack-adapter-features</artifactId>
-    <version>0.5.3-SNAPSHOT</version>
+    <version>0.5.3</version>
     <name>ccsdk-sli-adaptors :: saltstack-adapter :: ${project.artifactId}
     </name>
 
