@@ -1,0 +1,8 @@
+Code-Review+2: Dan Timoney <dtimoney@att.com>
+Code-Review+2: Brinda Santh Muthuramalingam <brindasanth@in.ibm.com>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Submitted-by: Dan Timoney <dtimoney@att.com>
+Submitted-at: Thu, 12 Sep 2019 14:49:31 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/ccsdk/sli/adaptors/+/95421
+Project: ccsdk/sli/adaptors
+Branch: refs/heads/elalto
