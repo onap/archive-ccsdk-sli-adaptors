@@ -83,7 +83,7 @@ public abstract class AbstractHttpAdapter {
     protected String getBasicAuthValue(String userName, String password) {
         String token = userName + ":" + password;
         try {
-            return "BASIC " + DatatypeConverter.printBase64Binary(token.getBytes("UTF-8"));
+            return "Basic " + DatatypeConverter.printBase64Binary(token.getBytes("UTF-8"));
         } catch (Exception e) {
             logger.error("getBasicAuthValue threw an exception, credentials will be null", e);
         }
