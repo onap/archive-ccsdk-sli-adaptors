@@ -134,6 +134,9 @@ public class ConnectionBuilder {
         return result;
     }
 
+    /**
+    * Print Reasonable error messages based on SSH Exit status code
+    * */
     public SaltstackResult sortExitStatus(int exitStatus, String errMess, String cmd) {
         SaltstackResult result = new SaltstackResult();
         if (exitStatus == 255 || exitStatus == 1) {

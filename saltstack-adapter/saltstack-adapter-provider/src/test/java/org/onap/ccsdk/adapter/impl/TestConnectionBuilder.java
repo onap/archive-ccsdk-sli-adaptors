@@ -87,6 +87,30 @@ public class TestConnectionBuilder {
     }
 
     @Test
+    public void reqExecCommand_exitStatus67() {
+
+        int exitStatus = 67;
+        String errFilePath = "src/test/resources/test.json";
+        String command = "test";
+
+        SaltstackResult result = connBuilder.sortExitStatus(exitStatus, errFilePath, command);
+        int status = result.getStatusCode();
+        assertEquals(610, status);
+    }
+
+    @Test
+    public void reqExecCommand_exitStatus73() {
+
+        int exitStatus = 73;
+        String errFilePath = "src/test/resources/test.json";
+        String command = "test";
+
+        SaltstackResult result = connBuilder.sortExitStatus(exitStatus, errFilePath, command);
+        int status = result.getStatusCode();
+        assertEquals(610, status);
+    }
+
+    @Test
     public void reqExecCommand_exitStatus5() {
 
         int exitStatus = 5;
@@ -111,7 +135,7 @@ public class TestConnectionBuilder {
     }
 
     @Test
-    public void reqExecCommand_exitStatus67() {
+    public void reqExecCommand_exitStatus67613() {
 
         int exitStatus = 5;
         String errFilePath = "src/test/resources/test.json";
@@ -123,7 +147,7 @@ public class TestConnectionBuilder {
     }
 
     @Test
-    public void reqExecCommand_exitStatus73() {
+    public void reqExecCommand_exitStatus65613() {
 
         int exitStatus = 65;
         String errFilePath = "src/test/resources/test.json";
