@@ -58,6 +58,7 @@ import org.onap.ccsdk.sli.adaptors.aai.data.RequestError;
 import org.onap.ccsdk.sli.adaptors.aai.data.ResourceVersion;
 import org.onap.ccsdk.sli.adaptors.aai.data.ServiceException;
 import org.onap.ccsdk.sli.core.sli.MetricLogger;
+import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -714,7 +715,7 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
         String mlId = ml.getRequestID();
         if (mlId != null && !mlId.isEmpty()) {
             LOG.debug(String.format("MetricLogger requestId = %s", mlId));
-            con.setRequestProperty(MetricLogger.REQUEST_ID, mlId);
+            con.setRequestProperty(ONAPLogConstants.MDCs.REQUEST_ID, mlId);
         } else {
             LOG.debug("MetricLogger requestId is null");
         }

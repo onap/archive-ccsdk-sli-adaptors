@@ -61,6 +61,11 @@
             <version>${ccsdk.sli.core.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.onap.logging-analytics</groupId>
+            <artifactId>logging-filter-base</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
             <scope>provided</scope>

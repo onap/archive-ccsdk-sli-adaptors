@@ -86,6 +86,7 @@ import org.onap.aai.inventory.v16.PhysicalLink;
 import org.onap.aai.inventory.v16.ResultData;
 import org.onap.aai.inventory.v16.SearchResults;
 import org.onap.aai.inventory.v16.Vserver;
+import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -363,7 +364,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
         String mlId = ml.getRequestID();
         if(mlId != null && !mlId.isEmpty()) {
             LOG.debug(String.format("MetricLogger requestId = %s", mlId));
-            con.setRequestProperty(MetricLogger.REQUEST_ID, mlId);
+            con.setRequestProperty(ONAPLogConstants.MDCs.REQUEST_ID, mlId);
         } else {
             LOG.debug("MetricLogger requestId is null");
         }
