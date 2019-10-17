@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Properties;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 import javax.ws.rs.client.ClientBuilder;
-import javax.xml.bind.DatatypeConverter;
-
+import org.onap.logging.filter.base.MetricLogClientFilter;
+import org.onap.logging.filter.base.PayloadLoggingClientFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +26,6 @@ public abstract class AbstractHttpAdapter {
     public AbstractHttpAdapter() {
         clientBuilder = ClientBuilder.newBuilder();
         setTimeouts();
-        registerLoggingFilter();
         defaultHostNameVerifier();
     }
     
@@ -39,7 +38,13 @@ public abstract class AbstractHttpAdapter {
         });
     }
 
-    protected abstract void registerLoggingFilter();
+    protected void enableMetricLogging() {
+        clientBuilder.register(new MetricLogClientFilter());
+    }
+
+    protected void enablePayloadLogging() {
+        clientBuilder.register(new PayloadLoggingClientFilter());
+    }
 
     private void setTimeouts() {
         Integer httpReadTimeout = readOptionalInteger("HTTP_READ_TIMEOUT_MS", DEFAULT_HTTP_READ_TIMEOUT_MS);
@@ -83,7 +88,7 @@ public abstract class AbstractHttpAdapter {
     protected String getBasicAuthValue(String userName, String password) {
         String token = userName + ":" + password;
         try {
-            return "Basic " + DatatypeConverter.printBase64Binary(token.getBytes("UTF-8"));
+            return "Basic " + Base64.getEncoder().encodeToString(token.getBytes());
         } catch (Exception e) {
             logger.error("getBasicAuthValue threw an exception, credentials will be null", e);
         }
