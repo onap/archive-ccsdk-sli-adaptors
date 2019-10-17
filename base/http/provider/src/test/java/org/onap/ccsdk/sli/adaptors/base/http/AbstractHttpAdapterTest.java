@@ -12,16 +12,13 @@ import org.junit.Test;
 
 public class AbstractHttpAdapterTest {
     
-    public class NonLoggingHttpAdapter extends AbstractHttpAdapter {
-        @Override
-        protected void registerLoggingFilter() {
-            // nonlogging, do nothing
-        }
+    public class TestAdapter extends AbstractHttpAdapter {
+
     }
     
     @Test
     public void checkTimeouts() throws Exception {
-        NonLoggingHttpAdapter adapter = new NonLoggingHttpAdapter();
+        TestAdapter adapter = new TestAdapter();
         Client client = adapter.getClientBuilder().build();
         assertNotNull(client.getConfiguration().getProperty("jersey.config.client.readTimeout"));
         assertNotNull(client.getConfiguration().getProperty("jersey.config.client.connectTimeout"));
@@ -30,7 +27,7 @@ public class AbstractHttpAdapterTest {
     @Test
     public void propertiesTest() throws Exception {
         System.setProperty(AbstractHttpAdapter.SDNC_CONFIG_DIR, "src/test/resources/");
-        NonLoggingHttpAdapter adapter = new NonLoggingHttpAdapter();
+        TestAdapter adapter = new TestAdapter();
         Properties props = adapter.getProperties("testprops.properties");
         assertNotNull(props);
         assertEquals("world", props.get("hello"));
@@ -38,7 +35,7 @@ public class AbstractHttpAdapterTest {
     
     @Test
     public void basicAuthFilter() throws Exception {
-        NonLoggingHttpAdapter adapter = new NonLoggingHttpAdapter();
+        TestAdapter adapter = new TestAdapter();
         adapter.addBasicAuthCredentials("hello", "world");
         Set<Object> objs = adapter.getClientBuilder().getConfiguration().getInstances();
         assertEquals(BasicAuthFilter.class,objs.iterator().next().getClass());
