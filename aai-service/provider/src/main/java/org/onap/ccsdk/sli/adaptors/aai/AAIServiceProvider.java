@@ -31,7 +31,6 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Vector;
-
 import org.onap.ccsdk.sli.core.utils.JREFileResolver;
 import org.onap.ccsdk.sli.core.utils.KarafRootFileResolver;
 import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;
