@@ -16,9 +16,9 @@
 package org.onap.ccsdk.sli.adaptors.netbox.api;
 
 import java.util.Map;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicJavaPlugin;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicResource.QueryStatus;
 
 /**
  * This client is meant to interact both with the IPAM system, and the SDNC DB, in order to provide, at any time,

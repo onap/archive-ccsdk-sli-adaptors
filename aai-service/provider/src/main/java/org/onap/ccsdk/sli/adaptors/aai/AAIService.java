@@ -61,7 +61,6 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManagerFactory;
@@ -70,27 +69,26 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.ws.rs.HttpMethod;
 import javax.xml.bind.annotation.XmlElement;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
-import org.onap.ccsdk.sli.adaptors.aai.data.ErrorResponse;
-import org.onap.ccsdk.sli.adaptors.aai.data.notify.NotifyEvent;
-import org.onap.ccsdk.sli.core.sli.ConfigurationException;
-import org.onap.ccsdk.sli.core.sli.MetricLogger;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
 import org.onap.aai.inventory.v16.GenericVnf;
 import org.onap.aai.inventory.v16.PhysicalLink;
 import org.onap.aai.inventory.v16.ResultData;
 import org.onap.aai.inventory.v16.SearchResults;
 import org.onap.aai.inventory.v16.Vserver;
+import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
+import org.onap.ccsdk.sli.adaptors.aai.data.ErrorResponse;
+import org.onap.ccsdk.sli.adaptors.aai.data.notify.NotifyEvent;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.exceptions.ConfigurationException;
+import org.onap.ccsdk.sli.core.api.exceptions.SvcLogicException;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicResource;
+import org.onap.ccsdk.sli.core.odlsli.MetricLogger;
+import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicContextImpl;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -760,7 +758,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
         T response = null;
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         if(!key.contains(" = ") && isValidURL(key)) {
             key = String.format("selflink = '%s'", key);
         } else
@@ -1179,7 +1177,7 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
             T response = null;
 
-            SvcLogicContext ctx = new SvcLogicContext();
+            SvcLogicContext ctx = new SvcLogicContextImpl();
             if(!key.contains(" = ")) {
                 if(isValidURL(key)) {
                     key = String.format("selflink = '%s'", key);

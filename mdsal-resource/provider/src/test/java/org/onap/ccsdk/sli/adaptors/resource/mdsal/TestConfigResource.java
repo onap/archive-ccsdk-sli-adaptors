@@ -1,17 +1,16 @@
 package org.onap.ccsdk.sli.adaptors.resource.mdsal;
 
-import junit.framework.TestCase;
-
 import static org.mockito.Mockito.mock;
-
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicContextImpl;
+import junit.framework.TestCase;
 
 public class TestConfigResource extends TestCase {
 
 	public void test() throws Exception {
 
 		RestService restService = mock(RestService.class);
-		SvcLogicContext ctx = new SvcLogicContext();
+		SvcLogicContext ctx = new SvcLogicContextImpl();
 
 		ConfigResource res = new ConfigResource(restService);
 

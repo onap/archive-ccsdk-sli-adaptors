@@ -21,12 +21,12 @@
 
 package org.onap.ccsdk.sli.adaptors.resource.mdsal;
 
-import org.junit.Test;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
-
 import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.exceptions.SvcLogicException;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicContextImpl;
 
 public class ConfigResourceTest {
     ConfigResource configResource = new ConfigResource("http", "local",
@@ -35,7 +35,7 @@ public class ConfigResourceTest {
 
     @Test
     public void isAvailableNegativeTest() throws SvcLogicException {
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         assertEquals(QueryStatus.NOT_FOUND, configResource.isAvailable
                 ("xyz", "key", "prefix", ctx));
     }

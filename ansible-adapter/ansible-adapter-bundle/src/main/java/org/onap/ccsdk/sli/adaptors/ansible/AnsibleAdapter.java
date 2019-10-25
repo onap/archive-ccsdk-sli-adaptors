@@ -25,9 +25,9 @@
 package org.onap.ccsdk.sli.adaptors.ansible;
 
 import java.util.Map;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.exceptions.SvcLogicException;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicJavaPlugin;
 
 /**
  * This interface defines the operations that the Ansible adapter exposes.

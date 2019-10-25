@@ -25,7 +25,7 @@
 package org.onap.ccsdk.sli.adaptors.saltstack.impl;
 
 import org.onap.ccsdk.sli.adaptors.saltstack.SaltstackAdapterPropertiesProvider;
-import org.onap.ccsdk.sli.core.sli.ConfigurationException;
+import org.onap.ccsdk.sli.core.api.exceptions.ConfigurationException;
 import org.onap.ccsdk.sli.core.utils.JREFileResolver;
 import org.onap.ccsdk.sli.core.utils.KarafRootFileResolver;
 import org.onap.ccsdk.sli.core.utils.PropertiesFileResolver;

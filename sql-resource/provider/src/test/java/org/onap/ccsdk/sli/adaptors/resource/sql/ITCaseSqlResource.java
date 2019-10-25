@@ -27,8 +27,8 @@ import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicResource.QueryStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +86,7 @@ public class ITCaseSqlResource extends TestCase {
 
 		InputStream testStr = getClass().getResourceAsStream("/save.tests");
 		BufferedReader testsReader = new BufferedReader(new InputStreamReader(testStr));
-		SvcLogicContext ctx = new SvcLogicContext();
+		SvcLogicContext ctx = new SvcLogicContextImpl();
 
 		try {
 			String testExpr = null;

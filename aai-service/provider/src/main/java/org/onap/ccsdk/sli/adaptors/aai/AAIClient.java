@@ -31,10 +31,10 @@ import java.net.URL;
 import java.util.Map;
 
 import org.onap.aai.inventory.v16.*;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.exceptions.SvcLogicException;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicJavaPlugin;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicResource;
 import org.onap.ccsdk.sli.adaptors.aai.data.notify.NotifyEvent;
 
 public interface AAIClient extends SvcLogicResource, SvcLogicJavaPlugin {

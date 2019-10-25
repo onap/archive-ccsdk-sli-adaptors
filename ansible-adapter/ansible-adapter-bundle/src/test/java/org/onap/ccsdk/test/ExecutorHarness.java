@@ -32,8 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicJavaPlugin;
 
 /**
  * This class is used as a test harness to wrap the call to an executor node.
@@ -85,7 +85,7 @@ public class ExecutorHarness {
     public ExecutorHarness() throws NoSuchFieldException, SecurityException, IllegalArgumentException,
                     IllegalAccessException {
         methods = new HashMap<>();
-        new SvcLogicContext();
+        new SvcLogicContextImpl();
 
         Class<?> contextClass = SvcLogicContext.class;
         contextLogger = contextClass.getDeclaredField("LOG");
