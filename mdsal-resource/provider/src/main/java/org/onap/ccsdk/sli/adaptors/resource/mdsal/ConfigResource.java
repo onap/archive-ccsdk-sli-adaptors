@@ -23,11 +23,10 @@ package org.onap.ccsdk.sli.adaptors.resource.mdsal;
 
 import java.util.Map;
 import java.util.Properties;
-
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.exceptions.SvcLogicException;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicResource;
+import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -113,9 +112,9 @@ public class ConfigResource implements SvcLogicResource {
         if (results == null) {
             return(QueryStatus.NOT_FOUND);
         } else {
-
             if (ctx != null) {
-                ctx.mergeDocument(prefix, results);
+                SvcLogicContextImpl impl = (SvcLogicContextImpl) ctx;
+                impl.mergeDocument(prefix, results);
             }
             return(QueryStatus.SUCCESS);
         }

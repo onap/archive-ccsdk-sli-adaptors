@@ -24,18 +24,17 @@
 
 package org.onap.ccsdk.adapter.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.exceptions.SvcLogicException;
+import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicContextImpl;
 
 
 public class TestSaltstackAdapterImpl {
@@ -50,7 +49,7 @@ public class TestSaltstackAdapterImpl {
     @Before
     public void setup() throws IllegalArgumentException {
         testMode = true;
-        svcContext = new SvcLogicContext();
+        svcContext = new SvcLogicContextImpl();
         adapter = new SaltstackAdapterImpl(testMode);
 
         params = new HashMap<>();

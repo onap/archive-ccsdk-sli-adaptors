@@ -43,28 +43,25 @@ import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
-
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.impl.EnglishReasonPhraseCatalog;
 import org.onap.ccsdk.sli.adaptors.aai.AAIService.TransactionIdTracker;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
 import org.onap.ccsdk.sli.adaptors.aai.data.ErrorResponse;
 import org.onap.ccsdk.sli.adaptors.aai.data.RequestError;
 import org.onap.ccsdk.sli.adaptors.aai.data.ResourceVersion;
 import org.onap.ccsdk.sli.adaptors.aai.data.ServiceException;
-import org.onap.ccsdk.sli.core.sli.MetricLogger;
+import org.onap.ccsdk.sli.core.odlsli.MetricLogger;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.impl.EnglishReasonPhraseCatalog;
 
 /**
  * The AAIClientRESTExecutor class provides CRUD API for AAI Client service.

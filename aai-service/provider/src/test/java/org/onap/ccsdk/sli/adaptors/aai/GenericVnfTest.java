@@ -24,35 +24,25 @@ package org.onap.ccsdk.sli.adaptors.aai;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-
 import org.apache.commons.lang.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import org.onap.ccsdk.sli.adaptors.aai.AAIClient;
-import org.onap.ccsdk.sli.adaptors.aai.AAIRequest;
-import org.onap.ccsdk.sli.adaptors.aai.AAIService;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
 import org.onap.aai.inventory.v16.GenericVnf;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -89,7 +79,7 @@ public class GenericVnfTest {
         LOG.info("----------------------- Test: " + new Object(){}.getClass().getEnclosingMethod().getName() + " -----------------------");
         try
         {
-            SvcLogicContext ctx = new SvcLogicContext();
+            SvcLogicContext ctx = new SvcLogicContextImpl();
 
             String uuid = UUID.randomUUID().toString();
             Map<String, String> data = new HashMap<String, String>();
@@ -124,7 +114,7 @@ public class GenericVnfTest {
             keys.add("vnf-id = 'ec14a84d-7b43-45ad-bb04-c12b74083648'");
             keys.add("depth = 'all'");
 
-            SvcLogicContext ctx = new SvcLogicContext();
+            SvcLogicContext ctx = new SvcLogicContextImpl();
             QueryStatus response = client.query("generic-vnf", false, null, StringUtils.join(keys, " AND "), "aaiTest", null, ctx);
 
             assertTrue(response == QueryStatus.SUCCESS);
@@ -142,7 +132,7 @@ public class GenericVnfTest {
         LOG.info("----------------------- Test: " + new Object(){}.getClass().getEnclosingMethod().getName() + " -----------------------");
         try
         {
-            SvcLogicContext ctx = new SvcLogicContext();
+            SvcLogicContext ctx = new SvcLogicContextImpl();
 
             String uuid = UUID.randomUUID().toString();
             Map<String, String> data = new HashMap<String, String>();
@@ -170,7 +160,7 @@ public class GenericVnfTest {
 
         try
         {
-            SvcLogicContext ctx = new SvcLogicContext();
+            SvcLogicContext ctx = new SvcLogicContextImpl();
 
             List<String> keys = new ArrayList<String>();
             keys.add("generic-vnf.vnf-id = 'VNF-S7'");
@@ -194,7 +184,7 @@ public class GenericVnfTest {
 
         try
         {
-            SvcLogicContext ctx = new SvcLogicContext();
+            SvcLogicContext ctx = new SvcLogicContextImpl();
             GenericVnf response = ((AAIService)client).getResource("/network/generic-vnfs/generic-vnf/ec14a84d-7b43-45ad-bb04-c12b74083648", GenericVnf.class);
 
             assertNotNull(response);

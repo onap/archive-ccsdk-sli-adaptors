@@ -24,7 +24,6 @@ package org.onap.ccsdk.sli.adaptors.aai;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
@@ -34,7 +33,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
 import org.apache.commons.lang.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -42,8 +40,9 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +97,7 @@ public class RegressionTest {
 
 		try
 		{
-			SvcLogicContext ctx = new SvcLogicContext();
+			SvcLogicContext ctx = new SvcLogicContextImpl();
 
 			Map<String, String> data = new HashMap<String, String>();
 			data.put("resource-instance-id", "12345");
@@ -136,7 +135,7 @@ public class RegressionTest {
 
 		try
 		{
-			SvcLogicContext ctx = new SvcLogicContext();
+			SvcLogicContext ctx = new SvcLogicContextImpl();
 
 			Map<String, String> data = new HashMap<String, String>();
 			data.put("resource-instance-id", "11012345");
@@ -173,7 +172,7 @@ public class RegressionTest {
 
 		try
 		{
-			SvcLogicContext ctx = new SvcLogicContext();
+			SvcLogicContext ctx = new SvcLogicContextImpl();
 
 			Map<String, String> data = new HashMap<String, String>();
 			data.put("link-name"		, "1252541");
@@ -224,7 +223,7 @@ public class RegressionTest {
 
 		try
 		{
-			SvcLogicContext ctx = new SvcLogicContext();
+			SvcLogicContext ctx = new SvcLogicContextImpl();
 
 			Map<String, String> data = new HashMap<String, String>();
 			data.put("vdc-id"	, "1252541");
@@ -255,7 +254,7 @@ public class RegressionTest {
 
 		try
 		{
-			SvcLogicContext ctx = new SvcLogicContext();
+			SvcLogicContext ctx = new SvcLogicContextImpl();
 
 			QueryStatus response = client.query("generic-vnf:relationship-list", false, null, "vnf-id = '34e94596-bdfa-411d-a664-16dea8583139'  AND related-to = 'l3-network' ", "aaiTest", null, ctx);
 //			QueryStatus response = client.delete("generic-vnf:relationship-list", "vnf-id = '34e94596-bdfa-411d-a664-16dea8583139'  AND related-to = 'pserver' ", ctx);
@@ -277,7 +276,7 @@ public class RegressionTest {
 
 		try
 		{
-			SvcLogicContext ctx = new SvcLogicContext();
+			SvcLogicContext ctx = new SvcLogicContextImpl();
 			QueryStatus response = client.query("vserver", false, null,
 					"vserver.vserver-id = 'FRNKGEFF1' AND depth = 'all' AND cloud-region.cloud-owner = 'att-aic' AND tenant.tenant-id = '1710vPEPROJECTS::297135PROJECT' AND cloud-region.cloud-region-id = 'FRN1'"
 					, "aaiTest", null, ctx);
@@ -310,7 +309,7 @@ public class RegressionTest {
 			}
 
 
-			SvcLogicContext ctx = new SvcLogicContext();
+			SvcLogicContext ctx = new SvcLogicContextImpl();
 
 			Map<String, String> data = new HashMap<String, String>();
 
@@ -340,7 +339,7 @@ public class RegressionTest {
 
 		try
 		{
-			SvcLogicContext ctx = new SvcLogicContext();
+			SvcLogicContext ctx = new SvcLogicContextImpl();
 //			QueryStatus response = client.query("vserver", false, null, "tenant-id = '3220171995171220' AND vserver-id = '4b491df8-cf0e-4f08-88a2-133e82b63432'", "aaiTest", null, ctx);
 //			QueryStatus response = client.query("vserver", false, null, "vserver-name = 'bpsx0001vm001bps001'", "aaiTest", null, ctx);
 			QueryStatus response = client.query("cloud-region", false, null,
@@ -370,7 +369,7 @@ public class RegressionTest {
 			data.add("cloud-region.cloud-region-id = 'mtn6'");
 
 
-			SvcLogicContext ctx = new SvcLogicContext();
+			SvcLogicContext ctx = new SvcLogicContextImpl();
 			QueryStatus response = client.query("cloud-region", false, null, StringUtils.join(data, " AND ")
 //					"depth = '0' AND cloud-region.cloud-owner = 'att-aic'  AND cloud-region.cloud-region-id = 'mtn6'"
 					, "aaiTest", null, ctx);

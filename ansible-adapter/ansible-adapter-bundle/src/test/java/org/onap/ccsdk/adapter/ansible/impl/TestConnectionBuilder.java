@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.adaptors.ansible.impl.ConnectionBuilder;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResult;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.api.exceptions.SvcLogicException;
 
 import javax.net.ssl.SSLException;
 import java.io.FileNotFoundException;

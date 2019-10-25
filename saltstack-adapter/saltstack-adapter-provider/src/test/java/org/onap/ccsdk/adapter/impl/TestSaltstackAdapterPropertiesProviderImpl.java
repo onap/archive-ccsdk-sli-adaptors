@@ -29,7 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.adaptors.saltstack.SaltstackAdapterPropertiesProvider;
 import org.onap.ccsdk.sli.adaptors.saltstack.impl.SaltstackAdapterImpl;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.api.exceptions.SvcLogicException;
 
 import java.util.Properties;
 

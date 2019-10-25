@@ -6,8 +6,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.onap.ccsdk.sli.adaptors.ra.ResourceAllocator;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class TestQueryResource {
 
         setupResourceData();
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.resource-target-id-filter", "TESTPORT-1-%");
         ctx.setAttribute("ra-input.resource-target-type-filter", "Port");
 
@@ -117,7 +118,7 @@ public class TestQueryResource {
 
         setupResourceData();
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.resource-target-id-filter", "TESTPORT-%-1");
         ctx.setAttribute("ra-input.resource-target-type-filter", "Port");
 

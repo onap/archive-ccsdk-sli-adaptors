@@ -35,8 +35,8 @@ import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleMessageParser;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResult;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResultCodes;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleServerEmulator;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.exceptions.SvcLogicException;
 import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
 
@@ -286,7 +286,7 @@ public class AnsibleAdapterImpl implements AnsibleAdapter {
      * responds or the session times out (non-Javadoc)
      *
      * @see org.onap.ccsdk.sli.adaptors.ansible.AnsibleAdapter#reqExecResult(java.util.Map,
-     *      org.onap.ccsdk.sli.core.sli.SvcLogicContext)
+     *      org.onap.ccsdk.sli.core.api.SvcLogicContext)
      */
     @Override
     public void reqExecResult(Map<String, String> params, SvcLogicContext ctx) throws SvcLogicException {

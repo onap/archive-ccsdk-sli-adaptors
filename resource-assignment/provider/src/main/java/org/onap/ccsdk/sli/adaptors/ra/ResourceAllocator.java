@@ -40,9 +40,9 @@ import org.onap.ccsdk.sli.adaptors.rm.data.AllocationStatus;
 import org.onap.ccsdk.sli.adaptors.rm.data.ReleaseRequest;
 import org.onap.ccsdk.sli.adaptors.util.speed.SpeedUtil;
 import org.onap.ccsdk.sli.adaptors.util.str.StrUtil;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.exceptions.SvcLogicException;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

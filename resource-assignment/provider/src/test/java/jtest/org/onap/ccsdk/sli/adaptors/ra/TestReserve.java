@@ -19,8 +19,9 @@ import org.onap.ccsdk.sli.adaptors.rm.data.AllocationStatus;
 import org.onap.ccsdk.sli.adaptors.rm.data.Range;
 import org.onap.ccsdk.sli.adaptors.rm.data.ResourceType;
 import org.onap.ccsdk.sli.adaptors.util.str.StrUtil;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +74,7 @@ public class TestReserve {
         TestTable allocationItem = new TestTable(jdbcTemplate, "ALLOCATION_ITEM", "allocation_item_id",
                 ALLOCATION_ITEM_COLUMNS);
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.service-model", "ADIG");
         ctx.setAttribute("ra-input.check-only", "false");
         ctx.setAttribute("ra-input.reservation-entity-type", "SI");
@@ -131,7 +132,7 @@ public class TestReserve {
         allocationItem.print();
 
         /* Query Using ReservationEntityId using ServiceLogicContext */
-        ctx = new SvcLogicContext();
+        ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.service-model", "ADIG");
         ctx.setAttribute("ra-input.reservation-entity-id", "ICOREPVCID-123456");
         ctx.setAttribute("ra-input.reservation-entity-type", "SI");
@@ -140,7 +141,7 @@ public class TestReserve {
         Assert.assertTrue(st == QueryStatus.SUCCESS);
 
         /* Query Using ReservationTargetId using ServiceLogicContext */
-        ctx = new SvcLogicContext();
+        ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.service-model", "ADIG");
         ctx.setAttribute("ra-input.reservation-target-id", "ICORESITEID-123456");
         ctx.setAttribute("ra-input.reservation-target-type", "Port");
@@ -333,7 +334,7 @@ public class TestReserve {
         TestTable allocationItem = new TestTable(jdbcTemplate, "ALLOCATION_ITEM", "allocation_item_id",
                 ALLOCATION_ITEM_COLUMNS);
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.service-model", "MY-SERV-MODEL-1");
         ctx.setAttribute("ra-input.check-only", "false");
         ctx.setAttribute("ra-input.reservation-entity-type", "VPE-Cust");
@@ -351,7 +352,7 @@ public class TestReserve {
         resource.print();
         allocationItem.print();
 
-        ctx = new SvcLogicContext();
+        ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.service-model", "MY-SERV-MODEL-1");
         ctx.setAttribute("ra-input.check-only", "false");
         ctx.setAttribute("ra-input.reservation-entity-type", "VPE-Core1");
@@ -369,7 +370,7 @@ public class TestReserve {
         resource.print();
         allocationItem.print();
 
-        ctx = new SvcLogicContext();
+        ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.service-model", "MY-SERV-MODEL-1");
         ctx.setAttribute("ra-input.check-only", "false");
         ctx.setAttribute("ra-input.reservation-entity-type", "VPE-Core2");
@@ -389,7 +390,7 @@ public class TestReserve {
         allocationItem.print();
 
         /* Query Using ReservationEntityId using ServiceLogicContext */
-        ctx = new SvcLogicContext();
+        ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.service-model", "MY-SERV-MODEL-1");
         ctx.setAttribute("ra-input.reservation-entity-id", "gblond2003me6");
         ctx.setAttribute("ra-input.reservation-entity-type", "VPE-Core1");
@@ -398,7 +399,7 @@ public class TestReserve {
         Assert.assertTrue(st == QueryStatus.SUCCESS);
 
         /* Query Using ReservationTargetId using ServiceLogicContext */
-        ctx = new SvcLogicContext();
+        ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.service-model", "MY-SERV-MODEL-1");
         ctx.setAttribute("ra-input.reservation-target-id", "MDTWNJ21A5");
         ctx.setAttribute("ra-input.reservation-target-type", "Site");
@@ -587,7 +588,7 @@ public class TestReserve {
             StrUtil.info(log, r);
         });
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.reservation-entity-id", "gblond2003me6");
         ctx.setAttribute("ra-input.reservation-entity-type", "VPE");
 
@@ -615,7 +616,7 @@ public class TestReserve {
 
         dataSetup.setupRangeItem(resourceName, assetId, resourceSet1, resourceUnion, "201");
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.service-model", "ADIG");
         ctx.setAttribute("ra-input.check-only", "false");
 
@@ -655,7 +656,7 @@ public class TestReserve {
 
         dataSetup.setupRangeItem(resourceName, assetId, resourceSet1, resourceUnion, "201");
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.service-model", "ADIG");
         ctx.setAttribute("ra-input.check-only", "false");
 

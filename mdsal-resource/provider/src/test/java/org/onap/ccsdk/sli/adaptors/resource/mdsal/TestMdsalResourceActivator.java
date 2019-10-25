@@ -34,7 +34,7 @@ import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
-import org.onap.ccsdk.sli.core.sli.ConfigurationException;
+import org.onap.ccsdk.sli.core.api.exceptions.ConfigurationException;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;

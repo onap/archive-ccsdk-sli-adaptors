@@ -6,8 +6,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.onap.ccsdk.sli.adaptors.ra.ResourceAllocator;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +91,7 @@ public class TestRelease {
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-1", "EVC::TEST-4::2", 500));
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-1", "EVC::TEST-4::3", 600));
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.resource-entity-type", "EVC");
         ctx.setAttribute("ra-input.resource-entity-id", "TEST-4");
         ctx.setAttribute("ra-input.resource-entity-version", "2");
@@ -125,7 +126,7 @@ public class TestRelease {
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-1", "EVC::TEST-4::2", 500));
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-1", "EVC::TEST-4::3", 600));
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.resource-entity-type", "EVC");
         ctx.setAttribute("ra-input.resource-entity-id", "TEST-4");
 
@@ -161,7 +162,7 @@ public class TestRelease {
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-3::1", 300));
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-3::2", 400));
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.resource-entity-type", "EVC");
         ctx.setAttribute("ra-input.resource-entity-id", "TEST-3");
         ctx.setAttribute("ra-input.resource-entity-version", "1");
@@ -200,7 +201,7 @@ public class TestRelease {
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-3::1", 300));
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-3::2", 400));
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.resource-entity-type", "EVC");
         ctx.setAttribute("ra-input.resource-entity-id", "TEST-3");
 
@@ -238,7 +239,7 @@ public class TestRelease {
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-3::1", 300));
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-3::2", 400));
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.resource-entity-type", "EVC");
         ctx.setAttribute("ra-input.resource-entity-id", "TEST-3");
         ctx.setAttribute("ra-input.resource-entity-version", "1");
@@ -280,7 +281,7 @@ public class TestRelease {
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-3::1", 300));
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-3::2", 400));
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.resource-entity-type", "EVC");
         ctx.setAttribute("ra-input.resource-entity-id", "TEST-3");
 
@@ -313,7 +314,7 @@ public class TestRelease {
 
         Assert.assertTrue(dataSetup.checkRangeItem("test-range-1", "Port::TESTPORT-2", "EVC::TEST-6::1", "6-20"));
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.resource-entity-type", "EVC");
         ctx.setAttribute("ra-input.resource-entity-id", "TEST-6");
         ctx.setAttribute("ra-input.resource-entity-version", "1");
@@ -342,7 +343,7 @@ public class TestRelease {
 
         Assert.assertTrue(dataSetup.checkRangeItem("test-range-1", "Port::TESTPORT-2", "EVC::TEST-6::1", "6-20"));
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.resource-entity-type", "EVC");
         ctx.setAttribute("ra-input.resource-entity-id", "TEST-6");
         ctx.setAttribute("ra-input.resource-entity-version", "1");
@@ -371,7 +372,7 @@ public class TestRelease {
 
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-6::1", 1000));
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.resource-entity-type", "EVC");
         ctx.setAttribute("ra-input.resource-entity-id", "TEST-6");
         ctx.setAttribute("ra-input.resource-entity-version", "1");
@@ -400,7 +401,7 @@ public class TestRelease {
 
         Assert.assertTrue(dataSetup.checkLimitItem("test-limit-1", "Port::TESTPORT-2", "EVC::TEST-6::1", 1000));
 
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         ctx.setAttribute("ra-input.resource-entity-type", "EVC");
         ctx.setAttribute("ra-input.resource-entity-id", "TEST-6");
         ctx.setAttribute("ra-input.resource-entity-version", "1");

@@ -24,7 +24,6 @@ package org.onap.ccsdk.sli.adaptors.aai;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -37,26 +36,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.ws.rs.HttpMethod;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-
+import org.onap.aai.inventory.v16.Pserver;
+import org.onap.ccsdk.sli.adaptors.aai.AAIService.TransactionIdTracker;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.exceptions.SvcLogicException;
+import org.onap.ccsdk.sli.core.api.extensions.SvcLogicResource.QueryStatus;
+import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicContextImpl;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.onap.aai.inventory.v16.*;
-
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
-import org.onap.ccsdk.sli.adaptors.aai.AAIService.TransactionIdTracker;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AAIServiceTest {
@@ -78,7 +73,7 @@ public class AAIServiceTest {
     public void existsGetPserverByCallBackUrl_shouldReturnSuccess() throws MalformedURLException, Exception {
         String key = "https://aai.api.simpledemo.onap.org:8443/aai/v11/cloud-infrastructure/pservers/pserver/chcil129snd";
         String fileLocation = "json/pserverJson.txt";
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         setConnMock();
 
         when(aaiServiceSpy.getConfiguredConnection(new URL(key), HttpMethod.GET)).thenReturn(connMock);
@@ -95,7 +90,7 @@ public class AAIServiceTest {
             throws MalformedURLException, Exception {
         String key = "https://aai.api.simpledemo.onap.org:8443/aai/v11/cloud-infrastructure/pservers/pserver/chcil129snd";
         String fileLocation = "json/pserverJson.txt";
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         setConnMock();
 
         when(aaiServiceSpy.getConfiguredConnection(new URL(key), HttpMethod.GET)).thenReturn(connMock);
@@ -185,7 +180,7 @@ public class AAIServiceTest {
 
     @Test
     public void testSetStatusMessage_shouldSucceed() throws SvcLogicException, MalformedURLException {
-        SvcLogicContext ctx = new SvcLogicContext();
+        SvcLogicContext ctx = new SvcLogicContextImpl();
         Map<String, String> parameters = new HashMap<String, String>();
 
         parameters.put("key1", "ActivateSubnet failure, need to manually activate in EIPAM.");

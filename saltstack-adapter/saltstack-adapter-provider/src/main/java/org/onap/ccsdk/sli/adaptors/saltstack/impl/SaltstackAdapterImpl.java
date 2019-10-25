@@ -34,8 +34,8 @@ import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackMessageParser;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResult;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackResultCodes;
 import org.onap.ccsdk.sli.adaptors.saltstack.model.SaltstackServerEmulator;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.exceptions.SvcLogicException;
 
 import java.io.File;
 import java.io.FileInputStream;

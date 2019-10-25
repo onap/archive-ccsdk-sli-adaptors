@@ -26,16 +26,15 @@ package org.onap.ccsdk.adapter.ansible.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.ccsdk.sli.adaptors.ansible.impl.AnsibleAdapterImpl;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.exceptions.SvcLogicException;
+import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicContextImpl;
 
 
 public class TestAnsibleAdapterImpl {
@@ -54,7 +53,7 @@ public class TestAnsibleAdapterImpl {
     @Before
     public void setup() throws IllegalArgumentException {
         testMode = true;
-        svcContext = new SvcLogicContext();
+        svcContext = new SvcLogicContextImpl();
         adapter = new AnsibleAdapterImpl(testMode);
 
         params = new HashMap<>();

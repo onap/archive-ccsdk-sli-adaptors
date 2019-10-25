@@ -32,8 +32,8 @@ package org.onap.ccsdk.sli.adaptors.saltstack.model;
 import com.google.common.base.Strings;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
-import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.api.SvcLogicContext;
+import org.onap.ccsdk.sli.core.api.exceptions.SvcLogicException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
