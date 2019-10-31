@@ -52,7 +52,6 @@
         <dependency>
             <groupId>org.onap.logging-analytics</groupId>
             <artifactId>logging-filter-base</artifactId>
-            <version>1.5.0</version>
              <scope>provided</scope>
          </dependency>
         <dependency>
@@ -97,6 +96,14 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <scope>test</scope>
+        </dependency>
+         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
     </dependencies>
 

@@ -34,7 +34,6 @@
 		<dependency>
 			<groupId>org.onap.logging-analytics</groupId>
 			<artifactId>logging-filter-base</artifactId>
-            <version>1.5.0</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
