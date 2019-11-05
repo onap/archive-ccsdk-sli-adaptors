@@ -39,8 +39,8 @@ public class ConfigResource implements SvcLogicResource {
     private RestService restService;
 
     public ConfigResource(MdsalResourcePropertiesProvider propProvider) {
-    	LOG.info("Loading ConfigResource using property provider");
-    	Properties props = propProvider.getProperties();
+        LOG.info("Loading ConfigResource using property provider");
+        Properties props = propProvider.getProperties();
 
         String sdncUser = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-user", "admin");
         String sdncPasswd = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-passwd", "admin");
@@ -48,17 +48,16 @@ public class ConfigResource implements SvcLogicResource {
         String sdncProtocol = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-protocol", "https");
         String sdncPort = props.getProperty("org.onap.ccsdk.sli.adaptors.resource.mdsal.sdnc-port", "8443");
 
-        restService = new RestService(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd, RestService.PayloadType.XML);
-
+        restService = new RestService(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd, "XML", "XML");
     }
-    
+
     public ConfigResource(String sdncProtocol, String sdncHost, String sdncPort, String sdncUser, String sdncPasswd)
     {
-        restService = new RestService(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd, RestService.PayloadType.XML);
+        restService = new RestService(sdncProtocol, sdncHost, sdncPort, sdncUser, sdncPasswd, "XML", "XML");
     }
 
     public ConfigResource(RestService restService) {
-    		this.restService = restService;
+        this.restService = restService;
     }
 
     @Override
@@ -70,27 +69,21 @@ public class ConfigResource implements SvcLogicResource {
     @Override
     public QueryStatus exists(String resource, String key, String prefix, SvcLogicContext ctx) throws SvcLogicException
     {
-
         return(query(resource, false, null, key, prefix, null, null));
-
     }
 
     @Override
     public QueryStatus query(String resource, boolean localOnly, String select, String key, String prefix,
-            String orderBy, SvcLogicContext ctx) throws SvcLogicException {
-
-
+                             String orderBy, SvcLogicContext ctx) throws SvcLogicException {
         String module = resource;
         StringBuffer restQuery = new StringBuffer();
 
         String[] keyParts = key.split("/");
-
         for (String keyPart : keyParts) {
             if (restQuery.length() > 0) {
                 restQuery.append("/");
             }
             if (keyPart.startsWith("$")) {
-
                 restQuery.append(ctx.resolve(keyPart.substring(1)));
             } else {
                 restQuery.append(keyPart);
@@ -99,41 +92,33 @@ public class ConfigResource implements SvcLogicResource {
 
         String restQueryStr = restQuery.toString();
         if ((restQueryStr.startsWith("'") && restQueryStr.endsWith("'")) ||
-                (restQueryStr.startsWith("\"") && restQueryStr.endsWith("\""))) {
+            (restQueryStr.startsWith("\"") && restQueryStr.endsWith("\""))) {
             restQueryStr = restQueryStr.substring(1, restQueryStr.length()-1);
         }
 
         String urlString = "restconf/config/" + module + ":" + restQueryStr;
-
-                LOG.info("Querying resource: " + resource + ". At URL: " + urlString);
+        LOG.info("Querying resource: " + resource + ". At URL: " + urlString);
 
         Document results = restService.get(urlString);
-
-
         if (results == null) {
             return(QueryStatus.NOT_FOUND);
         } else {
-
             if (ctx != null) {
                 ctx.mergeDocument(prefix, results);
             }
             return(QueryStatus.SUCCESS);
         }
-
     }
 
     @Override
     public QueryStatus reserve(String resource, String select, String key, String prefix,
-            SvcLogicContext ctx) throws SvcLogicException {
-
-
+                               SvcLogicContext ctx) throws SvcLogicException {
         return(QueryStatus.SUCCESS);
 
     }
 
     @Override
     public QueryStatus release(String resource, String key, SvcLogicContext ctx) throws SvcLogicException {
-
         return(QueryStatus.SUCCESS);
     }
 
@@ -146,7 +131,7 @@ public class ConfigResource implements SvcLogicResource {
 
     @Override
     public QueryStatus save(String arg0, boolean arg1, boolean localOnly, String arg2,
-            Map<String, String> arg3, String arg4, SvcLogicContext arg5)
+                            Map<String, String> arg3, String arg4, SvcLogicContext arg5)
             throws SvcLogicException {
         // TODO Auto-generated method stub
         return(QueryStatus.SUCCESS);
@@ -154,17 +139,15 @@ public class ConfigResource implements SvcLogicResource {
 
     @Override
     public QueryStatus notify(String resource, String action, String key,
-            SvcLogicContext ctx) throws SvcLogicException {
+                              SvcLogicContext ctx) throws SvcLogicException {
         return(QueryStatus.SUCCESS);
     }
 
 
     public QueryStatus update(String resource, String key,
-            Map<String, String> parms, String prefix, SvcLogicContext ctx)
+                              Map<String, String> parms, String prefix, SvcLogicContext ctx)
             throws SvcLogicException {
         return(QueryStatus.SUCCESS);
     }
-
-
 
 }

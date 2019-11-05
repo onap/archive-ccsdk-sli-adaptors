@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,130 +21,90 @@
 
 package org.onap.ccsdk.sli.adaptors.resource.mdsal;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Authenticator;
-import java.net.HttpURLConnection;
-import java.net.PasswordAuthentication;
-import java.net.URL;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSession;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-
-
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.*;
+import java.net.Authenticator;
+import java.net.HttpURLConnection;
+import java.net.PasswordAuthentication;
+import java.net.URL;
 
 public class RestService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfigResource.class);
-
-    public enum PayloadType {
-        XML,
-        JSON
-    }
-
-    private class SdncAuthenticator extends Authenticator {
-
-        private String user;
-        private String passwd;
-
-        SdncAuthenticator(String user, String passwd) {
-            this.user = user;
-            this.passwd = passwd;
-        }
-        @Override
-        protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(user, passwd.toCharArray());
-        }
-
-    }
-
     private String user;
     private String passwd;
-    private PayloadType payloadType;
-
+    private String contentType;
+    private String accept;
     private String protocol;
     private String host;
     private String port;
 
-    public RestService(String protocol, String host, String port, String user, String passwd, PayloadType payloadType) {
+    public RestService(String protocol, String host, String port, String user, String passwd, String accept, String contentType) {
         this.protocol = protocol;
         this.host = host;
         this.port = port;
         this.user = user;
         this.passwd = passwd;
-        this.payloadType = payloadType;
+        this.accept = accept;
+        this.contentType = contentType;
     }
 
-    private HttpURLConnection getRestConnection(String urlString, String method) throws IOException
-    {
-
+    private HttpURLConnection getRestConnection(String urlString, String method) throws IOException {
         URL sdncUrl = new URL(urlString);
         Authenticator.setDefault(new SdncAuthenticator(user, passwd));
 
-        HttpURLConnection conn = (HttpURLConnection) sdncUrl.openConnection();
-
-        String authStr = user+":"+passwd;
+        String authStr = user + ":" + passwd;
         String encodedAuthStr = new String(Base64.encodeBase64(authStr.getBytes()));
 
-        conn.addRequestProperty("Authentication", "Basic "+encodedAuthStr);
-
+        HttpURLConnection conn = (HttpURLConnection) sdncUrl.openConnection();
+        conn.addRequestProperty("Authentication", "Basic " + encodedAuthStr);
         conn.setRequestMethod(method);
-
-        if (payloadType == PayloadType.XML) {
-            conn.setRequestProperty("Content-Type", "application/xml");
-            conn.setRequestProperty("Accept", "application/xml");
-        } else {
-
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Accept", "application/json");
-        }
-
         conn.setDoInput(true);
         conn.setDoOutput(true);
         conn.setUseCaches(false);
 
-        return(conn);
+        //Setting Accept header (doesn't dependent on Msg Body if present or not)
+        if ("XML".equalsIgnoreCase(accept)) {
+            conn.setRequestProperty("Accept", "application/xml");
+        } else {
+            conn.setRequestProperty("Accept", "application/json");
+        }
 
+        return (conn);
     }
-
 
     private Document send(String urlString, byte[] msgBytes, String method) {
         Document response = null;
         String fullUrl = protocol + "://" + host + ":" + port + "/" + urlString;
-        LOG.info("Sending REST "+method +" to "+fullUrl);
-
-        if (msgBytes != null) {
-            LOG.info("Message body:\n"+msgBytes);
-        }
+        LOG.info("Sending REST {} to {}", method, fullUrl);
 
         try {
             HttpURLConnection conn = getRestConnection(fullUrl, method);
-
             if (conn instanceof HttpsURLConnection) {
-                HostnameVerifier hostnameVerifier = new HostnameVerifier() {
-                    @Override
-                    public boolean verify(String hostname, SSLSession session) {
-                        return true;
-                    }
-                };
-                ((HttpsURLConnection)conn).setHostnameVerifier(hostnameVerifier);
+                HostnameVerifier hostnameVerifier = (hostname, session) -> true;
+                ((HttpsURLConnection) conn).setHostnameVerifier(hostnameVerifier);
             }
 
             // Write message
             if (msgBytes != null) {
-                conn.setRequestProperty("Content-Length", ""+msgBytes.length);
+                LOG.info("Message body:\n{}", msgBytes);
+                conn.setRequestProperty("Content-Length", "" + msgBytes.length);
+
+                // Setting Content-Type header only if Msg Body is present
+                if ("XML".equalsIgnoreCase(contentType)) {
+                    conn.setRequestProperty("Content-Type", "application/xml");
+                } else {
+                    conn.setRequestProperty("Content-Type", "application/json");
+                }
+
                 DataOutputStream outStr = new DataOutputStream(conn.getOutputStream());
                 outStr.write(msgBytes);
                 outStr.close();
@@ -152,61 +112,69 @@ public class RestService {
                 conn.setRequestProperty("Content-Length", "0");
             }
 
-
             // Read response
+            LOG.info("Response: {} {}", conn.getResponseCode(), conn.getResponseMessage());
+
             BufferedReader respRdr;
-
-            LOG.info("Response: "+conn.getResponseCode()+" "+conn.getResponseMessage());
-
-
             if (conn.getResponseCode() < 300) {
-
                 respRdr = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             } else {
                 respRdr = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
             }
 
             StringBuffer respBuff = new StringBuffer();
-
             String respLn;
-
             while ((respLn = respRdr.readLine()) != null) {
-                respBuff.append(respLn+"\n");
+                respBuff.append(respLn + "\n");
             }
             respRdr.close();
 
             String respString = respBuff.toString();
-
-            LOG.info("Response body :\n"+respString);
+            LOG.info("Response body :\n{}", respString);
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
 
-
             response = db.parse(new ByteArrayInputStream(respString.getBytes()));
 
         } catch (Exception e) {
-
             LOG.error("Caught exception executing REST command", e);
         }
 
         return (response);
     }
 
-
     public Document get(String urlString) {
-        return(send(urlString, null, "GET"));
+        return (send(urlString, null, "GET"));
     }
 
     public Document delete(String urlString) {
-        return(send(urlString, null, "DELETE"));
+        return (send(urlString, null, "DELETE"));
     }
 
     public Document post(String urlString, byte[] msgBytes) {
-        return(send(urlString, msgBytes, "POST"));
+        return (send(urlString, msgBytes, "POST"));
     }
 
     public Document put(String urlString, byte[] msgBytes) {
-        return(send(urlString, msgBytes, "PUT"));
+        return (send(urlString, msgBytes, "PUT"));
     }
+
+
+    private class SdncAuthenticator extends Authenticator {
+        private String user;
+        private String passwd;
+
+        SdncAuthenticator(String user, String passwd) {
+            this.user = user;
+            this.passwd = passwd;
+        }
+
+        @Override
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(user, passwd.toCharArray());
+        }
+
+    }
+
 }
