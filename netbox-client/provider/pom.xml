@@ -71,13 +71,13 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-common</artifactId>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sliPluginUtils-provider</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
+   	    <version>${ccsdk.sli.core.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -101,7 +101,7 @@
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock</artifactId>
-            <version>2.23.2</version>
+	    <version>2.23.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>

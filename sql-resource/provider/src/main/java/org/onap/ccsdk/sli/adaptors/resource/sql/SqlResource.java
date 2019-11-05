@@ -100,7 +100,7 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
             return (QueryStatus.FAILURE);
         }
 
-        String theStmt = resolveCtxVars(key, ctx);
+        String theStmt = resolveCtxVars(key, ctx, resource);
 
         try {
             CachedRowSet results = dblibSvc.getData(theStmt, null, null);
@@ -131,8 +131,9 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
         if (dblibSvc == null) {
             return (QueryStatus.FAILURE);
         }
+	
+        String sqlQuery = resolveCtxVars(key, ctx, resource);
 
-        String sqlQuery = resolveCtxVars(key, ctx);
 
         try {
 
@@ -230,7 +231,7 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
             return (QueryStatus.FAILURE);
         }
 
-        String sqlStmt = resolveCtxVars(key, ctx);
+        String sqlStmt = resolveCtxVars(key, ctx, "");
 
         LOG.debug("key = [" + key + "]; sqlStmt = [" + sqlStmt + "]");
         try {
@@ -247,7 +248,7 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
 
     }
 
-    private String resolveCtxVars(String key, SvcLogicContext ctx) {
+    private String resolveCtxVars(String key, SvcLogicContext ctx, String resource) {
         if (key == null) {
             return (null);
         }
@@ -257,16 +258,20 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
             LOG.debug("Stripped outer single quotes - key is now [" + key + "]");
         }
 
-        String[] keyTerms = key.split("\\s+");
+	//"SQL-TRUE" allows for the key to be used as is.
+	if (!resource.equals("SQL-TRUE")) {
+        	String[] keyTerms = key.split("\\s+");
 
-        StringBuffer sqlBuffer = new StringBuffer();
+        	StringBuffer sqlBuffer = new StringBuffer();
 
-        for (int i = 0; i < keyTerms.length; i++) {
-            sqlBuffer.append(resolveTerm(keyTerms[i], ctx));
-            sqlBuffer.append(" ");
-        }
+        	for (int i = 0; i < keyTerms.length; i++) {
+            		sqlBuffer.append(resolveTerm(keyTerms[i], ctx));
+            		sqlBuffer.append(" ");
+        	}
+		key = sqlBuffer.toString();
+	}
 
-        return (sqlBuffer.toString());
+        return (key);
     }
 
     private String resolveTerm(String term, SvcLogicContext ctx) {
@@ -441,7 +446,7 @@ public class SqlResource implements SvcLogicResource, SvcLogicJavaPlugin {
             return (strValue);
         } else {
             ResultSet results = null;
-            try (Connection conn =  dblibSvc.getConnection();
+            try (Connection conn = dblibSvc.getConnection();
                PreparedStatement stmt = conn.prepareStatement("SELECT CAST(AES_DECRYPT(?, ?) AS CHAR(50)) FROM DUAL")) {
 
                 stmt.setBytes(1, colValue);

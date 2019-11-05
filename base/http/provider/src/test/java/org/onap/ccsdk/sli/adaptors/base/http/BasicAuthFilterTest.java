@@ -8,7 +8,7 @@ public class BasicAuthFilterTest {
     
     @Test
     public void notNullParameters() throws Exception {
-        BasicAuthFilter myFilter = new BasicAuthFilter("helloworld");
+        BasicAuthFilter myFilter = new BasicAuthFilter("hello");
         assertNotNull(myFilter);
     }
     

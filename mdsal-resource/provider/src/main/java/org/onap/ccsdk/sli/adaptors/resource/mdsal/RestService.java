@@ -34,6 +34,7 @@ import java.net.URL;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -180,8 +181,10 @@ public class RestService {
             LOG.info("Response body :\n"+respString);
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);  
+            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false); 
+            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             DocumentBuilder db = dbf.newDocumentBuilder();
-
 
             response = db.parse(new ByteArrayInputStream(respString.getBytes()));
 

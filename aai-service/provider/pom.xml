@@ -97,10 +97,6 @@
             <artifactId>spring-core</artifactId>
             <scope>test</scope>
         </dependency>
-         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -112,7 +108,7 @@
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.13.1</version>
+		<version>0.14.0</version>
                 <executions>
                     <execution>
                         <id>gen-xjc</id>
@@ -139,7 +135,7 @@
                         <plugin>
                             <groupId>org.jvnet.jaxb2_commons</groupId>
                             <artifactId>jaxb2-basics-annotate</artifactId>
-                            <version>0.6.4</version>
+                            <version>0.6.5</version>
                         </plugin>
                     </plugins>
                 </configuration>

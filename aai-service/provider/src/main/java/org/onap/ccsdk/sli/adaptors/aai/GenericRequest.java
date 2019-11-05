@@ -189,9 +189,13 @@ public class GenericRequest extends AAIRequest {
 
                             queryParams.put(splitKey[1], encodeQuery(value));
                         } else {
-                            String token = String.format("%s/{%s}", splitKey[0], splitKey[1]);
-                            String encoded_vnf = encodeQuery(value);
-                            request_url = request_url.replace(token, String.format("%s/%s", splitKey[0], encoded_vnf));
+                        	String encoded_vnf = encodeQuery(value);
+                        	if(!resourceName.equals(splitKey[0]) && resourceName.contains(splitKey[0])) {
+                        		queryParams.put(splitKey[1], encoded_vnf);
+                        	} else {
+                        		String token = String.format("%s/{%s}", splitKey[0], splitKey[1]);
+                        		request_url = request_url.replace(token, String.format("%s/%s", splitKey[0], encoded_vnf));
+                        	}
                         }
                     }
 

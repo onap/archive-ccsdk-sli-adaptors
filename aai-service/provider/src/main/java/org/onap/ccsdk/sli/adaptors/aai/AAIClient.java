@@ -37,6 +37,9 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicJavaPlugin;
 import org.onap.ccsdk.sli.core.sli.SvcLogicResource;
 import org.onap.ccsdk.sli.adaptors.aai.data.notify.NotifyEvent;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 public interface AAIClient extends SvcLogicResource, SvcLogicJavaPlugin {
 
     public SearchResults requestServiceInstanceURL(String svcInstanceId) throws AAIServiceException;
@@ -76,7 +79,7 @@ public interface AAIClient extends SvcLogicResource, SvcLogicJavaPlugin {
 
     public void logKeyError(String keys);
 
-    public QueryStatus processResponseData(String rv, String resource, AAIRequest request, String prefix,  SvcLogicContext ctx, Map<String, String> nameValues, String modifier) throws IOException, AAIServiceException ;
+    public QueryStatus processResponseData(String rv, String resource, AAIRequest request, String prefix,  SvcLogicContext ctx, Map<String, String> nameValues, String modifier) throws JsonParseException, JsonMappingException, IOException, AAIServiceException ;
     public String getPathTemplateForResource(String resoourceName, String join, SvcLogicContext ctx) throws MalformedURLException;
     public boolean isDeprecatedFormat(String resource, Map<String, String> nameValues);
 

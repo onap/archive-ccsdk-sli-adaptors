@@ -1636,6 +1636,7 @@ public abstract class AAIDeclarations implements AAIClient {
                 try {
                     obj = getMetadataMethod.invoke(instance);
                 } catch (InvocationTargetException x) {
+		    Throwable cause = x.getCause();
                 }
             }
             if(obj != null && obj instanceof Metadata){

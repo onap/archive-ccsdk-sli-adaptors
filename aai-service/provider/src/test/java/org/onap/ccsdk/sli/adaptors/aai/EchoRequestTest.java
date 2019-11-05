@@ -34,6 +34,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.onap.ccsdk.sli.adaptors.aai.data.AAIDatum;
+import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
+import org.onap.ccsdk.sli.core.sli.SvcLogicResource.QueryStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,4 +113,24 @@ public class EchoRequestTest {
         }
 
     }
+    
+//	@Test
+	public void EchoTest() {
+		LOG.info("----------------------- Test: " + new Object(){}.getClass().getEnclosingMethod().getName() + " -----------------------");
+		try
+		{
+			SvcLogicContext ctx = new SvcLogicContext();
+			
+			QueryStatus resp = null;
+
+//                 (String resource, boolean localOnly, String select, String key, String prefix, String orderBy, SvcLogicContext ctx)
+			resp = aaiService.query("echo", false, null, "",	"aaidata", null, ctx);
+			assert(resp == QueryStatus.SUCCESS);
+		}
+		catch (Throwable e)
+		{
+			LOG.error("Caught exception", e);
+//			fail("Caught exception");
+		}
+	}
 }
