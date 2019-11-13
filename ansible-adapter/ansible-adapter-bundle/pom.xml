@@ -1,132 +1,133 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- ============LICENSE_START======================================================= 
-	ONAP : APPC ================================================================================ 
-	Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved. 
-	================================================================================ 
-	Copyright (C) 2017 Amdocs ============================================================================= 
-	Licensed under the Apache License, Version 2.0 (the "License"); you may not 
-	use this file except in compliance with the License. You may obtain a copy 
-	of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
-	by applicable law or agreed to in writing, software distributed under the 
-	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
-	OF ANY KIND, either express or implied. See the License for the specific 
-	language governing permissions and limitations under the License. ECOMP is 
-	a trademark and service mark of AT&T Intellectual Property. ============LICENSE_END========================================================= -->
+    ONAP : APPC ================================================================================ 
+    Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved. 
+    ================================================================================ 
+    Copyright (C) 2017 Amdocs ============================================================================= 
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not 
+    use this file except in compliance with the License. You may obtain a copy 
+    of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+    by applicable law or agreed to in writing, software distributed under the 
+    License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+    OF ANY KIND, either express or implied. See the License for the specific 
+    language governing permissions and limitations under the License. ECOMP is 
+    a trademark and service mark of AT&T Intellectual Property. ============LICENSE_END========================================================= -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.onap.ccsdk.parent</groupId>
-		<artifactId>binding-parent</artifactId>
-		<version>1.5.0-SNAPSHOT</version>
-		<relativePath/>
-	</parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.onap.ccsdk.parent</groupId>
+        <artifactId>binding-parent</artifactId>
+        <version>1.5.0</version>
+        <relativePath/>
+    </parent>
 
-	<groupId>org.onap.ccsdk.sli.adaptors</groupId>
-	<artifactId>ansible-adapter-bundle</artifactId>
-	<version>0.7.0-SNAPSHOT</version>
-	<packaging>bundle</packaging>
-	<name>ccsdk-sli-adaptors :: ansible-adapter :: ${project.artifactId}</name>
-
-
-	<properties>
-		<ccsdk.sli.adaptors.version>${project.version}</ccsdk.sli.adaptors.version>
-	</properties>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.onap.ccsdk.sli.core</groupId>
-				<artifactId>sli-core-artifacts</artifactId>
-				<version>${ccsdk.sli.core.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
-	<dependencies>
-		<dependency>
-			<groupId>com.att.eelf</groupId>
-			<artifactId>eelf-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-		</dependency>
+    <groupId>org.onap.ccsdk.sli.adaptors</groupId>
+    <artifactId>ansible-adapter-bundle</artifactId>
+    <version>0.7.0-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+    <name>ccsdk-sli-adaptors :: ansible-adapter :: ${project.artifactId}</name>
 
 
-		<!-- Needed to run test cases -->
-		<dependency>
-			<groupId>org.glassfish.jersey.core</groupId>
-			<artifactId>jersey-common</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <properties>
+        <ccsdk.sli.core.version>${project.version}</ccsdk.sli.core.version>
+        <ccsdk.sli.adaptors.version>${project.version}</ccsdk.sli.adaptors.version>
+    </properties>
 
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-jaxrs</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.onap.ccsdk.sli.core</groupId>
+                <artifactId>sli-core-artifacts</artifactId>
+                <version>${ccsdk.sli.core.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.onap.ccsdk.sli.core</groupId>
-			<artifactId>sli-common</artifactId>
-			 <scope>provided</scope>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>com.att.eelf</groupId>
+            <artifactId>eelf-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.onap.ccsdk.sli.core</groupId>
-			<artifactId>sli-provider</artifactId>
-			 <scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
 
 
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-		</dependency>
+        <!-- Needed to run test cases -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-jaxrs</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.ccsdk.sli.core</groupId>
+            <artifactId>sli-common</artifactId>
+             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.onap.ccsdk.sli.core</groupId>
+            <artifactId>sli-provider</artifactId>
+             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+        </dependency>
 
 
-	</dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
+
+    </dependencies>
 
 
 </project>

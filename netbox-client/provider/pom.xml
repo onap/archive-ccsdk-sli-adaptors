@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.5.0</version>
         <relativePath/>
     </parent>
 
@@ -32,6 +32,7 @@
     <name>ccsdk-sli-adaptors :: netbox-client :: ${project.artifactId}</name>
 
     <properties>
+        <ccsdk.sli.core.version>${project.version}</ccsdk.sli.core.version>
         <ccsdk.sli.adaptors.version>${project.version}</ccsdk.sli.adaptors.version>
     </properties>
 
