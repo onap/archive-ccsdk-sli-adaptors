@@ -1,0 +1,10 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Dan Timoney <dtimoney@att.com>
+Code-Review+2: Jun (Nicolas) Hu <jun.nicolas.hu@att.com>
+Code-Review+2: Brinda Santh Muthuramalingam <brindasanth@in.ibm.com>
+Code-Review+1: Jessica Wagantall <jwagantall@linuxfoundation.org>
+Submitted-by: Dan Timoney <dtimoney@att.com>
+Submitted-at: Fri, 15 Nov 2019 21:44:02 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/ccsdk/sli/adaptors/+/98466
+Project: ccsdk/sli/adaptors
+Branch: refs/heads/master
