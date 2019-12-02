@@ -16,7 +16,7 @@
     <parent>
         <artifactId>odlparent-lite</artifactId>
         <groupId>org.onap.ccsdk.parent</groupId>
-        <version>1.5.0</version>
+        <version>1.5.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
