@@ -45,21 +45,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -119,7 +104,7 @@
                             <useRepositoryLayout>true</useRepositoryLayout>
                             <addParentPoms>false</addParentPoms>
                             <copyPom>false</copyPom>
-                            <excludeGroupIds>org.onap.ccsdk.sli.core,org.opendaylight</excludeGroupIds>
+                            <includeGroupIds>org.onap.ccsdk.sli.adaptors</includeGroupIds>
                             <scope>provided</scope>
                         </configuration>
                     </execution>
