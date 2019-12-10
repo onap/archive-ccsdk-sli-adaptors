@@ -40,3 +40,6 @@ debug-logs/
 ccsdk-adaptors_bdio.jsonld
 blackDuckHubProjectName.txt
 blackDuckHubProjectVersionName.txt
+
+#Generated dependencies list
+direct-dependencies.txt
