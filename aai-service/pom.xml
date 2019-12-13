@@ -19,7 +19,6 @@
 
     <modules>
         <module>provider</module>
-        <module>features</module>
         <module>installer</module>
     </modules>
 </project>

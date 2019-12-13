@@ -17,6 +17,16 @@
 	<name>ccsdk-sli-adaptors :: features</name>
 
 	<modules>
+		<module>ccsdk-aai-service</module>
+		<module>ccsdk-ansible-adapter</module>
+		<module>ccsdk-base-http</module>
+		<module>ccsdk-mdsal-resource</module>
+		<module>ccsdk-messagerouter-consumer</module>
+		<module>ccsdk-messagerouter-publisher</module>
+		<module>ccsdk-netbox-client</module>
+		<module>ccsdk-resource-assignment</module>
+		<module>ccsdk-saltstack-adapter</module>
+		<module>ccsdk-sql-resource</module>
         <module>ccsdk-sli-adaptors-all</module>
         <module>features-sli-adaptors</module>
         <module>installer</module>

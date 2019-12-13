@@ -183,7 +183,6 @@
 
   <modules>
     <module>ansible-adapter-bundle</module>
-    <module>ansible-adapter-features</module>
     <module>ansible-adapter-installer</module>
   </modules>
 </project>

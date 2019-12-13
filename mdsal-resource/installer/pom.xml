@@ -24,21 +24,6 @@
     </properties>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.onap.ccsdk.sli.adaptors</groupId>
-            <artifactId>ccsdk-mdsal-resource</artifactId>
-            <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <dependency>
             <groupId>org.onap.ccsdk.sli.adaptors</groupId>
             <artifactId>mdsal-resource-provider</artifactId>

@@ -42,19 +42,7 @@
         <include.transitive.dependencies>false</include.transitive.dependencies>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.onap.ccsdk.sli.adaptors</groupId>
-            <artifactId>${application.name}</artifactId>
-            <version>${project.version}</version>
-            <classifier>features</classifier>
-            <type>xml</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+
         <dependency>
             <groupId>org.onap.ccsdk.sli.adaptors</groupId>
             <artifactId>ansible-adapter-bundle</artifactId>

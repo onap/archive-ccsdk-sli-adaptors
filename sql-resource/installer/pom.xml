@@ -27,20 +27,6 @@
 
         <dependency>
             <groupId>org.onap.ccsdk.sli.adaptors</groupId>
-            <artifactId>ccsdk-sql-resource</artifactId>
-            <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.onap.ccsdk.sli.adaptors</groupId>
             <artifactId>sql-resource-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
