@@ -16,6 +16,18 @@
 
 	<name>ccsdk-sli-adaptors :: base-http :: ${project.artifactId}</name>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.onap.ccsdk.parent</groupId>
+				<artifactId>dependencies-odl-bom</artifactId>
+				<version>1.5.1-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
