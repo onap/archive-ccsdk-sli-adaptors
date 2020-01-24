@@ -32,7 +32,7 @@
     </parent>
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>saltstack-adapter-installer</artifactId>
-    <version>0.7.0-SNAPSHOT</version>
+    <version>0.7.0</version>
     <name>ccsdk-sli-adaptors :: saltstack-adapter :: ${project.artifactId}
     </name>
     <packaging>pom</packaging>
