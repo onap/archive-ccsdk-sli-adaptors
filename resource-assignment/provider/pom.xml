@@ -11,7 +11,7 @@
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>resource-assignment-provider</artifactId>
-    <version>0.7.1-SNAPSHOT</version>
+    <version>0.7.1</version>
     <packaging>bundle</packaging>
 
     <name>ccsdk-sli-adaptors :: resource-assignment :: ${project.artifactId}</name>

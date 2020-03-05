@@ -22,7 +22,7 @@
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>saltstack-adapter-provider</artifactId>
-    <version>0.7.1-SNAPSHOT</version>
+    <version>0.7.1</version>
     <packaging>bundle</packaging>
     <name>ccsdk-sli-adaptors :: saltstack-adapter :: ${project.artifactId}
     </name>
