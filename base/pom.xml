@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>base-parent</artifactId>
-    <version>0.7.1-SNAPSHOT</version>
+    <version>0.7.2-SNAPSHOT</version>
 
     <modules>
         <module>http</module>
