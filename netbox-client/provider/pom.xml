@@ -15,19 +15,19 @@
   limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>1.5.2</version>
+        <version>2.0.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>netbox-client-provider</artifactId>
-    <version>0.7.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
-    <modelVersion>4.0.0</modelVersion>
 
     <name>ccsdk-sli-adaptors :: netbox-client :: ${project.artifactId}</name>
 
@@ -39,15 +39,14 @@
     <dependencyManagement>
     	<dependencies>
     		<dependency>
-    			<groupId>org.onap.ccsdk.sli.core</groupId>
-    			<artifactId>sli-core-artifacts</artifactId>
-    			<version>${ccsdk.sli.core.version}</version>
-    			<type>pom</type>
-    			<scope>import</scope>
+  <groupId>org.onap.ccsdk.sli.core</groupId>
+  <artifactId>sli-core-artifacts</artifactId>
+  <version>${ccsdk.sli.core.version}</version>
+  <type>pom</type>
+  <scope>import</scope>
     		</dependency>
     	</dependencies>
     </dependencyManagement>
-
     <dependencies>
 
         <dependency>
@@ -77,7 +76,7 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sliPluginUtils-provider</artifactId>
-   	    <version>${ccsdk.sli.core.version}</version>
+            <version>${ccsdk.sli.core.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -102,7 +101,7 @@
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock</artifactId>
-	    <version>2.23.2</version>
+            <version>2.23.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -135,5 +134,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
