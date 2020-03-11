@@ -33,6 +33,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.NoSuchMethodException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -138,12 +140,12 @@ public abstract class AAIDeclarations implements AAIClient {
     public static final String QUERY_NODES_PATH          = "org.onap.ccsdk.sli.adaptors.aai.query.nodes";
 
     private static final String VERSION_PATTERN = "/v$/";
- 
+
     private static final String AAI_SERVICE_EXCEPTION = "AAI Service Exception";
 
     protected abstract Logger getLogger();
     public abstract AAIExecutorInterface getExecutor();
-                                                                                
+
     private static final String RELATIONSHIP_DATA= "Retrofitting relationship data: ";
 
 
@@ -1079,11 +1081,11 @@ public abstract class AAIDeclarations implements AAIClient {
                             String id = AAIServiceUtils.camelCaseToDashedString(value);
                             Field field = resourceClass.getDeclaredField(value);
                             Class<?> type = field.getType();
-                            Method setter = null;
+
                             try {
-                                setter = resourceClass.getMethod("set"+StringUtils.capitalize(value), type);
                                 if(type.getName().startsWith("java.lang") || "boolean".equals(type.getName()) || "long".equals(type.getName()) || "int".equals(type.getName())) {
                                     try {
+                                        Method setter = resourceClass.getMethod("set"+StringUtils.capitalize(value), type);
                                         Object arglist[] = new Object[1];
                                         arglist[0] = params.get(id);
 
@@ -1131,11 +1133,26 @@ public abstract class AAIDeclarations implements AAIClient {
                                             newValues.add(tmpValue);
                                         }
                                         if(!newValues.isEmpty()) {
-                                            Object o = setter.invoke(instance, newValues);
+                                            Method setter = findSetterFor(resourceClass, value);
+                                            if(setter != null) {
+                                                Object o = setter.invoke(instance, newValues);
+                                            } else {
+                                            try {
+                                                Method listGetter = resourceClass.getMethod("get"+StringUtils.capitalize(value));
+                                                Object o = listGetter.invoke(instance);
+                                                if(o != null && o instanceof java.util.List ) {
+                                                    List innerList = List.class.cast(o);
+                                                    innerList.addAll(newValues);
+                                                }
+                                            } catch(NoSuchMethodException nsme) {
+                                                getLogger().warn(AAI_SERVICE_EXCEPTION, nsme);
+                                            }
+                                        }
                                         }
                                     }
                                     set.remove(id);
                                 } else {
+                                    Method setter = resourceClass.getMethod("set"+StringUtils.capitalize(value), type);
                                     setters.put(id, setter);
                                 }
                             } catch(Exception exc) {
@@ -1148,6 +1165,17 @@ public abstract class AAIDeclarations implements AAIClient {
                                 if(!type.getName().equals("java.lang.String")) {
                                     getters.put(id, getter);
                                 }
+                            } catch(NoSuchMethodException exc) {
+                                try {
+                                    if(type.getName().equals("java.lang.Boolean")) {
+                                       getter = resourceClass.getMethod("is"+StringUtils.capitalize(value));
+                                        getters.put(id, getter);
+                                    } else {
+                                        getLogger().warn(AAI_SERVICE_EXCEPTION, exc);
+                                    }
+                                 } catch(Exception iexc) {
+                                     getLogger().warn(AAI_SERVICE_EXCEPTION, iexc);
+                                 }
                             } catch(Exception exc) {
                                 getLogger().warn(AAI_SERVICE_EXCEPTION, exc);
                             }
@@ -1472,6 +1500,21 @@ public abstract class AAIDeclarations implements AAIClient {
         return QueryStatus.SUCCESS;
     }
 
+    private Method findSetterFor(Class<? extends AAIDatum> resourceClass, String value) {
+        try {
+            String setterName = "set"+StringUtils.capitalize(value);
+            for (Method method : resourceClass.getDeclaredMethods()) {
+                int modifiers = method.getModifiers();
+                if (Modifier.isPublic(modifiers) && setterName.contentEquals(method.getName())) {
+                    return method;
+                }
+            }
+        } catch(Exception exc) {
+             getLogger().warn("findSetterFor()", exc);
+        }
+        return null;
+    }
+
     private QueryStatus newModelProcessRelationshipList(Object instance, Map<String, String> params, String prefix, SvcLogicContext ctx) throws Exception {
 
         Class resourceClass = instance.getClass();
@@ -1636,7 +1679,7 @@ public abstract class AAIDeclarations implements AAIClient {
                 try {
                     obj = getMetadataMethod.invoke(instance);
                 } catch (InvocationTargetException x) {
-		    Throwable cause = x.getCause();
+                    Throwable cause = x.getCause();
                 }
             }
             if(obj != null && obj instanceof Metadata){
