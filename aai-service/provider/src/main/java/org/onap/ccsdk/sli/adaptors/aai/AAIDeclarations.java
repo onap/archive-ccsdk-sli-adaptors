@@ -58,25 +58,25 @@ import org.onap.ccsdk.sli.adaptors.aai.query.FormattedQueryResultList;
 import org.onap.ccsdk.sli.adaptors.aai.query.Result;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.aai.inventory.v16.GenericVnf;
-import org.onap.aai.inventory.v16.Image;
-import org.onap.aai.inventory.v16.InventoryResponseItem;
-import org.onap.aai.inventory.v16.InventoryResponseItems;
-import org.onap.aai.inventory.v16.L3Network;
-import org.onap.aai.inventory.v16.LogicalLink;
-import org.onap.aai.inventory.v16.Metadata;
-import org.onap.aai.inventory.v16.Metadatum;
-import org.onap.aai.inventory.v16.Pnf;
-import org.onap.aai.inventory.v16.RelatedToProperty;
-import org.onap.aai.inventory.v16.Relationship;
-import org.onap.aai.inventory.v16.RelationshipData;
-import org.onap.aai.inventory.v16.RelationshipList;
-import org.onap.aai.inventory.v16.ResultData;
-import org.onap.aai.inventory.v16.SearchResults;
-import org.onap.aai.inventory.v16.ServiceInstance;
-import org.onap.aai.inventory.v16.Vlan;
-import org.onap.aai.inventory.v16.Vlans;
-import org.onap.aai.inventory.v16.Vserver;
+import org.onap.aai.inventory.v19.GenericVnf;
+import org.onap.aai.inventory.v19.Image;
+import org.onap.aai.inventory.v19.InventoryResponseItem;
+import org.onap.aai.inventory.v19.InventoryResponseItems;
+import org.onap.aai.inventory.v19.L3Network;
+import org.onap.aai.inventory.v19.LogicalLink;
+import org.onap.aai.inventory.v19.Metadata;
+import org.onap.aai.inventory.v19.Metadatum;
+import org.onap.aai.inventory.v19.Pnf;
+import org.onap.aai.inventory.v19.RelatedToProperty;
+import org.onap.aai.inventory.v19.Relationship;
+import org.onap.aai.inventory.v19.RelationshipData;
+import org.onap.aai.inventory.v19.RelationshipList;
+import org.onap.aai.inventory.v19.ResultData;
+import org.onap.aai.inventory.v19.SearchResults;
+import org.onap.aai.inventory.v19.ServiceInstance;
+import org.onap.aai.inventory.v19.Vlan;
+import org.onap.aai.inventory.v19.Vlans;
+import org.onap.aai.inventory.v19.Vserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1265,7 +1265,7 @@ public abstract class AAIDeclarations implements AAIClient {
                     getLogger().debug("About to process related link of {}", relatedLink);
                     if(relatedLink != null) {
                         if(relatedLink.contains("v$"))
-                            relatedLink = relatedLink.replace(VERSION_PATTERN, "/v16/");
+                            relatedLink = relatedLink.replace(VERSION_PATTERN, "/v19/");
                         relationship.setRelatedLink(relatedLink);
                     } else {
                         Map<String, String> relParams = new HashMap<>();
