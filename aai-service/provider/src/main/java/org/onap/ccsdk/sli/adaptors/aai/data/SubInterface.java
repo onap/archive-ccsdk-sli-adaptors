@@ -31,8 +31,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import org.onap.aai.inventory.v16.RelationshipList;
-import org.onap.aai.inventory.v16.Vlans;
+import org.onap.aai.inventory.v19.RelationshipList;
+import org.onap.aai.inventory.v19.Vlans;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")

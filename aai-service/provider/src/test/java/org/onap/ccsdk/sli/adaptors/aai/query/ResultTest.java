@@ -10,19 +10,19 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.onap.aai.inventory.v16.CloudRegion;
-import org.onap.aai.inventory.v16.Complex;
-import org.onap.aai.inventory.v16.Configuration;
-import org.onap.aai.inventory.v16.GenericVnf;
-import org.onap.aai.inventory.v16.L3InterfaceIpv4AddressList;
-import org.onap.aai.inventory.v16.L3InterfaceIpv6AddressList;
-import org.onap.aai.inventory.v16.L3Network;
-import org.onap.aai.inventory.v16.LInterface;
-//import org.onap.aai.inventory.v16.OwningEntity;
-import org.onap.aai.inventory.v16.Pserver;
-import org.onap.aai.inventory.v16.ServiceInstance;
-import org.onap.aai.inventory.v16.Vnfc;
-import org.onap.aai.inventory.v16.Vserver;
+import org.onap.aai.inventory.v19.CloudRegion;
+import org.onap.aai.inventory.v19.Complex;
+import org.onap.aai.inventory.v19.Configuration;
+import org.onap.aai.inventory.v19.GenericVnf;
+import org.onap.aai.inventory.v19.L3InterfaceIpv4AddressList;
+import org.onap.aai.inventory.v19.L3InterfaceIpv6AddressList;
+import org.onap.aai.inventory.v19.L3Network;
+import org.onap.aai.inventory.v19.LInterface;
+//import org.onap.aai.inventory.v19.OwningEntity;
+import org.onap.aai.inventory.v19.Pserver;
+import org.onap.aai.inventory.v19.ServiceInstance;
+import org.onap.aai.inventory.v19.Vnfc;
+import org.onap.aai.inventory.v19.Vserver;
 
 public class ResultTest {
 
