@@ -1,0 +1,9 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Gaurav Agrawal <gaurav.agrawal@huawei.com>
+Code-Review+1: Henry Yu <hyu2010b@gmail.com>
+Code-Review+2: Dan Timoney <dtimoney@att.com>
+Submitted-by: Dan Timoney <dtimoney@att.com>
+Submitted-at: Thu, 19 Mar 2020 19:00:06 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/ccsdk/sli/adaptors/+/103586
+Project: ccsdk/sli/adaptors
+Branch: refs/heads/master
