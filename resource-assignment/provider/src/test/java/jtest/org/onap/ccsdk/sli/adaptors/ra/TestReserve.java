@@ -634,6 +634,17 @@ public class TestReserve {
         Assert.assertTrue(st == QueryStatus.SUCCESS);
         Assert.assertTrue(dataSetup.checkRangeItem(resourceName, assetId, resourceSet1, "201"));
         Assert.assertTrue(dataSetup.checkRangeItem(resourceName, assetId, resourceSet2, "201"));
+
+        Assert.assertEquals(ctx.getAttribute("resource-list_length"), "1");
+        Assert.assertEquals(ctx.getAttribute("resource-list[0].resource-name"), "cust-vlan-id");
+        Assert.assertEquals(ctx.getAttribute("resource-list[0].resource-target-type"), "VNF");
+        Assert.assertEquals(ctx.getAttribute("resource-list[0].resource-target-id"), "port-id-1");
+        Assert.assertEquals(ctx.getAttribute("resource-list[0].status"), "Success");
+        Assert.assertEquals(ctx.getAttribute("resource-list[0].allocated"), "201");
+        Assert.assertEquals(ctx.getAttribute("resource-list[0].used"), "201");
+        Assert.assertEquals(ctx.getAttribute("resource-list[0].range-list_length"), "1");
+        Assert.assertEquals(ctx.getAttribute("resource-list[0].range-list[0].min"), "2");
+        Assert.assertEquals(ctx.getAttribute("resource-list[0].range-list[0].max"), "1000");
     }
 
     @Test

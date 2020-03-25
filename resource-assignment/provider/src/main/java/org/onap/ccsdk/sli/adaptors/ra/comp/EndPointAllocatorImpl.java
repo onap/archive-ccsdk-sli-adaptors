@@ -4,7 +4,7 @@
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights
  * 						reserved.
- * 
+ *
  * Modifications Copyright (C) 2019 IBM.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,8 +38,10 @@ import org.onap.ccsdk.sli.adaptors.rm.data.LimitAllocationItem;
 import org.onap.ccsdk.sli.adaptors.rm.data.LimitAllocationOutcome;
 import org.onap.ccsdk.sli.adaptors.rm.data.LimitResource;
 import org.onap.ccsdk.sli.adaptors.rm.data.MultiResourceAllocationOutcome;
+import org.onap.ccsdk.sli.adaptors.rm.data.Range;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeAllocationItem;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeAllocationOutcome;
+import org.onap.ccsdk.sli.adaptors.rm.data.RangeAllocationRequest;
 import org.onap.ccsdk.sli.adaptors.rm.data.RangeResource;
 import org.onap.ccsdk.sli.adaptors.rm.data.ReleaseRequest;
 import org.onap.ccsdk.sli.adaptors.rm.data.Resource;
@@ -129,6 +131,17 @@ public class EndPointAllocatorImpl implements EndPointAllocator {
             RangeAllocationOutcome rao = (RangeAllocationOutcome) ao;
             rd.data.put("allocated", String.valueOf(StrUtil.listInt(rao.allocated)));
             rd.data.put("used", String.valueOf(StrUtil.listInt(rao.used)));
+            List<Range> rangeList = ((RangeAllocationRequest) rao.request).rangeList;
+            if (rangeList != null && !rangeList.isEmpty()) {
+                List<Object> ll = new ArrayList<>();
+                for (Range r : rangeList) {
+                    Map<String, Object> mm = new HashMap<>();
+                    mm.put("min", r.min);
+                    mm.put("max", r.max);
+                    ll.add(mm);
+                }
+                rd.data.put("range-list", ll);
+            }
         }
 
         return Collections.singletonList(rd);
@@ -229,7 +242,7 @@ public class EndPointAllocatorImpl implements EndPointAllocator {
 
             log.info("ResourceName:" + r.resourceKey.resourceName + " assetId:" + r.resourceKey.assetId);
 
-           
+
             rdlist.add(getResourceData(r));
         }
 

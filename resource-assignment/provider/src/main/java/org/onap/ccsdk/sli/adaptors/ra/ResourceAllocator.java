@@ -22,6 +22,7 @@
 
 package org.onap.ccsdk.sli.adaptors.ra;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -180,11 +181,10 @@ public class ResourceAllocator implements SvcLogicResource {
             setAttr(ctx, pp + "resource-target-value", rd.resourceTargetValue);
             setAttr(ctx, pp + "status", rd.status);
 
-            if (rd.data != null && !rd.data.isEmpty()) {
-                for (String kk : rd.data.keySet()) {
-                    String value = String.valueOf(rd.data.get(kk));
-                    setAttr(ctx, pp + kk, value);
-                }
+            Map<String, String> dataProp = dataToProperties(rd.data);
+            for (String kk : dataProp.keySet()) {
+                String value = String.valueOf(dataProp.get(kk));
+                setAttr(ctx, pp + kk, value);
             }
 
             if (rd.allocationDataList != null && !rd.allocationDataList.isEmpty()) {
@@ -532,6 +532,39 @@ public class ResourceAllocator implements SvcLogicResource {
             }
         }
         return data;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, String> dataToProperties(Map<String, Object> data) {
+        if (data == null || data.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, String> prop = new HashMap<>();
+        Map<String, Object> data1 = new HashMap<>(data);
+
+        while (!data1.isEmpty()) {
+            for (String key : new ArrayList<>(data1.keySet())) {
+                Object o = data1.get(key);
+                data1.remove(key);
+
+                if (o instanceof Boolean || o instanceof Number || o instanceof String) {
+                    prop.put(key, o.toString());
+                } else if (o instanceof Map) {
+                    Map<String, Object> mm = (Map<String, Object>) o;
+                    for (String key1 : mm.keySet()) {
+                        data1.put(key + "." + key1, mm.get(key1));
+                    }
+                } else if (o instanceof List) {
+                    List<Object> ll = (List<Object>) o;
+                    prop.put(key + "_length", String.valueOf(ll.size()));
+                    for (int i = 0; i < ll.size(); i++) {
+                        data1.put(key + '[' + i + ']', ll.get(i));
+                    }
+                }
+            }
+        }
+        return prop;
     }
 
     public void setResourceManager(ResourceManager resourceManager) {
