@@ -32,6 +32,6 @@ public class ResourceData {
     public String resourceTargetType;
     public String endPointPosition;
     public String status;
-    public Map<String, String> data;
+    public Map<String, Object> data;
     public List<AllocationData> allocationDataList;
 }
