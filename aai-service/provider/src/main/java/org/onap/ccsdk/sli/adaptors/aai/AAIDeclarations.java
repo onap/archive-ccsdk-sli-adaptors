@@ -274,9 +274,12 @@ public abstract class AAIDeclarations implements AAIClient {
                         vserverId = nameValues.get("vserver.vserver_id");
                     String tenantId = nameValues.get("teannt_id");
 
-                    if(vserverName != null) vserverName = vserverName.trim().replace("'", "").replace("$", "").replace("'", "");
-                    if(vserverId != null) vserverId = vserverId.trim().replace("'", "").replace("$", "").replace("'", "");
-                    if(tenantId != null) tenantId = tenantId.trim().replace("'", "").replace("$", "").replace("'", "");
+                    if(vserverName != null) 
+                        vserverName = vserverName.trim().replace("'", "").replace("$", "").replace("'", "");
+                    if(vserverId != null)
+                        vserverId = vserverId.trim().replace("'", "").replace("$", "").replace("'", "");
+                    if(tenantId != null)
+                        tenantId = tenantId.trim().replace("'", "").replace("$", "").replace("'", "");
 
                     if (vserverName != null) {
                         URL vserverUrl = null;
@@ -576,7 +579,10 @@ public abstract class AAIDeclarations implements AAIClient {
             String modifiedKey = name.replaceAll("-", "_");
             if(nameValues.containsKey(modifiedKey)) {
                 String argValue = nameValues.get(modifiedKey);
-                if(argValue != null) argValue = argValue.trim().replace("'", "").replace("$", "").replace("'", "");
+                if(argValue != null){
+                    argValue = argValue.trim().replace("'", "").replace("$", "").replace("'", "");
+                }
+				
                 request.addRequestProperty(name, argValue);
             }
         }
@@ -1452,7 +1458,10 @@ public abstract class AAIDeclarations implements AAIClient {
                 String modifiedKey = arg.replaceAll("-", "_");
                 if(nameValues.containsKey(modifiedKey)) {
                     String argValue = nameValues.get(modifiedKey);
-                    if(argValue != null) argValue = argValue.trim().replace("'", "").replace("$", "").replace("'", "");
+                    if(argValue != null){
+                        argValue = argValue.trim().replace("'", "").replace("$", "").replace("'", "");
+                    }
+					
                     request.addRequestProperty(arg, argValue);
                 }
             }
