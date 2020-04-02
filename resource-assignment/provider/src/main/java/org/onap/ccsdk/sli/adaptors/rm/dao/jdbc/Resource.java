@@ -24,7 +24,9 @@ package org.onap.ccsdk.sli.adaptors.rm.dao.jdbc;
 public class Resource {
 
     public long id;
-    public String assetId, name, type;
+    public String assetId;
+    public String name;
+    public String type;
     public long ltUsed;
     public String llLabel;
     public int llReferenceCount;
