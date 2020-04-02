@@ -449,7 +449,10 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
             // Process the response
             LOG.debug("HttpURLConnection result:" + responseCode);
-            if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+            if(inputStream == null){
+				inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+			}
+			
             BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
 
             ObjectMapper mapper = getObjectMapper();
@@ -699,7 +702,10 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
             // Process the response
             LOG.debug("HttpURLConnection result:" + responseCode);
-            if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+            if(inputStream == null){
+				inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+			}
+			
             BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
             String line = null;
 
@@ -882,7 +888,10 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
             // Process the response
             LOG.debug("HttpURLConnection result:" + responseCode);
-            if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+            if(inputStream == null){
+				inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+			}
+			
             BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
 
             ObjectMapper mapper = getObjectMapper();
@@ -945,7 +954,10 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
             // Process the response
             LOG.debug("HttpURLConnection result:" + responseCode);
-            if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+            if(inputStream == null){
+				inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+			}
+			
             BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
 
             ObjectMapper mapper = getObjectMapper();
@@ -1274,7 +1286,10 @@ public class AAIService extends AAIDeclarations implements AAIClient, SvcLogicRe
 
             // Process the response
             LOG.debug("HttpURLConnection result:" + responseCode);
-            if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+            if(inputStream == null){
+				inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+			}
+			
             BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
             String line = null;
 
