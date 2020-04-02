@@ -215,7 +215,8 @@ public class StrUtil {
         for (String s : str) {
             try {
                 int i1 = s.indexOf('-');
-                int start, end;
+                int start;
+		int end;
                 if (i1 > 0) {
                     String s1 = s.substring(0, i1);
                     String s2 = s.substring(i1 + 1);
