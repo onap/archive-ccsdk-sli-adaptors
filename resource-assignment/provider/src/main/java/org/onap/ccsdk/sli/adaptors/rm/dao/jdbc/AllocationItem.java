@@ -28,7 +28,8 @@ public class AllocationItem {
     public long id;
     public long resourceId;
     public String applicationId;
-    public String resourceSetId, resourceUnionId;
+    public String resourceSetId;
+    public String resourceUnionId;
     public String resourceShareGroupList;
     public long ltUsed;
     public String llLabel;
