@@ -193,7 +193,8 @@ public class ExpressionEvaluator {
         int opl = op.length();
         int sl = s.length();
         String delimiters = " \0\t\r\n()";
-        int pcount = 0, qcount = 0;
+        int pcount = 0;
+		int	qcount = 0;
         for (int i = 0; i < sl; i++) {
             char c = s.charAt(i);
             if (c == '(' && qcount == 0) {

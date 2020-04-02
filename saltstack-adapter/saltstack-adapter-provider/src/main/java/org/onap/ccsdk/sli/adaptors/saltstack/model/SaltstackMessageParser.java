@@ -307,7 +307,8 @@ public class SaltstackMessageParser {
     public SaltstackResult parseResponse(SvcLogicContext ctx, String pfx,
                                          SaltstackResult saltstackResult, boolean slsExec) throws IOException {
         int code = saltstackResult.getStatusCode();
-        boolean executionStatus = true, retCodeFound = false;
+        boolean executionStatus = true;
+		boolean	retCodeFound = false;
         if (code != SaltstackResultCodes.SUCCESS.getValue()) {
             return saltstackResult;
         }
