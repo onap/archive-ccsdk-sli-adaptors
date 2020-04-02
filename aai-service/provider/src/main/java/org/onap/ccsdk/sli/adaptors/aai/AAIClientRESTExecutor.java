@@ -263,7 +263,10 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             LOG.info(HTTP_URL_CONNECTION_RESULT, responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
 
-            if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+            if(inputStream == null){
+                inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+	    }
+			
             BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
 
             ObjectMapper mapper = AAIService.getObjectMapper();
@@ -487,7 +490,10 @@ public class AAIClientRESTExecutor implements AAIExecutorInterface {
             LOG.info(HTTP_URL_CONNECTION_RESULT, responseCode, responseMessage);
             logMetricResponse(responseCode, responseMessage);
 
-            if(inputStream == null) inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+            if(inputStream == null){
+	        inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+	    }
+			
             BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
             String line = null;
 
