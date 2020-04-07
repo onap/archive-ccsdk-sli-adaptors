@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8f1bc396_1ec5e911",
+        "filename": "aai-service/provider/src/main/java/org/onap/ccsdk/sli/adaptors/aai/AAIDeclarations.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2020-04-07T15:14:34Z",
+      "side": 0,
+      "message": "Tabs on these lines should be replaced by spaces",
+      "revId": "3280b56349c8e5a3e00fdce2ff62b58b0d9e6508",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
