@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ac146e14_27fe195b",
+        "filename": "resource-assignment/provider/src/main/java/org/onap/ccsdk/sli/adaptors/util/expr/ExpressionEvaluator.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2020-04-07T15:17:22Z",
+      "side": 0,
+      "message": "Please use spaces instead of tabs",
+      "revId": "3280b56349c8e5a3e00fdce2ff62b58b0d9e6508",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f11ecd3d_91548812",
+        "filename": "resource-assignment/provider/src/main/java/org/onap/ccsdk/sli/adaptors/util/str/StrUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2020-04-07T15:17:22Z",
+      "side": 0,
+      "message": "Please use spaces instead of tabs",
+      "revId": "3280b56349c8e5a3e00fdce2ff62b58b0d9e6508",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b25513b3_e0b23e6a",
+        "filename": "saltstack-adapter/saltstack-adapter-provider/src/main/java/org/onap/ccsdk/sli/adaptors/saltstack/model/SaltstackMessageParser.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2020-04-07T15:17:22Z",
+      "side": 0,
+      "message": "Please use spaces instead of tabs",
+      "revId": "3280b56349c8e5a3e00fdce2ff62b58b0d9e6508",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
