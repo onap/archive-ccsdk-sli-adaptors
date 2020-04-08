@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "32f3d274_68a2472a",
+        "filename": "aai-service/provider/src/main/java/org/onap/ccsdk/sli/adaptors/aai/AAIClientRESTExecutor.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2020-04-08T19:26:27Z",
+      "side": 0,
+      "message": "Tabs not permitted",
+      "revId": "3280b56349c8e5a3e00fdce2ff62b58b0d9e6508",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8f1bc396_1ec5e911",
         "filename": "aai-service/provider/src/main/java/org/onap/ccsdk/sli/adaptors/aai/AAIDeclarations.java",
         "patchSetId": 2
@@ -30,6 +47,23 @@
       "writtenOn": "2020-04-08T15:12:44Z",
       "side": 0,
       "message": "Please replace these tabs with spaces",
+      "revId": "3280b56349c8e5a3e00fdce2ff62b58b0d9e6508",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cf5116bb_ed673b6a",
+        "filename": "aai-service/provider/src/main/java/org/onap/ccsdk/sli/adaptors/aai/AAIDeclarations.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2020-04-08T19:26:27Z",
+      "side": 0,
+      "message": "Tabs not permitted",
       "revId": "3280b56349c8e5a3e00fdce2ff62b58b0d9e6508",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
