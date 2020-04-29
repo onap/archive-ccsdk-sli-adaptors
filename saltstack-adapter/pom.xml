@@ -34,7 +34,7 @@
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>saltstack-adaptor</artifactId>
-    <version>0.7.2-SNAPSHOT</version>
+    <version>0.7.2</version>
     <name>ccsdk-sli-adaptors :: saltstack-adapter</name>
     <description>Abstractions to interact with Saltstack server via REST
     </description>
