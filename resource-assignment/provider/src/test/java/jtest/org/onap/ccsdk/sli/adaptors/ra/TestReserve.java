@@ -28,6 +28,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import jtest.util.org.onap.ccsdk.sli.adaptors.ra.TestTable;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:test-context.xml" })
@@ -231,6 +232,7 @@ public class TestReserve {
         rsList.forEach(r -> {
             StrUtil.info(log, r);
         });
+        assertNotNull(rsList);
 
     }
 
@@ -269,6 +271,7 @@ public class TestReserve {
         rsList.forEach(r -> {
             StrUtil.info(log, r);
         });
+        assertNotNull(sd);
 
     }
 
@@ -316,6 +319,7 @@ public class TestReserve {
         rsList.forEach(r -> {
             StrUtil.info(log, r);
         });
+        assertNotNull(rr);
 
     }
 
@@ -478,6 +482,7 @@ public class TestReserve {
         rsList.forEach(r -> {
             StrUtil.info(log, r);
         });
+        assertNotNull(rsList);
 
     }
 
