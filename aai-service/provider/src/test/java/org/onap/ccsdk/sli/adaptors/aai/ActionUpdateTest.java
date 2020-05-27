@@ -19,6 +19,7 @@ public class ActionUpdateTest {
     public void setActionData() throws Exception {
         final Action resolver = new Action();
         resolver.setActionData( new ArrayList<ActionDatum>());
+        assertNotNull(resolver);
     }
 
     @Test

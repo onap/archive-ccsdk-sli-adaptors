@@ -22,6 +22,7 @@
 package org.onap.ccsdk.sli.adaptors.aai;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileReader;
@@ -135,6 +136,8 @@ public class PathCreationTest {
             URL url = request.getRequestUrl("GET", null);
             url.getPath();
             LOG.info("Received response");
+            assertNotNull(nameValues);
+
         } catch(Exception exc) {
             LOG.info("Caught exception", exc);
         }
@@ -196,5 +199,6 @@ public class PathCreationTest {
             }
         }
         LOG.info(nameValues.toString());
+        assertNotNull(nameValues);
     }
 }

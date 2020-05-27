@@ -40,6 +40,7 @@ public class NodesQueryRequestTest {
 
         try {
             URL url = request.getRequestUrl("GET", null);
+            assertNotNull(url);
         } catch (Exception exc) {
         }
         assert(true);

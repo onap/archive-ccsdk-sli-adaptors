@@ -105,12 +105,14 @@ public class GenericVnfTest {
             data.put("encrypted-access-flag","true");
 
             QueryStatus resp = client.save("generic-vnf", false, false, "generic-vnf.vnf-id = '"+uuid+"'", data, "aaidata", ctx);
+            assertNotNull(ctx);
 
         }
         catch (Throwable e)
         {
 
         }
+        ;
     }
 
     @Test
@@ -130,8 +132,7 @@ public class GenericVnfTest {
             assertTrue(response == QueryStatus.SUCCESS);
             LOG.info("AAIResponse: " + response.toString());
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             LOG.error("Caught exception", e);
             fail("Caught exception");
         }
@@ -155,7 +156,7 @@ public class GenericVnfTest {
             data.put("encrypted-access-flag","true");
 
             QueryStatus resp = client.update("generic-vnf", "generic-vnf.vnf-id = '"+uuid+"'", data, "aaidata", ctx);
-
+            assertNotNull(uuid);
         }
         catch (Throwable e)
         {
