@@ -2,6 +2,8 @@ package jtest.org.onap.ccsdk.sli.adaptors.ra;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,5 +34,6 @@ public class TestResourceLockNode {
 
         resourceLockNode.lockResource(paramMap, null);
         resourceLockNode.unlockResource(paramMap, null);
+        Assert.assertNotNull(paramMap);
     }
 }

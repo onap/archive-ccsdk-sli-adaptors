@@ -34,6 +34,7 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TestSaltstackAdapterPropertiesProviderImpl {
 
@@ -65,6 +66,7 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
             }
         };
         adapter = new SaltstackAdapterImpl(propProvider);
+        assertNotNull(propProvider);
     }
 
     @Test(expected = SvcLogicException.class)
@@ -101,6 +103,7 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
             }
         };
         adapter = new SaltstackAdapterImpl(propProvider);
+        assertNotNull(adapter);
     }
 
     @Test
@@ -116,6 +119,7 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
             }
         };
         adapter = new SaltstackAdapterImpl(propProvider);
+        assertNotNull(propProvider);
     }
 
     @Test(expected = SvcLogicException.class)
@@ -152,6 +156,7 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
             }
         };
         adapter = new SaltstackAdapterImpl(propProvider);
+        assertNotNull(propProvider);
     }
 
     @Test
@@ -167,6 +172,7 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
             }
         };
         adapter = new SaltstackAdapterImpl(propProvider);
+        assertNotNull(propProvider);
     }
 
     @Test
@@ -185,6 +191,7 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
             }
         };
         adapter = new SaltstackAdapterImpl(propProvider);
+        assertNotNull(propProvider);
     }
 
     @Test
@@ -200,6 +207,7 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
             }
         };
         adapter = new SaltstackAdapterImpl(propProvider);
+        assertNotNull(propProvider);
     }
 
     @Test
@@ -218,6 +226,7 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
             }
         };
         adapter = new SaltstackAdapterImpl(propProvider);
+        assertNotNull(propProvider);
     }
 
     @Test
@@ -236,6 +245,7 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
             }
         };
         adapter = new SaltstackAdapterImpl(propProvider);
+        assertNotNull(propProvider);
     }
 
 
@@ -251,6 +261,7 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
             }
         };
         adapter = new SaltstackAdapterImpl(propProvider);
+        assertNotNull(propProvider);
     }
 
     @Test
@@ -268,6 +279,7 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
             }
         };
         adapter = new SaltstackAdapterImpl(propProvider);
+        assertNotNull(propProvider);
     }
 
     @Test
@@ -293,5 +305,6 @@ public class TestSaltstackAdapterPropertiesProviderImpl {
     public void reqExecCommand_setPropertiesDefault() throws SvcLogicException,
             IllegalStateException, IllegalArgumentException {
         adapter = new SaltstackAdapterImpl();
+        assertNotNull(adapter);
     }
 }

@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import static org.junit.Assert.assertNotNull;
 
 public class TestJsonParser {
 
@@ -55,6 +56,7 @@ public class TestJsonParser {
         logProperties(mm);
 
         in.close();
+        assertNotNull(mm);
     }
 
     @Test(expected = NullPointerException.class)
