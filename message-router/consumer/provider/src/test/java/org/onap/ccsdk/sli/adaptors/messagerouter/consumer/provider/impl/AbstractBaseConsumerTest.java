@@ -58,6 +58,7 @@ public class AbstractBaseConsumerTest {
     public void callClose() throws Exception {
         DummyConsumer dummy = getAuthDummy();
         dummy.close();
+        assertNotNull(dummy);
     }
 
     @Test

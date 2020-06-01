@@ -121,6 +121,7 @@ public class RegressionTest {
 			QueryStatus resp = client.save("connector", false, false, "resource-instance-id = '12345'", data, "aaidata", ctx);
 
 			LOG.info("AAIResponse: " + resp.toString());
+			assertNotNull(ctx);
 		}
 		catch (Exception e)
 		{
@@ -158,6 +159,7 @@ public class RegressionTest {
 			QueryStatus resp = client.save("connector", false, false, "resource-instance-id = '11012345'", data, "aaidata", ctx);
 
 			LOG.info("AAIResponse: " + resp.toString());
+			assertNotNull(ctx);
 		}
 		catch (Exception e)
 		{
@@ -210,6 +212,7 @@ public class RegressionTest {
 			QueryStatus resp = client.save("logical-link", false, false, "link-name = '1252541'", data, "aaidata", ctx);
 
 			LOG.info("AAIResponse: " + resp.toString());
+			assertNotNull(data);
 		}
 		catch (Exception e)
 		{
@@ -241,6 +244,7 @@ public class RegressionTest {
 			QueryStatus resp = client.save("virtual-data-center", false, false, "vdc-id = '1252541'", data, "aaidata", ctx);
 
 			LOG.info("AAIResponse: " + resp.toString());
+			assertNotNull(data);
 		}
 		catch (Exception e)
 		{
@@ -408,6 +412,7 @@ public class RegressionTest {
 
 //			assertTrue(response == QueryStatus.SUCCESS);
 			LOG.info("AAIResponse: " + datum.toString());
+			assertNotNull(nameValues);
 		}
 		catch (Exception e)
 		{

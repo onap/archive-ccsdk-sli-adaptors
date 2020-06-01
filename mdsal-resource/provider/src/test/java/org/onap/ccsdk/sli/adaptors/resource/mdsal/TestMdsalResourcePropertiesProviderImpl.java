@@ -27,6 +27,7 @@ import org.junit.Test;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TestMdsalResourcePropertiesProviderImpl {
 
@@ -57,6 +58,7 @@ public class TestMdsalResourcePropertiesProviderImpl {
         MdsalResourcePropertiesProviderImpl test = new MdsalResourcePropertiesProviderImpl();
 
         mdsal.determinePropertiesFile(test);
+        assertNotNull(test);
 
     }
 }

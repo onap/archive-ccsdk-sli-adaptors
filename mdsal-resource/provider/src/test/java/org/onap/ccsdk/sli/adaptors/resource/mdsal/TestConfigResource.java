@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import static org.mockito.Mockito.mock;
 
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
+import static org.junit.Assert.assertNotNull;
 
 public class TestConfigResource extends TestCase {
 
@@ -24,6 +25,7 @@ public class TestConfigResource extends TestCase {
 		res.isAvailable("my-resource", "mykey", "pfx", ctx);
 		res.save("resource", false, false, null, null, null, ctx);
 		res.update("my-resource", "mykey", null, "pfx", ctx);
+		assertNotNull(res);
 	}
 
 }
