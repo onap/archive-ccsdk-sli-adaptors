@@ -108,7 +108,7 @@ class AllocationFunction extends SynchronizedFunction {
     public void _exec() throws ResourceLockedException {
         outcome = allocate(request);
 
-        if ((outcome!=null) && (outcome.status == AllocationStatus.Success)) {
+        if (outcome!=null && outcome.status == AllocationStatus.Success) {
             for (Resource r : updateList) {
                 resourceDao.saveResource(r);
             }
@@ -334,7 +334,56 @@ class AllocationFunction extends SynchronizedFunction {
                     }
                 }
 
-                if (req.rangeList != null) {
+                if (req.rangeList != null && !req.rangeList.isEmpty()) {
+                    if (req.nextInSequence) {
+                        // This means we allocate numbers in ascending sequence, not trying from the beginning
+                        // of the range (leaving possible holes in the sequence of allocated numbers)
+                        // To do that, we go through the ranges from the last towards the first (assuming
+                        // ranges are ordered from smallest to the largest numbers), and within each range, from
+                        // the max towards the min and find the first allocated number. Then we take the next numbers
+                        // in the range (that we already checked are available).
+
+                        int rangeIndex;
+                        Range range = null;
+                        int n = 0;
+                        boolean foundAllocated = false;
+                        for (rangeIndex = req.rangeList.size() - 1; !foundAllocated && rangeIndex >= 0; rangeIndex--) {
+                            range = req.rangeList.get(rangeIndex);
+                            for (n = range.max; n >= range.min; n--) {
+                                if (!RangeUtil.checkRange(rr, req, n)) {
+                                    foundAllocated = true;
+                                    break;
+                                }
+                            }
+                            if (foundAllocated) {
+                                break;
+                            }
+                        }
+                        if (foundAllocated) {
+                            n++;
+                        }
+                        for (; foundCount < req.requestedCount && n <= range.max; n++) {
+                            foundNumbers.add(n);
+                            foundCount++;
+                        }
+                        if (foundCount < req.requestedCount) {
+                            rangeIndex++;
+                            for (; rangeIndex < req.rangeList.size(); rangeIndex++) {
+                                range = req.rangeList.get(rangeIndex);
+                                for (n = range.min; foundCount < req.requestedCount && n <= range.max; n++) {
+                                    foundNumbers.add(n);
+                                    foundCount++;
+                                }
+                            }
+                        }
+                        // If we could not find enough numbers by going up in sequence,
+                        // reset foundNumbers and foundCount, and go back to the holes
+                        if (foundCount < req.requestedCount) {
+                            foundNumbers = new TreeSet<>();
+                            foundCount = 0;
+                        }
+                    }
+
                     if (req.reverseOrder) {
                         for (int i = req.rangeList.size() - 1; i >= 0; i--) {
                             Range range = req.rangeList.get(i);

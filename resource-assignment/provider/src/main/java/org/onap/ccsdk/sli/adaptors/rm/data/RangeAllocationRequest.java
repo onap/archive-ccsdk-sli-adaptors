@@ -36,4 +36,5 @@ public class RangeAllocationRequest extends AllocationRequest {
     public boolean sequential = false;
     public boolean reverseOrder = false;
     public boolean forceNewNumbers = false;
+    public boolean nextInSequence = false;
 }

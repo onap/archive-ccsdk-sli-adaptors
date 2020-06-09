@@ -455,6 +455,8 @@ public class ResourceAllocator implements SvcLogicResource {
         rr.rangeMaxOverride = Integer.parseInt(rangeMaxOverrideStr);
         String rangeForceNewNumbersStr = getParam(ctx, "range-force-new-numbers", false, "false");
         rr.rangeForceNewNumbers = Boolean.parseBoolean(rangeForceNewNumbersStr);
+        String rangeNextInSequenceStr = getParam(ctx, "range-next-in-sequence", false, "false");
+        rr.rangeNextInSequence = Boolean.parseBoolean(rangeNextInSequenceStr);
         String replaceStr = getParam(ctx, "replace", false, "true");
         rr.replace = Boolean.parseBoolean(replaceStr);
         rr.applicationId = getParam(ctx, "application-id", false, "SDNC");

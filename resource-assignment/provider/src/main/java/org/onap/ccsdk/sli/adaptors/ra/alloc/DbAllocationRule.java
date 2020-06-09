@@ -242,6 +242,7 @@ public class DbAllocationRule implements AllocationRule {
 
         }
         ar.forceNewNumbers = resourceRequest.rangeForceNewNumbers;
+        ar.nextInSequence = resourceRequest.rangeNextInSequence;
         return ar;
     }
 
