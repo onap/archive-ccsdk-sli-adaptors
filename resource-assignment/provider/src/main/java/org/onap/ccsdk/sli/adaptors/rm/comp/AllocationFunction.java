@@ -359,9 +359,7 @@ class AllocationFunction extends SynchronizedFunction {
                                 break;
                             }
                         }
-                        if (foundAllocated) {
-                            n++;
-                        }
+                        n++;
                         for (; foundCount < req.requestedCount && n <= range.max; n++) {
                             foundNumbers.add(n);
                             foundCount++;
