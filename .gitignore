@@ -30,6 +30,7 @@ classes
 out/
 .DS_STORE
 .metadata
+.vscode
 provider/src/main/java/META-INF/
 provider/src/main/java/inventory/
 logs/

@@ -36,6 +36,12 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>ansible-adapter-bundle</artifactId>
             <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>powermock-api-mockito</artifactId>
+                    <groupId>org.powermock</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 
