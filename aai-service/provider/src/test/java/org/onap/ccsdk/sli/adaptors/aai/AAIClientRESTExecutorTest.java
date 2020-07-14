@@ -11,6 +11,8 @@ import static org.junit.Assert.assertNotNull;
 public class AAIClientRESTExecutorTest {
 
     private static AAIClientRESTExecutor aaiExecute;
+    private static AAIService aaiService;
+
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         Properties properties = new Properties();
@@ -22,6 +24,7 @@ public class AAIClientRESTExecutorTest {
         properties.setProperty("connection.timeout", "60000");
         properties.setProperty("read.timeout", "60000");
         aaiExecute = new AAIClientRESTExecutor(properties);
+        aaiService = new AAIService(properties);
 
 
     }
