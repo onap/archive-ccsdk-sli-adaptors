@@ -124,7 +124,7 @@ CREATE TABLE SERVICE_RESOURCE (
   service_status VARCHAR(10) NOT NULL,
   service_change_number SMALLINT NOT NULL,
     resource_set_id VARCHAR(100) NOT NULL,
-    resource_union_id VARCHAR(100) NOT NULL,
+    resource_union_id VARCHAR(100) NOT NULL
 );
 
 ALTER TABLE SERVICE_RESOURCE ADD CONSTRAINT C1_SERVICE_RESOURCE CHECK (service_status IN ('Active', 'Pending'));

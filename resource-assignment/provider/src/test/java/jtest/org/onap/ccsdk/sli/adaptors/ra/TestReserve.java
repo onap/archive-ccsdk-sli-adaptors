@@ -216,6 +216,7 @@ public class TestReserve {
         rr.requestType = "New";
         rr.rangeMaxOverride = -1;
         rr.rangeMinOverride = -1;
+        rr.applicationId = "myapp";
 
         List<ResourceResponse> rsList = new ArrayList<>();
 
@@ -513,6 +514,7 @@ public class TestReserve {
         rr.endPointPosition = "VPE-Cust";
         rr.rangeMaxOverride = -1;
         rr.rangeMinOverride = -1;
+        rr.applicationId = "myapp";
 
         List<ResourceResponse> rsList = new ArrayList<>();
         resourceAllocator.reserve(sd, rt, rr, rsList);
@@ -533,6 +535,7 @@ public class TestReserve {
         rr.endPointPosition = "VPE-Core1";
         rr.rangeMaxOverride = -1;
         rr.rangeMinOverride = -1;
+        rr.applicationId = "myapp";
 
         rsList = new ArrayList<>();
         resourceAllocator.reserve(sd, rt, rr, rsList);
@@ -553,6 +556,7 @@ public class TestReserve {
         rr.endPointPosition = "VPE-Core2";
         rr.rangeMaxOverride = -1;
         rr.rangeMinOverride = -1;
+        rr.applicationId = "myapp";
 
         rsList = new ArrayList<>();
         resourceAllocator.reserve(sd, rt, rr, rsList);
@@ -573,6 +577,7 @@ public class TestReserve {
         rr.endPointPosition = "VPE-Core3";
         rr.rangeMaxOverride = -1;
         rr.rangeMinOverride = -1;
+        rr.applicationId = "myapp";
 
         rsList = new ArrayList<>();
         resourceAllocator.reserve(sd, rt, rr, rsList);
@@ -720,6 +725,7 @@ public class TestReserve {
         rr.rangeMaxOverride = 3901;
         rr.rangeMinOverride = 3900;
         rr.resourceType = ResourceType.Range;
+        rr.applicationId = "myapp";
 
         List<ResourceResponse> rsList = new ArrayList<>();
         resourceAllocator.reserve(sd, rt, rr, rsList);
@@ -748,6 +754,7 @@ public class TestReserve {
         rr.rangeMinOverride = -1;
         rr.rangeOverrideList = Arrays.asList(range);
         rr.resourceType = ResourceType.Range;
+        rr.applicationId = "myapp";
 
         rsList = new ArrayList<>();
         resourceAllocator.reserve(sd, rt, rr, rsList);
@@ -781,6 +788,7 @@ public class TestReserve {
         rr.rangeOverrideList = new ArrayList<>();
         rr.rangeOverrideList.add(range1);
         rr.rangeOverrideList.add(range2);
+        rr.applicationId = "myapp";
         rr.resourceType = ResourceType.Range;
 
         rsList = new ArrayList<>();
