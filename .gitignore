@@ -10,6 +10,7 @@ org.eclipse.core.resources.prefs
 maven-eclipse.xml
 workspace
 .checkstyle
+.vscode
 
 ## Compilation Files ##
 *.class
