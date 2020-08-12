@@ -203,7 +203,7 @@ public abstract class AAIRequest {
                     bs.set(bitIndex);
                 }
                 String path = properties.getProperty(key);
-                LOG.info(String.format("bitset %s\t\t%s", bs.toString(), path));
+                LOG.trace(String.format("bitset %s\t\t%s", bs.toString(), path));
                 bitsetPaths.put(bs, path);
             }
             LOG.info("loaded " + resourceNames.toString());
