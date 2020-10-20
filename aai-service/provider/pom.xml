@@ -123,13 +123,13 @@
                 <configuration>
                     <schemaDirectory>${project.basedir}/src/main/resources</schemaDirectory>
                     <schemaIncludes>
-                        <value>aai_schema_v19.xsd</value>
+                        <value>aai_schema_v21.xsd</value>
                     </schemaIncludes>
                     <bindingIncludes>
                         <include>aai-schema-bindings.xjb</include>
                     </bindingIncludes>
                     <generateDirectory>${project.build.directory}/generated-sources/main/java</generateDirectory>
-                    <generatePackage>org.onap.aai.inventory.v19</generatePackage>
+                    <generatePackage>org.onap.aai.inventory.v21</generatePackage>
                     <extension>true</extension>
                     <args>
                         <arg>-Xannotate</arg>
