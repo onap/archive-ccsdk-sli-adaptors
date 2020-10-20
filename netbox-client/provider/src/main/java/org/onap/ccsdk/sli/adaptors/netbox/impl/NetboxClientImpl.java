@@ -17,16 +17,23 @@ package org.onap.ccsdk.sli.adaptors.netbox.impl;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonSyntaxException;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Properties;
+
 import javax.sql.rowset.CachedRowSet;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.onap.ccsdk.sli.adaptors.netbox.api.NetboxClient;
 import org.onap.ccsdk.sli.adaptors.netbox.model.IPAddress;
 import org.onap.ccsdk.sli.adaptors.netbox.model.IPStatus;
+import org.onap.ccsdk.sli.adaptors.netbox.property.NetboxProperties;
+import org.onap.ccsdk.sli.core.dblib.DBResourceManager;
 import org.onap.ccsdk.sli.core.dblib.DbLibService;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
@@ -73,9 +80,56 @@ public class NetboxClientImpl implements NetboxClient {
     private final NetboxHttpClient client;
     private final DbLibService dbLibService;
 
+    public NetboxClientImpl() {
+        this(null, null);
+    }
+
     public NetboxClientImpl(final NetboxHttpClient client, final DbLibService dbLibService) {
-        this.client = client;
-        this.dbLibService = dbLibService;
+        if (client == null) {
+            this.client = new NetboxHttpClient(new NetboxProperties());
+        } else {
+            this.client = client;
+        }
+
+        if (dbLibService == null) {
+            Properties dblibProps = System.getProperties();
+
+            String cfgDir = dblibProps.getProperty("sdnc.config.dir", System.getenv("SDNC_CONFIG_DIR"));
+    
+            if ((cfgDir == null) || (cfgDir.length() == 0)) {
+                cfgDir = "/opt/sdnc/data/properties";
+            }
+    
+            File dblibPropFile = new File(cfgDir + "/dblib.properties");
+            if (dblibPropFile.exists()) {
+                try {
+                    LOG.debug("Loading dblib properties from {}", dblibPropFile.getAbsolutePath());
+                    dblibProps = new Properties();
+                    dblibProps.load(new FileInputStream(dblibPropFile));
+                } catch (Exception e) {
+                    LOG.warn("Could not load properties file {}", dblibPropFile.getAbsolutePath(), e);
+    
+                    dblibProps = System.getProperties();
+                }
+            }
+            
+            DbLibService dbSvc = null;
+            try {
+                dbSvc  = new DBResourceManager(dblibProps);
+            } catch (Exception e) {
+                LOG.error("Caught exception trying to create dblib service", e);
+            }
+    
+            try {
+                dbSvc  = new DBResourceManager(dblibProps);
+            } catch (Exception e) {
+                LOG.error("Caught exception trying to create dblib service", e);
+            }
+            this.dbLibService = dbSvc;
+    
+        } else {
+            this.dbLibService = dbLibService;
+        }
     }
 
     @Override
