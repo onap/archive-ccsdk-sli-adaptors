@@ -53,6 +53,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResult;
 import org.onap.ccsdk.sli.adaptors.ansible.model.AnsibleResultCodes;
+import org.onap.ccsdk.sli.core.utils.PathValidator;
+
 import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
 
@@ -103,6 +105,10 @@ public class ConnectionBuilder {
      **/
     public ConnectionBuilder(String trustStoreFile, char[] trustStorePasswd) throws KeyStoreException, IOException,
             KeyManagementException, NoSuchAlgorithmException, CertificateException {
+
+        if (!PathValidator.isValidFilePath(trustStoreFile)) {
+            throw new IOException("Invalid trust store file path");
+        }
 
         /* Load the specified trustStore */
         KeyStore keystore = KeyStore.getInstance("JKS");
