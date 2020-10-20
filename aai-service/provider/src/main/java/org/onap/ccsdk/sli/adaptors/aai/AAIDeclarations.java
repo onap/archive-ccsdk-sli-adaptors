@@ -60,20 +60,20 @@ import org.onap.ccsdk.sli.adaptors.aai.query.FormattedQueryResultList;
 import org.onap.ccsdk.sli.adaptors.aai.query.Result;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
-import org.onap.aai.inventory.v19.GenericVnf;
-import org.onap.aai.inventory.v19.Image;
-import org.onap.aai.inventory.v19.Metadata;
-import org.onap.aai.inventory.v19.Metadatum;
-import org.onap.aai.inventory.v19.RelatedToProperty;
-import org.onap.aai.inventory.v19.Relationship;
-import org.onap.aai.inventory.v19.RelationshipData;
-import org.onap.aai.inventory.v19.RelationshipList;
-import org.onap.aai.inventory.v19.ResultData;
-import org.onap.aai.inventory.v19.SearchResults;
-import org.onap.aai.inventory.v19.ServiceInstance;
-import org.onap.aai.inventory.v19.Vlan;
-import org.onap.aai.inventory.v19.Vlans;
-import org.onap.aai.inventory.v19.Vserver;
+import org.onap.aai.inventory.v21.GenericVnf;
+import org.onap.aai.inventory.v21.Image;
+import org.onap.aai.inventory.v21.Metadata;
+import org.onap.aai.inventory.v21.Metadatum;
+import org.onap.aai.inventory.v21.RelatedToProperty;
+import org.onap.aai.inventory.v21.Relationship;
+import org.onap.aai.inventory.v21.RelationshipData;
+import org.onap.aai.inventory.v21.RelationshipList;
+import org.onap.aai.inventory.v21.ResultData;
+import org.onap.aai.inventory.v21.SearchResults;
+import org.onap.aai.inventory.v21.ServiceInstance;
+import org.onap.aai.inventory.v21.Vlan;
+import org.onap.aai.inventory.v21.Vlans;
+import org.onap.aai.inventory.v21.Vserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1288,7 +1288,7 @@ public abstract class AAIDeclarations implements AAIClient {
                     getLogger().debug("About to process related link of {}", relatedLink);
                     if(relatedLink != null) {
                         if(relatedLink.contains("v$"))
-                            relatedLink = relatedLink.replace(VERSION_PATTERN, "/v19/");
+                            relatedLink = relatedLink.replace(VERSION_PATTERN, "/v21/");
                         relationship.setRelatedLink(relatedLink);
                     } else {
                         Map<String, String> relParams = new HashMap<>();
