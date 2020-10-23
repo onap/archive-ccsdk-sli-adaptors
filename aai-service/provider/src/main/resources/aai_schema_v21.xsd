@@ -13205,6 +13205,11 @@ xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
         <xs:element ref="tns:devices" minOccurs="0"/>
         <xs:element ref="tns:wan-port-configs" minOccurs="0"/>
         <xs:element ref="tns:ext-aai-networks" minOccurs="0"/>
+        <xs:element ref="tns:label-restrictions" minOccurs="0"/>
+        <xs:element ref="tns:unis" minOccurs="0"/>
+        <xs:element ref="tns:te-link-attributes" minOccurs="0"/>
+        <xs:element ref="tns:interlayer-attachments" minOccurs="0"/>
+        <xs:element ref="tns:tunnel-termination-points" minOccurs="0"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
