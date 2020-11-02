@@ -11,13 +11,12 @@
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>aai-service-provider</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>ccsdk-sli-adaptors :: aai-service :: ${project.artifactId}</name>
 
     <properties>
-        <ccsdk.sli.core.version>${project.version}</ccsdk.sli.core.version>
         <ccsdk.sli.adaptors.version>${project.version}</ccsdk.sli.adaptors.version>
     </properties>
 

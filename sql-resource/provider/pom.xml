@@ -11,7 +11,7 @@
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>sql-resource-provider</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>ccsdk-sli-adaptors :: sql-resource :: ${project.artifactId}</name>
@@ -19,7 +19,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ccsdk.sli.core.version>${project.version}</ccsdk.sli.core.version>
         <ccsdk.sli.adaptors.version>${project.version}</ccsdk.sli.adaptors.version>
     </properties>
 

@@ -10,7 +10,7 @@
 
 	<groupId>org.onap.ccsdk.sli.adaptors.messagerouter</groupId>
 	<artifactId>ccsdk-messagerouter-consumer</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.3-SNAPSHOT</version>
 	<packaging>feature</packaging>
 
 	<dependencies>

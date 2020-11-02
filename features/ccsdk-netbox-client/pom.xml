@@ -27,13 +27,12 @@
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>ccsdk-netbox-client</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>ccsdk-sli-adaptors :: netbox-client :: ${project.artifactId}</name>
 
     <properties>
-        <ccsdk.sli.core.version>${project.version}</ccsdk.sli.core.version>
         <ccsdk.sli.adaptors.version>${project.version}</ccsdk.sli.adaptors.version>
     </properties>
 

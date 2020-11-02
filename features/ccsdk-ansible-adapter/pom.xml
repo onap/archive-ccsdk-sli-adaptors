@@ -11,13 +11,12 @@
 
     <groupId>org.onap.ccsdk.sli.adaptors</groupId>
     <artifactId>ccsdk-ansible-adapter</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>ccsdk-sli-adaptors :: ansible-adapter:: ${project.artifactId}</name>
 
     <properties>
-        <ccsdk.sli.core.version>${project.version}</ccsdk.sli.core.version>
         <ccsdk.sli.adaptors.version>${project.version}</ccsdk.sli.adaptors.version>
     </properties>
 
