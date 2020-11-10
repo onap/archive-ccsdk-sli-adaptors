@@ -157,7 +157,7 @@ public class AAIServiceProvider implements UtilsProvider {
             Object unmasked = gs2Method.invoke(encrSvc, new Object[] { value });
             return unmasked.toString();
 
-        } catch (Exception exc) {
+        } catch (Exception|NoClassDefFoundError exc) {
             LOG.error("Failure", exc);
             return value;
         }

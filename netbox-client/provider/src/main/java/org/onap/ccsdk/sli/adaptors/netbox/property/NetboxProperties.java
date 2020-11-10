@@ -61,14 +61,24 @@ public class NetboxProperties {
             LOG.info("Loaded {} properties from file {}", properties.size(), ccsdkConfigDir);
         } catch (Exception e) {
             try {
-                // Try to load config from jar
+                // Try to load config from jar via OSGi
                 final Bundle bundle = FrameworkUtil.getBundle(NetboxProperties.class);
                 final BundleContext ctx = bundle.getBundleContext();
                 final URL url = ctx.getBundle().getResource(NETBOX_PROPERTY_FILE_NAME);
                 InputStream inputStream = url.openStream();
                 properties.load(inputStream);
                 LOG.info("Loaded {} properties from file {}", properties.size(), NETBOX_PROPERTY_FILE_NAME);
-            } catch (IOException|NoClassDefFoundError e1) {
+            } catch (NoClassDefFoundError e1) { 
+                // Try to load config from jar via class loader
+                try (InputStream inputStream = NetboxProperties.class.getResourceAsStream("/"+NETBOX_PROPERTY_FILE_NAME)) {
+                    properties.load(inputStream);
+                } catch (Exception e2) {
+                    LOG.error("Failed to load properties for file: {} " + NETBOX_PROPERTY_FILE_NAME, e1);
+                }
+                ;
+                LOG.info("Loaded {} properties from file {}", properties.size(), NETBOX_PROPERTY_FILE_NAME);
+
+            } catch (IOException e1) {
                 LOG.error("Failed to load properties for file: {} " + NETBOX_PROPERTY_FILE_NAME, e1);
             }
         }
