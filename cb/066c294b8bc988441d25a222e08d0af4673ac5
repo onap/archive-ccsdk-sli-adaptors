@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Xin Miao <xin.miao@us.fujitsu.com>
+Code-Review+2: Dan Timoney <dtimoney@att.com>
+Submitted-by: Dan Timoney <dtimoney@att.com>
+Submitted-at: Thu, 03 Dec 2020 13:03:53 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/ccsdk/sli/adaptors/+/116055
+Project: ccsdk/sli/adaptors
+Branch: refs/heads/master
